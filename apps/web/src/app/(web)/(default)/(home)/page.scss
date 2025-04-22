@@ -1,0 +1,8 @@
+.www {
+    color: black;
+
+    @media (prefers-color-scheme: dark){
+        color : white
+    }
+}
+

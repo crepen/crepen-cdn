@@ -1,0 +1,22 @@
+{
+  "name": "@crepen-cdn/core",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./service": "./src/service/index.ts",
+    "./util": "./src/util/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "generate:component": "turbo gen react-component",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "@turbo/gen": "^2.5.0",
+    "@types/node": "^22.14.0",
+    "eslint": "^9.25.0",
+    "typescript": "5.8.2"
+  }
+}
