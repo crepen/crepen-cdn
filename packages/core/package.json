@@ -18,5 +18,9 @@
     "@types/node": "^22.14.0",
     "eslint": "^9.25.0",
     "typescript": "5.8.2"
+  },
+  "dependencies": {
+    "@types/mysql": "^2.15.27",
+    "mysql2": "^3.14.0"
   }
 }

@@ -1,4 +1,4 @@
-import {ICookieData, IUserData} from './type'
+import { ICookieData } from './type'
 import CryptoJS from 'crypto-js';
 import {DateTime} from 'luxon'
 

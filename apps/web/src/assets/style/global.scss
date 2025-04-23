@@ -3,4 +3,22 @@
 
 :root { 
     font-family: 'Pretendard Variable' , 'Noto Sans KR';
+    --vh : 1vh
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    height: calc(var(--vh) * 100);
+    max-height: calc(var(--vh) * 100);
+    overflow: hidden;
+}
+
+
+#root {
+    overflow: hidden;
+    height: 100%;
 }

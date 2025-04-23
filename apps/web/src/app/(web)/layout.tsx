@@ -5,6 +5,7 @@ import '@web/assets/style/global.scss'
 
 import { Metadata } from 'next';
 import { PropsWithChildren } from 'react'
+import { InitClient } from '../../components/config/init-client';
 
 
 
@@ -27,6 +28,7 @@ const RootLayout = ({children}: PropsWithChildren) => {
         <html>
             <body>
                 <div id="root">
+                    <InitClient />
                     {children}
                 </div>
             </body>

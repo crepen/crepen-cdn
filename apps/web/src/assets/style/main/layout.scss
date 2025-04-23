@@ -1,0 +1,104 @@
+.cp-layout{
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    overflow: hidden;
+
+
+    header{
+        width: 80px;
+        height: 100%;
+        background-color: #c7c7c7;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        justify-content: space-between;
+
+
+        .cp-menu {
+            aspect-ratio: 1/1;
+            width: 100%;
+            
+            &.cp-center {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+
+
+            &.cp-profile {
+                .cp-profile-bt{
+                    border-radius: 100%;
+                    border: none;
+                    width: 50%;
+                    aspect-ratio: 1;
+                    border: 1px solid #b8b8b8;
+                    cursor: pointer;
+                }
+            }
+        }
+
+
+
+
+        .cp-profile-toast {
+            position: absolute;
+            width: 300px;
+            height: 200px;
+            background-color: black;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(100%);
+
+            &.cp-active.cp-show {
+                pointer-events: all;
+                animation: toast-active 0.3s;
+                animation-fill-mode: both;
+
+            }
+
+            &.cp-active:not(.cp-show){
+                animation: toast-hide 0.3s;
+                animation-fill-mode: both;
+
+            }
+
+
+            @keyframes toast-hide {
+                from {
+                    opacity: 1;
+                    transform: translateY(0%);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateY(100%);
+                }
+            }
+
+            @keyframes toast-active {
+                from {
+                    opacity: 0;
+                    transform: translateY(100%);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0%);
+                }
+            }
+
+        }
+
+    }
+
+    main {
+        padding: 10px;
+    }
+}
