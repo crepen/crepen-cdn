@@ -27,12 +27,19 @@ export const LoginForm = () => {
     }, [state, isPending])
 
     return (
-        <form action={formAction}>
-            <div>STATE : {state.state}</div>
-            <div>MESSAGE : {state.message}</div>
-            <div>LOADING : {isPending}</div>
-            <input type='text' name='uid'></input>
-            <button type='submit'>SUBMIT</button>
+        <form action={formAction} className='login-form'>
+            <div className='dev'>STATE : {state.state}</div>
+            <div className='dev'>MESSAGE : {state.message}</div>
+            <div className='dev'>LOADING : {isPending}</div>
+            <div className='form-input-box'>
+                <span className='input-label'>ID</span>
+                <input className='input-content' type='text' name='uid' placeholder=''></input>
+            </div>
+            <div className='form-input-box'>
+                <span className='input-label'>Password</span>
+                <input className='input-content' type='password' name='password' placeholder=''></input>
+            </div>
+            <button type='submit' className='form-submit'>SUBMIT</button>
         </form>
     )
 }

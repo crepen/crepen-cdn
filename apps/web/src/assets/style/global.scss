@@ -1,9 +1,9 @@
 @import url('./reset.css');
 
 
-:root { 
-    font-family: 'Pretendard Variable' , 'Noto Sans KR';
-    --vh : 1vh
+:root {
+    font-family: 'Pretendard Variable', 'Noto Sans KR';
+    --vh: 1vh
 }
 
 
@@ -21,4 +21,5 @@ body {
 #root {
     overflow: hidden;
     height: 100%;
+    // font-family: 'Pretendard Variable', 'Noto Sans KR';
 }
