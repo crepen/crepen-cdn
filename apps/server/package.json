@@ -5,6 +5,7 @@
   "description": "Nest TypeScript starter repository",
   "license": "MIT",
   "scripts": {
+    "dev": "yarn start:debug",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -62,10 +63,8 @@
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
     "ts-loader": "^9.5.2",
-    "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.3",
-    "typescript-eslint": "^8.20.0"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.20.0",
   },
   "jest": {
     "moduleFileExtensions": [

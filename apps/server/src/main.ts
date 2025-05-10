@@ -2,12 +2,15 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { GlobalExceptionFilter } from './config/filter/exception.filter';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
-  console.log('Run Port :' , process.env.GLOBAL_PORT)
-  console.log('Run Node ENV : ' , process.env.NODE_ENV )
   const app = await NestFactory.create(AppModule);
 
+  const config = app.get(ConfigService);
+  const port = config.get<number>('server.port') || 3600;
+
+  console.log('Server is running on port: ', port);
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -19,10 +22,10 @@ async function bootstrap() {
   app.useGlobalFilters(new GlobalExceptionFilter())
 
 
-  await app.listen(process.env.GLOBAL_PORT || 3600);
+  await app.listen(port);
 }
 
 
 
 
-bootstrap();
+void bootstrap();

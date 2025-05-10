@@ -7,31 +7,29 @@ import { LoginUserDto } from './dto/auth.login.dto';
 @Controller('auth')
 export class AuthController {
     constructor(
-        private readonly authService: AuthService , 
-        private readonly configEnv : ConfigService
-    ) {}
+        private readonly authService: AuthService,
+        private readonly configEnv: ConfigService
+    ) { }
 
     @Post('login')
     @HttpCode(HttpStatus.OK)
     @UseInterceptors(NoFilesInterceptor())
-    async login(
-        @Body() loginData : LoginUserDto
-    ){
+    async login(@Body() loginData: LoginUserDto) {
         console.log(loginData?.id)
 
-        try{
-            this.authService.tryLogin(loginData.id , loginData.password);
+        try {
+            await this.authService.tryLogin(loginData.id, loginData.password);
         }
-        catch(e){
+        catch (e) {
 
         }
-        
+
 
         throw new NotFoundException('ss');
-        return { 
-            tes : true , 
-            env : this.configEnv.get<string>('NODE_ENV'),
-            db_host : this.configEnv.get<string>('db.mysql.host')
+        return {
+            tes: true,
+            env: this.configEnv.get<string>('NODE_ENV'),
+            db_host: this.configEnv.get<string>('db.mysql.host')
         };
     }
 

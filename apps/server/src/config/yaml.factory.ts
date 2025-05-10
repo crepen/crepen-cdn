@@ -4,7 +4,7 @@ import { join } from 'path';
 
 const YamlConfigFactory = () => {
     return yaml.load(
-        readFileSync(join(__dirname , './config.yaml'), 'utf-8')
+        readFileSync(join(__dirname , '../config.yaml'), 'utf-8')
     ) as Record<string , any>;
 }
 
