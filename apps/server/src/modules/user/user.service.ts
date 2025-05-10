@@ -12,14 +12,10 @@ import { Repository } from 'typeorm';
 export class UserService {
     constructor(
         @InjectRepository(User)
-        private userRepository : Repository<User>
-    ) {}
+        private userRepository: Repository<User>,
+    ) { }
 
-
-    findOne = async (id : string | undefined) : Promise<User | null> => {
-
-        return this.userRepository.findOneBy({ id : id });
-    }
-
-
+    findOne = async (id: string | undefined): Promise<User | null> => {
+        return this.userRepository.findOneBy({ id: id });
+    };
 }
