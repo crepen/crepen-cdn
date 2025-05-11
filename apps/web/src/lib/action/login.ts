@@ -5,6 +5,10 @@ import { CookieService } from "@crepen-cdn/core/service";
 import { DateTime } from 'luxon';
 import mysql from 'mysql2/promise'
 import { CrepenUserService } from "../service/user-service";
+import { CrepenToken } from "../service/types/auth";
+import { CrepenAuthService } from "../service/auth-service";
+import { CrepenApiResponse } from "../service/types/api";
+import { CrepenUser } from "../service/types/user";
 
 
 
@@ -22,35 +26,61 @@ export const loginUser = async (currentState: any, formData: FormData): Promise<
 
 
         const userId = formData.get('uid')?.toString();
+        const password = formData.get('password')?.toString();
 
-        const findUser = await CrepenUserService.getUserById(userId);
+        const loginToken: CrepenApiResponse<CrepenToken | undefined> = await CrepenAuthService.login(userId, password);
 
-        if (findUser === undefined) {
-            throw new Error('user not found')
+        if (loginToken.success === false) {
+            throw new Error(loginToken.message);
         }
 
 
+        const tokenEncryptStr = CookieService.encrtypeData(loginToken.data);
 
-        const cookieData = CookieService.decryptData(cookieStore.get('crepen-uif')?.value);
-        const expireTime = DateTime.now().plus({ minute: 30 }).toMillis();
 
-        cookieData.user = {
-            loginExpireTime: expireTime,
-            uid: findUser.uid
-        };
 
-        const cookieDataStr = CookieService.encrtypeData(cookieData);
+        const loginUserData: CrepenApiResponse<CrepenUser | undefined> = await CrepenAuthService.getLoginUserData(loginToken.data?.accessToken);
 
-        cookieStore.set('crepen-uif', cookieDataStr, {
-            httpOnly: true,
-            secure: true
-        });
 
-        cookieStore.set('crepen-exp', expireTime.toString(), {
-            httpOnly: true,
-            expires: expireTime,
-            secure: true
-        });
+        if (loginUserData.success === false) {
+            throw new Error(loginUserData.message);
+        }
+
+        const userEncryptStr = CookieService.encrtypeData(loginUserData.data);
+
+
+
+
+        if (cookieStore.has('crepen-tk')) {
+            cookieStore.delete('crepen-tk');
+        }
+
+
+        cookieStore.set('crepen-tk', tokenEncryptStr, {
+            expires: (loginToken.data?.expireTime ?? 1) * 1000,
+            secure: process.env.NODE_ENV === 'development' ? false : true,
+            httpOnly: process.env.NODE_ENV === 'development' ? false : true
+        })
+
+        if (cookieStore.has('crepen-tk-ex')) {
+            cookieStore.delete('crepen-tk-ex');
+        }
+
+        cookieStore.set('crepen-tk-ex', ((loginToken.data?.expireTime ?? 0) * 1000).toString(), {
+            expires: (loginToken.data?.expireTime ?? 1) * 1000,
+            secure: process.env.NODE_ENV === 'development' ? false : true,
+            httpOnly: process.env.NODE_ENV === 'development' ? false : true
+        })
+
+
+        if (cookieStore.has('crepen-usr')) {
+            cookieStore.delete('crepen-usr');
+        }
+
+        cookieStore.set('crepen-usr', userEncryptStr, {
+            secure: process.env.NODE_ENV === 'development' ? false : true,
+            httpOnly: process.env.NODE_ENV === 'development' ? false : true
+        })
 
         state = true;
         message = 'success';
@@ -63,13 +93,6 @@ export const loginUser = async (currentState: any, formData: FormData): Promise<
         }
     }
 
-
-
-    if (state === true) {
-
-    }
-
-
     return {
         state: state,
         message: message
@@ -79,14 +102,16 @@ export const loginUser = async (currentState: any, formData: FormData): Promise<
 
 export const logoutUser = async () => {
     const cookieStore = await cookies();
-    const cookieData = CookieService.decryptData(cookieStore.get('crepen-uif')?.value);
 
-    cookieData.user = {};
+    if (cookieStore.has('crepen-tk')) {
+        cookieStore.delete('crepen-tk');
+    }
 
-    const rewriteCookieData = CookieService.encrtypeData(cookieData);
-    cookieStore.set('crepen-uif', rewriteCookieData, {
-        httpOnly: true,
-        secure: true
-    });
-    cookieStore.delete('crepen-exp');
+    if (cookieStore.has('crepen-tk-ex')) {
+        cookieStore.delete('crepen-tk-ex');
+    }
+
+    if (cookieStore.has('crepen-usr')) {
+        cookieStore.delete('crepen-usr');
+    }
 }

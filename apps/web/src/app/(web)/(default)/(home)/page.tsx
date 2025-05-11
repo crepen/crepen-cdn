@@ -8,9 +8,13 @@ import { LoginAction } from '../../../../lib/action'
 const HomePage = () => {
 
 
-  
+
     const blackBt = () => {
-        LoginAction.logoutUser();
+        LoginAction.logoutUser()
+            .then(res => {
+                location.reload();
+            })
+
     }
 
     return (
@@ -18,11 +22,11 @@ const HomePage = () => {
             <div style={{ fontFamily: 'Pretendard Variable' }}>
                 <TestText />
             </div>
-            
-                <form action={LoginAction.logoutUser}>
+
+            <form action={LoginAction.logoutUser}>
                 <button onClick={blackBt}>Logout</button>
-                </form>
-            
+            </form>
+
         </Fragment>
     )
 }

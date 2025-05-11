@@ -1,8 +1,10 @@
-@function hexToRGB($hex) {
-    @return red($hex), green($hex), blue($hex);
-}
+@use 'sass:color';
 
 $base-color: #1c95e5;
+
+@function hexToRGB($hex) {
+    @return color.channel($hex, "red"), color.channel($hex, "green"), color.channel($hex, "blue");
+}
 
 :root{
     --base-color : #{$base-color};

@@ -31,9 +31,12 @@ export class AuthService {
         const acc = this.jwtService.sign(accPayload, { expiresIn: '300s' });
         const ref = this.jwtService.sign(payload, { expiresIn: '3600s' })
 
+        const expireTime = (await this.jwtService.verify(ref))?.exp ?? undefined;
+
         return {
             accessToken: acc,
-            refreshToken: ref
+            refreshToken: ref,
+            expireTime : expireTime
         }
     }
 
@@ -51,9 +54,12 @@ export class AuthService {
         const accessToken = this.jwtService.sign(accPayload, { expiresIn: '5m' });
         const refreshToken = this.jwtService.sign(refPayload, { expiresIn: '1h' });
 
+        const expireTime = (await this.jwtService.verify(refreshToken))?.exp ?? undefined;
+
         return {
             accessToken: accessToken,
-            refreshToken: refreshToken
+            refreshToken: refreshToken,
+            expireTime : expireTime
         }
     }
 
