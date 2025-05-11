@@ -6,4 +6,10 @@ db:
   database: 'crepencdn'
   username: 'crepen'
   password: 'qwer1234'
+secret:
+  auth: 'test-secret'
+  jwt : 'test-jwt-secret'
+jwt : 
+  secret : 'test-jwt-secret'
+  expireTime : 3600s
 

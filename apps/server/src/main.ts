@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from './modules/app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { GlobalExceptionFilter } from './config/filter/exception.filter';
+import { ExceptionResponseFilter } from './filter/ex.response.filter';
 import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
@@ -19,7 +19,7 @@ async function bootstrap() {
     })
   )
 
-  app.useGlobalFilters(new GlobalExceptionFilter())
+  app.useGlobalFilters(new ExceptionResponseFilter())
 
 
   await app.listen(port);

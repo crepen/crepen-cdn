@@ -1,48 +1,67 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, UploadedFile, UseInterceptors, NotFoundException } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, UploadedFile, UseInterceptors, NotFoundException, Put, UseGuards, Req, Get, HttpException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ConfigService } from '@nestjs/config';
 import { NoFilesInterceptor } from '@nestjs/platform-express';
-import { LoginUserDto } from './dto/auth.login.dto';
+import { AuthLoginDto } from './dto/login.dto';
+import { AuthJwtGuard } from 'src/config/passport/jwt-guard';
+import { JwtService } from '@nestjs/jwt';
+import { UserEntity } from '../user/entity/user.entity';
+import { JwtUserPayload, JwtUserRequest } from 'src/config/passport/interface/jwt';
+import { BaseResponse } from 'src/common/base-response';
+import { TokenDto } from './dto/jwt.dto';
+import { UserService } from '../user/user.service';
+import { UserDataDto } from '../user/dto/user.dto';
 
 @Controller('auth')
 export class AuthController {
     constructor(
         private readonly authService: AuthService,
-        private readonly configEnv: ConfigService
+        private readonly configEnv: ConfigService,
+        private readonly jwtService: JwtService,
+        private readonly userService: UserService
     ) { }
+
+
+    @Get()
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(AuthJwtGuard)
+    async getUserData(
+        @Req() req: JwtUserRequest
+    ) {
+        return BaseResponse.ok(new UserDataDto(req.user.entity));
+    }
+
+
+
 
     @Post('login')
     @HttpCode(HttpStatus.OK)
     @UseInterceptors(NoFilesInterceptor())
-    async login(@Body() loginData: LoginUserDto) {
-        console.log(loginData?.id)
+    async login(
+        @Req() req: Request,
+        @Body() loginData: AuthLoginDto
+    ) {
+        const token: TokenDto = await this.authService.getToken(loginData.id, loginData.password);
 
-        try {
-            await this.authService.tryLogin(loginData.id, loginData.password);
-        }
-        catch (e) {
-
-        }
-
-
-        throw new NotFoundException('ss');
-        return {
-            tes: true,
-            env: this.configEnv.get<string>('NODE_ENV'),
-            db_host: this.configEnv.get<string>('db.mysql.host')
-        };
+        // throw new NotFoundException('ss');
+        return BaseResponse.ok(token);
     }
 
 
-    // @Post('login')
-    // @HttpCode(HttpStatus.OK)
-    // async login(@Body() loginDto: LoginDto) {
-    //     return this.authService.login(loginDto);
-    // }
+    @Post('token')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(AuthJwtGuard)
+    async tokenRefresh(
+        @Req() req: JwtUserRequest,
+    ) {
 
-    // @Post('register')
-    // @HttpCode(HttpStatus.CREATED)
-    // async register(@Body() registerDto: RegisterDto) {
-    //     return this.authService.register(registerDto);
-    // }
+        const tokenDto: TokenDto = await this.authService.tokenRefresh(req.user.payload);
+
+        return BaseResponse.ok(tokenDto);
+    }
+
+
+
+
+
 }

@@ -2,7 +2,6 @@
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
-  "sourceMap" : false,
   "compilerOptions": {
     "deleteOutDir": true,
     "assets": [
@@ -15,7 +14,7 @@
         "outDir": "./dist"
       },
       {
-        "include": "./config.yaml",
+        "include": "**/config*.yaml",
         "outDir": "./dist"
       }
     ]
