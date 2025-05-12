@@ -1,6 +1,6 @@
 'use server'
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { CookieService } from "@crepen-cdn/core/service";
 import { DateTime } from 'luxon';
 import mysql from 'mysql2/promise'
@@ -9,6 +9,9 @@ import { CrepenToken } from "../service/types/auth";
 import { CrepenAuthService } from "../service/auth-service";
 import { CrepenApiResponse } from "../service/types/api";
 import { CrepenUser } from "../service/types/user";
+import { StringUtil } from "../util/string.util";
+import { redirect } from "next/navigation";
+import { CommonUtil } from "../util/common.util";
 
 
 
@@ -18,6 +21,13 @@ export const loginUser = async (currentState: any, formData: FormData): Promise<
     let message: string | undefined = undefined;
 
     try {
+
+        
+        // await CommonUtil.delay(10000)
+
+
+        console.log((await headers()).get('next-url'));
+
         const cookieStore = await cookies();
 
         if (cookieStore.has('crepen-exp')) {
@@ -25,8 +35,9 @@ export const loginUser = async (currentState: any, formData: FormData): Promise<
         }
 
 
-        const userId = formData.get('uid')?.toString();
+        const userId = formData.get('username')?.toString();
         const password = formData.get('password')?.toString();
+
 
         const loginToken: CrepenApiResponse<CrepenToken | undefined> = await CrepenAuthService.login(userId, password);
 
@@ -84,6 +95,9 @@ export const loginUser = async (currentState: any, formData: FormData): Promise<
 
         state = true;
         message = 'success';
+
+
+        // redirect()
     }
     catch (e) {
         state = false;

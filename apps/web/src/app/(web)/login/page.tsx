@@ -6,6 +6,7 @@ import { Fragment } from 'react'
 import { LoginAction } from '../../../lib/action';
 import { LoginForm } from '../../../components/page/login/login-form';
 import Image from 'next/image';
+import BaseButton from '@web/components/controls/base-button/base-button';
 
 
 
@@ -28,8 +29,19 @@ const LoginPage = () => {
                     />
                 </div>
                 <LoginForm />
+
+                <div className='page-hr'>
+
+                </div>
+
+                <BaseButton
+                    theme='secondary'
+                    type='button'
+                >
+                    Sign Up
+                </BaseButton>
             </div>
-            
+
         </div>
     )
 }

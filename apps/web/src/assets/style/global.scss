@@ -1,9 +1,24 @@
+@use 'sass:color';
 @import url('./reset.css');
 
 
+$base-color: #1c95e5;
+
+@function hexToRGB($hex) {
+    @return color.channel($hex, "red"), color.channel($hex, "green"), color.channel($hex, "blue");
+}
+
 :root {
     font-family: 'Pretendard Variable', 'Noto Sans KR';
-    --vh: 1vh
+    --vh: 1vh;
+    --screen-width-mobile: 576px;
+    --screen-width-tablet: 768px;
+    --screen-width-labtop: 992px;
+    --screen-width-desktop: 1200px;
+
+
+    --base-color : #{$base-color};
+    --base-color-rgb: #{hexToRGB($base-color)};
 }
 
 

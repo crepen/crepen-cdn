@@ -3,7 +3,11 @@
 import { useActionState } from 'react'
 import { LoginAction } from '../../../lib/action'
 import { useEffect } from 'react'
-import { redirect } from 'next/navigation'
+import { redirect, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/router'
+import { StringUtil } from '../../../lib/util/string.util'
+import LabelInput from '@web/components/controls/label-input/label-input'
+import LoadingButton from '@web/components/controls/loading-button/loading-button'
 
 export const LoginForm = () => {
 
@@ -12,13 +16,15 @@ export const LoginForm = () => {
         message: undefined
     })
 
+    const searchParams = useSearchParams();
+
     useEffect(() => {
 
-        console.log("EE")
         if (isPending === false && state.state !== undefined) {
 
             if (state.state === true) {
-                redirect('/');
+                const callbackUrl = searchParams.get('callback')?.toString();
+                redirect(StringUtil.shiftEmptyString(callbackUrl, '/'));
             }
             else {
                 alert(state.message)
@@ -28,18 +34,27 @@ export const LoginForm = () => {
 
     return (
         <form action={formAction} className='login-form'>
-            <div className='dev'>STATE : {state.state}</div>
-            <div className='dev'>MESSAGE : {state.message}</div>
-            <div className='dev'>LOADING : {isPending}</div>
-            <div className='form-input-box'>
-                <span className='input-label'>ID</span>
-                <input className='input-content' type='text' name='uid' placeholder=''></input>
-            </div>
-            <div className='form-input-box'>
-                <span className='input-label'>Password</span>
-                <input className='input-content' type='password' name='password' placeholder=''></input>
-            </div>
-            <button type='submit' className='form-submit'>SUBMIT</button>
+            <LabelInput
+                inputType='text'
+                label='ID or Email'
+                formName='username'
+                showResetButton
+            />
+
+            <LabelInput
+                inputType='password'
+                label='Password'
+                formName='password'
+                showResetButton
+                showPasswordVisibleButton
+            />
+
+            <LoadingButton 
+                type='submit'
+                isLoading={isPending}
+                label='SUBMIT'
+            />
+
         </form>
     )
 }

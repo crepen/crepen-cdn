@@ -67,15 +67,13 @@ export const middleware = async (request: NextRequest) => {
 
 
 
-
+    console.log(request)
 
 
     if (!isMatchUrl('/login', request.url)) {
 
-        console.log('1', !response.cookies.has('crepen-tk'));
 
         if (!response.cookies.has('crepen-tk')) {
-            console.log('4')
             return NextResponse.redirect(new URL(`/login?callback=${encodeURIComponent(request.url)}`, request.url));
         }
 
@@ -86,10 +84,7 @@ export const middleware = async (request: NextRequest) => {
         // }
     }
     else {
-        console.log('2');
-
         if (response.cookies.has('crepen-tk')) {
-            console.log('3');
             const callbackUrl = request.nextUrl.searchParams.get('callback') ?? undefined;
             if (callbackUrl) {
                 return NextResponse.redirect(new URL(callbackUrl));
