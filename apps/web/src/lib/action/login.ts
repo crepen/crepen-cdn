@@ -2,16 +2,11 @@
 
 import { cookies, headers } from "next/headers";
 import { CookieService } from "@crepen-cdn/core/service";
-import { DateTime } from 'luxon';
-import mysql from 'mysql2/promise'
-import { CrepenUserService } from "../service/user-service";
 import { CrepenToken } from "../service/types/auth";
 import { CrepenAuthService } from "../service/auth-service";
 import { CrepenApiResponse } from "../service/types/api";
 import { CrepenUser } from "../service/types/user";
-import { StringUtil } from "../util/string.util";
 import { redirect } from "next/navigation";
-import { CommonUtil } from "../util/common.util";
 
 
 
@@ -21,21 +16,14 @@ export const loginUser = async (currentState: any, formData: FormData): Promise<
     let message: string | undefined = undefined;
 
     try {
-
-        
-        // await CommonUtil.delay(10000)
-
-
-        console.log((await headers()).get('next-url'));
-
         const cookieStore = await cookies();
 
         if (cookieStore.has('crepen-exp')) {
             cookieStore.delete('crepen-exp');
         }
+        console.log('stttt');
 
-
-        const userId = formData.get('username')?.toString();
+        const userId = formData.get('id')?.toString();
         const password = formData.get('password')?.toString();
 
 
@@ -97,7 +85,9 @@ export const loginUser = async (currentState: any, formData: FormData): Promise<
         message = 'success';
 
 
-        // redirect()
+
+
+        // redirect('/')
     }
     catch (e) {
         state = false;
@@ -112,20 +102,4 @@ export const loginUser = async (currentState: any, formData: FormData): Promise<
         message: message
     }
 
-}
-
-export const logoutUser = async () => {
-    const cookieStore = await cookies();
-
-    if (cookieStore.has('crepen-tk')) {
-        cookieStore.delete('crepen-tk');
-    }
-
-    if (cookieStore.has('crepen-tk-ex')) {
-        cookieStore.delete('crepen-tk-ex');
-    }
-
-    if (cookieStore.has('crepen-usr')) {
-        cookieStore.delete('crepen-usr');
-    }
 }

@@ -1,0 +1,40 @@
+.cp-layout.cp-group.cp-root-group {
+
+    width: 100%;
+    min-height: 100%;
+
+
+    .cp-header {
+        width: 100%;
+
+        padding: 20px;;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+
+        .cp-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .cp-action {
+
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+
+            gap: 10px;
+
+            .cp-action-bt {
+                padding: 4px;
+            }
+        }
+    }
+
+
+    .cp-group-list {
+
+    }
+}

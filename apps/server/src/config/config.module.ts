@@ -1,26 +1,18 @@
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Module } from "@nestjs/common";
-import LoadYamlConfigFactory from "./env/load-yaml.factory";
 import { MulterModule } from '@nestjs/platform-express';
 import { multerConfigFactory } from './system/multer.factory';
 import { DatabaseConfigModule } from './database/db.module';
+import { I18nConfigModule } from './i18n/i18n.module';
+import { CrepenEnvModule } from './env/env.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: [
-        process.env.NODE_ENV === 'prod' ? '.env.prod' : '',
-        process.env.NODE_ENV === 'dev' ? '.env.development' : '',
-        '.env',
-      ],
-      isGlobal: true,
-      load: [LoadYamlConfigFactory]
-    }),
+    CrepenEnvModule,
     MulterModule.registerAsync({
       useFactory: multerConfigFactory
     }),
     DatabaseConfigModule,
-    // PassportConfigModule
+    I18nConfigModule,
   ]
 })
 

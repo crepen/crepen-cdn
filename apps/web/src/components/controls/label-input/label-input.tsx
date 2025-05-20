@@ -12,7 +12,8 @@ interface LabelInputProp {
     formName?: string,
     inputRef?: RefObject<HTMLInputElement | null>,
     showResetButton?: boolean,
-    showPasswordVisibleButton? : boolean
+    showPasswordVisibleButton? : boolean,
+    inputId? : string
 }
 
 const LabelInput = (prop: LabelInputProp) => {
@@ -24,6 +25,7 @@ const LabelInput = (prop: LabelInputProp) => {
         <div className="crepen-label-input">
             <span className="inner-label">{prop.label}</span>
             <input className="inner-input"
+                id={prop.inputId}
                 type={isShowPassword === true ? 'text' : prop.inputType}
                 name={prop.formName}
                 placeholder=''

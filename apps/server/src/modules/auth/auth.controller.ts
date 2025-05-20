@@ -1,24 +1,20 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, UploadedFile, UseInterceptors, NotFoundException, Put, UseGuards, Req, Get, HttpException } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, UseInterceptors, UseGuards, Req, Get, Query, Headers, UseFilters } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ConfigService } from '@nestjs/config';
 import { NoFilesInterceptor } from '@nestjs/platform-express';
 import { AuthLoginDto } from './dto/login.dto';
-import { AuthJwtGuard } from 'src/config/passport/jwt-guard';
-import { JwtService } from '@nestjs/jwt';
-import { UserEntity } from '../user/entity/user.entity';
-import { JwtUserPayload, JwtUserRequest } from 'src/config/passport/interface/jwt';
+import { AuthJwtGuard } from 'src/config/passport/jwt/jwt.guard';
+import { JwtUserRequest } from 'src/common/interface/jwt';
 import { BaseResponse } from 'src/common/base-response';
 import { TokenDto } from './dto/jwt.dto';
-import { UserService } from '../user/user.service';
 import { UserDataDto } from '../user/dto/user.dto';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
+import { TokenType } from './interface/token';
+import { I18n, I18nContext, I18nValidationExceptionFilter } from 'nestjs-i18n';
 
 @Controller('auth')
 export class AuthController {
     constructor(
         private readonly authService: AuthService,
-        private readonly configEnv: ConfigService,
-        private readonly jwtService: JwtService,
-        private readonly userService: UserService
     ) { }
 
 
@@ -39,8 +35,11 @@ export class AuthController {
     @UseInterceptors(NoFilesInterceptor())
     async login(
         @Req() req: Request,
-        @Body() loginData: AuthLoginDto
+        @Headers('Accept-Language') acceptLanguage : string,
+        @Body() loginData: AuthLoginDto,
+        @I18n() i18n : I18nContext
     ) {
+       
         const token: TokenDto = await this.authService.getToken(loginData.id, loginData.password);
 
         // throw new NotFoundException('ss');
@@ -50,7 +49,7 @@ export class AuthController {
 
     @Post('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(AuthJwtGuard)
+    @UseGuards(AuthJwtGuard.whitelist('refresh_token'))
     async tokenRefresh(
         @Req() req: JwtUserRequest,
     ) {
@@ -61,6 +60,25 @@ export class AuthController {
     }
 
 
+    @Get('token/exp')
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({ summary: "토큰 만료 체크", description: 'Access Token / Refresh Token 만료 체크' })
+    @ApiQuery({ name: 'type', enum : ['access_token' , 'refresh_token'] })
+    @ApiBearerAuth('token')
+    @ApiParam({
+        name: 'Authorization',
+        required: false
+    })
+    async checkTokenExpire(
+        @Query('type') type: TokenType,
+        @Headers('Authorization') token?: string
+    ) {
+        const isExpired = await this.authService.isTokenExpired(token, type);
+
+        return BaseResponse.ok({
+            expired : isExpired
+        });
+    }
 
 
 

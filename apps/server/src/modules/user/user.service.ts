@@ -17,7 +17,6 @@ import { randomUUID } from 'crypto';
 export class UserService {
     constructor(
         private readonly userRepo: UserRepository,
-        private readonly encryptUtil: EncryptUtil,
     ) { }
 
     getUserDataById = async (id: string | undefined): Promise<UserEntity | undefined> => {

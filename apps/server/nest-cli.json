@@ -15,6 +15,12 @@
       },
       {
         "include": "**/config*.yaml",
+        "outDir": "./dist",
+        "watchAssets": true
+      },
+      {
+        "include": "public/i18n/**/*",
+        "watchAssets": true,
         "outDir": "./dist"
       }
     ]

@@ -1,15 +1,15 @@
 server:
-  port: 3333
+  port: 0
 db:
-  host: 'localhost'
-  port: 3306
-  database: 'crepencdn'
-  username: 'crepen'
-  password: 'qwer1234'
+  host: ''
+  port: 0
+  database: ''
+  username: ''
+  password: ''
 secret:
   auth: 'test-secret'
   jwt : 'test-jwt-secret'
 jwt : 
-  secret : 'test-jwt-secret'
-  expireTime : 3600s
+  secret : ''
+  expireTime : 0s
 

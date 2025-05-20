@@ -1,7 +1,7 @@
 // Pretendard Font
 import 'pretendard/dist/web/variable/pretendardvariable.css';
 // Global Style
-import '@web/assets/style/global.scss'
+import '@web/assets/style/common/global.scss'
 
 import { Metadata } from 'next';
 import { PropsWithChildren } from 'react'
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 
 
-const RootLayout = ({children}: PropsWithChildren) => {
+const RootLayoutRouter = ({children}: PropsWithChildren) => {
 
     return (
         <html>
@@ -36,4 +36,4 @@ const RootLayout = ({children}: PropsWithChildren) => {
     )
 }
 
-export default RootLayout;
+export default RootLayoutRouter;

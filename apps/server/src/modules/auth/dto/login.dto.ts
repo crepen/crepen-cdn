@@ -1,17 +1,19 @@
-import { IsNotEmpty, IsString } from 'class-validator'
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator'
 
 export class AuthLoginDto {
-    
+
+    @ApiProperty()
     @IsNotEmpty({
-        message : '아이디가 없습니다.'
+        message: 'cloud_auth.LOGIN_FAILED_ID_EMPTY'
     })
-    id : string | undefined;
+    id: string | undefined;
 
-
+    @ApiProperty()
     @IsNotEmpty({
-        message : 'Password empty'
+        message: 'cloud_auth.LOGIN_FAILED_PASSWORD_EMPTY'
     })
-    password : string | undefined;
+    password: string | undefined;
 
-    
+
 }

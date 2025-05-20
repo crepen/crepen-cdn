@@ -18,7 +18,7 @@ export const decryptData = <T>(encryptCookieStr?: string): T | undefined => {
 }
 
 export const encrtypeData = (data?: object) => {
-    const dataStr: string = JSON.stringify(data ?? {});
+    const dataStr: string =  JSON.stringify(data ?? {});
     const secretKey = process.env.AUTH_SECRET ?? 'secret-key';
     const encryptStr = CryptoJS.AES.encrypt(dataStr, secretKey).toString();
 

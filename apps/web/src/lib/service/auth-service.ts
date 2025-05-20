@@ -1,6 +1,6 @@
 import { CrepenApiService } from "./api-service";
 import { CrepenApiResponse } from "./types/api";
-import { CrepenToken } from "./types/auth";
+import { CrepenToken, CrepenTokenType } from "./types/auth";
 import { CrepenUser } from "./types/user";
 
 export class CrepenAuthService {
@@ -24,6 +24,17 @@ export class CrepenAuthService {
         return CrepenApiService.fetch<CrepenToken | undefined>('POST' , '/auth/token' , undefined , {
             headers : {
                 'Authorization' : `Bearer ${refToken ?? ''}`
+            }
+        })
+    }
+
+    public static isTokenExpired = async (tokenType? : CrepenTokenType , token? : string) : Promise<CrepenApiResponse<{expired : boolean} | undefined>> => {
+
+        const type = tokenType === 'ACCESS' ? 'access_token' : tokenType === 'REFRESH' ? 'refresh_token' : '';
+
+        return CrepenApiService.fetch<{expired : boolean}>('GET' , `/auth/token/exp?type=${type}` , undefined , {
+            headers : {
+                'Authorization' : `Bearer ${token ?? ''}`
             }
         })
     }

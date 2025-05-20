@@ -14,7 +14,6 @@ export class CrepenApiService {
 
             const fetchJson = await fetchData.json();
 
-            console.log(fetchJson);
 
             return {
                 success: fetchJson?.success,

@@ -1,0 +1,44 @@
+@use 'sass:color';
+@import url('./reset.css');
+
+
+$color-primary: #1c95e5;
+$color-secondary : #09598f;
+
+@function hexToRGB($hex) {
+    @return color.channel($hex, "red"), color.channel($hex, "green"), color.channel($hex, "blue");
+}
+
+:root {
+    font-family: 'Pretendard Variable', 'Noto Sans KR';
+    --vh: 1vh;
+    --screen-width-mobile: 576px;
+    --screen-width-tablet: 768px;
+    --screen-width-labtop: 992px;
+    --screen-width-desktop: 1200px;
+
+
+    --color-primary : #{$color-primary};
+    --color-primary-rgb : #{hexToRGB($color-primary)};
+
+    --color-secondary : #{$color-secondary};
+    --color-secondary-rgb : #{hexToRGB($color-secondary)};
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    height: calc(var(--vh) * 100);
+    max-height: calc(var(--vh) * 100);
+    overflow: hidden;
+}
+
+
+#root {
+    overflow: hidden;
+    height: 100%;
+    // font-family: 'Pretendard Variable', 'Noto Sans KR';
+}

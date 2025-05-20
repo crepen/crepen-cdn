@@ -9,9 +9,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             useFactory : (configService : ConfigService) => {
 
                 const entityDir = __dirname + '/../../modules/**/entity/*.entity{.ts,.js}'
-
-                console.log('Read Entity : ' ,entityDir)
-
+                
+                console.log(configService.get<boolean>('db.logging') )
 
                 return ({
                     type : 'mariadb',
@@ -22,7 +21,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
                     password : configService.get<string>('db.password'),
                     entities: [entityDir],
                     synchronize: true,
-                    logging : true
+                    logging : configService.get<boolean>('db.logging')
                 })
             },
             inject : [ConfigService]

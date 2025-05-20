@@ -2,8 +2,8 @@ import { Controller, Body, HttpCode, HttpStatus, Put, Post, UseGuards, Req, Http
 import { UserSignUpDto } from './dto/signup.dto';
 import { UserService } from './user.service';
 import { UserUpdateDto } from './dto/update.dto';
-import { AuthJwtGuard } from 'src/config/passport/jwt-guard';
-import { JwtUserRequest } from 'src/config/passport/interface/jwt';
+import { AuthJwtGuard } from 'src/config/passport/jwt/jwt.guard';
+import { JwtUserRequest } from 'src/common/interface/jwt';
 import { BaseResponse } from 'src/common/base-response';
 
 @Controller('user')

@@ -1,13 +1,13 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState , useRef} from 'react'
 import { LoginAction } from '../../../lib/action'
 import { useEffect } from 'react'
-import { redirect, useSearchParams } from 'next/navigation'
-import { useRouter } from 'next/router'
+import { redirect, useRouter, useSearchParams } from 'next/navigation'
 import { StringUtil } from '../../../lib/util/string.util'
 import LabelInput from '@web/components/controls/label-input/label-input'
 import LoadingButton from '@web/components/controls/loading-button/loading-button'
+import { useFormState } from 'react-dom'
 
 export const LoginForm = () => {
 
@@ -16,15 +16,22 @@ export const LoginForm = () => {
         message: undefined
     })
 
+    const idInputRef = useRef<HTMLInputElement>(null);
+
+    // const [state, formAction, isPending] = useFormState(LoginAction.loginUser, {
+    //     state: undefined,
+    //     message: undefined
+    // })
+
     const searchParams = useSearchParams();
 
     useEffect(() => {
-
-        if (isPending === false && state.state !== undefined) {
+        if (isPending === false && state?.state !== undefined) {
 
             if (state.state === true) {
                 const callbackUrl = searchParams.get('callback')?.toString();
-                redirect(StringUtil.shiftEmptyString(callbackUrl, '/'));
+                // location.href = StringUtil.shiftEmptyString(callbackUrl, '/');
+                redirect(StringUtil.shiftEmptyString(callbackUrl, '/cloud'));
             }
             else {
                 alert(state.message)
@@ -32,13 +39,18 @@ export const LoginForm = () => {
         }
     }, [state, isPending])
 
+    useEffect(() => {
+        idInputRef.current?.focus();
+    },[])
+
     return (
         <form action={formAction} className='login-form'>
             <LabelInput
                 inputType='text'
                 label='ID or Email'
-                formName='username'
+                formName='id'
                 showResetButton
+                inputRef={idInputRef}
             />
 
             <LabelInput
@@ -49,7 +61,7 @@ export const LoginForm = () => {
                 showPasswordVisibleButton
             />
 
-            <LoadingButton 
+            <LoadingButton
                 type='submit'
                 isLoading={isPending}
                 label='SUBMIT'

@@ -1,6 +1,7 @@
 export class StringUtil {
 
-    static ckeckEmpty = (text? : string | null , rewriteText? : string) => {
+    /** @deprecated */    
+    static checkEmpty = (text? : string | null , rewriteText? : string) => {
         if(text === undefined || text === null || text.trim() === ''){
             return rewriteText ?? undefined;
         }
@@ -24,5 +25,13 @@ export class StringUtil {
         }
 
         return classNames;
+    }
+
+    static isEmpty = (text? : string | null) => {
+        if(this.checkEmpty(text) === undefined){
+            return true;
+        }
+        
+        return false;
     }
 }

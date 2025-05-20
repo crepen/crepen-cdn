@@ -3,3 +3,6 @@ export interface CrepenToken {
     refreshToken : string,
     expireTime : number
 }
+
+
+export type CrepenTokenType = 'REFRESH' | 'ACCESS'
