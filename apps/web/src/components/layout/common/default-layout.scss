@@ -1,0 +1,25 @@
+.cp-default-layout {
+
+    width: 100%;
+    height: 100%;
+
+
+    .cp-top-action {
+        width: 100%;
+        padding: 14px;
+
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+
+        gap: 5px;
+
+        .cp-backword-icon {
+           cursor: pointer;
+        }
+    }
+
+    .cp-main {
+        width: 100%;
+    }
+}

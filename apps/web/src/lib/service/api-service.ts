@@ -1,15 +1,32 @@
-import { CrepenApiResponse } from "./types/api";
+import { CrepenApiOptions, CrepenApiResponse } from "./types/api";
 
 type FetchType = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 export class CrepenApiService {
 
-    public static fetch = async <T>(method: FetchType, url: string, bodyData?: any , reqInit? : RequestInit): Promise<CrepenApiResponse<T>> => {
+    public static fetch = async <T>(method: FetchType, url: string, bodyData?: any, options?: CrepenApiOptions, reqInit?: RequestInit): Promise<CrepenApiResponse<T>> => {
         try {
+
+            let reqHeader = reqInit?.headers;
+            if (options?.token) {
+                reqHeader = {
+                    ...reqHeader,
+                    'Authorization': `Bearer ${options.token}`
+                }
+            }
+
+            if (options?.language) {
+                reqHeader = {
+                    ...reqHeader,
+                    'Accept-Language': options?.language
+                }
+            }
+
             const fetchData = await fetch(new URL(url, process.env.API_URL ?? ''), {
                 ...reqInit,
                 method: method,
-                body: bodyData
+                body: bodyData,
+                headers: reqHeader
             });
 
             const fetchJson = await fetchData.json();

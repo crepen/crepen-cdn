@@ -14,17 +14,13 @@ export class CrepenAuthService {
 
     public static getLoginUserData = async (token? : string) : Promise<CrepenApiResponse<CrepenUser | undefined>> => {
         return CrepenApiService.fetch<CrepenUser | undefined>('GET', '/auth', undefined , {
-            headers : {
-                'Authorization' : `Bearer ${token ?? ''}`
-            }
+            token : token
         });
     }
 
     public static refreshUserToken = async (refToken? : string) : Promise<CrepenApiResponse<CrepenToken | undefined>> => {
         return CrepenApiService.fetch<CrepenToken | undefined>('POST' , '/auth/token' , undefined , {
-            headers : {
-                'Authorization' : `Bearer ${refToken ?? ''}`
-            }
+            token : refToken
         })
     }
 
@@ -33,9 +29,7 @@ export class CrepenAuthService {
         const type = tokenType === 'ACCESS' ? 'access_token' : tokenType === 'REFRESH' ? 'refresh_token' : '';
 
         return CrepenApiService.fetch<{expired : boolean}>('GET' , `/auth/token/exp?type=${type}` , undefined , {
-            headers : {
-                'Authorization' : `Bearer ${token ?? ''}`
-            }
+            token : token
         })
     }
 }

@@ -9,7 +9,8 @@
     "paths": {
       "@web/assets/*" : ["./src/assets/*"],
       "@web/components/*" : ["./src/components/*"],
-      "@web/lib/*" : ["./src/lib/*"]
+      "@web/lib/*" : ["./src/lib/*"],
+      "@web/services/*" : ["./src/services/*"]
     }
   },
   "include": [

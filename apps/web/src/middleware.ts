@@ -1,12 +1,16 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { AuthMiddleware } from './lib/middleware/auth.middleware';
 import { BaseMiddleware } from './lib/middleware/base.middleware';
+import { LocaleMiddleware } from './lib/middleware/locale.middleware';
+import { CommonMiddleware } from './lib/middleware/common.middleware';
 
 export const middleware = async (request: NextRequest) => {
 
 
     const middlewareModules: BaseMiddleware[] = [
-        new AuthMiddleware()
+        new AuthMiddleware(),
+        new LocaleMiddleware(),
+        new CommonMiddleware()
     ]
 
     let lastResponse: NextResponse = NextResponse.next();

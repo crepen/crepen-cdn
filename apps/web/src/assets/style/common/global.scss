@@ -1,28 +1,26 @@
-@use 'sass:color';
+
+@use './variable.scss' as variable;
 @import url('./reset.css');
 
 
-$color-primary: #1c95e5;
-$color-secondary : #09598f;
 
-@function hexToRGB($hex) {
-    @return color.channel($hex, "red"), color.channel($hex, "green"), color.channel($hex, "blue");
-}
+
+
 
 :root {
     font-family: 'Pretendard Variable', 'Noto Sans KR';
     --vh: 1vh;
-    --screen-width-mobile: 576px;
-    --screen-width-tablet: 768px;
-    --screen-width-labtop: 992px;
-    --screen-width-desktop: 1200px;
+    --screen-width-mobile: #{variable.$screen-width-mobile};
+    --screen-width-tablet: #{variable.$screen-width-tablet};
+    --screen-width-labtop: #{variable.$screen-width-labtop};
+    --screen-width-desktop: #{variable.$screen-width-desktop};
 
 
-    --color-primary : #{$color-primary};
-    --color-primary-rgb : #{hexToRGB($color-primary)};
+    --color-primary : #{variable.$color-primary};
+    --color-primary-rgb : #{variable.hexToRGB(variable.$color-primary)};
 
-    --color-secondary : #{$color-secondary};
-    --color-secondary-rgb : #{hexToRGB($color-secondary)};
+    --color-secondary : #{variable.$color-secondary};
+    --color-secondary-rgb : #{variable.hexToRGB(variable.$color-secondary)};
 }
 
 

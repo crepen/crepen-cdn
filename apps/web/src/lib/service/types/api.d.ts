@@ -3,3 +3,9 @@ export interface CrepenApiResponse<T extends any> {
     message?: string,
     success?: boolean
 }
+
+
+export interface CrepenApiOptions {
+    token? : string,
+    language? : string
+}

@@ -1,6 +1,6 @@
 import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import '@web/assets/style/cloud/page/group/cloud.group.scss';
+
 
 import { PropsWithChildren } from 'react'
 
@@ -13,7 +13,6 @@ const GroupLayoutRouter = async (prop: GroupLayoutProp) => {
 
     return (
         <div className='cp-layout cp-group cp-root-group'>
-
             <div className='cp-header'>
                 <span className='cp-title'>Group</span>
                 <div className='cp-action'>
@@ -27,7 +26,7 @@ const GroupLayoutRouter = async (prop: GroupLayoutProp) => {
                 </div>
             </div>
 
-            <div className='cp-group-list'>
+            <div className='cp-context'>
                 {prop.children}
             </div>
         </div>

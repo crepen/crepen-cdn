@@ -1,13 +1,19 @@
+import { CrepenLanguageService } from "../../services/common/language.service";
 import { StringUtil } from "../util/string.util";
 import { CrepenApiService } from "./api-service";
-import { CrepenApiResponse } from "./types/api";
+import { CrepenApiOptions, CrepenApiResponse } from "./types/api";
 import { CrepenGroup } from "./types/group";
 
 
 export class CrepenGroupService {
 
-    public static getGroupList = async (token? : string , parentGroupId?: string) :Promise<CrepenApiResponse<CrepenGroup[] | undefined>> => {
-        return CrepenApiService.fetch<CrepenGroup[] | undefined>('GET' , `/group${StringUtil.isEmpty(parentGroupId) ? '' : `?id=${parentGroupId}`}`);
+    public static getGroupList = async (parentGroupId?: string, options?: CrepenApiOptions): Promise<CrepenApiResponse<CrepenGroup[] | undefined>> => {
+        return CrepenApiService.fetch<CrepenGroup[] | undefined>(
+            'GET',
+            `/group${StringUtil.isEmpty(parentGroupId) ? '' : `?id=${parentGroupId}`}`,
+            undefined,
+            options
+        );
     }
 
 
@@ -19,5 +25,5 @@ export class CrepenGroupService {
     // }
 
 
-    
+
 }
