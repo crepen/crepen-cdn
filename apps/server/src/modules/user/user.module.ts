@@ -4,7 +4,6 @@ import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entity/user.entity';
 import { UserRepository } from './user.repository';
-import { EncryptUtil } from 'src/util/encrypt.util';
 
 @Module({
     imports: [

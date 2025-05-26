@@ -1,6 +1,7 @@
 // Pretendard Font
 import 'pretendard/dist/web/variable/pretendardvariable.css';
 // Global Style
+import '@web/assets/style/common/reset.css';
 import '@web/assets/style/common/global.scss'
 
 import '@fortawesome/fontawesome-svg-core/styles.css'
@@ -9,6 +10,7 @@ import { Metadata } from 'next';
 import { PropsWithChildren } from 'react'
 import { InitClient } from '../../components/config/init-client';
 import { config } from '@fortawesome/fontawesome-svg-core'
+import { CrepenLanguageService } from '@web/services/common/language.service';
 
 
 
@@ -29,15 +31,18 @@ export const metadata: Metadata = {
 
 
 
-const RootLayoutRouter = ({children}: PropsWithChildren) => {
+const RootLayoutRouter = async ({ children }: PropsWithChildren) => {
+
+    const lang = await CrepenLanguageService.getSessionLocale();
 
     return (
-        <html>
+        <html lang={lang}>
             <body>
-                <div id="root">
-                    <InitClient />
-                    {children}
-                </div>
+                <InitClient >
+                    <div id="root">
+                        {children}
+                    </div>
+                </InitClient>
             </body>
         </html>
     )

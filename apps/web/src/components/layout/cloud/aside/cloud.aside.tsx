@@ -1,18 +1,21 @@
 import Image from "next/image";
 import { PropsWithChildren } from "react";
-import CloudHeaderMenuButton from "./menu-button";
+import CloudHeaderMenuButton from "../menu-button";
 import { faHome, faProjectDiagram, faGear } from "@fortawesome/free-solid-svg-icons";
-import CloudHeaderActionButton from "./action-button";
+import CloudHeaderActionButton from "../action-button";
 
 import LogoImage from '@web/assets/img/crepen-cdn-logo.png';
+import { CloudGlobalAsideWrap } from "./cloud.aside.wrap";
 
 interface HeaderMenuAsideProp extends PropsWithChildren {
     className?: string
 }
 
-const HeaderMenuAside = (prop: HeaderMenuAsideProp) => {
+const CloudGlobalAside = (prop: HeaderMenuAsideProp) => {
     return (
-        <div className={prop.className}>
+        <CloudGlobalAsideWrap
+            className={prop.className}
+        >
             <div className='cp-aside-item cp-top'>
                 <Image
                     src={LogoImage}
@@ -44,8 +47,9 @@ const HeaderMenuAside = (prop: HeaderMenuAsideProp) => {
                     />
                 </div>
             </div>
-        </div>
+        </CloudGlobalAsideWrap>
+
     )
 }
 
-export default HeaderMenuAside;
+export default CloudGlobalAside;

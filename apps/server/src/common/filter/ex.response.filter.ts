@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { I18nContext, I18nService, I18nTranslation, I18nValidationException } from 'nestjs-i18n';
 import { BaseResponse } from 'src/common/base-response';
 import { CrepenLocaleHttpException } from '../exception/crepen.http.exception';
-import { StringUtil } from 'src/util/string.util';
+import { StringUtil } from 'src/lib/util/string.util';
 
 @Catch(HttpException)
 export class ExceptionResponseFilter implements ExceptionFilter {

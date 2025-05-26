@@ -1,0 +1,53 @@
+.cp-page.cp-error.cp-not-found {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 100%;
+
+
+    .cp-error-box {
+
+        display: block;
+        text-align: center;
+
+        .cp-error-title {
+            font-size: 50px;
+            font-weight: bold;
+            display: block;
+            z-index: 100;
+
+            // text-shadow: 
+            //     3px -3px 0px  rgb(216, 216, 216)
+            // ;
+        }
+
+        .cp-error-title-reflect {
+            font-size: 50px;
+            font-weight: bold;
+            display: block;
+
+            transform: scale(1, -0.5) translate(-15px, 77px) skew(40deg);
+
+
+            background: linear-gradient(
+                to top, 
+                rgba(128, 128, 128 , 1) 10%,
+                rgba(128, 128, 128 , 0.5) 30%,
+                transparent 100%
+                );
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            z-index: 101;
+        }
+
+
+        .cp-error-desc {
+            display: block;
+            font-weight: 600;
+        }
+    }
+
+}

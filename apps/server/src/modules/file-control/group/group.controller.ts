@@ -19,7 +19,6 @@ export class GroupController {
         @Req() req: JwtUserRequest,
         @Query('id') groupId: string
     ) {
-        console.log("WWWWWWWWWWWWW" , req.user);
         const groupList = await this.groupService.getUserGroup(req.user.entity.uid , groupId);
 
         return BaseResponse.ok(groupList);

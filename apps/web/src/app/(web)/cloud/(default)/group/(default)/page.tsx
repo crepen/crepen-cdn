@@ -6,18 +6,20 @@ import { CrepenGroupService } from "@web/lib/service/group-service";
 import { CrepenHttpService } from "@web/services/common/http.service";
 import { CrepenLanguageService } from "@web/services/common/language.service";
 import { CrepenSessionService } from "@web/services/common/session.service";
-import { Params } from "next/dist/server/request/params";
 import Link from "next/link";
 import urlJoin from "url-join";
+import { PageProps } from "../../../../../../../.next/types/app/(web)/layout";
 
 interface GroupListPageRouterProp {
-    params: Params
+    params?: Promise<any>
+    searchParams?: Promise<any>
 }
 
 const GroupListPageRouter = async (prop: GroupListPageRouterProp) => {
 
+    // console.log(prop);
 
-    const requestUrl = await CrepenHttpService.getUrl();
+    const requestPathname = await CrepenHttpService.getPathname();
 
     const tokenData = await CrepenSessionService.getTokenData();
     const locale = await CrepenLanguageService.getSessionLocale() ?? CrepenLanguageService.getDefaultLanguage();
@@ -27,8 +29,6 @@ const GroupListPageRouter = async (prop: GroupListPageRouterProp) => {
         token: tokenData?.accessToken
     })
 
-    console.log('ROOT LIST', new URL(``, requestUrl).toString(), urlJoin(requestUrl ?? '/', '1'));
-
     return (
         <div className="cp-page cp-group-list-page">
             <div className="cp-group-list">
@@ -36,10 +36,10 @@ const GroupListPageRouter = async (prop: GroupListPageRouterProp) => {
                     (rootGroupList.data ?? []).map(x => (
                         <Link
                             key={x.idx}
-                            href={urlJoin(requestUrl ?? '/', x.idx.toString())}
+                            href={urlJoin(requestPathname ?? '/', x.idx.toString())}
                             className="cp-group-item"
                         >
-                            <FontAwesomeIcon icon={faFolder} className="cp-group-icon"/>
+                            <FontAwesomeIcon icon={faFolder} className="cp-group-icon" />
                             <span>
                                 {x.groupName}
                             </span>
@@ -52,8 +52,6 @@ const GroupListPageRouter = async (prop: GroupListPageRouterProp) => {
     )
 }
 
-export async function generateStaticParams() {
-    console.log('?')
-}
+
 
 export default GroupListPageRouter;

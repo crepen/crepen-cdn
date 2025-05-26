@@ -1,12 +1,17 @@
 import Link from "next/link";
 import { Fragment } from 'react'
 
+import '@web/assets/style/home/main/home.main.scss';
+
 const HomePageRouter = () => {
     return (
-        <Fragment>
-            <div>HOMEPAGE</div>
-            <Link href={'/cloud'}>Go to Cloud</Link>
-        </Fragment>
+        <div className="cp-page cp-home">
+            <div className="cp-box">
+                <div>HOMEPAGE</div>
+                <Link href={'/cloud'}>Go to Cloud</Link>
+                <span>API_URL : {process.env.API_URL}</span>
+            </div>
+        </div>
 
     )
 }

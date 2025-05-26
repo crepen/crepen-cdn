@@ -1,9 +1,11 @@
-@import url('../common/cloud.global.scss');
-
+@use '../../common/variable.scss' as variable;
 
 :root {
-    --aside-width: 250px;
-    --aside-collapse-width: 70px;
+    --aside-default-width: 250px;
+    --aside-collapse-width: 50px;
+    --aside-hidden-width: 0px;
+
+    --aside-apply-width: var(--aside-default-width);
 }
 
 
@@ -12,10 +14,60 @@
     height: 100%;
 
 
+
+    @media screen and (max-width : #{variable.$screen-width-tablet}) {
+        --aside-apply-width: var(--aside-collapse-width);
+
+        // .cp-aside:hover {
+        //     --aside-apply-width: var(--aside-default-width);
+
+        // }
+
+        .cp-aside[data-expand=true] {
+            --aside-apply-width: var(--aside-default-width);
+        }
+
+        .cp-container {
+            .cp-container-header {
+                  .cp-menu-bt {
+                    
+                     display: none;
+                }
+            }
+        }
+
+    }
+
+    @media screen and (max-width : #{variable.$screen-width-mobile}) {
+        --aside-apply-width: var(--aside-hidden-width);
+
+        .cp-aside {
+            &[data-expand=true]{
+                --aside-apply-width: 100%;
+            }
+        }
+
+        .cp-container {
+            .cp-container-header {
+                background-color: rgba(var(--color-secondary-rgb), 0.2);
+                border-bottom: 1px solid rgba(var(--color-secondary-rgb), 0.1);
+
+               .cp-menu-bt {
+                   display: inline-block;
+                }
+            }
+        }
+    }
+
     .cp-aside {
-        background-color: rgba(var(--color-secondary-rgb), 0.8);
-        width: var(--aside-width);
+        // background-color: rgba(var(--color-secondary-rgb), 0.8);
+        background-color: rgb(58,122,165);
+        width: var(--aside-apply-width);
         height: 100%;
+
+        overflow: hidden;
+
+        z-index: 10;
 
         position: absolute;
         top: 0;
@@ -31,9 +83,6 @@
         border-right: 1px solid rgba(var(--color-secondary-rgb), 0.5);
 
 
-        &.cp-collapse {
-            width: var(--aside-collapse-width);
-        }
 
         .cp-aside-item {
             width: 100%;
@@ -138,7 +187,7 @@
                         background-color: transparent;
                         color: white;
                         cursor: pointer;
-                        
+
                         .cp-icon {
                             transition: transform 0.3s;
                             width: 100%;
@@ -152,7 +201,7 @@
 
                         }
 
-                        
+
                     }
                 }
             }
@@ -164,6 +213,38 @@
     .cp-container {
         width: 100%;
         height: 100%;
-        padding-left: var(--aside-width);
+        padding-left: var(--aside-apply-width);
+        transition: width 0.3s;
+
+        z-index: 9;
+
+        background-color: white;
+
+        .cp-container-header {
+            width: 100%;
+            height: 50px;
+            // background-color: black;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .cp-action {
+
+                padding-inline: 8px;
+
+                .cp-action-icon {
+                    margin-inline: 5px;
+                    font-size: 1.2rem;
+                }
+
+                .cp-left {}
+
+
+               
+            }
+        }
+
+        .cp-main {}
     }
 }

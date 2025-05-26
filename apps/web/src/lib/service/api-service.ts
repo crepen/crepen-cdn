@@ -6,7 +6,6 @@ export class CrepenApiService {
 
     public static fetch = async <T>(method: FetchType, url: string, bodyData?: any, options?: CrepenApiOptions, reqInit?: RequestInit): Promise<CrepenApiResponse<T>> => {
         try {
-
             let reqHeader = reqInit?.headers;
             if (options?.token) {
                 reqHeader = {

@@ -6,8 +6,13 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { I18nValidationException, I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 import { BaseResponse } from './common/base-response';
 import { ExceptionResponseFilter } from './common/filter/ex.response.filter';
+import { BootService } from './lib/services/boot.service';
 
 async function bootstrap() {
+
+  BootService.instance()
+    .setInitConfig()
+
   const app = await NestFactory.create(AppModule);
 
   const config = app.get(ConfigService);
@@ -32,7 +37,7 @@ async function bootstrap() {
   app.useGlobalFilters(new I18nValidationExceptionFilter({
     detailedErrors: true,
     responseBodyFormatter: (host: ArgumentsHost, exc: I18nValidationException, formattedErrors: object) => {
-      console.log('EYA',exc.errors[0].constraints)
+      console.log('EYA', exc.errors[0].constraints)
       // Object.values(exc.errors[0].constraints)[0]
       return BaseResponse.error(exc.getStatus(), Object.values(exc.errors[0].constraints)[0]);
     }

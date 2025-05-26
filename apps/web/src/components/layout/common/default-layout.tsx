@@ -19,17 +19,8 @@ export const DefaultSidePageLayout = (prop: DefaultSidePageLayoutProp) => {
 
     return (
         <div className="cp-default-layout">
-            <div className='cp-top-action'>
-                <FontAwesomeIcon
-                    icon={faArrowLeft}
-                    className='cp-backword-icon'
-                    onClick={() => router.back()}
-                />
-
-            </div>
-            <div className='cp-main'>
-                {prop.children}
-            </div>
+           {prop.children}
+          
         </div>
     )
 }

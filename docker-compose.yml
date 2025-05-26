@@ -1,0 +1,50 @@
+services:
+  web:
+    container_name: crepen-cdn-web
+    hostname: crepen-cdn-web
+    build:
+      context: .
+      dockerfile: dockerfile-web
+    environment:
+      - API_URL=http://crepen-cdn-server:3332
+    ports:
+      - "2500:3000"
+    networks:
+      - crepen-network
+  server:
+    container_name: crepen-cdn-server
+    hostname: crepen-cdn-server
+    build: 
+      context: .
+      dockerfile: dockerfile-server
+    ports:
+      - "3331:3332"
+    depends_on:
+      - web
+      - db
+    volumes: 
+      - F:\2025\CrepenCDN\docker-volume\server\config:/etc/crepen/cdn/config
+    networks:
+      - crepen-network
+  db:
+    image: mariadb:latest
+    container_name: crepen-cdn-db
+    hostname: crepen-cdn-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: qwer1234
+      MARIADB_DATABASE : crepencdn
+      MARIADB_USER : crepen
+      MARIADB_PASSWORD : qwer1234
+    depends_on:
+      - web
+    ports:
+      - "13306:13306"
+    volumes:
+      - F:\2025\CrepenCDN\docker-volume\db\data:/var/lib/mysql
+    networks:
+      - crepen-network
+
+networks:
+  crepen-network:
+    driver: bridge
