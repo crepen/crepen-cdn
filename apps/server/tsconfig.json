@@ -13,5 +13,11 @@
     "incremental": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
+    "paths": {
+      "@web/app/*" : ["./src/app/*"],
+      "@web/config/*" : ["./src/config/*"],
+      "@web/interface/*" : ["./src/interface/*"],
+      "@web/lib/*" : ["./src/lib/*"]
+    }
   }
 }

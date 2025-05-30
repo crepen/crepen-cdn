@@ -1,14 +1,28 @@
 import { Global, Module } from "@nestjs/common";
-import { I18nModule } from "nestjs-i18n";
-import { i18nConfig } from "./i18n.config";
+import { AcceptLanguageResolver, I18nJsonLoader, I18nModule, QueryResolver } from "nestjs-i18n";
+import * as path from 'path';
 
 @Global()
 @Module({
     imports: [
-        I18nModule.forRoot(i18nConfig())
-    ],
-    providers : [],
-    exports: [I18nModule]
-})
+        I18nModule.forRootAsync({
+            useFactory: () => {
 
-export class I18nConfigModule { }
+                return {
+                    fallbackLanguage: 'en',
+                    loaderOptions: {
+                        path: path.join(__dirname, '../../public/i18n'),
+                        watch: true
+                    },
+                    loader: I18nJsonLoader
+                }
+            },
+            resolvers: [
+                { use: QueryResolver, options: ['lang'] },
+                AcceptLanguageResolver,
+            ]
+        })
+    ],
+    exports: []
+})
+export class CrepenI18nConfigModule { } 

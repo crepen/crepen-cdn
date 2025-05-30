@@ -1,8 +1,8 @@
 {
-    "LOGIN_FAILED_USER_NOT_FOUND" : "User not found.",
-    "LOGIN_FAILED_ID_EMPTY" : "Username (ID / Email) is required.",
-    "LOGIN_FAILED_PASSWORD_EMPTY" : "Password is required.",
-    "AUTHORIZATION_NOT_ALLOW_TYPE" : "This token type is not allowed.",
-    "AUTHORIZATION_TOKEN_EXPIRED" : "Token expired."
-    
+  "LOGIN_FAILED_USER_NOT_FOUND": "User not found.",
+  "LOGIN_FAILED_ID_EMPTY": "Username (ID / Email) is required.",
+  "LOGIN_FAILED_PASSWORD_EMPTY": "Password is required.",
+  "LOGIN_FAILED_INPUT_DATA_NOT_CORRECT": "ID or Password not correct.",
+  "AUTHORIZATION_NOT_ALLOW_TYPE": "This token type is not allowed.",
+  "AUTHORIZATION_TOKEN_EXPIRED": "Token expired."
 }

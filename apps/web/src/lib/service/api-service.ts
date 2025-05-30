@@ -1,4 +1,6 @@
+import { cookies } from "next/headers";
 import { CrepenApiOptions, CrepenApiResponse } from "./types/api";
+import { StringUtil } from "../util/string.util";
 
 type FetchType = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -20,6 +22,20 @@ export class CrepenApiService {
                     'Accept-Language': options?.language
                 }
             }
+            else {
+                try {
+                    const cookie = await cookies();
+                    if (cookie.has('crepen_locale') && !StringUtil.isEmpty(cookie.get('crepen_locale')?.value)) {
+                        reqHeader = {
+                            ...reqHeader,
+                            'Accept-Language': cookie.get('crepen_locale')!.value
+                        }
+                    }
+                }
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                catch (e) { /* empty */ }
+            }
+
 
             const fetchData = await fetch(new URL(url, process.env.API_URL ?? ''), {
                 ...reqInit,

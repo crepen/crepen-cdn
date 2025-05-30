@@ -1,0 +1,1 @@
+export type CrepenSystemPathType = 'config'  | 'log'

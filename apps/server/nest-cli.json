@@ -19,7 +19,7 @@
         "watchAssets": true
       },
       {
-        "include": "public/i18n/**/*",
+        "include": "public/**/*",
         "watchAssets": true,
         "outDir": "./dist"
       }

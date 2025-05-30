@@ -1,12 +1,11 @@
 import { ExecutionContext, HttpException, HttpStatus } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Observable } from "rxjs";
-import { JwtTokenData } from "../../../common/interface/jwt";
 import { I18nContext } from "nestjs-i18n";
-import { CrepenLocaleHttpException } from "src/common/exception/crepen.http.exception";
+import { CrepenLocaleHttpException } from "src/lib/exception/crepen.http.exception";
 
 type TokenWhiteListType = 'all' | 'access_token' | 'refresh_token';
-export class AuthJwtGuard extends AuthGuard('jwt') {
+export class CrepenAuthJwtGuard extends AuthGuard('jwt') {
     constructor(whiteTokenType?: TokenWhiteListType) {
         super()
         if (whiteTokenType === 'all' || whiteTokenType === 'access_token' || whiteTokenType === 'refresh_token') {
@@ -18,7 +17,7 @@ export class AuthJwtGuard extends AuthGuard('jwt') {
 
     }
 
-    static whitelist = (type: TokenWhiteListType) => new AuthJwtGuard(type)
+    static whitelist = (type: TokenWhiteListType) => new CrepenAuthJwtGuard(type)
 
 
     whiteToken: TokenWhiteListType = 'all';
@@ -34,6 +33,7 @@ export class AuthJwtGuard extends AuthGuard('jwt') {
 
         // White Token Type Filter
         if (typeof user === 'object') {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             if (this.whiteToken !== 'all' && this.whiteToken !== user?.payload?.type) {
                 throw new CrepenLocaleHttpException('cloud_auth', 'AUTHORIZATION_NOT_ALLOW_TYPE', HttpStatus.UNAUTHORIZED)
             }
@@ -45,6 +45,6 @@ export class AuthJwtGuard extends AuthGuard('jwt') {
             throw new CrepenLocaleHttpException('cloud_auth', 'AUTHORIZATION_TOKEN_EXPIRED', HttpStatus.UNAUTHORIZED)
         }
 
-        return user;
+        return super.handleRequest(err, user, info, context, status);
     }
 }

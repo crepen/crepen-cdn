@@ -1,0 +1,13 @@
+server:
+  port: 0
+db:
+  host: ''
+  port: 0
+  database: ''
+  username: ''
+  password: ''
+secret:
+  jwt : 'SECRET_KEY'
+jwt : 
+  expireTime : 1h
+

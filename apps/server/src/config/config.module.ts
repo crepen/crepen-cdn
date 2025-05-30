@@ -1,19 +1,21 @@
 import { Module } from "@nestjs/common";
-import { MulterModule } from '@nestjs/platform-express';
-import { multerConfigFactory } from './system/multer.factory';
-import { DatabaseConfigModule } from './database/db.module';
-import { I18nConfigModule } from './i18n/i18n.module';
-import { CrepenEnvModule } from './env/env.module';
+import { CrepenDatabaseConfigModule } from "./database/database.module";
+import { CrepenEnvConfigModule } from "./env/env.module";
+import { CrepenI18nConfigModule } from "./i18n/i18n.module";
+import { CrepenLoggerConfigModule } from "./logger/logger.module";
+import { CrepenPassportConfigModule } from "./passport/passport.module";
+import { CrepenSystemConfigModule } from "./system/system.module";
+import { ConfigModule } from "@nestjs/config";
+import { TypeOrmModule } from "@nestjs/typeorm";
 
 @Module({
-  imports: [
-    CrepenEnvModule,
-    MulterModule.registerAsync({
-      useFactory: multerConfigFactory
-    }),
-    DatabaseConfigModule,
-    I18nConfigModule,
-  ]
+    imports : [
+        CrepenEnvConfigModule,
+        CrepenI18nConfigModule,
+        CrepenLoggerConfigModule,
+        CrepenSystemConfigModule,
+        CrepenDatabaseConfigModule,
+        CrepenPassportConfigModule,
+    ]
 })
-
-export class ServerConfigModule { }
+export class CrepenConfigModule {}

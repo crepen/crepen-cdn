@@ -1,18 +1,24 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import LoadYamlConfigFactory from "./load-yaml.factory";
-
+import { CrepenSystemConfigService } from "../system/system.service";
+import { CrepenSystemConfigModule } from "../system/system.module";
+import { CrepenEnvConfigService } from "./env.service";
 @Module({
     imports: [
+        CrepenSystemConfigModule,
         ConfigModule.forRoot({
-            envFilePath: [
-                process.env.NODE_ENV === 'prod' ? '.env.prod' : '',
-                process.env.NODE_ENV === 'dev' ? '.env.development' : '',
-                '.env',
-            ],
             isGlobal: true,
-            load: [LoadYamlConfigFactory]
-        }),
-    ]
+            ignoreEnvFile: true,
+            load: [
+                async () => {
+                    const globalPath = new CrepenSystemConfigService().getGlobalPath('config');
+                    return CrepenEnvConfigService.loadConfigFile(globalPath);
+                }
+            ]
+        })
+    ],
+    providers: [CrepenEnvConfigService],
+    exports : [CrepenEnvConfigService]
 })
-export class CrepenEnvModule { }
+export class CrepenEnvConfigModule { }
+
