@@ -4,9 +4,10 @@ import { CrepenAppModule } from "./app/app.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 @Module({
-    imports : [
+    imports: [
         CrepenConfigModule,
         CrepenAppModule,
-    ]
+    ],
+    providers : []
 })
 export class GlobalModule {}

@@ -1,17 +1,18 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { CrepenSystemConfigService } from "../system/system.service";
-import { CrepenSystemConfigModule } from "../system/system.module";
 import { CrepenEnvConfigService } from "./env.service";
+import { CrepenSystemModule } from "@web/app/system/system.module";
+import { CrepenSystemService } from "@web/app/system/system.service";
 @Module({
     imports: [
-        CrepenSystemConfigModule,
+        CrepenSystemModule,
+        // CrepenSystemService,
         ConfigModule.forRoot({
             isGlobal: true,
             ignoreEnvFile: true,
             load: [
                 async () => {
-                    const globalPath = new CrepenSystemConfigService().getGlobalPath('config');
+                    const globalPath = new CrepenSystemService().getGlobalPath('config');
                     return CrepenEnvConfigService.loadConfigFile(globalPath);
                 }
             ]

@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 import { CrepenLoggerConfigService } from "./logger.service";
-import { CrepenSystemConfigModule } from "../system/system.module";
+import { CrepenSystemModule } from "@web/app/system/system.module";
 
 @Module({
-    imports : [CrepenSystemConfigModule],
+    imports : [CrepenSystemModule],
     providers: [CrepenLoggerConfigService]
 })
 export class CrepenLoggerConfigModule { }

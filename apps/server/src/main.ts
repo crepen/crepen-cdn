@@ -4,16 +4,16 @@ import { CrepenEnvConfigService } from "./config/env/env.service";
 import { ClassSerializerInterceptor, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { CrepenLoggerConfigService } from "./config/logger/logger.service";
-import { CrepenSystemConfigService } from "./config/system/system.service";
 import { CrepenI18nValidationPipe } from "./config/i18n/i18n.validate.pipe";
 import { CrepenI18nValidationExceptionFilter } from "./config/i18n/i18n.validate.filter";
 import { CrepenSwaggerConfig } from "./config/swagger/swagger.config";
 import { ExceptionResponseFilter } from "./config/common/ex.response.filter";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { CrepenNestExpressConfig } from "./config/nest-express/express.config";
+import { CrepenSystemService } from "./app/system/system.service";
 
 const bootstrap = async () => {
-    const loggerService = new CrepenLoggerConfigService(undefined, new CrepenSystemConfigService())
+    const loggerService = new CrepenLoggerConfigService(undefined, new CrepenSystemService())
 
     const app = await NestFactory.create(GlobalModule, {
         logger: loggerService.getWinstonLogger(),
@@ -37,6 +37,8 @@ const bootstrap = async () => {
 
 
     CrepenNestExpressConfig.setup(app as NestExpressApplication);
+
+    await app.get(CrepenSystemService).initDatabase();
 
 
 

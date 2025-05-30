@@ -1,13 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { WinstonModule } from 'nest-winston';
 import * as Winston from 'winston';
-import * as NestWinston from 'nest-winston';
-import * as os from 'os';
 import * as path from "path";
 import { ConfigService } from "@nestjs/config";
-import { CrepenSystemConfigService } from "../system/system.service";
 import 'winston-daily-rotate-file';
 import chalk from "chalk";
+import { CrepenSystemService } from "@web/app/system/system.service";
 
 @Injectable()
 export class CrepenLoggerConfigService {
@@ -16,7 +14,7 @@ export class CrepenLoggerConfigService {
 
     constructor(
         private readonly configService: ConfigService,
-        private readonly envConfig: CrepenSystemConfigService
+        private readonly envConfig: CrepenSystemService
     ) { }
 
 

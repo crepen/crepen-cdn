@@ -4,7 +4,6 @@ import { CrepenEnvConfigModule } from "./env/env.module";
 import { CrepenI18nConfigModule } from "./i18n/i18n.module";
 import { CrepenLoggerConfigModule } from "./logger/logger.module";
 import { CrepenPassportConfigModule } from "./passport/passport.module";
-import { CrepenSystemConfigModule } from "./system/system.module";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
@@ -13,9 +12,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
         CrepenEnvConfigModule,
         CrepenI18nConfigModule,
         CrepenLoggerConfigModule,
-        CrepenSystemConfigModule,
         CrepenDatabaseConfigModule,
         CrepenPassportConfigModule,
+        
     ]
 })
 export class CrepenConfigModule {}

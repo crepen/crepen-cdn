@@ -28,6 +28,7 @@ import { DataSource } from "typeorm";
             },
             inject: [ConfigService]
         })
-    ]
+    ],
+    providers : []
 })
 export class CrepenDatabaseConfigModule { }

@@ -1,7 +1,6 @@
 import * as path from 'path';
 import * as os from 'os';
 import { ConfigService } from '@nestjs/config';
-import { CrepenSystemConfigService } from '../system/system.service';
 import { CrepenEnvConfigModule } from './env.module';
 import * as fs from 'fs';
 import { Injectable, Logger } from '@nestjs/common';
@@ -10,13 +9,14 @@ import * as jsyaml from 'js-yaml';
 import { CrepenConfig } from 'src/interface/config';
 import { detect } from 'detect-port';
 import { StringUtil } from 'src/lib/util/string.util';
+import { CrepenSystemService } from '@web/app/system/system.service';
 
 @Injectable()
 export class CrepenEnvConfigService {
 
     constructor(
         private readonly configService: ConfigService,
-        private readonly systemConfigService: CrepenSystemConfigService,
+        private readonly systemConfigService: CrepenSystemService,
     ) {
 
     }
