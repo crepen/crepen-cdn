@@ -25,7 +25,7 @@ export class CrepenEnvConfigService {
 
         const globalPath = this.systemConfigService.getGlobalPath('config');
 
-        let errorMessageArray = [];
+        const errorMessageArray = [];
 
 
         // console.log(this.configService);

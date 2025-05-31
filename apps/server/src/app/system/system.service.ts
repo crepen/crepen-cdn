@@ -82,12 +82,15 @@ export class CrepenSystemService {
         try {
             const packageJsonPath = path.join(__dirname, '../../../package.json');
             const packageFile = fs.readFileSync(packageJsonPath, 'utf8')
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const pkg = JSON.parse(packageFile);
 
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             if (typeof pkg?.version !== 'string') {
                 throw new Error();
             }
 
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             return pkg.version as string;
         }
         catch (e) {
