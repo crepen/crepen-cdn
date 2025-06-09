@@ -9,7 +9,7 @@ import { I18n, I18nContext } from "nestjs-i18n";
 import { AuthLoginRequestDto, AuthTokenResponseDto } from "./dto/auth.login.dto";
 import { AuthUserDataResponseDto } from "./dto/auth.user.dto";
 import { ApiOperation, ApiQuery, ApiBearerAuth, ApiParam, ApiTags, ApiHeader, ApiResponse } from "@nestjs/swagger";
-import { EncryptUtil } from "@web/lib/util/encrypt.util";
+import { EncryptUtil } from "@crepen-nest/lib/util/encrypt.util";
 
 @ApiTags('사용자 인증 컨트롤러')
 @ApiHeader({

@@ -1,3 +1,6 @@
 {
-    "USER_ADD_FAILED_DEPLECATE_INFO" : "User data is deplicated."
+    "USER_ADD_FAILED_DEPLECATE_INFO" : "User data is deplicated.",
+    "USER_ADD_FAILED_NAME_EMPTY" : "User name is required.",
+    "USER_ADD_FAILED_ID_EMPTY" : "User id is required.",
+    "USER_ADD_FAILED_PASSWORD_EMPTY" : "User password is required."
 }

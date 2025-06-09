@@ -1,8 +1,6 @@
-import { faBars, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CloudHeaderMenuButton } from "./cloud.menu.button";
-import { AvartarIconButton } from "@web/components/controls/button/avartar/avartar.button";
 import { CloudHeaderBackwardButton } from "./cloud.backward.button";
+import { ProfileButton } from "@web/components/controls/button/profile/profile.button";
 
 const CloudGlobalHeader = () => {
 
@@ -14,7 +12,7 @@ const CloudGlobalHeader = () => {
                 <CloudHeaderBackwardButton />
             </div>
             <div className='cp-action cp-right'>
-                <AvartarIconButton />
+                <ProfileButton />
             </div>
         </div>
     )

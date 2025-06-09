@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
-import { CrepenLocaleHttpException } from "@web/lib/exception/crepen.http.exception";
+import { CrepenLocaleHttpException } from "@crepen-nest/lib/exception/crepen.http.exception";
 import { ExtractJwt, Strategy, VerifiedCallback } from "passport-jwt";
 import { UserEntity } from "src/app/user/entity/user.entity";
 import { CrepenUserRouteService } from "src/app/user/user.service";

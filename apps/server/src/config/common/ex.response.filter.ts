@@ -1,7 +1,7 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
-import { CrepenLocaleHttpException } from '@web/lib/exception/crepen.http.exception';
-import { BaseResponse } from '@web/lib/util/base.response';
-import { StringUtil } from '@web/lib/util/string.util';
+import { CrepenLocaleHttpException } from '@crepen-nest/lib/exception/crepen.http.exception';
+import { BaseResponse } from '@crepen-nest/lib/util/base.response';
+import { StringUtil } from '@crepen-nest/lib/util/string.util';
 import { Request, Response } from 'express';
 import { I18nContext, I18nService, I18nTranslation, I18nValidationException } from 'nestjs-i18n';
 
@@ -11,6 +11,9 @@ export class ExceptionResponseFilter implements ExceptionFilter {
 
 
     catch(exception: any, host: ArgumentsHost) {
+
+
+
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
@@ -53,6 +56,13 @@ export class ExceptionResponseFilter implements ExceptionFilter {
         }
         else if (exception instanceof HttpException) {
 
+            response
+                .status(500)
+                .json(
+                    BaseResponse.error(500, message)
+                )
+        }
+        else {
             response
                 .status(500)
                 .json(

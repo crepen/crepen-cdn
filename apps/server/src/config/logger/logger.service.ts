@@ -5,7 +5,7 @@ import * as path from "path";
 import { ConfigService } from "@nestjs/config";
 import 'winston-daily-rotate-file';
 import chalk from "chalk";
-import { CrepenSystemService } from "@web/app/system/system.service";
+import { CrepenSystemService } from "@crepen-nest/app/system/system.service";
 
 @Injectable()
 export class CrepenLoggerConfigService {
@@ -62,7 +62,7 @@ export class CrepenLoggerConfigService {
                         //     appName: false,
                         // })
                         Winston.format.printf((info) => {
-                            // console.log("131" , info)
+                            // console.log("131" , info)  
                             let levelColor = chalk.bold(info.level.toUpperCase().padStart(6).padEnd(7));
                             switch (info.level.toUpperCase()) {
                                 case 'INFO': levelColor = chalk.green(levelColor); break;
@@ -71,7 +71,7 @@ export class CrepenLoggerConfigService {
                                 // default : levelColor = chalk.reset(levelColor);break;
                             }
 
-                            return `[${info.timestamp}] ${levelColor} [${chalk.yellow(info.context ?? '')}]  ${info.message}`
+                            return `[${info.timestamp as string}] ${levelColor} [${chalk.yellow(info.context ?? '')}]  ${info.message  as string}`
                         })
                     )
                 }),
@@ -87,7 +87,7 @@ export class CrepenLoggerConfigService {
                     datePattern: "YYYY-MM-DD",
                     maxFiles: '15d',
                     format: Winston.format.printf((info) => {
-                        return `[${info.timestamp}] ${info.message}`
+                        return `[${info.timestamp as string}] ${info.message as string}`
                     })
                 }),
                 new Winston.transports.DailyRotateFile({
@@ -100,7 +100,7 @@ export class CrepenLoggerConfigService {
                     datePattern: "YYYY-MM-DD",
                     maxFiles: '15d',
                     format: Winston.format.printf((info) => {
-                        return `[${info.timestamp}] ${info.level.toUpperCase()}\t ${info.message}`
+                        return `[${info.timestamp as string}] ${info.level.toUpperCase()}\t ${info.message as string}`
                     })
                 }),
             ]

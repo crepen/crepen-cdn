@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@crepen-cdn/core": ["packages/core/src"]
+    }
+  }
+}

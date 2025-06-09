@@ -1,7 +1,7 @@
 'use client'
 
 
-const CloudMainPageRouter = () => {
+const CloudMainRoutePage = () => {
 
 
 
@@ -14,4 +14,4 @@ const CloudMainPageRouter = () => {
 
 
 
-export default CloudMainPageRouter;
+export default CloudMainRoutePage;

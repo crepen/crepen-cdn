@@ -1,10 +1,10 @@
 import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
-import { StringUtil } from "@web/lib/util/string.util";
+import { StringUtil } from "@crepen-nest/lib/util/string.util";
 import { randomUUID } from "crypto";
 import { I18nService } from "nestjs-i18n";
 import { GroupEntity } from "./entity/group.entity";
 import { GroupRepository } from "./group.repository";
-import { ObjectUtil } from "@web/lib/util/object.util";
+import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
 
 @Injectable()
 export class GroupService {

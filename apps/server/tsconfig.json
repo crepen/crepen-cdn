@@ -14,10 +14,10 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "paths": {
-      "@web/app/*" : ["./src/app/*"],
-      "@web/config/*" : ["./src/config/*"],
-      "@web/interface/*" : ["./src/interface/*"],
-      "@web/lib/*" : ["./src/lib/*"]
+      "@crepen-nest/app/*" : ["./src/app/*"],
+      "@crepen-nest/config/*" : ["./src/config/*"],
+      "@crepen-nest/interface/*" : ["./src/interface/*"],
+      "@crepen-nest/lib/*" : ["./src/lib/*"]
     }
   }
 }

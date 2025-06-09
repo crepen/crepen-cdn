@@ -19,7 +19,8 @@ export class CrepenUserRepository {
     }
 
     updateOne = async (uid: string , userData: UserEntity) => {
-        return await this.userRepo.update({ uid: userData.uid }, userData)
+        console.log(userData);
+        return await this.userRepo.update({ uid: uid }, userData)
     }
 
 

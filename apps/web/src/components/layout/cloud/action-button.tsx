@@ -6,6 +6,7 @@ interface CloudHeaderActionButtonProp {
 }
 
 const CloudHeaderActionButton = (prop: CloudHeaderActionButtonProp) => {
+
     return (
         <button className="cp-action-button">
             <FontAwesomeIcon

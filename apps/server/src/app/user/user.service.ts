@@ -2,9 +2,11 @@ import { HttpStatus, Injectable } from "@nestjs/common";
 import { UserEntity } from "./entity/user.entity";
 import { CrepenUserRepository } from "./user.repository";
 import { AddUserDto, UpdateUserDto } from "./dto/user.common.dto";
-import { EncryptUtil } from "@web/lib/util/encrypt.util";
+import { EncryptUtil } from "@crepen-nest/lib/util/encrypt.util";
 import { randomUUID } from "crypto";
-import { CrepenLocaleHttpException } from "@web/lib/exception/crepen.http.exception";
+import { CrepenLocaleHttpException } from "@crepen-nest/lib/exception/crepen.http.exception";
+import { isEmpty } from "class-validator";
+import { StringUtil } from "@crepen-nest/lib/util/string.util";
 
 @Injectable()
 export class CrepenUserRouteService {
@@ -13,12 +15,12 @@ export class CrepenUserRouteService {
     ) { }
 
 
-    getUserDataByIdOrEmail = async (idOrEmail : string | undefined) : Promise<UserEntity | undefined> => {
-        return this.userRepo.matchOne([{id : idOrEmail} , {email : idOrEmail}])
+    getUserDataByIdOrEmail = async (idOrEmail: string | undefined): Promise<UserEntity | undefined> => {
+        return this.userRepo.matchOne([{ id: idOrEmail }, { email: idOrEmail }])
     }
 
     getUserDataById = async (id: string | undefined): Promise<UserEntity | undefined> => {
-        return this.userRepo.matchOne([{id : id}]) ?? undefined;
+        return this.userRepo.matchOne([{ id: id }]) ?? undefined;
     };
 
     getMatchUserByUid = async (uid: string) => {
@@ -33,6 +35,7 @@ export class CrepenUserRouteService {
         userEntity.password = await EncryptUtil.hashPassword(userData.decreptPassword);
         userEntity.email = userData.email;
         userEntity.uid = randomUUID();
+        userEntity.name = userData.name;
 
         const findDuplicateUser: UserEntity[] = await this.userRepo.match([{ id: userEntity.id }, { email: userEntity.email }, { uid: userEntity.uid }])
 
@@ -45,12 +48,18 @@ export class CrepenUserRouteService {
 
 
 
-    updateUser = async (updateUserData: UpdateUserDto) => {
-        const userEntity = updateUserData.updateEntity ?? new UserEntity();
-        userEntity.password = await EncryptUtil.hashPassword(updateUserData.updateEntity.password);
+    updateUser = async (updateUserUid: string, updateUserData: UpdateUserDto) => {
 
-        return await this.userRepo.updateOne(updateUserData.uid, userEntity);
+        const userEntity = new UserEntity();
+        userEntity.uid = updateUserUid;
+        if (!StringUtil.isEmpty(updateUserData.password)) {
+            userEntity.password = await EncryptUtil.hashPassword(updateUserData.password);
+        }
+        userEntity.name = updateUserData.name;
+        userEntity.email = updateUserData.email;
+        userEntity.updateDate = new Date(Date.now());
+        return await this.userRepo.updateOne(updateUserUid, userEntity);
     }
 
-   
+
 }

@@ -1,8 +1,8 @@
 import { Controller, Get, HttpCode, HttpStatus, UseGuards, Req, Query, Post, Body } from "@nestjs/common";
-import { JwtUserRequest } from "@web/interface/jwt";
-import { BaseResponse } from "@web/lib/util/base.response";
+import { JwtUserRequest } from "@crepen-nest/interface/jwt";
+import { BaseResponse } from "@crepen-nest/lib/util/base.response";
 import { GroupService } from "./group.service";
-import { CrepenAuthJwtGuard } from "@web/config/passport/jwt/jwt.guard";
+import { CrepenAuthJwtGuard } from "@crepen-nest/config/passport/jwt/jwt.guard";
 import { AddGroupRequestDto } from "./dto/group.add.dto";
 
 @Controller('group')

@@ -5,7 +5,7 @@ export class CrepenI18nValidationPipe extends I18nValidationPipe{
         super({
             whitelist : true,
             transform : true,
-            forbidNonWhitelisted : true
+            forbidNonWhitelisted : false
         })
     }
 }

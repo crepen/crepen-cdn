@@ -16,7 +16,7 @@ const bootstrap = async () => {
     const loggerService = new CrepenLoggerConfigService(undefined, new CrepenSystemService())
 
     const app = await NestFactory.create(GlobalModule, {
-        logger: loggerService.getWinstonLogger(),
+        // logger: loggerService.getWinstonLogger(),
     });
 
     const config = app.get(ConfigService);

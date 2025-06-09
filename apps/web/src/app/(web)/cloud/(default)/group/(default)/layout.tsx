@@ -4,11 +4,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { PropsWithChildren } from 'react'
 
-interface GroupLayoutProp extends PropsWithChildren {
+interface GroupRouteLayoutProp extends PropsWithChildren {
 
 }
 
-const GroupLayoutRouter = async (prop: GroupLayoutProp) => {
+const GroupRouteLayout = async (prop: GroupRouteLayoutProp) => {
 
 
     return (
@@ -33,4 +33,4 @@ const GroupLayoutRouter = async (prop: GroupLayoutProp) => {
     )
 }
 
-export default GroupLayoutRouter;
+export default GroupRouteLayout;

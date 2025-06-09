@@ -1,14 +1,14 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { CrepenSystemRepository } from "./system.repository";
 import { UserEntity } from "../user/entity/user.entity";
-import { StringUtil } from "@web/lib/util/string.util";
+import { StringUtil } from "@crepen-nest/lib/util/string.util";
 import { CrepenUserRouteService } from "../user/user.service";
 import chalk from "chalk";
-import { CrepenSystemPathType } from "@web/interface/system";
+import { CrepenSystemPathType } from "@crepen-nest/interface/system";
 import * as os from 'os';
 import * as path from 'path';
 import * as fs from 'fs';
-import { ObjectUtil } from "@web/lib/util/object.util";
+import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
 
 @Injectable()
 export class CrepenSystemService {
@@ -47,7 +47,8 @@ export class CrepenSystemService {
             const adminUserEntity: UserEntity = {
                 id: 'admin',
                 password: StringUtil.randomString(10),
-                email: 'admin@admin.admin'
+                email: 'admin@admin.admin',
+                name : 'Administrator'
             };
 
             const adminData = await this.userService.getUserDataById('admin');
@@ -56,7 +57,8 @@ export class CrepenSystemService {
                 await this.userService.addUser({
                     decreptPassword: adminUserEntity.password,
                     id: adminUserEntity.id,
-                    email: adminUserEntity.email
+                    email: adminUserEntity.email,
+                    name : adminUserEntity.name
                 })
 
                 Logger.log(`ADMIN PASSWORD :  ${chalk.bgBlueBright(' ' + adminUserEntity.password + ' ')}`, 'INIT_DATABASE');

@@ -3,11 +3,11 @@ import '@web/assets/style/cloud/page/group/cloud.group.scss';
 import { DefaultSidePageLayout } from '@web/components/layout/common/default-layout';
 import { PropsWithChildren } from 'react';
 
-interface GroupGlobalLayoutRouterProp extends PropsWithChildren {
+interface GroupGlobalRouteLayoutProp extends PropsWithChildren {
 
 }
 
-const GroupGlobalLayoutRouter = (prop: GroupGlobalLayoutRouterProp) => {
+const GroupGlobalRouteLayout = (prop: GroupGlobalRouteLayoutProp) => {
     return (
         <DefaultSidePageLayout>
             {prop.children}
@@ -15,4 +15,4 @@ const GroupGlobalLayoutRouter = (prop: GroupGlobalLayoutRouterProp) => {
     )
 }
 
-export default GroupGlobalLayoutRouter;
+export default GroupGlobalRouteLayout;

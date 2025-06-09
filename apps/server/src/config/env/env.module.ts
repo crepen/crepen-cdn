@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { CrepenEnvConfigService } from "./env.service";
-import { CrepenSystemModule } from "@web/app/system/system.module";
-import { CrepenSystemService } from "@web/app/system/system.service";
+import { CrepenSystemModule } from "@crepen-nest/app/system/system.module";
+import { CrepenSystemService } from "@crepen-nest/app/system/system.service";
 @Module({
     imports: [
         CrepenSystemModule,

@@ -8,14 +8,13 @@ import { CrepenLanguageService } from "@web/services/common/language.service";
 import { CrepenSessionService } from "@web/services/common/session.service";
 import Link from "next/link";
 import urlJoin from "url-join";
-import { PageProps } from "../../../../../../../.next/types/app/(web)/layout";
 
-interface GroupListPageRouterProp {
+interface GroupListRoutePageProp {
     params?: Promise<any>
     searchParams?: Promise<any>
 }
 
-const GroupListPageRouter = async (prop: GroupListPageRouterProp) => {
+const GroupListRoutePage = async (prop: GroupListRoutePageProp) => {
 
     // console.log(prop);
 
@@ -54,4 +53,4 @@ const GroupListPageRouter = async (prop: GroupListPageRouterProp) => {
 
 
 
-export default GroupListPageRouter;
+export default GroupListRoutePage;

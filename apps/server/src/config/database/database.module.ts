@@ -21,7 +21,7 @@ import { DataSource } from "typeorm";
                     entities: [entityDir],
                     synchronize: true,
                     logging: configService.get<boolean>('db.logging'),
-                    
+                    timezone : 'z'
                 })
 
                 return dataSource.options;

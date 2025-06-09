@@ -1,10 +1,10 @@
 import { HttpStatus, Injectable } from "@nestjs/common";
 import { CrepenUserRouteService } from "../user/user.service";
 import { JwtService } from "@nestjs/jwt";
-import { CrepenToken, CrepenTokenGroup, CrepenTokenType, CrepenUserPayload } from "@web/interface/jwt";
+import { CrepenToken, CrepenTokenGroup, CrepenTokenType, CrepenUserPayload } from "@crepen-nest/interface/jwt";
 import { UserEntity } from "../user/entity/user.entity";
-import { CrepenLocaleHttpException } from "@web/lib/exception/crepen.http.exception";
-import { EncryptUtil } from "@web/lib/util/encrypt.util";
+import { CrepenLocaleHttpException } from "@crepen-nest/lib/exception/crepen.http.exception";
+import { EncryptUtil } from "@crepen-nest/lib/util/encrypt.util";
 
 @Injectable()
 export class CrepenAuthRouteService {

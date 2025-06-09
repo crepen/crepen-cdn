@@ -9,7 +9,7 @@ import * as jsyaml from 'js-yaml';
 import { CrepenConfig } from 'src/interface/config';
 import { detect } from 'detect-port';
 import { StringUtil } from 'src/lib/util/string.util';
-import { CrepenSystemService } from '@web/app/system/system.service';
+import { CrepenSystemService } from '@crepen-nest/app/system/system.service';
 
 @Injectable()
 export class CrepenEnvConfigService {
