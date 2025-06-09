@@ -4,6 +4,7 @@ import { CrepenApiResponse } from "@web/lib/service/types/api";
 import { CrepenToken } from "@web/lib/service/types/auth";
 import { CrepenUser } from "@web/lib/service/types/user";
 import { cookies } from "next/headers"
+import { CrepenAuthApiService } from "../api/auth.api.service";
 
 export class CrepenSessionService {
 
@@ -22,11 +23,11 @@ export class CrepenSessionService {
     static login = async (id?: string, password?: string): Promise<{ success: boolean, message?: string, data?: CrepenToken }> => {
         const cookieStore = await cookies();
 
-          if (cookieStore.has('crepen-exp')) {
+        if (cookieStore.has('crepen-exp')) {
             cookieStore.delete('crepen-exp');
         }
 
-        
+
 
         const loginToken: CrepenApiResponse<CrepenToken | undefined> = await CrepenAuthService.login(id, password);
 
@@ -88,6 +89,75 @@ export class CrepenSessionService {
 
         return {
             success: true,
+        }
+    }
+
+    static applyToken = async (tokenGroup?: CrepenToken) => {
+        const cookie = await cookies();
+
+        if (tokenGroup === undefined) {
+            cookie.delete(this.TOKEN_COOKIE_KEY);
+        }
+        else {
+            const encryptData = CookieService.encrtypeData(tokenGroup)
+            cookie.set(this.TOKEN_COOKIE_KEY, encryptData);
+        }
+    }
+
+    static renewalToken = async (force?: boolean): Promise<{ success: boolean, data?: CrepenToken, message?: string }> => {
+        const tokenGroup = await this.getTokenData();
+
+        if (force === true) {
+            // 강제 토큰 갱신
+
+            console.log('RENEW-FORCE');
+
+            const refData = await CrepenAuthApiService.refreshToken(tokenGroup?.refreshToken);
+
+            if (refData.data !== undefined) {
+                this.applyToken(refData.data);
+                return {
+                    success: true,
+                    data: refData.data
+                };
+            }
+            else {
+                return {
+                    success: false,
+                    message: refData.message
+                };
+            }
+        }
+        else {
+            // 토큰 만료 체크
+            const isACTExpired = await CrepenAuthApiService.checkTokenExpired('access_token', tokenGroup?.accessToken);
+
+            if (isACTExpired.statusCode === 401) {
+
+                const refData = await CrepenAuthApiService.refreshToken(tokenGroup?.refreshToken);
+ 
+                if (refData.data !== undefined) {
+                    console.log('RENEW');
+                    this.applyToken(refData.data);
+                    return {
+                        success: true,
+                        data: refData.data
+                    };
+                }
+                else {
+                    return {
+                        success: false,
+                        message: refData.message
+                    };
+                }
+            }
+            else {
+                console.log('RENEW-CANCEL' , isACTExpired);
+                return {
+                    success : true,
+                    data : tokenGroup
+                };
+            }
         }
     }
 }

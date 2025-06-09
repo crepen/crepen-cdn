@@ -1,14 +1,21 @@
 import { StringUtil } from '@web/lib/util/string.util'
 import './avartar.button.scss'
+import { MouseEventHandler, RefObject } from 'react'
 
 
 interface AvartarIconButtonProp {
-    className? : string
+    className?: string,
+    onClick: MouseEventHandler<HTMLButtonElement>,
+    ref? : RefObject<HTMLButtonElement | null>
 }
 
-export const AvartarIconButton = (prop : AvartarIconButtonProp) => {
+export const AvartarIconButton = (prop: AvartarIconButtonProp) => {
     return (
-        <button className={StringUtil.joinClassName('cp-button cp-avartar-bt' , prop.className)}>
+        <button
+            className={StringUtil.joinClassName('cp-button cp-avartar-bt', prop.className)}
+            onClick={prop.onClick}
+            ref={prop.ref}
+        >
             DS
         </button>
     )

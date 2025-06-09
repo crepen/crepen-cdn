@@ -36,13 +36,30 @@ export class CrepenApiService {
                 catch (e) { /* empty */ }
             }
 
-
-            const fetchData = await fetch(new URL(url, process.env.API_URL ?? ''), {
+            const fetchOption: RequestInit = {
                 ...reqInit,
                 method: method,
-                body: bodyData,
                 headers: reqHeader
-            });
+            }
+
+            if (bodyData !== undefined) {
+                if (bodyData instanceof FormData) {
+                    fetchOption.body = bodyData
+                }
+                else {
+                    fetchOption.body = JSON.stringify(bodyData);
+                    fetchOption.headers = {
+                        ...fetchOption.headers,
+                        'Content-Type' : 'application/json'
+                    }
+                }
+
+            }
+
+
+            console.log("REQUEST" , fetchOption);
+
+            const fetchData = await fetch(new URL(url, process.env.API_URL ?? ''), fetchOption);
 
             const fetchJson = await fetchData.json();
 
@@ -50,13 +67,15 @@ export class CrepenApiService {
             return {
                 success: fetchJson?.success,
                 message: fetchJson?.message,
-                data: fetchJson?.data as T
+                data: fetchJson?.data as T,
+                statusCode: fetchJson?.statusCode ?? 500
             }
         }
         catch (e) {
             return {
                 success: false,
-                message: "서버와 연결이 원활하지 않습니다."
+                message: "서버와 연결이 원활하지 않습니다.",
+                statusCode: 500
             }
         }
     }

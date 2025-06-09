@@ -5,6 +5,10 @@ import '@web/assets/style/common/reset.css';
 import '@web/assets/style/common/global.scss'
 
 import '@fortawesome/fontawesome-svg-core/styles.css'
+// import '@web/assets/style/common/fontawesome/css/all.min.css'
+import '@fortawesome/fontawesome-free/css/all.min.css'
+
+// import '@web/assets/style/common/fontawesome/css/fontawesome.css';
 
 import { Metadata } from 'next';
 import { PropsWithChildren } from 'react'

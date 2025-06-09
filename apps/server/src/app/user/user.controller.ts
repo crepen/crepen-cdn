@@ -46,6 +46,7 @@ export class CrepenUserRouteController {
         @Req() req: JwtUserRequest,
         @Body() bodyData: UpdateUserDto
     ) {
+        console.log('BODY',bodyData);
         await this.userService.updateUser(req.user.entity.uid, bodyData)
         return BaseResponse.ok();
     }

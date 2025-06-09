@@ -47,7 +47,8 @@ export class UserEntity {
                     .filter(x => !StringUtil.isEmpty(x))
                     .map(x => x.trim())
             }
-        }
+        },
+        default : ''
     })
     roles?: string[];
 }
