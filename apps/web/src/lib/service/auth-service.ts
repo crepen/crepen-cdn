@@ -13,7 +13,7 @@ export class CrepenAuthService {
 
 
     public static getLoginUserData = async (token? : string) : Promise<CrepenApiResponse<CrepenUser | undefined>> => {
-        return CrepenApiService.fetch<CrepenUser | undefined>('GET', '/auth', undefined , {
+        return CrepenApiService.fetch<CrepenUser | undefined>('GET', '/user', undefined , {
             token : token
         });
     }

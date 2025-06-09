@@ -45,7 +45,8 @@ export class CrepenAuthJwtStrategy extends PassportStrategy(Strategy) {
             token: token,
             payload: {
                 type: payload.type as CrepenTokenType,
-                uid: payload.uid as string
+                uid: payload.uid as string,
+                role : payload.role as string
             },
             entity: validateUser
         }

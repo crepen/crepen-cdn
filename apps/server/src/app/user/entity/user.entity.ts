@@ -1,3 +1,4 @@
+import { StringUtil } from "@crepen-nest/lib/util/string.util";
 import { Exclude } from "class-transformer";
 import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
@@ -18,8 +19,8 @@ export class UserEntity {
     @Exclude()
     password?: string;
 
-    @Column({name : 'account_name' , type : 'varchar'})
-    name : string;
+    @Column({ name: 'account_name', type: 'varchar' })
+    name?: string;
 
     @Column({ type: 'varchar', name: 'email' })
     email?: string;
@@ -29,7 +30,24 @@ export class UserEntity {
     // @Exclude()
     createDate?: Date;
 
-    @Column({name : 'update_date' , type : 'datetime', default: () => 'sysdate()' })
+    @Column({ name: 'update_date', type: 'datetime', default: () => 'sysdate()' })
     // @Exclude()
-    updateDate? : Date;
+    updateDate?: Date;
+
+    @Column({ name: 'account_lock', type: 'boolean', default: () => false })
+    isLock?: boolean;
+
+
+    @Column({
+        name: 'account_role', type: 'varchar',
+        transformer: {
+            to: (value: string[]) => value?.join(','),
+            from: (value: string) => {
+                return (value?.split(',') ?? [])
+                    .filter(x => !StringUtil.isEmpty(x))
+                    .map(x => x.trim())
+            }
+        }
+    })
+    roles?: string[];
 }

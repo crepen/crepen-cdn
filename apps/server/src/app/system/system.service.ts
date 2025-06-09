@@ -55,7 +55,7 @@ export class CrepenSystemService {
 
             if (ObjectUtil.isNullOrUndefined(adminData)) {
                 await this.userService.addUser({
-                    decreptPassword: adminUserEntity.password,
+                    password: adminUserEntity.password,
                     id: adminUserEntity.id,
                     email: adminUserEntity.email,
                     name : adminUserEntity.name

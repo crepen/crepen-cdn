@@ -5,7 +5,6 @@ import { AddUserDto, UpdateUserDto } from "./dto/user.common.dto";
 import { EncryptUtil } from "@crepen-nest/lib/util/encrypt.util";
 import { randomUUID } from "crypto";
 import { CrepenLocaleHttpException } from "@crepen-nest/lib/exception/crepen.http.exception";
-import { isEmpty } from "class-validator";
 import { StringUtil } from "@crepen-nest/lib/util/string.util";
 
 @Injectable()
@@ -32,7 +31,7 @@ export class CrepenUserRouteService {
 
         const userEntity = new UserEntity();
         userEntity.id = userData.id;
-        userEntity.password = await EncryptUtil.hashPassword(userData.decreptPassword);
+        userEntity.password = await EncryptUtil.hashPassword(userData.password);
         userEntity.email = userData.email;
         userEntity.uid = randomUUID();
         userEntity.name = userData.name;
@@ -58,7 +57,16 @@ export class CrepenUserRouteService {
         userEntity.name = updateUserData.name;
         userEntity.email = updateUserData.email;
         userEntity.updateDate = new Date(Date.now());
+        userEntity.isLock = updateUserData.isLock;
         return await this.userRepo.updateOne(updateUserUid, userEntity);
+    }
+
+
+    lockUser = async (updateUserUid : string , lockable : boolean) => {
+        const userEntity = new UserEntity();
+        userEntity.uid = updateUserUid;
+        userEntity.isLock = lockable;
+        return await this.userRepo.updateOne(updateUserUid , userEntity);
     }
 
 

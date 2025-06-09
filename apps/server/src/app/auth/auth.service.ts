@@ -61,8 +61,8 @@ export class CrepenAuthRouteService {
         }
 
 
-        const accPayload: CrepenUserPayload = { type: 'access_token', uid: matchUser.uid };
-        const refPayload: CrepenUserPayload = { type: 'refresh_token', uid: matchUser.uid };
+        const accPayload: CrepenUserPayload = { type: 'access_token', uid: matchUser.uid , role : (matchUser.roles ?? []).join(',') };
+        const refPayload: CrepenUserPayload = { type: 'refresh_token', uid: matchUser.uid , role : (matchUser.roles ?? []).join(',')};
 
 
         const acc = this.jwtService.sign(accPayload, { expiresIn: '5m' });

@@ -11,7 +11,7 @@ import { AuthUserDataResponseDto } from "./dto/auth.user.dto";
 import { ApiOperation, ApiQuery, ApiBearerAuth, ApiParam, ApiTags, ApiHeader, ApiResponse } from "@nestjs/swagger";
 import { EncryptUtil } from "@crepen-nest/lib/util/encrypt.util";
 
-@ApiTags('사용자 인증 컨트롤러')
+@ApiTags('인증 관리 컨트롤러')
 @ApiHeader({
     name: 'Accept-Language', required: false, enum: ['en', 'ko']
 })
@@ -21,25 +21,6 @@ export class CrepenAuthRouteController {
         private readonly authService: CrepenAuthRouteService,
         private readonly configService: ConfigService
     ) { }
-
-
-
-    @Get()
-    //#region Decorator
-    @ApiOperation({ summary: "토큰 사용자 정보 출력", description: '로그인된 사용자 (토큰 소유자)의 정보 출력' })
-    @ApiBearerAuth('token')
-    @HttpCode(HttpStatus.OK)
-    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
-    //#endregion
-    async getUserData(
-        @Req() req: JwtUserRequest
-    ) {
-        return BaseResponse.ok<AuthUserDataResponseDto>({
-            email: req.user.entity.email,
-            id: req.user.entity.id
-        });
-    }
-
 
 
     @Post('login')

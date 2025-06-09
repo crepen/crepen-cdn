@@ -13,7 +13,6 @@ export class ExceptionResponseFilter implements ExceptionFilter {
     catch(exception: any, host: ArgumentsHost) {
 
 
-
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
@@ -40,22 +39,25 @@ export class ExceptionResponseFilter implements ExceptionFilter {
         }
         else if (exception instanceof I18nValidationException) {
 
+            
+
+
             if (exception.errors.length > 0) {
                 const errorObj = exception.errors[0].constraints;
                 const messageObj = Object.values(errorObj)[0];
                 if (!StringUtil.isEmpty(messageObj)) {
-                    message = i18n.t(messageObj);
+                    message = messageObj;
                 }
             }
 
             response
                 .status(exception.getStatus())
                 .json(
-                    BaseResponse.error(exception.getStatus(), message)
+                    BaseResponse.error(exception.getStatus(), i18n.t(message) , message )
                 )
         }
         else if (exception instanceof HttpException) {
-
+            console.log(exception);
             response
                 .status(500)
                 .json(
@@ -63,6 +65,7 @@ export class ExceptionResponseFilter implements ExceptionFilter {
                 )
         }
         else {
+            console.log(exception);
             response
                 .status(500)
                 .json(

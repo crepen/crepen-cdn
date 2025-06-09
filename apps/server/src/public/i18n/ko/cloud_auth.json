@@ -4,5 +4,6 @@
     "LOGIN_FAILED_PASSWORD_EMPTY" : "비밀번호가 입력되지 않았습니다.",
     "LOGIN_FAILED_INPUT_DATA_NOT_CORRECT" : "잘못된 아이디 또는 비밀번호입니다.",
     "AUTHORIZATION_NOT_ALLOW_TYPE" : "허용되지 않은 토큰 타입입니다.",
-    "AUTHORIZATION_TOKEN_EXPIRED" : "인증이 만료되었거나 잘못된 인증입니다."
+    "AUTHORIZATION_TOKEN_EXPIRED" : "인증이 만료되었거나 잘못된 인증입니다.",
+    "AUTHORIZATION_ROLE_BLOCK" : "권한이 없습니다."
 }

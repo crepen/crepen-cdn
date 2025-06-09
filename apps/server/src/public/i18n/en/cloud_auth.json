@@ -4,5 +4,6 @@
   "LOGIN_FAILED_PASSWORD_EMPTY": "Password is required.",
   "LOGIN_FAILED_INPUT_DATA_NOT_CORRECT": "ID or Password not correct.",
   "AUTHORIZATION_NOT_ALLOW_TYPE": "This token type is not allowed.",
-  "AUTHORIZATION_TOKEN_EXPIRED": "Token expired."
+  "AUTHORIZATION_TOKEN_EXPIRED": "Token expired.",
+  "AUTHORIZATION_ROLE_BLOCK": "No role"
 }

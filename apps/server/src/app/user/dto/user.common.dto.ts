@@ -1,62 +1,51 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { UserEntity } from "../entity/user.entity"
-import { IsDefined, IsEmail, isNotEmpty, IsNotEmpty, IsString, ValidateIf } from "class-validator";
+import { IsBoolean, IsEmail, IsNotEmpty, IsString, Length, ValidateIf } from "class-validator";
 import { StringUtil } from "@crepen-nest/lib/util/string.util";
 
 
 
 
 
-export class ReadUserDto {
-    user: UserEntity
-}
-
 export class UpdateUserDto {
     @ApiProperty()
+    @ValidateIf((o: UpdateUserDto) => !StringUtil.isEmpty(o.password))
     @IsString()
-    @ValidateIf((o : UpdateUserDto) => !StringUtil.isEmpty(o.password))
-    password? : string;
+    @Length(12, 16, { message: 'cloud_user.USER_VALIDATE_FAILED_PASSWORD_LENGTH' })
+    password?: string;
 
     @ApiProperty()
-    @ValidateIf((o : UpdateUserDto) => !StringUtil.isEmpty(o.name))
+    @ValidateIf((o: UpdateUserDto) => !StringUtil.isEmpty(o.name))
     @IsString()
-    name? : string;
+    name?: string;
 
     @ApiProperty()
-    @ValidateIf((o : UpdateUserDto) => !StringUtil.isEmpty(o.email))
-    @IsEmail()
-    email? : string;
+    @ValidateIf((o: UpdateUserDto) => !StringUtil.isEmpty(o.email))
+    @IsEmail({}, { message: 'common.VALIDATION_ERROR_EMAIL' })
+    email?: string;
+
+    @ApiProperty({type : 'boolean'})
+    @ValidateIf((o: UpdateUserDto) => o.isLock !== undefined && o.isLock !== null )
+    @IsBoolean()
+    isLock? : boolean;    
 }
 
 export class AddUserDto {
-    @ApiProperty({
-        example: 'Add user ID'
-    })
-    @IsNotEmpty({
-        message: 'cloud_user.USER_ADD_FAILED_ID_EMPTY'
-    })
+    @ApiProperty({ example: 'Add user ID' })
+    @IsNotEmpty({ message: 'cloud_user.USER_ADD_FAILED_ID_EMPTY' })
     id: string;
 
-    @ApiProperty({
-        example: 'Add user email'
-    })
-    @IsString()
-    email?: string;
+    @ApiProperty({ example: 'Add user email' })
+    @IsNotEmpty({message : 'cloud_user.USER_ADD_FAILED_EMAIL_EMPTY'})
+    @IsEmail({}, { message: 'common.VALIDATION_ERROR_EMAIL' })
+    email: string;
 
-    @ApiProperty({
-        example: 'Add user password'
-    })
-    @IsNotEmpty({
-        message: 'cloud_user.USER_ADD_FAILED_PASSWORD_EMPTY'
-    })
-    decreptPassword: string;
+    @ApiProperty({ example: 'Add user password' })
+    @IsNotEmpty({ message: 'cloud_user.USER_ADD_FAILED_PASSWORD_EMPTY' })
+    @Length(12, 16, { message: 'cloud_user.USER_VALIDATE_FAILED_PASSWORD_LENGTH' })
+    password: string;
 
-    @ApiProperty({
-        example: 'Add user name'
-    })
-    @IsNotEmpty({
-        message: 'cloud_user.USER_ADD_FAILED_NAME_EMPTY'
-    })
+    @ApiProperty({ example: 'Add user name' })
+    @IsNotEmpty({ message: 'cloud_user.USER_ADD_FAILED_NAME_EMPTY' })
     name: string
 }
 

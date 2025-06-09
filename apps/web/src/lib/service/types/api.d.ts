@@ -1,4 +1,4 @@
-export interface CrepenApiResponse<T extends any> {
+export interface CrepenApiResponse<T> {
     data?: T,
     message?: string,
     success?: boolean
