@@ -1,4 +1,4 @@
-import { CrepenUser } from "@web/lib/service/types/user";
+import { CrepenUser } from "@web/services/types/user.object";
 import { CrepenAuthOpereationService } from "./auth.operation.service";
 import { CrepenSessionService } from "../common/session.service";
 import { CrepenUserApiService } from "../api/user.api.service";

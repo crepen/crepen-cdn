@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { CrepenAuthApiService } from "../api/auth.api.service";
 import { CrepenSessionService } from "../common/session.service"
 import { CookieService } from "@crepen-cdn/core/service";
-import { CrepenToken } from "@web/lib/service/types/auth";
+import { CrepenToken } from "@web/services/types/auth.object";
 import { BaseServiceResult } from "../types/common.service";
 
 export class CrepenAuthOpereationService {

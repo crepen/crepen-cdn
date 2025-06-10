@@ -1,8 +1,8 @@
 import { CookieService } from "@crepen-cdn/core/service";
 import { CrepenAuthService } from "@web/lib/service/auth-service";
-import { CrepenApiResponse } from "@web/lib/service/types/api";
-import { CrepenToken } from "@web/lib/service/types/auth";
-import { CrepenUser } from "@web/lib/service/types/user";
+import { CrepenApiResponse } from "@web/services/types/common.api";
+import { CrepenToken } from "@web/services/types/auth.object";
+import { CrepenUser } from "@web/services/types/user.object";
 import { cookies } from "next/headers"
 import { CrepenAuthApiService } from "../api/auth.api.service";
 

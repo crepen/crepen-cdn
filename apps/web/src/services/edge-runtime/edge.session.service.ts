@@ -1,5 +1,5 @@
 import { CrepenAuthService } from "@web/lib/service/auth-service";
-import { CrepenToken, CrepenTokenType } from "@web/lib/service/types/auth";
+import { CrepenToken, CrepenTokenType } from "@web/services/types/auth.object";
 import { StringUtil } from "@web/lib/util/string.util";
 import { NextRequest, NextResponse } from "next/server";
 import { CookieService } from "@crepen-cdn/core/service";

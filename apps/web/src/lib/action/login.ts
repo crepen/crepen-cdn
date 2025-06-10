@@ -1,41 +1,55 @@
 'use server'
 
 import { CrepenSessionService } from "@web/services/common/session.service";
+import { CrepenActionError } from "../common/action-error";
 
+interface LoginUserActionResult {
+    success?: boolean,
+    message?: string,
+    lastValue?: {
+        userId?: string,
+        password?: string
+    }
+}
 
+export const loginUser = async (currentState: any, formData: FormData): Promise<LoginUserActionResult> => {
 
-export const loginUser = async (currentState: any, formData: FormData): Promise<{ state?: boolean, message?: string }> => {
-
-    let state: boolean = false;
-    let message: string | undefined = undefined;
+    const userId = formData.get('id')?.toString();
+    const password = formData.get('password')?.toString();
 
     try {
+        const requestLogin = await CrepenSessionService.login(userId, password);
 
-        const userId = formData.get('id')?.toString();
-        const password = formData.get('password')?.toString();
-
-
-        const requestLogin = await CrepenSessionService.login(userId,password);
-
-        if(requestLogin.success === false){
-            throw new Error(requestLogin.message);
+        if (requestLogin.success === false) {
+            throw new CrepenActionError(requestLogin.message);
         }
 
 
-        state = true;
-        message = 'success';
+        return {
+            success : true
+        }
     }
     catch (e) {
-        state = false;
-        message = 'unknown error';
-        if (e instanceof Error) {
-            message = e.message
+        if (e instanceof CrepenActionError) {
+            return {
+                success: false,
+                message: e.message,
+                lastValue: {
+                    userId: userId,
+                    password: password
+                }
+            }
+        }
+
+        return {
+            success: false,
+            message: '알 수 없는 오류입니다.',
+            lastValue: {
+                userId: userId,
+                password: password
+            }
         }
     }
 
-    return {
-        state: state,
-        message: message
-    }
-
+   
 }

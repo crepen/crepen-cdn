@@ -1,8 +1,9 @@
-import { CrepenApiService } from "./api-service";
-import { CrepenApiResponse } from "./types/api";
-import { CrepenToken, CrepenTokenType } from "./types/auth";
-import { CrepenUser } from "./types/user";
+import { CrepenApiService } from "../../services/api/base.api.service";
+import { CrepenApiResponse } from "../../services/types/common.api";
+import { CrepenToken, CrepenTokenType } from "../../services/types/auth.object";
+import { CrepenUser } from "../../services/types/user.object";
 
+/** @deprecated */
 export class CrepenAuthService {
     public static login = async (id: string | undefined, password: string | undefined): Promise<CrepenApiResponse<CrepenToken | undefined>> => {
         const formData: FormData = new FormData();

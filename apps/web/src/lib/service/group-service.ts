@@ -1,10 +1,9 @@
-import { CrepenLanguageService } from "../../services/common/language.service";
 import { StringUtil } from "../util/string.util";
-import { CrepenApiService } from "./api-service";
-import { CrepenApiOptions, CrepenApiResponse } from "./types/api";
-import { CrepenGroup } from "./types/group";
+import { CrepenApiService } from "../../services/api/base.api.service";
+import { CrepenApiOptions, CrepenApiResponse } from "../../services/types/common.api";
+import { CrepenGroup } from "../../services/types/group.object";
 
-
+/** @deprecated */
 export class CrepenGroupService {
 
     public static getGroupList = async (parentGroupId?: string, options?: CrepenApiOptions): Promise<CrepenApiResponse<CrepenGroup[] | undefined>> => {

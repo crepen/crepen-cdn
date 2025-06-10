@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState , useRef} from 'react'
+import { useActionState, useRef } from 'react'
 import { LoginAction } from '../../../lib/action'
 import { useEffect } from 'react'
 import { redirect, useRouter, useSearchParams } from 'next/navigation'
@@ -12,11 +12,13 @@ import { useFormState } from 'react-dom'
 export const LoginForm = () => {
 
     const [state, formAction, isPending] = useActionState(LoginAction.loginUser, {
-        state: undefined,
-        message: undefined
+        success: undefined,
+        message: undefined,
+        lastValue: undefined
     })
 
     const idInputRef = useRef<HTMLInputElement>(null);
+    const passwordInputRef = useRef<HTMLInputElement>(null);
 
     // const [state, formAction, isPending] = useFormState(LoginAction.loginUser, {
     //     state: undefined,
@@ -26,14 +28,23 @@ export const LoginForm = () => {
     const searchParams = useSearchParams();
 
     useEffect(() => {
-        if (isPending === false && state?.state !== undefined) {
+        if (isPending === false && state?.success !== undefined) {
 
-            if (state.state === true) {
+            if (state.success === true) {
                 const callbackUrl = searchParams.get('callback')?.toString();
                 // location.href = StringUtil.shiftEmptyString(callbackUrl, '/');
                 redirect(StringUtil.shiftEmptyString(callbackUrl, '/cloud'));
             }
             else {
+
+                if (idInputRef.current) {
+                    idInputRef.current.value = state.lastValue?.userId ?? ''
+                }
+
+                if (passwordInputRef.current) {
+                    passwordInputRef.current.value = state.lastValue?.password ?? ''
+                }
+
                 alert(state.message)
             }
         }
@@ -41,7 +52,7 @@ export const LoginForm = () => {
 
     useEffect(() => {
         idInputRef.current?.focus();
-    },[])
+    }, [])
 
     return (
         <form action={formAction} className='login-form'>
@@ -59,6 +70,7 @@ export const LoginForm = () => {
                 formName='password'
                 showResetButton
                 showPasswordVisibleButton
+                inputRef={passwordInputRef}
             />
 
             <LoadingButton

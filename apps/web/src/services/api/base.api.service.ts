@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
-import { CrepenApiOptions, CrepenApiResponse } from "./types/api";
-import { StringUtil } from "../util/string.util";
+import { CrepenApiOptions, CrepenApiResponse } from "../types/common.api";
+import { StringUtil } from "../../lib/util/string.util";
 
 type FetchType = 'GET' | 'POST' | 'PUT' | 'DELETE';
 

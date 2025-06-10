@@ -1,4 +1,4 @@
-import { CrepenToken } from "../../../../../apps/web/src/lib/service/types/auth";
+import { CrepenToken } from "../../../../../apps/web/src/services/types/auth.object";
 import { IUserData } from "./user";
 
 export interface ICookieData {
