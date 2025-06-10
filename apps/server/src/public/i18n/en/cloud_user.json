@@ -4,5 +4,13 @@
   "USER_ADD_FAILED_ID_EMPTY": "User id is required.",
   "USER_ADD_FAILED_PASSWORD_EMPTY": "User password is required.",
   "USER_ADD_FAILED_EMAIL_EMPTY": "User email is required.",
-  "USER_VALIDATE_FAILED_PASSWORD_LENGTH": "User password length 12 to 16."
+  "USER_VALIDATE_FAILED_PASSWORD_LENGTH": "User password length 12 to 16.",
+
+  "USER_PASSWORD_CHANGE_CURRENT_PASSWORD_EMPTY" : "Current password is required.",
+  "USER_PASSWORD_CHANGE_NEW_PASSWORD_EMPTY" : "New password is required.",
+  "USER_PASSWORD_CHANGE_CONFIRM_PASSWORD_EMPTY" : "Confirm new password is required.",
+  "USER_PASSWORD_CHANGE_CURRENT_PASSWORD_NOT_MATCH" : "Current password is not matched.",
+  "USER_PASSWORD_CHANGE_NEW_PASSWORD_NOT_MATCH" : "New password and confirm password not matched.",
+  "USER_PASSWORD_CHANGE_SUCCESS" : "Success change password."
+
 }

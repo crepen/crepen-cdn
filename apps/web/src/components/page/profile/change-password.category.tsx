@@ -11,7 +11,7 @@ interface PasswordValidateState {
     minLength: boolean,
     combine: boolean,
     match: boolean,
-    current : boolean
+    current: boolean
 }
 
 export const ProfileChangePasswordCategory = () => {
@@ -20,13 +20,14 @@ export const ProfileChangePasswordCategory = () => {
     const newPasswordInputRef = useRef<HTMLInputElement>(null);
     const confirmPasswordInputRef = useRef<HTMLInputElement>(null);
 
-    const initValidState: PasswordValidateState = { maxLength: false, combine: false, match: false, minLength: false , current : false};
+    const initValidState: PasswordValidateState = { maxLength: false, combine: false, match: false, minLength: false, current: false };
 
     const [validateState, setValidateState] = useState<PasswordValidateState>(initValidState);
 
     const [state, formAction, isPending] = useActionState(UserAction.changePasswordAction, {
         success: undefined,
-        message: undefined
+        message: undefined,
+        lastValue: undefined
     })
 
     const changeHandler = () => {
@@ -38,16 +39,16 @@ export const ProfileChangePasswordCategory = () => {
             ...validateState
         }
 
-        if(StringUtil.isEmpty(currentPassword)){
+        if (StringUtil.isEmpty(currentPassword)) {
             changeState = {
                 ...changeState,
-                current : false
+                current: false
             }
         }
-        else{
+        else {
             changeState = {
                 ...changeState,
-                current : true
+                current: true
             }
         }
 
@@ -110,22 +111,31 @@ export const ProfileChangePasswordCategory = () => {
 
     useEffect(() => {
         if (isPending === false && state?.success !== undefined) {
+            setValidateState(initValidState)
 
-            if (state.success === true) {
-                // const callbackUrl = searchParams.get('callback')?.toString();
-                // // location.href = StringUtil.shiftEmptyString(callbackUrl, '/');
-                // redirect(StringUtil.shiftEmptyString(callbackUrl, '/cloud'));
-                setValidateState(initValidState)
-                alert(state.message);
+            if (state.success !== true) {
+                if (currentPasswordInputRef.current) {
+                    currentPasswordInputRef.current.value = state.lastValue?.currentPassword ?? '';
+                }
+
+                if (newPasswordInputRef.current) {
+                    newPasswordInputRef.current.value = state.lastValue?.newPassword ?? '';
+                }
+
+                if (confirmPasswordInputRef.current) {
+                    confirmPasswordInputRef.current.value = state.lastValue?.confirmPassword ?? '';
+                }
             }
-            else {
-                alert(state.message)
-            }
+
+            changeHandler();
         }
     }, [state, isPending])
 
     return (
-        <ProfileCategoryGroup className='cp-change-password'>
+        <ProfileCategoryGroup
+            className='cp-change-password'
+            title="Change Password"
+        >
             <form autoComplete="off" action={formAction}>
                 <div className="cp-form-value">
                     <input
@@ -152,15 +162,18 @@ export const ProfileChangePasswordCategory = () => {
                 </div>
                 <div className="cp-form-validate">
                     <ul>
-                        <li data-validate={validateState.current ? 'true' : 'false'}>Current password not empty</li>
-                        <li data-validate={validateState.maxLength ? 'true' : 'false'}>Max Length : 16</li>
-                        <li data-validate={validateState.minLength ? 'true' : 'false'}>Min Length : 12</li>
-                        <li data-validate={validateState.combine ? 'true' : 'false'}>Combine Number / English</li>
-                        <li data-validate={validateState.match ? 'true' : 'false'}>Match new password and confirm password</li>
+                        <li data-validate={validateState.maxLength && validateState.minLength ? 'true' : 'false'}>비밀번호는 12~16자여야 합니다.</li>
+                        <li data-validate={validateState.combine ? 'true' : 'false'}>영문 및 숫자가 최소 1개 이상 포함되어야 합니다.</li>
+                        <li data-validate={validateState.match ? 'true' : 'false'}>비밀번호와 비밀번호 확인란이 동일해야 합니다.</li>
                     </ul>
                 </div>
                 <div className="cp-form-submit">
-                    <input type='submit' value='Change Password' disabled={Object.values(validateState).filter(x => x === false).length !== 0} />
+                    <span className="cp-form-response-message" data-state={state.success}>
+                        {state.message}
+                    </span>
+                    <button type="submit" disabled={Object.values(validateState).filter(x => x === false).length !== 0} >
+                        Change Password
+                    </button>
                 </div>
 
             </form>

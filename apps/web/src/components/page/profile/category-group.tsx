@@ -4,7 +4,8 @@ import { StringUtil } from "@web/lib/util/string.util";
 import { PropsWithChildren, useState } from "react"
 
 interface ProfileCategoryGroupProp extends PropsWithChildren{
-    className? : string
+    className? : string,
+    title? : string
 }
 
 export const ProfileCategoryGroup = (prop : ProfileCategoryGroupProp) => {
@@ -18,7 +19,7 @@ export const ProfileCategoryGroup = (prop : ProfileCategoryGroupProp) => {
     return (
         <div className={StringUtil.joinClassName('cp-profile-category' , prop.className)}>
             <div className='cp-category-expand' onClick={openCategoryHandler}>
-                Change Password
+                {prop.title}
             </div>
             <div className='cp-category-context' data-expand={isOpen ? 'true' : 'false'}>
                {prop.children}

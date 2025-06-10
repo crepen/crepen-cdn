@@ -1,7 +1,7 @@
 export interface CrepenApiResponse<T> {
     data?: T,
     message?: string,
-    success?: boolean,
+    success: boolean,
     statusCode? : number
 }
 

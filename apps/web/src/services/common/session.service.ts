@@ -6,10 +6,12 @@ import { CrepenUser } from "@web/lib/service/types/user";
 import { cookies } from "next/headers"
 import { CrepenAuthApiService } from "../api/auth.api.service";
 
+/** @deprecated */
 export class CrepenSessionService {
 
     private static TOKEN_COOKIE_KEY: string = 'crepen-tk';
 
+    /** @deprecated */
     static getTokenData = async (): Promise<CrepenToken | undefined> => {
 
         const cookie = await cookies();
@@ -20,6 +22,7 @@ export class CrepenSessionService {
         return encryptTokenData;
     }
 
+    /** @deprecated */
     static login = async (id?: string, password?: string): Promise<{ success: boolean, message?: string, data?: CrepenToken }> => {
         const cookieStore = await cookies();
 
@@ -92,6 +95,7 @@ export class CrepenSessionService {
         }
     }
 
+    /** @deprecated */
     static applyToken = async (tokenGroup?: CrepenToken) => {
         const cookie = await cookies();
 
@@ -104,13 +108,12 @@ export class CrepenSessionService {
         }
     }
 
+    /** @deprecated */
     static renewalToken = async (force?: boolean): Promise<{ success: boolean, data?: CrepenToken, message?: string }> => {
         const tokenGroup = await this.getTokenData();
 
         if (force === true) {
             // 강제 토큰 갱신
-
-            console.log('RENEW-FORCE');
 
             const refData = await CrepenAuthApiService.refreshToken(tokenGroup?.refreshToken);
 
@@ -137,7 +140,6 @@ export class CrepenSessionService {
                 const refData = await CrepenAuthApiService.refreshToken(tokenGroup?.refreshToken);
  
                 if (refData.data !== undefined) {
-                    console.log('RENEW');
                     this.applyToken(refData.data);
                     return {
                         success: true,
@@ -152,7 +154,6 @@ export class CrepenSessionService {
                 }
             }
             else {
-                console.log('RENEW-CANCEL' , isACTExpired);
                 return {
                     success : true,
                     data : tokenGroup

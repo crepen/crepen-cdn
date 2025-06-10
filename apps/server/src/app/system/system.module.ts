@@ -3,7 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { CrepenSystemEntity } from "./entity/system.entity";
 import { CrepenSystemRepository } from "./system.repository";
 import { CrepenSystemService } from "./system.service";
-import { CrepenUserRouteModule } from "../user/user.module";
+import { CrepenUserRouteModule } from "../common-user/user/user.module";
 
 @Module({
     imports : [

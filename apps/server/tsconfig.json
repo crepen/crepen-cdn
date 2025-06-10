@@ -17,7 +17,8 @@
       "@crepen-nest/app/*" : ["./src/app/*"],
       "@crepen-nest/config/*" : ["./src/config/*"],
       "@crepen-nest/interface/*" : ["./src/interface/*"],
-      "@crepen-nest/lib/*" : ["./src/lib/*"]
+      "@crepen-nest/lib/*" : ["./src/lib/*"],
+      
     }
   }
 }

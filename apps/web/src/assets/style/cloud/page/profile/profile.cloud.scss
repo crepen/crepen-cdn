@@ -5,6 +5,7 @@
     .cp-profile-category {
         width: 100%;
         border: 1px solid #aaaaaa;
+        margin-bottom: 10px;
 
 
         .cp-category-expand {
@@ -55,13 +56,6 @@
                     padding: 8px;
                 }
 
-                input[type=submit] {
-                    border: 1px solid #aaaaaa;
-                    padding: 6px 14px;
-                    border-radius: 6px;
-                    margin-top: 8px;
-                }
-
 
                 .cp-form-value {
                     width: 60%;
@@ -102,11 +96,60 @@
                     display: flex;
                     justify-content: flex-end;
                     align-items: center;
+                    margin-top: 8px;
+
+                    .cp-form-response-message {
+                        font-size: 12px;
+                        margin-right: 12px;
+
+                        &[data-state=true] {
+                            color: #0a863e;
+
+                            &::before {
+                                content: '\f058';
+                                font-family: 'Font Awesome 6 Free';
+                                font-weight: 900;
+                                padding-right: 4px;
+                            }
+                        }
+
+                        &[data-state=false] {
+                            color: #d52a2a;
+
+                            &::before {
+                                content: '\f05e';
+                                font-family: 'Font Awesome 6 Free';
+                                font-weight: 900;
+                                padding-right: 4px;
+                            }
+                        }
+                    }
+
+                    button[type=submit] {
+                        border: 1px solid #aaaaaa;
+                        padding: 6px 14px;
+                        border-radius: 6px;
+                        background-color: white;
+                        border: 1px solid var(--color-primary);
+                        color: rgba(var(--color-secondary-rgb) , 1);
+                        cursor: pointer;
+
+                        transition: 0.2s all;
+
+                        &:hover {
+                            background-color: rgba(var(--color-primary-rgb),0.9);
+                            color : white
+                        }
+                    }
                 }
             }
 
 
 
+        }
+
+        &.cp-change-info>.cp-category-context {
+            
         }
     }
 }

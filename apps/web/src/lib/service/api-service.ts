@@ -57,8 +57,6 @@ export class CrepenApiService {
             }
 
 
-            console.log("REQUEST" , fetchOption);
-
             const fetchData = await fetch(new URL(url, process.env.API_URL ?? ''), fetchOption);
 
             const fetchJson = await fetchData.json();

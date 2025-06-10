@@ -1,14 +1,14 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { CrepenSystemRepository } from "./system.repository";
-import { UserEntity } from "../user/entity/user.entity";
 import { StringUtil } from "@crepen-nest/lib/util/string.util";
-import { CrepenUserRouteService } from "../user/user.service";
 import chalk from "chalk";
 import { CrepenSystemPathType } from "@crepen-nest/interface/system";
 import * as os from 'os';
 import * as path from 'path';
 import * as fs from 'fs';
 import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
+import { UserEntity } from "../common-user/user/entity/user.entity";
+import { CrepenUserRouteService } from "../common-user/user/user.service";
 
 @Injectable()
 export class CrepenSystemService {

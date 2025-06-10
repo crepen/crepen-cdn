@@ -2,50 +2,39 @@ import { CrepenUser } from "@web/lib/service/types/user";
 import { CrepenAuthOpereationService } from "./auth.operation.service";
 import { CrepenSessionService } from "../common/session.service";
 import { CrepenUserApiService } from "../api/user.api.service";
+import { BaseServiceResult } from "../types/common.service";
 
 export class CrepenUserOperationService {
 
-    static changePassword = async (password? : string) : Promise<{success: boolean , message? : string}> => {
-        const renewalToken = await CrepenSessionService.renewalToken();
-        if(renewalToken.success === false){
-            return {
-                success : false,
-                message : renewalToken.message
-            }
+    static changePassword = async (currentPassword?: string, password?: string, confirmPassword?: string): Promise<BaseServiceResult> => {
+        const tokenGroup = await CrepenAuthOpereationService.getCookieStoreTokenGroup();
+
+        const changePasswordRequest = await CrepenUserApiService.changePassword(tokenGroup.data?.accessToken, currentPassword, password, confirmPassword);
+
+        return {
+            success: changePasswordRequest.success ?? false,
+            message: changePasswordRequest.message
         }
 
-
-        // const ss = await fetch('http://localhost:3332/user' , {
-        //     body : JSON.stringify({
-        //         password : 'qwer1234qwer'
-        //     }),
-        //     headers : {
-        //         'Authorization' : `Bearer ${renewalToken.data?.accessToken}`,
-        //         'Content-Type' : 'application/json'
-        //     },
-        //     method : 'PUT'
-        // })
-
-        // console.log(await ss.json())
-
-
-        const changePasswordRequest = await CrepenUserApiService.changePassword(renewalToken.data?.accessToken,password);
-        
-
-        if(changePasswordRequest.success){
-            return {
-                success : true
-            }
-        }
-        else {
-            return {
-                success : false,
-                message : changePasswordRequest.message 
-            }
-        }
     }
 
-    static getUserData = async (token? : string) : Promise<CrepenUser | undefined> => {
+    /** @deprecated */
+    static getUserData = async (token?: string): Promise<CrepenUser | undefined> => {
         return undefined;
     }
+
+    static getLoginUserData = async (): Promise<BaseServiceResult<CrepenUser | undefined>> => {
+
+        const tokenGroup = await CrepenAuthOpereationService.getCookieStoreTokenGroup();
+
+        const getUserRequest = await CrepenUserApiService.getLoginUserData(tokenGroup.data?.accessToken);
+
+
+        return {
+            success: getUserRequest.success,
+            data: getUserRequest.data,
+            message: getUserRequest.message
+        }
+    }
+
 }

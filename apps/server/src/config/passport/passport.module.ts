@@ -2,8 +2,7 @@ import { Module } from "@nestjs/common";
 import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { CrepenUserRouteModule } from "src/app/user/user.module";
-import { CrepenUserRouteService } from "src/app/user/user.service";
+import { CrepenUserRouteModule } from "@crepen-nest/app/common-user/user/user.module";
 @Module({
     imports: [
         CrepenUserRouteModule,

@@ -23,10 +23,10 @@ export class UpdateUserDto {
     @IsEmail({}, { message: 'common.VALIDATION_ERROR_EMAIL' })
     email?: string;
 
-    @ApiProperty({type : 'boolean'})
-    @ValidateIf((o: UpdateUserDto) => o.isLock !== undefined && o.isLock !== null )
+    @ApiProperty({ type: 'boolean' })
+    @ValidateIf((o: UpdateUserDto) => o.isLock !== undefined && o.isLock !== null)
     @IsBoolean()
-    isLock? : boolean;    
+    isLock?: boolean;
 }
 
 export class AddUserDto {
@@ -35,7 +35,7 @@ export class AddUserDto {
     id: string;
 
     @ApiProperty({ example: 'Add user email' })
-    @IsNotEmpty({message : 'cloud_user.USER_ADD_FAILED_EMAIL_EMPTY'})
+    @IsNotEmpty({ message: 'cloud_user.USER_ADD_FAILED_EMAIL_EMPTY' })
     @IsEmail({}, { message: 'common.VALIDATION_ERROR_EMAIL' })
     email: string;
 
@@ -47,5 +47,20 @@ export class AddUserDto {
     @ApiProperty({ example: 'Add user name' })
     @IsNotEmpty({ message: 'cloud_user.USER_ADD_FAILED_NAME_EMPTY' })
     name: string
+}
+
+export class UpdateUserPasswordDto {
+    @ApiProperty({ example: 'Current Password' , })
+    @IsNotEmpty({ message: 'cloud_user.USER_PASSWORD_CHANGE_CURRENT_PASSWORD_EMPTY' })
+    currentPassword: string;
+
+    @ApiProperty({ example: 'New Password' })
+    @IsNotEmpty({ message: 'cloud_user.USER_PASSWORD_CHANGE_NEW_PASSWORD_EMPTY' })
+    @Length(12, 16, { message: 'cloud_user.USER_VALIDATE_FAILED_PASSWORD_LENGTH' })
+    newPassword: string;
+
+    @ApiProperty({ example: 'Confirm Password'})
+    @IsNotEmpty({ message: 'cloud_user.USER_PASSWORD_CHANGE_CONFIRM_PASSWORD_EMPTY' })
+    confirmPassword: string;
 }
 

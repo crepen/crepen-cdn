@@ -1,4 +1,4 @@
-import { UserEntity } from "@crepen-nest/app/user/entity/user.entity"
+import { UserEntity } from "@crepen-nest/app/common-user/user/entity/user.entity"
 
 ////// V1
 export type CrepenTokenType = 'access_token' | 'refresh_token'

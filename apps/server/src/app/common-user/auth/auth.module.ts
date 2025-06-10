@@ -14,6 +14,7 @@ import { JwtService } from "@nestjs/jwt";
         CrepenPassportConfigModule
     ],
     controllers : [CrepenAuthRouteController],
-    providers : [CrepenAuthRouteService , CrepenAuthJwtStrategy ]
+    providers : [CrepenAuthRouteService , CrepenAuthJwtStrategy ],
+    exports : [CrepenAuthRouteService]
 })
 export class CrepenAuthRouteModule {}

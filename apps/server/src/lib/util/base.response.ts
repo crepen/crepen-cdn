@@ -15,7 +15,7 @@ export class BaseResponse<T> {
     errorCode?: string;
 
 
-    static ok<T = any>(data?: T, statusCode?: HttpStatus): BaseResponse<T> {
+    static ok<T = any>(data?: T, statusCode?: HttpStatus, message?: string): BaseResponse<T> {
 
         const res = new BaseResponse<T>();
 
@@ -23,10 +23,11 @@ export class BaseResponse<T> {
         res.data = data;
         res.statusCode = statusCode || 200;
         res.timestamp = new Date().toISOString();
-
+        res.message = message;
 
         return res;
     }
+
 
 
     static error<T>(statusCode: HttpStatus, message?: string | string[], errorCode?: string): Record<string, unknown> {

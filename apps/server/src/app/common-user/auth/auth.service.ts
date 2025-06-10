@@ -16,7 +16,16 @@ export class CrepenAuthRouteService {
     ) { }
 
 
+    validatePassword = (password?: string) : boolean => {
+        const passwordRegex = new RegExp(/^(?=.*[a-zA-Z])(?=.*[0-9]).{12,16}$/g)
 
+        if (!passwordRegex.test(password ?? '')) {
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
 
 
     tokenRefresh = async (payload: CrepenUserPayload): Promise<CrepenTokenGroup> => {
@@ -54,15 +63,15 @@ export class CrepenAuthRouteService {
     getToken = async (id: string, password: string): Promise<CrepenTokenGroup> => {
 
 
-        const matchUser  = await this.userService.getUserDataByIdOrEmail(id);
+        const matchUser = await this.userService.getUserDataByIdOrEmail(id);
 
         if (matchUser === undefined || !await EncryptUtil.comparePassword(password, matchUser?.password)) {
             throw new CrepenLocaleHttpException('cloud_auth', 'LOGIN_FAILED_INPUT_DATA_NOT_CORRECT', HttpStatus.UNAUTHORIZED);
         }
 
 
-        const accPayload: CrepenUserPayload = { type: 'access_token', uid: matchUser.uid , role : (matchUser.roles ?? []).join(',') };
-        const refPayload: CrepenUserPayload = { type: 'refresh_token', uid: matchUser.uid , role : (matchUser.roles ?? []).join(',')};
+        const accPayload: CrepenUserPayload = { type: 'access_token', uid: matchUser.uid, role: (matchUser.roles ?? []).join(',') };
+        const refPayload: CrepenUserPayload = { type: 'refresh_token', uid: matchUser.uid, role: (matchUser.roles ?? []).join(',') };
 
 
         const acc = this.jwtService.sign(accPayload, { expiresIn: '5m' });

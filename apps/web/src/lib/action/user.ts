@@ -1,34 +1,86 @@
 'use server'
 
-import { CrepenUserApiService } from "@web/services/api/user.api.service"
-import { CrepenSessionService } from "@web/services/common/session.service";
 import { CrepenUserOperationService } from "@web/services/operation/user.operation.service";
-import { cookies } from "next/headers";
+import { StringUtil } from "../util/string.util";
+import { CrepenAuthOpereationService } from "@web/services/operation/auth.operation.service";
+import { CrepenActionError } from "../common/action-error";
 
 
-export const changePasswordAction = async (currentState: any, formData: FormData): Promise<{ success?: boolean, message?: string }> => {
+interface ChangePasswordActionResult {
+    success?: boolean,
+    message?: string,
+    lastValue?: {
+        currentPassword?: string,
+        newPassword?: string,
+        confirmPassword?: string
+    }
+}
+
+
+export const changePasswordAction = async (currentState: any, formData: FormData): Promise<ChangePasswordActionResult> => {
+
+    const currentPassword = formData.get('current-password')?.toString();
+    const newPassword = formData.get('new-password')?.toString();
+    const confirmPassword = formData.get('confirm-password')?.toString();
+
     try {
-        // const requestChangePassword = await CrepenUserApi.changePassword(token?.accessToken ?? '' , formData.get('new-password')?.toString())
+        const tokenGroup = await CrepenAuthOpereationService.getCookieStoreTokenGroup();
 
-        const changePasswordResult = await CrepenUserOperationService.changePassword(formData.get('new-password')?.toString());
+        if (!tokenGroup.success) {
+            throw new CrepenActionError(tokenGroup.message);
+        }
 
-        
 
+        if (StringUtil.isEmpty(currentPassword)) {
+            throw new CrepenActionError('Current password is required.');
+        }
+
+        if (!StringUtil.isMatch(newPassword, confirmPassword)) {
+            throw new CrepenActionError('New password and confirm password not match.');
+        }
+
+
+        const renewalTokenResult = await CrepenAuthOpereationService.renewToken(true);
+        if(!renewalTokenResult.success){
+            throw new CrepenActionError('Session Expired.');
+        }
+
+        const cookieStoreResult = await CrepenAuthOpereationService.setCookieStoreTokenGroup(renewalTokenResult.data);
+        if(!cookieStoreResult.success){
+            throw new CrepenActionError('Session store failed.')
+        }
+
+
+        const changePasswordResult = await CrepenUserOperationService.changePassword(currentPassword, newPassword, confirmPassword);
+
+        if(!changePasswordResult.success){
+            throw new CrepenActionError(changePasswordResult.message);
+        }
 
         return {
-            success: changePasswordResult.success,
-            message: changePasswordResult.success === false ? changePasswordResult.message : undefined
+            success: true,
+            message: changePasswordResult.message
         }
     }
     catch (e) {
-        return {
-            success: false,
-            message: '알 수 없는 오류입니다.'
+        if (e instanceof CrepenActionError) {
+            return {
+                success: false,
+                message: e.message,
+                lastValue : {
+                    currentPassword : currentPassword,
+                    newPassword : newPassword,
+                    confirmPassword : confirmPassword
+                }
+            }
+        }
+        else {
+            return {
+                success: false,
+                message: '알 수 없는 오류입니다.'
+            }
         }
     }
 
-    return {
-        success: true,
-        message: ''
-    }
+    
 }
