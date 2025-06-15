@@ -1,10 +1,7 @@
 'use client'
 
-import { CloudGlobalAsideExpandState } from '@web/lib/state/cloud.global.state';
-import { StringUtil } from '@web/lib/util/string.util';
-import { useAtom, useAtomValue } from 'jotai';
+import { useGlobalAsideExpandState } from '@web/lib/state/cloud.global.state';
 import { usePathname } from 'next/navigation';
-import { useRouter } from 'next/router';
 import { PropsWithChildren, useEffect, } from 'react'
 
 
@@ -14,13 +11,15 @@ interface CloudGlobalAsideWrapProp extends PropsWithChildren {
 
 export const CloudGlobalAsideWrap = (prop: CloudGlobalAsideWrapProp) => {
 
-    const [expandState , setState] = useAtom(CloudGlobalAsideExpandState);
-
-    const ss = usePathname();
+    const expandState = useGlobalAsideExpandState();
+    const pathname = usePathname();
 
     useEffect(() => {
-        setState(false)
-    }, [ss])
+        expandState.toggle(false)
+    }, [pathname])
+
+
+
 
     return (
         <div

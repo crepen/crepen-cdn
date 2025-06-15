@@ -5,6 +5,7 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 import './profile.button.scss';
 import { useRouter } from "next/navigation";
 import { CrepenUser } from "@web/services/types/object/user.object";
+import { useGlobalBasePath } from "@web/lib/state/global.state";
 
 interface ProfileButtonProp {
     userInfo: CrepenUser
@@ -18,6 +19,8 @@ export const ProfileButton = (prop: ProfileButtonProp) => {
     const profileBoxRef = useRef<HTMLDivElement>(null);
     const profileButtonRef = useRef<HTMLButtonElement>(null);
 
+    const globalBasePathState = useGlobalBasePath();
+
     const clickHiddenHandler = (e: MouseEvent) => {
         if (profileBoxRef.current?.getAttribute('data-open') === 'true') {
             if (profileBoxRef.current && !profileBoxRef.current.contains(e.target as Node) && !profileButtonRef.current?.contains(e.target as Node)) {
@@ -29,7 +32,7 @@ export const ProfileButton = (prop: ProfileButtonProp) => {
     const logoutHandler = () => {
         setOpenState(false);
 
-        fetch('/api/signout' , {method : 'DELETE'})
+        fetch(`${globalBasePathState.join('/api/signout')}` , {method : 'DELETE'})
             .then(res => {
                 location.reload();
             })

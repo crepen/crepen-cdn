@@ -2,18 +2,17 @@
 
 import { faBars } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { CloudGlobalAsideExpandState } from "@web/lib/state/cloud.global.state"
-import { useAtom, useSetAtom } from "jotai"
+import { useGlobalAsideExpandState } from "@web/lib/state/cloud.global.state"
 
 export const CloudHeaderMenuButton = () => {
 
-    const [state ,setState] = useAtom(CloudGlobalAsideExpandState)
+    const expandState = useGlobalAsideExpandState();
 
     
 
     return (
         <button className="cp-menu-bt">
-            <FontAwesomeIcon icon={faBars} className='cp-action-icon' onClick={() => setState(!state)}/>
+            <FontAwesomeIcon icon={faBars} className='cp-action-icon' onClick={() => expandState.toggle(!expandState.state)}/>
         </button>
     )
 }

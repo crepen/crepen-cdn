@@ -14,7 +14,8 @@ export const FolderObjectButton = (prop: FolderObjectButtonProp) => {
         <Link
             className="cp-folder-button"
             data-folder-uid={prop.folderInfo.uid}
-            href={new URL('./' + prop.folderInfo.uid, prop.folderBaseUrl)}
+            // href={new URL('./' + prop.folderInfo.uid, prop.folderBaseUrl)}
+            href={`/explorer/folder/${prop.folderInfo.uid}`}
             prefetch={false}
         >
             <span className="cp-folder-title">{prop.folderInfo.folderTitle}</span>

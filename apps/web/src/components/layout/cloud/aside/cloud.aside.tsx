@@ -29,7 +29,7 @@ const CloudGlobalAside = (prop: HeaderMenuAsideProp) => {
                     icon={faHome}
                     label='Home'
                     type='link'
-                    linkHref='/'
+                    linkHref={'/'}
                 />
                 <CloudHeaderMenuButton
                     label='Menu2'

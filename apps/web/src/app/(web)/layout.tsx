@@ -15,6 +15,7 @@ import { PropsWithChildren } from 'react'
 import { InitClient } from '../../components/config/init-client';
 import { config } from '@fortawesome/fontawesome-svg-core'
 import { CrepenLanguageService } from '@web/services/common/language.service';
+import { cookies, headers } from 'next/headers';
 
 
 
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
         type: 'website',
         title: "CrepenCDN",
     },
-    icons: '/favicon.ico'
+    icons: '/favicon.ico',
 };
 
 
@@ -39,10 +40,14 @@ const RootLayoutRouter = async ({ children }: PropsWithChildren) => {
 
     const lang = await CrepenLanguageService.getSessionLocale();
 
+    const basePath = (await headers()).get('x-crepen-basepath')?.toString()
+
+    console.log(basePath);
+
     return (
         <html lang={lang.data}>
             <body>
-                <InitClient >
+                <InitClient basePath={basePath}>
                     <div id="root">
                         {children}
                     </div>

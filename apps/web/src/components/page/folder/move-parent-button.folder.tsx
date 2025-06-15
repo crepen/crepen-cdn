@@ -16,8 +16,7 @@ export const MoveParentFolderButton = (prop: MoveParentFolderButtonProp) => {
     const route = useRouter();
 
     const clickHandler = () => {
-        console.log('?')
-        route.push(new URL(prop.parentUid ?? '' , prop.folderBaseUrl ?? '/').toString())
+        route.push(`/explorer/folder/${prop.parentUid}`)
     }
 
     return (

@@ -6,8 +6,29 @@ import { CrepenAuthOpereationService } from "@web/services/operation/auth.operat
 
 export class AuthMiddleware implements BaseMiddleware {
 
+    private urlMatch = (req: NextRequest, pattern: string) => {
+
+        let fullPattern = `${req.nextUrl.basePath}${pattern}`
+
+        if (fullPattern.endsWith('/')) {
+            fullPattern = fullPattern.slice(0, fullPattern.length - 1);
+        }
+
+        const urlPattern: URLPattern = new URLPattern({ pathname: fullPattern });
+        const isMatch = urlPattern.exec(req.url) !== null;
+
+
+        return isMatch;
+    }
 
     public init = async (req: NextRequest, res: NextResponse): Promise<BaseMiddlewareResponse> => {
+
+        this.urlMatch(req, '/*');
+
+
+
+        const realUrl = req.nextUrl.origin + process.env.BASE_PATH + req.nextUrl.pathname;
+
         if (req.method !== 'GET') {
             return {
                 response: res,
@@ -16,31 +37,31 @@ export class AuthMiddleware implements BaseMiddleware {
         }
 
 
-        // if (!(this.isMatchUrl('/cloud', req.url) || this.isMatchUrl('/cloud/*', req.url)) || this.isMatchUrl('/cloud/logout', req.url)) {
-        //     return {
-        //         response: res,
-        //         type: 'next'
-        //     };
-        // }
-
-        if (this.isMatchUrl('/logout', req.url)) {
+        if (!(this.urlMatch(req, '/') || this.urlMatch(req, '/*')) || this.urlMatch(req, '/logout')) {
             return {
                 response: res,
                 type: 'next'
             };
         }
 
+        // if (this.isMatchUrl('/logout', req.url)) {
+        //     return {
+        //         response: res,
+        //         type: 'next'
+        //     };
+        // }
+
         const token = await CrepenCookieOperationService.getTokenDataInEdge(req);
 
 
-        if (this.isMatchUrl('/login', req.url)) {
+        if (this.urlMatch(req , '/login')) {
 
             const checkAccTk = await CrepenAuthOpereationService.isTokenExpired('access_token', token?.data?.accessToken)
 
             if (checkAccTk.data?.expired === false) {
                 return {
                     type: 'end',
-                    response: NextResponse.redirect(new URL('/', req.url))
+                    response: NextResponse.redirect(new URL(req.nextUrl.basePath, req.url))
                 }
             }
             else {
@@ -50,7 +71,7 @@ export class AuthMiddleware implements BaseMiddleware {
 
                     return {
                         type: 'end',
-                        response: NextResponse.redirect(new URL('/', req.url))
+                        response: NextResponse.redirect(new URL(req.nextUrl.basePath, req.url))
                     }
                 }
             }
@@ -61,7 +82,7 @@ export class AuthMiddleware implements BaseMiddleware {
             if (renewToken.success !== true) {
                 return {
                     type: 'end',
-                    response: NextResponse.redirect(new URL('/login', req.url))
+                    response: NextResponse.redirect(new URL(req.nextUrl.basePath + '/login', req.url))
                 }
             }
 
@@ -69,7 +90,7 @@ export class AuthMiddleware implements BaseMiddleware {
             if (insertCookie.success !== true) {
                 return {
                     type: 'end',
-                    response: NextResponse.redirect(new URL('/login', req.url))
+                    response: NextResponse.redirect(new URL(req.nextUrl.basePath + '/login', req.url))
                 }
             }
 
