@@ -5,22 +5,36 @@ import { CrepenCookieOperationService } from "./cookie.operation.service";
 import { CrepenUserOperationService } from "./user.operation.service";
 import { CrepenCommonError } from "@web/lib/common/common-error";
 import { CrepenServiceError } from "@web/lib/common/service-error";
+import { NextRequest } from "next/server";
 
 export class CrepenAuthOpereationService {
 
+
+    static renewTokenInEdge = async (req: NextRequest, isForce?: boolean): Promise<BaseServiceResult<CrepenToken | undefined>> => {
+        const tokenGroup = await CrepenCookieOperationService.getTokenDataInEdge(req)
+        return this.baseRenewToken(tokenGroup.data, isForce )
+    }
+
     static renewToken = async (isForce?: boolean): Promise<BaseServiceResult<CrepenToken | undefined>> => {
+        const tokenGroup = await CrepenCookieOperationService.getTokenData();
+        return this.baseRenewToken(tokenGroup.data, isForce )
+    }
+
+    private static baseRenewToken = async (tokenGroup?: CrepenToken, isForce?: boolean ): Promise<BaseServiceResult<CrepenToken | undefined>> => {
         let allowRenew = isForce ?? false;
 
-        const tokenGroup = await CrepenCookieOperationService.getTokenData();
+        // const tokenGroup = await CrepenCookieOperationService.getTokenData();
 
         if (allowRenew === false) {
-            const checkTokenRequest = await CrepenAuthApiService.checkTokenExpired('access_token', tokenGroup.data?.accessToken)
+            const checkTokenRequest = await CrepenAuthOpereationService.isTokenExpired('access_token', tokenGroup?.accessToken)
 
             if (checkTokenRequest.success === false) allowRenew = true;
         }
 
         if (allowRenew === true) {
-            const refreshTokenRequest = await CrepenAuthApiService.refreshToken(tokenGroup.data?.refreshToken);
+            const refreshTokenRequest = await CrepenAuthApiService.refreshToken(tokenGroup?.refreshToken);
+
+            
 
             if (!refreshTokenRequest.success) {
                 return {
@@ -38,7 +52,7 @@ export class CrepenAuthOpereationService {
 
         return {
             success: true,
-            data: tokenGroup.data
+            data: tokenGroup
         }
     }
 
@@ -64,7 +78,8 @@ export class CrepenAuthOpereationService {
             }
 
             return {
-                success: true
+                success: true,
+                data : loginToken.data
             }
         }
         catch (e) {
@@ -85,6 +100,10 @@ export class CrepenAuthOpereationService {
 
     }
 
+
+    static isTokenExpired = async (type: 'access_token' | 'refresh_token' , accessToken?: string): Promise<BaseServiceResult<{ expired: boolean; }>> => {
+        return CrepenAuthApiService.checkTokenExpired('access_token', accessToken)
+    }
 
 
 

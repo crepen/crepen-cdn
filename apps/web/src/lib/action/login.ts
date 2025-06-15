@@ -1,7 +1,10 @@
 'use server'
 
+import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { CrepenActionError } from "../common/action-error";
 import { CrepenAuthOpereationService } from "@web/services/operation/auth.operation.service";
+import { CommonUtil } from "../util/common.util";
+import { cookies } from "next/headers";
 
 interface LoginUserActionResult {
     success?: boolean,
@@ -25,9 +28,18 @@ export const loginUser = async (currentState: unknown, formData: FormData): Prom
             throw new CrepenActionError(requestLogin.message);
         }
 
+        
+        const saveCookie = await CrepenCookieOperationService.insertTokenData(requestLogin.data);
+
+        if (saveCookie.success !== true) {
+            throw new CrepenActionError(saveCookie.message, saveCookie.innerError)
+        }
+
+
+
 
         return {
-            success : true
+            success: true
         }
     }
     catch (e) {
@@ -52,5 +64,5 @@ export const loginUser = async (currentState: unknown, formData: FormData): Prom
         }
     }
 
-   
+
 }

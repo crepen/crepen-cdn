@@ -3,7 +3,9 @@ import { CrepenToken, CrepenTokenType } from "@web/services/types/object/auth.ob
 import { StringUtil } from "@web/lib/util/string.util";
 import { NextRequest, NextResponse } from "next/server";
 import { CookieService } from "@crepen-cdn/core/service";
+import { CrepenCookieOperationService } from "../operation/cookie.operation.service";
 
+/** @deprecated */
 export class CrepenSessionEdgeService {
 
 
@@ -25,12 +27,13 @@ export class CrepenSessionEdgeService {
      * @returns 갱신 성공 여부 (만료되지 않았을 경우 `true`)
      */
     static renewalToken = async (req: NextRequest, res: NextResponse, force?: boolean): Promise<boolean> => {
-        const tokenData = this.getTokenData(req)
+        const tokenData = await CrepenCookieOperationService.getTokenDataInEdge(req)
 
         if (force === true) {
             // 강제 토큰 갱신
 
-            const refData = await this.refreshToken(tokenData?.refreshToken);
+            
+            const refData = await this.refreshToken(tokenData.data?.refreshToken);
 
             if (refData !== undefined) {
                 this.saveTokenInCookie(res, refData);
@@ -42,11 +45,11 @@ export class CrepenSessionEdgeService {
         }
         else {
             // 토큰 만료 체크
-            const isACTExpired = await this.isTokenExpired('ACCESS', tokenData?.accessToken);
+            const isACTExpired = await this.isTokenExpired('ACCESS', tokenData.data?.accessToken);
 
             if (isACTExpired === true) {
 
-                const refData = await this.refreshToken(tokenData?.refreshToken);
+                const refData = await this.refreshToken(tokenData.data?.refreshToken);
                 if (refData !== undefined) {
                     this.saveTokenInCookie(res, refData);
                     return true;
@@ -64,7 +67,7 @@ export class CrepenSessionEdgeService {
 
 
 
-
+    /** @deprecated */
     static isTokenExpired = async (type: CrepenTokenType, token?: string) => {
         if (StringUtil.isEmpty(token)) {
             return true;
@@ -75,6 +78,7 @@ export class CrepenSessionEdgeService {
         return expireData.data?.expired ?? true;
     }
 
+    /** @deprecated */
     static refreshToken = async (refToken?: string): Promise<CrepenToken | undefined> => {
         if (StringUtil.isEmpty(refToken)) {
             return undefined;
@@ -92,13 +96,17 @@ export class CrepenSessionEdgeService {
         }
     }
 
+    /** @deprecated */
     static getTokenData = (req: NextRequest): CrepenToken | undefined => {
         const cookieToken = req.cookies.has(this.CREPEN_TOKEN_KEY) ? req.cookies.get(this.CREPEN_TOKEN_KEY) : undefined;
 
+
+        CrepenCookieOperationService.getTokenData
         return CookieService.decryptData<CrepenToken>(cookieToken?.value);
     }
 
 
+    /** @deprecated */
     private static saveTokenInCookie = async (res: NextResponse, tokenData?: CrepenToken) => {
         if (tokenData) {
             const tokenEncryptStr = CookieService.encrtypeData(tokenData);

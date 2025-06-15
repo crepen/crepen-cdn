@@ -30,10 +30,12 @@ export const LoginForm = () => {
     useEffect(() => {
         if (isPending === false && state?.success !== undefined) {
 
+            console.log(state);
+
             if (state.success === true) {
                 const callbackUrl = searchParams.get('callback')?.toString();
                 // location.href = StringUtil.shiftEmptyString(callbackUrl, '/');
-                redirect(StringUtil.shiftEmptyString(callbackUrl, '/cloud'));
+                redirect(StringUtil.shiftEmptyString(callbackUrl, '/'));
             }
             else {
 

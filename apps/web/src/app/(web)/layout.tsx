@@ -40,7 +40,7 @@ const RootLayoutRouter = async ({ children }: PropsWithChildren) => {
     const lang = await CrepenLanguageService.getSessionLocale();
 
     return (
-        <html lang={lang}>
+        <html lang={lang.data}>
             <body>
                 <InitClient >
                     <div id="root">

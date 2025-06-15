@@ -9,7 +9,7 @@ const CloudGlobalHeader = async () => {
     const loginUserData = await CrepenUserOperationService.getLoginUserData();
 
     if(!loginUserData.success || loginUserData.data === undefined){
-        redirect('/cloud/error')
+        redirect('/error')
     }
 
     return (

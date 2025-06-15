@@ -21,6 +21,7 @@
     "@repo/ui": "*",
     "accept-language-parser": "^1.5.0",
     "crypto-js": "^4.2.0",
+    "date-fns": "^4.1.0",
     "jotai": "^2.12.4",
     "luxon": "^3.6.1",
     "next": "^15.3.0",

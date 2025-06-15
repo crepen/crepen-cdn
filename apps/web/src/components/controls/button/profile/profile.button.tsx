@@ -29,7 +29,7 @@ export const ProfileButton = (prop: ProfileButtonProp) => {
     const logoutHandler = () => {
         setOpenState(false);
 
-        fetch('/api/cloud/signout' , {method : 'DELETE'})
+        fetch('/api/signout' , {method : 'DELETE'})
             .then(res => {
                 location.reload();
             })
@@ -72,7 +72,7 @@ export const ProfileButton = (prop: ProfileButtonProp) => {
                         </div>
                     </li>
                     <li className="cp-profile-item cp-profile-menu" onClick={() => {
-                        router.push('/cloud/profile')
+                        router.push('/profile')
                         setOpenState(false)
                     }}>
                         Profile

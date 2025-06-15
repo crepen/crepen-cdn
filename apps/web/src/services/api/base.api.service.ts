@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { CrepenApiOptions, CrepenApiResponse } from "../types/common.api";
 import { StringUtil } from "../../lib/util/string.util";
+import { CrepenLanguageService } from "../common/language.service";
 
 type FetchType = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -24,12 +25,9 @@ export class CrepenApiService {
             }
             else {
                 try {
-                    const cookie = await cookies();
-                    if (cookie.has('crepen_locale') && !StringUtil.isEmpty(cookie.get('crepen_locale')?.value)) {
-                        reqHeader = {
-                            ...reqHeader,
-                            'Accept-Language': cookie.get('crepen_locale')!.value
-                        }
+                    reqHeader = {
+                        ...reqHeader,
+                        'Accept-Language': (await CrepenLanguageService.getSessionLocale()).data! 
                     }
                 }
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -42,7 +40,7 @@ export class CrepenApiService {
                 headers: reqHeader
             }
 
-            
+
 
             if (bodyData !== undefined) {
                 if (bodyData instanceof FormData) {
@@ -52,7 +50,7 @@ export class CrepenApiService {
                     fetchOption.body = JSON.stringify(bodyData);
                     fetchOption.headers = {
                         ...fetchOption.headers,
-                        'Content-Type' : 'application/json'
+                        'Content-Type': 'application/json'
                     }
                 }
 

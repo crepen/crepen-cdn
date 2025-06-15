@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse, URLPattern } from "next/server"
 import { BaseMiddleware, BaseMiddlewareResponse } from "./base.middleware";
 import { CrepenSessionEdgeService } from "../../services/edge-runtime/edge.session.service";
+import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
+import { CrepenAuthOpereationService } from "@web/services/operation/auth.operation.service";
 
 export class AuthMiddleware implements BaseMiddleware {
 
 
     public init = async (req: NextRequest, res: NextResponse): Promise<BaseMiddlewareResponse> => {
-
-
         if (req.method !== 'GET') {
             return {
                 response: res,
@@ -16,54 +16,64 @@ export class AuthMiddleware implements BaseMiddleware {
         }
 
 
-        if (!(this.isMatchUrl('/cloud', req.url) || this.isMatchUrl('/cloud/*', req.url))) {
+        // if (!(this.isMatchUrl('/cloud', req.url) || this.isMatchUrl('/cloud/*', req.url)) || this.isMatchUrl('/cloud/logout', req.url)) {
+        //     return {
+        //         response: res,
+        //         type: 'next'
+        //     };
+        // }
+
+        if (this.isMatchUrl('/logout', req.url)) {
             return {
                 response: res,
                 type: 'next'
             };
         }
 
-        const token = CrepenSessionEdgeService.getTokenData(req);
+        const token = await CrepenCookieOperationService.getTokenDataInEdge(req);
 
-        if (this.isMatchUrl('/cloud/login', req.url)) {
 
-            const checkAccTk = await CrepenSessionEdgeService.isTokenExpired('ACCESS', token?.accessToken)
-            if (checkAccTk === false) {
+        if (this.isMatchUrl('/login', req.url)) {
 
+            const checkAccTk = await CrepenAuthOpereationService.isTokenExpired('access_token', token?.data?.accessToken)
+
+            if (checkAccTk.data?.expired === false) {
                 return {
                     type: 'end',
-                    response: NextResponse.redirect(new URL('/cloud', req.url))
+                    response: NextResponse.redirect(new URL('/', req.url))
                 }
             }
             else {
 
-                const checkRefTk = await CrepenSessionEdgeService.isTokenExpired('REFRESH', token?.refreshToken)
-                if (checkRefTk === false) {
+                const checkRefTk = await CrepenAuthOpereationService.isTokenExpired('refresh_token', token?.data?.refreshToken)
+                if (checkRefTk.data?.expired === false) {
 
                     return {
                         type: 'end',
-                        response: NextResponse.redirect(new URL('/cloud', req.url))
+                        response: NextResponse.redirect(new URL('/', req.url))
                     }
                 }
             }
 
         }
-        else if (this.isMatchUrl('/cloud/logout', req.url)) {
-
-            return {
-                response: res,
-                type: 'next'
-            }
-        }
         else {
-            const isRenew = await CrepenSessionEdgeService.renewalToken(req, res, true);
-
-            if (isRenew === false) {
+            const renewToken = await CrepenAuthOpereationService.renewTokenInEdge(req, true);
+            if (renewToken.success !== true) {
                 return {
                     type: 'end',
-                    response: NextResponse.redirect(new URL('/cloud/login', req.url))
+                    response: NextResponse.redirect(new URL('/login', req.url))
                 }
             }
+
+            const insertCookie = await CrepenCookieOperationService.insertTokenDataInEdge(res, renewToken.data);
+            if (insertCookie.success !== true) {
+                return {
+                    type: 'end',
+                    response: NextResponse.redirect(new URL('/login', req.url))
+                }
+            }
+
+
         }
 
 
