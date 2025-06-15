@@ -42,7 +42,6 @@ const RootLayoutRouter = async ({ children }: PropsWithChildren) => {
 
     const basePath = (await headers()).get('x-crepen-basepath')?.toString()
 
-    console.log(basePath);
 
     return (
         <html lang={lang.data}>

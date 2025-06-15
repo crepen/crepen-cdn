@@ -10,7 +10,6 @@ export const useScreenSize = () => {
     }
 
     useEffect(() => {
-        console.log('active screen size')
         getScreenHeight();
         window.addEventListener('resize' , getScreenHeight);
     },[]);

@@ -32,7 +32,6 @@ export class CrepenFolderOperationService {
     static getFolderData = async (targetFolderUid?: string, includeChild?: boolean): Promise<BaseServiceResult<CrepenFolderWithRelation | undefined>> => {
 
         const tokenGroup = await CrepenCookieOperationService.getTokenData();
-        console.log("WWWW" , tokenGroup);
 
         const getFolderInfoRequest = await CrepenFolderApiService.getFolderData(tokenGroup.data?.accessToken, targetFolderUid, { includeChild: includeChild })
 

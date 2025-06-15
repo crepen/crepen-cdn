@@ -10,8 +10,6 @@ const CloudProfileRoutePage = async () => {
 
     const userData = await CrepenUserOperationService.getLoginUserData();
 
-    console.log(userData);
-
     return (
         <div className='cp-page cp-page-profile'>
             <ProfileChangePasswordCategory />

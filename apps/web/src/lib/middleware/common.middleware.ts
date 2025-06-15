@@ -16,8 +16,6 @@ export class CommonMiddleware implements BaseMiddleware {
 
         //#endregion Append pathname in header
 
-        // console.log(url)
-
         //#region Append url in header
         if (url.pathname) {
             res.headers.append('x-crepen-url', new URL(url.pathname, url.origin).toString());
