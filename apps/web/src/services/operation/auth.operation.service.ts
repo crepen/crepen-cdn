@@ -1,67 +1,17 @@
-import { cookies } from "next/headers";
 import { CrepenAuthApiService } from "../api/auth.api.service";
-import { CrepenSessionService } from "../common/session.service"
-import { CookieService } from "@crepen-cdn/core/service";
-import { CrepenToken } from "@web/services/types/auth.object";
+import { CrepenToken } from "@web/services/types/object/auth.object";
 import { BaseServiceResult } from "../types/common.service";
+import { CrepenCookieOperationService } from "./cookie.operation.service";
+import { CrepenUserOperationService } from "./user.operation.service";
+import { CrepenCommonError } from "@web/lib/common/common-error";
+import { CrepenServiceError } from "@web/lib/common/service-error";
 
 export class CrepenAuthOpereationService {
-
-    static setCookieStoreTokenGroup = async (tokenGroup?: CrepenToken): Promise<BaseServiceResult> => {
-        try {
-            const cookie = await cookies();
-
-            if (tokenGroup === undefined) {
-                cookie.delete('crepen-tk');
-            }
-            else {
-                
-                const encryptData = CookieService.encrtypeData(tokenGroup)
-                cookie.set('crepen-tk', encryptData);
-            }
-
-            return {
-                success : true,
-                message : 'Success',
-            }
-        }
-        catch (e) {
-            return {
-                success: false,
-                message: 'Token save failed.',
-                innerError: e as Error
-            }
-        }
-
-    }
-
-    static getCookieStoreTokenGroup = async (): Promise<BaseServiceResult<CrepenToken | undefined>> => {
-        try {
-            const cookie = await cookies();
-            const cookieData = cookie.get('crepen-tk')?.value;
-
-            const encryptTokenData = CookieService.decryptData<CrepenToken>(cookieData);
-
-            return {
-                success: true,
-                data: encryptTokenData,
-                message: "Success"
-            };
-        }
-        catch (e) {
-            return {
-                success: false,
-                message: 'Token load failed',
-                innerError: e as Error
-            }
-        }
-
-    }
 
     static renewToken = async (isForce?: boolean): Promise<BaseServiceResult<CrepenToken | undefined>> => {
         let allowRenew = isForce ?? false;
 
-        const tokenGroup = await this.getCookieStoreTokenGroup();
+        const tokenGroup = await CrepenCookieOperationService.getTokenData();
 
         if (allowRenew === false) {
             const checkTokenRequest = await CrepenAuthApiService.checkTokenExpired('access_token', tokenGroup.data?.accessToken)
@@ -92,38 +42,50 @@ export class CrepenAuthOpereationService {
         }
     }
 
-    static loginUser = async (id? : string , password? : string) : Promise<BaseServiceResult<CrepenToken | undefined>> => {
-        return {
-            success : false
+    static loginUser = async (id?: string, password?: string): Promise<BaseServiceResult<CrepenToken | undefined>> => {
+
+        try {
+            const loginToken = await CrepenAuthApiService.loginUser(id, password);
+            if (loginToken.success !== true) {
+                throw new CrepenServiceError(loginToken.message)
+            }
+
+
+            const insertCookie = await CrepenCookieOperationService.insertTokenData(loginToken.data);
+            if (insertCookie.success !== true) {
+                throw new CrepenServiceError(insertCookie.message, insertCookie.innerError)
+            }
+
+
+
+            const loginUserData = await CrepenUserOperationService.getLoginUserData();
+            if (loginUserData.success !== true) {
+                throw new CrepenServiceError(loginUserData.message, loginUserData.innerError)
+            }
+
+            return {
+                success: true
+            }
         }
+        catch (e) {
+            if (e instanceof CrepenCommonError) {
+                return {
+                    success: false,
+                    message: e.message,
+                    innerError: e
+                }
+            }
+
+            return {
+                success: false,
+                message: 'Unknown Error',
+                innerError: e as Error
+            }
+        }
+
     }
 
-    /** @deprecated */
-    static rewriteToken = async () => {
-        const tokenGroup = await CrepenSessionService.getTokenData();
-
-        const accessTokenState = await CrepenAuthApiService.checkTokenExpired('access_token', tokenGroup?.accessToken);
-
-        if (accessTokenState.statusCode === 200) {
-            return tokenGroup;
-        }
-
-        const refreshTokenState = await CrepenAuthApiService.refreshToken(tokenGroup?.refreshToken);
-
-        if (refreshTokenState.statusCode === 401) {
-            return undefined;
-        }
-        else {
-            const cookie = await cookies();
 
 
-            return refreshTokenState.data;
-        }
-    }
-
-    /** @deprecated */
-    static checkTokenExpired = async (): Promise<boolean> => {
-        return false;
-    }
 
 }

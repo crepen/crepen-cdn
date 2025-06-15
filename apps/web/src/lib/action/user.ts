@@ -4,6 +4,7 @@ import { CrepenUserOperationService } from "@web/services/operation/user.operati
 import { StringUtil } from "../util/string.util";
 import { CrepenAuthOpereationService } from "@web/services/operation/auth.operation.service";
 import { CrepenActionError } from "../common/action-error";
+import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 
 
 interface ChangePasswordActionResult {
@@ -24,7 +25,7 @@ export const changePasswordAction = async (currentState: any, formData: FormData
     const confirmPassword = formData.get('confirm-password')?.toString();
 
     try {
-        const tokenGroup = await CrepenAuthOpereationService.getCookieStoreTokenGroup();
+        const tokenGroup = await CrepenCookieOperationService.getTokenData();
 
         if (!tokenGroup.success) {
             throw new CrepenActionError(tokenGroup.message);
@@ -45,7 +46,7 @@ export const changePasswordAction = async (currentState: any, formData: FormData
             throw new CrepenActionError('Session Expired.');
         }
 
-        const cookieStoreResult = await CrepenAuthOpereationService.setCookieStoreTokenGroup(renewalTokenResult.data);
+        const cookieStoreResult = await CrepenCookieOperationService.insertTokenData(renewalTokenResult.data);
         if(!cookieStoreResult.success){
             throw new CrepenActionError('Session store failed.')
         }

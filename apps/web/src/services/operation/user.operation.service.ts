@@ -1,13 +1,12 @@
-import { CrepenUser } from "@web/services/types/user.object";
-import { CrepenAuthOpereationService } from "./auth.operation.service";
-import { CrepenSessionService } from "../common/session.service";
+import { CrepenUser } from "@web/services/types/object/user.object";
 import { CrepenUserApiService } from "../api/user.api.service";
 import { BaseServiceResult } from "../types/common.service";
+import { CrepenCookieOperationService } from "./cookie.operation.service";
 
 export class CrepenUserOperationService {
 
     static changePassword = async (currentPassword?: string, password?: string, confirmPassword?: string): Promise<BaseServiceResult> => {
-        const tokenGroup = await CrepenAuthOpereationService.getCookieStoreTokenGroup();
+        const tokenGroup = await CrepenCookieOperationService.getTokenData();
 
         const changePasswordRequest = await CrepenUserApiService.changePassword(tokenGroup.data?.accessToken, currentPassword, password, confirmPassword);
 
@@ -18,15 +17,11 @@ export class CrepenUserOperationService {
 
     }
 
-    /** @deprecated */
-    static getUserData = async (token?: string): Promise<CrepenUser | undefined> => {
-        return undefined;
-    }
+
 
     static getLoginUserData = async (): Promise<BaseServiceResult<CrepenUser | undefined>> => {
 
-        const tokenGroup = await CrepenAuthOpereationService.getCookieStoreTokenGroup();
-
+        const tokenGroup = await CrepenCookieOperationService.getTokenData();
         const getUserRequest = await CrepenUserApiService.getLoginUserData(tokenGroup.data?.accessToken);
 
 

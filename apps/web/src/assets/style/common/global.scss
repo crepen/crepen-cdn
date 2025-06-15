@@ -21,6 +21,7 @@
 
     --color-secondary : #{variable.$color-secondary};
     --color-secondary-rgb : #{variable.hexToRGB(variable.$color-secondary)};
+    --cp-global-font-family : 'Pretendard Variable', 'Noto Sans KR';
 }
 
 

@@ -1,7 +1,7 @@
 'use server'
 
-import { CrepenSessionService } from "@web/services/common/session.service";
 import { CrepenActionError } from "../common/action-error";
+import { CrepenAuthOpereationService } from "@web/services/operation/auth.operation.service";
 
 interface LoginUserActionResult {
     success?: boolean,
@@ -12,13 +12,14 @@ interface LoginUserActionResult {
     }
 }
 
-export const loginUser = async (currentState: any, formData: FormData): Promise<LoginUserActionResult> => {
+export const loginUser = async (currentState: unknown, formData: FormData): Promise<LoginUserActionResult> => {
 
     const userId = formData.get('id')?.toString();
     const password = formData.get('password')?.toString();
 
     try {
-        const requestLogin = await CrepenSessionService.login(userId, password);
+        // const requestLogin = await CrepenSessionService.login(userId, password);
+        const requestLogin = await CrepenAuthOpereationService.loginUser(userId, password);
 
         if (requestLogin.success === false) {
             throw new CrepenActionError(requestLogin.message);

@@ -2,7 +2,6 @@
 import '@web/assets/style/cloud/page/profile/profile.cloud.scss';
 import { ProfileChangeInfoCategory } from '@web/components/page/profile/change-info.category';
 import { ProfileChangePasswordCategory } from '@web/components/page/profile/change-password.category';
-import { CrepenAuthOpereationService } from '@web/services/operation/auth.operation.service';
 import { CrepenUserOperationService } from '@web/services/operation/user.operation.service';
 
 
@@ -10,6 +9,8 @@ import { CrepenUserOperationService } from '@web/services/operation/user.operati
 const CloudProfileRoutePage = async () => {
 
     const userData = await CrepenUserOperationService.getLoginUserData();
+
+    console.log(userData);
 
     return (
         <div className='cp-page cp-page-profile'>

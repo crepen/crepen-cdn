@@ -27,6 +27,8 @@ export class CommonMiddleware implements BaseMiddleware {
 
 
 
+
+
         return {
             response: res,
             type: 'next'

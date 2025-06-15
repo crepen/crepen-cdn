@@ -6,7 +6,7 @@ type FetchType = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 export class CrepenApiService {
 
-    public static fetch = async <T>(method: FetchType, url: string, bodyData?: any, options?: CrepenApiOptions, reqInit?: RequestInit): Promise<CrepenApiResponse<T>> => {
+    public static fetch = async <T>(method: FetchType, url: string, bodyData?: unknown, options?: CrepenApiOptions, reqInit?: RequestInit): Promise<CrepenApiResponse<T>> => {
         try {
             let reqHeader = reqInit?.headers;
             if (options?.token) {
@@ -42,6 +42,8 @@ export class CrepenApiService {
                 headers: reqHeader
             }
 
+            
+
             if (bodyData !== undefined) {
                 if (bodyData instanceof FormData) {
                     fetchOption.body = bodyData
@@ -56,7 +58,6 @@ export class CrepenApiService {
 
             }
 
-
             const fetchData = await fetch(new URL(url, process.env.API_URL ?? ''), fetchOption);
 
             const fetchJson = await fetchData.json();
@@ -69,6 +70,7 @@ export class CrepenApiService {
                 statusCode: fetchJson?.statusCode ?? 500
             }
         }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         catch (e) {
             return {
                 success: false,

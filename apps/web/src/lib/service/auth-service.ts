@@ -1,7 +1,7 @@
 import { CrepenApiService } from "../../services/api/base.api.service";
 import { CrepenApiResponse } from "../../services/types/common.api";
-import { CrepenToken, CrepenTokenType } from "../../services/types/auth.object";
-import { CrepenUser } from "../../services/types/user.object";
+import { CrepenToken, CrepenTokenType } from "../../services/types/object/auth.object";
+import { CrepenUser } from "../../services/types/object/user.object";
 
 /** @deprecated */
 export class CrepenAuthService {

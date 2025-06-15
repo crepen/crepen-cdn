@@ -28,7 +28,6 @@ export class CrepenEnvConfigService {
         const errorMessageArray = [];
 
 
-        // console.log(this.configService);
 
         //SERVER
 

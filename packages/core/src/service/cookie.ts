@@ -4,6 +4,8 @@ import { DateTime } from 'luxon'
 
 
 
+
+/** @deprecated */
 export const decryptData = <T>(encryptCookieStr?: string): T | undefined => {
     try {
         const secretKey = process.env.AUTH_SECRET ?? 'secret-key';
@@ -17,6 +19,7 @@ export const decryptData = <T>(encryptCookieStr?: string): T | undefined => {
     }
 }
 
+/** @deprecated */
 export const encrtypeData = (data?: object) => {
     const dataStr: string =  JSON.stringify(data ?? {});
     const secretKey = process.env.AUTH_SECRET ?? 'secret-key';
@@ -25,22 +28,4 @@ export const encrtypeData = (data?: object) => {
     return encryptStr;
 }
 
-export const isExpireUserSession = (expireTimeStr?: string) => {
-
-    let parseExpTime : number = 0;
-
-    try{
-        parseExpTime = Number.parseInt(expireTimeStr ?? '')
-    }
-    catch(e){}
-
-    const expireTime = DateTime.fromMillis(parseExpTime);
-
-
-    if (expireTime >= DateTime.now()) {
-        return false;
-    }
-
-    return true;
-}
 

@@ -2,3 +2,13 @@
 
 
 
+:root {
+    --common-page-padding : 10px;
+}
+
+
+
+.cp-common-page {
+    padding-inline: var(--common-page-padding);
+
+}

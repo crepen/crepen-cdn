@@ -1,0 +1,8 @@
+{
+    "FOLDER_COMMON_SUCCESS" : "Success.",
+
+    "FOLDER_LOAD_FOLDER_UID_UNDEFINED" : "Folder uid is undefined.",
+    "FOLDER_LOAD_FOLDER_TARGET_NOT_FOUND" : "Folder not found.",
+
+    "FOLDER_LOAD_UNAUTHORIZED" : ""
+}

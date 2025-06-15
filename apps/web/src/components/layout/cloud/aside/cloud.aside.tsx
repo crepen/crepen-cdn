@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { PropsWithChildren } from "react";
 import CloudHeaderMenuButton from "../menu-button";
-import { faHome, faProjectDiagram, faGear } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faProjectDiagram, faGear, faFolder } from "@fortawesome/free-solid-svg-icons";
 import CloudHeaderActionButton from "../action-button";
 
 import LogoImage from '@web/assets/img/crepen-cdn-logo.png';
@@ -38,6 +38,12 @@ const CloudGlobalAside = (prop: HeaderMenuAsideProp) => {
                 />
                 <CloudHeaderMenuButton
                     label='Menu2'
+                />
+                <CloudHeaderMenuButton
+                    icon={faFolder}
+                    label='Explorer'
+                    type='link'
+                    linkHref='/cloud/explorer/folder'
                 />
             </div>
             <div className='cp-aside-item cp-bottom'>

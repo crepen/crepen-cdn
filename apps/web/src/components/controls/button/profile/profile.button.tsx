@@ -4,7 +4,7 @@ import { AvartarIconButton } from "../avartar/avartar.button"
 import { Fragment, useEffect, useRef, useState } from 'react'
 import './profile.button.scss';
 import { useRouter } from "next/navigation";
-import { CrepenUser } from "@crepen-cdn/core/service";
+import { CrepenUser } from "@web/services/types/object/user.object";
 
 interface ProfileButtonProp {
     userInfo: CrepenUser
@@ -24,6 +24,19 @@ export const ProfileButton = (prop: ProfileButtonProp) => {
                 setOpenState(false);
             }
         }
+    }
+
+    const logoutHandler = () => {
+        setOpenState(false);
+
+        fetch('/api/cloud/signout' , {method : 'DELETE'})
+            .then(res => {
+                location.reload();
+            })
+            .catch(e => {
+                console.log('로그아웃 실패' , e );
+                alert('로그아웃에 실패했습니다.')
+            }) 
     }
 
     useEffect(() => {
@@ -64,9 +77,7 @@ export const ProfileButton = (prop: ProfileButtonProp) => {
                     }}>
                         Profile
                     </li>
-                    <li className="cp-profile-item cp-profile-menu" onClick={() => {
-                        setOpenState(false)
-                    }}>
+                    <li className="cp-profile-item cp-profile-menu" onClick={logoutHandler}>
                         Logout
                     </li>
                 </ul>

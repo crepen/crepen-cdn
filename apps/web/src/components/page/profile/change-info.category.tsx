@@ -1,8 +1,7 @@
 'use client'
 
-import { CrepenUser } from "@web/services/types/user.object";
+import { CrepenUser } from "@web/services/types/object/user.object";
 import { ProfileCategoryGroup } from "./category-group";
-import { useEffect } from "react";
 
 interface ProfileChangeInfoCategoryProp {
     userData?: CrepenUser
@@ -10,9 +9,6 @@ interface ProfileChangeInfoCategoryProp {
 
 export const ProfileChangeInfoCategory = (prop: ProfileChangeInfoCategoryProp) => {
 
-    useEffect(() => {
-        console.log('USR_DT_1', prop.userData)
-    }, [])
 
     return (
         <ProfileCategoryGroup
@@ -20,9 +16,9 @@ export const ProfileChangeInfoCategory = (prop: ProfileChangeInfoCategoryProp) =
             title="Change Info"
         >
             {
-                prop.userData !== undefined
+                prop.userData === undefined
                     ? < UserDataLoadFailBox />
-                    : <div></div>
+                    : <div>Name : {prop.userData.name}</div>
             }
         </ProfileCategoryGroup>
     )

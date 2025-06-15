@@ -11,6 +11,7 @@ import { DataSource } from "typeorm";
 
                 const entityDir = __dirname + '/../../app/**/entity/*.entity{.ts,.js}'
 
+
                 const dataSource = new DataSource({
                     type: 'mariadb',
                     host: configService.get<string>('db.host'),
