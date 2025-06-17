@@ -1,0 +1,7 @@
+{
+  "FILE_COMMON_SUCCESS": "성공했습니다.",
+
+  "FILE_LOAD_INFO_UID_NOT_FOUND": "UID를 입력해주세요.",
+  "FILE_NOT_FOUND" : "파일을 찾을 수 없습니다.",
+  "FILE_UNAUTHORIZED" : "파일을 읽을 수 있는 권한이 없습니다."
+}

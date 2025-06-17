@@ -10,15 +10,18 @@ import { JwtUserRequest } from "@crepen-nest/interface/jwt";
 import { LoadFolderDataResponseDto, LoadFolderDataWithChildResponseDto } from "./dto/folder.dto";
 import { AddFolderDto } from "./dto/add.folder.dto";
 import { FolderEntity } from "./entity/folder.entity";
+import { CrepenFileRouteService } from "../file/file.service";
+import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
 
-@ApiTags('[Common] 사용자 파일/폴더 관리 컨트롤러')
+@ApiTags('[Common] 사용자 폴더 관리 컨트롤러')
 @ApiHeader({
     name: 'Accept-Language', required: false, enum: ['en', 'ko']
 })
 @Controller('explorer/folder')
 export class CrepenFolderRouteController {
     constructor(
-        private readonly explorerService: CrepenFolderRouteService
+        private readonly folderService: CrepenFolderRouteService,
+        private readonly fileService : CrepenFileRouteService
     ) { }
 
 
@@ -40,7 +43,7 @@ export class CrepenFolderRouteController {
             throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_LOAD_FOLDER_UID_UNDEFINED', HttpStatus.BAD_REQUEST);
         }
 
-        const targetFolderData = await this.explorerService.getFolderData(uid);
+        const targetFolderData = await this.folderService.getFolderData(uid);
 
         if (targetFolderData === null) {
             throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_LOAD_FOLDER_TARGET_NOT_FOUND', HttpStatus.BAD_REQUEST);
@@ -53,7 +56,7 @@ export class CrepenFolderRouteController {
         const childList: FolderEntity[] = [];
 
         if (isLoadChild === true) {
-            const childData = await this.explorerService.getChildFolder(uid);
+            const childData = await this.folderService.getChildFolder(uid);
 
             if (childData.length > 0) {
                 childList.push(...childData);
@@ -90,7 +93,7 @@ export class CrepenFolderRouteController {
         @I18n() i18n: I18nContext,
 
     ) {
-        const rootFolder = await this.explorerService.getRootFolder(req.user.entity.uid)
+        const rootFolder = await this.folderService.getRootFolder(req.user.entity.uid)
         return BaseResponse.ok<FolderEntity>(
             rootFolder,
             HttpStatus.OK,
@@ -113,16 +116,42 @@ export class CrepenFolderRouteController {
         @Body() bodyData: AddFolderDto
     ) {
         // console.log(bodyData)
-        await this.explorerService.appendChildFolder(bodyData.parentFolderUid, bodyData.folderTitle, req.user.entity.uid);
+        const newFolderUid = await this.folderService.appendChildFolder(bodyData.parentFolderUid, bodyData.folderTitle, req.user.entity.uid);
 
         return BaseResponse.ok(
-            undefined,
+            newFolderUid,
             HttpStatus.OK,
-            i18n.t('cloud_folder.FOLDER_COMMON_SUCCESS')
+            i18n.t('common.SUCCESS')
         )
     }
 
 
+    @Get('files')
+    async getFolderFile(
+        @Req() req: JwtUserRequest,
+        @I18n() i18n: I18nContext,
+        @Query('uid') uid?: string
+    ) {
+        if(StringUtil.isEmpty(uid)){
+            throw new CrepenLocaleHttpException('cloud_folder','FOLDER_LOAD_FOLDER_UID_UNDEFINED',HttpStatus.BAD_REQUEST);
+        }
+
+
+        const folderData = await this.folderService.getFolderData(uid);
+
+        if(ObjectUtil.isNullOrUndefined(folderData)){
+            throw new CrepenLocaleHttpException('cloud_folder' , 'FOLDER_LOAD_FOLDER_TARGET_NOT_FOUND' , HttpStatus.NOT_FOUND);
+        }
+
+        const fileList = await this.fileService.getFolderFiles(folderData.uid);
+
+
+        return BaseResponse.ok(
+            fileList,
+            HttpStatus.OK,
+            i18n.t('common.SUCCESS')
+        )
+    }
 
 
 }

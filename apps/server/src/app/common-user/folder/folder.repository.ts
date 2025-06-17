@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { DataSource, IsNull, Repository, TreeRepository } from "typeorm";
 import { FolderEntity } from "./entity/folder.entity";
 import { randomUUID } from "crypto";
-import { FolderTreeEntity } from "./entity/folder-tree.entity";
 
 @Injectable()
 export class CrepenFolderRouteRepository {
@@ -60,5 +59,4 @@ export class CrepenFolderRouteRepository {
             }
         })
     }
-
 }

@@ -6,6 +6,7 @@ import { MoveParentFolderButton } from "@web/components/page/folder/move-parent-
 import { CrepenHttpService } from "@web/services/common/http.service"
 import { FolderObjectButton } from "@web/components/page/folder/folder-button.folder"
 import { AddFolderButton } from "@web/components/page/folder/add-folder-button.folder"
+import Link from "next/link"
 
 interface ExplorerFolderRoutePageProp {
     params: Promise<{
@@ -43,10 +44,13 @@ export const ExplorerFolderRoutePage = async (prop: ExplorerFolderRoutePageProp)
                     </div>
 
                     <div className="right-align">
-                        <AddFolderButton 
+                        <AddFolderButton
                             parentFolderUid={folderData.data?.info.uid}
                         />
-                        <button>Add Files</button>
+                        <Link href={`/explorer/file/add?folder=${folderData.data?.info.uid}`}>
+                            <button>Add Files</button>
+                        </Link>
+
                     </div>
                 </div>
                 <div className="cp-child-folder-list">

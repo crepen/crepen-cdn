@@ -1,4 +1,4 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, BadRequestException, NotFoundException } from '@nestjs/common';
 import { CrepenLocaleHttpException } from '@crepen-nest/lib/exception/crepen.http.exception';
 import { BaseResponse } from '@crepen-nest/lib/util/base.response';
 import { StringUtil } from '@crepen-nest/lib/util/string.util';
@@ -56,8 +56,12 @@ export class ExceptionResponseFilter implements ExceptionFilter {
                     BaseResponse.error(exception.getStatus(), i18n.t(message) , message )
                 )
         }
+        else if (exception instanceof NotFoundException){
+            response.status(404)
+            .json()
+        }
         else if (exception instanceof HttpException) {
-            console.log(exception);
+            console.log('ELSE HTTPEXCEPTION',exception);
             response
                 .status(500)
                 .json(
@@ -65,7 +69,7 @@ export class ExceptionResponseFilter implements ExceptionFilter {
                 )
         }
         else {
-            console.log(exception);
+            console.log('ELSE',exception);
             response
                 .status(500)
                 .json(

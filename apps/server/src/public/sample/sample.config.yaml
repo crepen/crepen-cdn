@@ -10,4 +10,6 @@ secret:
   jwt : 'SECRET_KEY'
 jwt : 
   expireTime : 1h
+path : 
+  fileStore: 
 

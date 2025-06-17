@@ -1,4 +1,6 @@
 {
     "INTERNAL_SERVER_ERROR" : "Internal Server Error",
-    "VALIDATION_ERROR_EMAIL" : "Email value is not email format."
+    "VALIDATION_ERROR_EMAIL" : "Email value is not email format.",
+
+    "SUCCESS" : "Success."
 }
