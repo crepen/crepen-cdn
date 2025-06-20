@@ -1,4 +1,4 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, BadRequestException, NotFoundException } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, BadRequestException, NotFoundException, Logger } from '@nestjs/common';
 import { CrepenLocaleHttpException } from '@crepen-nest/lib/exception/crepen.http.exception';
 import { BaseResponse } from '@crepen-nest/lib/util/base.response';
 import { StringUtil } from '@crepen-nest/lib/util/string.util';
@@ -26,6 +26,14 @@ export class ExceptionResponseFilter implements ExceptionFilter {
 
             message = exception.message;
 
+            Logger.error(i18n.t(message, {
+                args: exception.transLocaleArgs
+            }))
+            if(exception.cause !== undefined){
+                Logger.error(exception.cause);
+            }
+            
+
             response
                 .status(exception.getStatus())
                 .json(
@@ -39,7 +47,7 @@ export class ExceptionResponseFilter implements ExceptionFilter {
         }
         else if (exception instanceof I18nValidationException) {
 
-            
+
 
 
             if (exception.errors.length > 0) {
@@ -53,15 +61,15 @@ export class ExceptionResponseFilter implements ExceptionFilter {
             response
                 .status(exception.getStatus())
                 .json(
-                    BaseResponse.error(exception.getStatus(), i18n.t(message) , message )
+                    BaseResponse.error(exception.getStatus(), i18n.t(message), message)
                 )
         }
-        else if (exception instanceof NotFoundException){
+        else if (exception instanceof NotFoundException) {
             response.status(404)
-            .json()
+                .json()
         }
         else if (exception instanceof HttpException) {
-            console.log('ELSE HTTPEXCEPTION',exception);
+            console.log('ELSE HTTPEXCEPTION', exception);
             response
                 .status(500)
                 .json(
@@ -69,7 +77,7 @@ export class ExceptionResponseFilter implements ExceptionFilter {
                 )
         }
         else {
-            console.log('ELSE',exception);
+            console.log('ELSE', exception);
             response
                 .status(500)
                 .json(

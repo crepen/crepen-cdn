@@ -9,9 +9,7 @@ import { CrepenFileRouteService } from "../file/file.service";
 @Injectable()
 export class CrepenFolderRouteService {
     constructor(
-        private readonly repo: CrepenFolderRouteRepository,
-        private readonly fileService: CrepenFileRouteService
-
+        private readonly repo: CrepenFolderRouteRepository
     ) { }
 
     getRootFolder = async (userUid?: string): Promise<FolderEntity | null> => {
@@ -19,13 +17,13 @@ export class CrepenFolderRouteService {
         //     throw new CrepenLocaleHttpException('')
         // }
 
-        const userRootFolder = await this.repo.getRootFolder(userUid);
+        const userRootFolder = await this.repo.setDefaultManager().getRootFolder(userUid);
 
 
         if (userRootFolder === null) {
             // Root Folder를 찾을 수 없을 경우, 새로 생성
 
-            const initRootFolder = await this.repo.initRootFolder(userUid);
+            const initRootFolder = await this.repo.setDefaultManager().initRootFolder(userUid);
             return this.getRootFolder();
         }
 
@@ -34,7 +32,7 @@ export class CrepenFolderRouteService {
 
     getFolderData = async (folderUid: string): Promise<FolderEntity | null> => {
 
-        const targetFolder = this.repo.getFolder(folderUid);
+        const targetFolder = this.repo.setDefaultManager().getFolder(folderUid);
 
         return targetFolder;
     }
@@ -50,7 +48,7 @@ export class CrepenFolderRouteService {
             throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_LOAD_UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
         }
 
-        const matchTitleFolders = await this.repo.getDuplicateTitleFolders(title, parentFolder.uid);
+        const matchTitleFolders = await this.repo.setDefaultManager().getDuplicateTitleFolders(title, parentFolder.uid);
 
         if (matchTitleFolders.length > 0) {
             throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_INSERT_VALIDATE_ERROR_DUPLICATE_TITLE', HttpStatus.BAD_REQUEST);
@@ -64,13 +62,13 @@ export class CrepenFolderRouteService {
         insertFolderData.parentFolderUid = parentFolder.uid;
         insertFolderData.ownerUid = ownerUid;
 
-        await this.repo.addFolder(insertFolderData);
+        await this.repo.setDefaultManager().addFolder(insertFolderData);
 
         return insertFolderUUID;
     }
 
     getChildFolder = async (parentFolderUid: string) => {
-        const childFolders = this.repo.getChildFolders(parentFolderUid);
+        const childFolders = this.repo.setDefaultManager().getChildFolders(parentFolderUid);
 
         return childFolders;
     }

@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { StringUtil } from './string.util';
+import { promises } from 'dns';
 
 export class EncryptUtil {
     static async hashPassword(password: string): Promise<string> {
@@ -13,4 +14,6 @@ export class EncryptUtil {
         if (StringUtil.isEmpty(hash)) return false;
         return await bcrypt.compare(password, hash);
     }
+
+
 }

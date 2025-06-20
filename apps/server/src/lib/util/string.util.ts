@@ -3,7 +3,10 @@ export class StringUtil {
 
     /** @deprecated */
     static checkEmpty = (text?: string | null, rewriteText?: string) => {
-        if (text === undefined || text === null || text.trim() === '') {
+        if (text === undefined || text === null) {
+            return rewriteText ?? undefined;
+        }
+        else if(typeof text === 'string' && text.trim() === ''){
             return rewriteText ?? undefined;
         }
 
@@ -21,7 +24,7 @@ export class StringUtil {
     static joinClassName = (className: string | undefined, ...addClass: (string | undefined)[]) => {
         let classNames = className ?? '';
         for (const item of addClass) {
-            classNames += ` ${addClass}`
+            classNames += ` ${item}`
             classNames = classNames.trim();
         }
 
@@ -36,7 +39,7 @@ export class StringUtil {
         return false;
     }
 
-    static randomString = (length : number) => {
+    static randomString = (length: number) => {
         const alphanumericChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
         let result = '';

@@ -3,5 +3,13 @@
 
   "FILE_LOAD_INFO_UID_NOT_FOUND": "UID를 입력해주세요.",
   "FILE_NOT_FOUND" : "파일을 찾을 수 없습니다.",
-  "FILE_UNAUTHORIZED" : "파일을 읽을 수 있는 권한이 없습니다."
+  "FILE_UNAUTHORIZED" : "파일을 읽을 수 있는 권한이 없습니다.",
+  "FILE_LOAD_ERROR" : "파일을 가져올 수 없습니다.",
+
+  "FILE_ADD_FAILED_TITLE_UNDEFINED" : "파일명을 입력해주세요.",
+  "FILE_ADD_FAILED_PARENT_FOLDER_UID_UNDEFINED" : "등록할 폴더 정보가 입력되지 않았습니다.",
+  "FILE_ADD_FAILED_FILE_UNDEFINED" : "파일이 등록되지 않았습니다.",
+  "FILE_ADD_FAILED_FILE_SAVE_FAILED" : "파일을 저장할 수 없습니다.",
+
+  "FILE_ADD_FAILED_OPTION_BOOLEAN_TYPE" : "옵션값이 Boolean이 아닙니다."
 }

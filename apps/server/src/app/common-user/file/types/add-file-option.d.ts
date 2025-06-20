@@ -1,0 +1,3 @@
+interface CrepenAddFileOptions {
+    shared : boolean
+}

@@ -8,6 +8,7 @@ db:
   password: ''
 secret:
   jwt : 'SECRET_KEY'
+  file : 'FILE_SECRET_KEY'
 jwt : 
   expireTime : 1h
 path : 

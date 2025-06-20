@@ -19,12 +19,15 @@ export const CloudGlobalAsideWrap = (prop: CloudGlobalAsideWrapProp) => {
     }, [pathname])
 
 
+    useEffect(() => {
+        console.log('EXPAND_STATE',expandState);
+    },[expandState])
 
 
     return (
         <div
             className={prop.className}
-            data-expand={expandState}
+            data-expand={expandState.state}
         >
             {prop.children}
         </div>

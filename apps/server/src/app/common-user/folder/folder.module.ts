@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { CrepenFolderRouteController } from "./folder.controller";
 import { CrepenFolderRouteService } from "./folder.service";
 import { CrepenFolderRouteRepository } from "./folder.repository";
@@ -7,9 +7,10 @@ import { CrepenFileRouteModule } from "../file/file.module";
 
 @Module({
     imports : [
-        CrepenFileRouteModule
+        forwardRef(() => CrepenFileRouteModule)
     ],
     controllers : [CrepenFolderRouteController],
-    providers : [CrepenFolderRouteService , CrepenFolderRouteRepository ]
+    providers : [CrepenFolderRouteService , CrepenFolderRouteRepository ],
+    exports : [CrepenFolderRouteService]
 })
 export class CrepenFolderRouteModule {}

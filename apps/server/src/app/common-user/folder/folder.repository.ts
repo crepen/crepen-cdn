@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { DataSource, IsNull, Repository, TreeRepository } from "typeorm";
+import { DataSource, EntityManager, IsNull, Repository, TreeRepository } from "typeorm";
 import { FolderEntity } from "./entity/folder.entity";
 import { randomUUID } from "crypto";
 
@@ -8,8 +8,20 @@ export class CrepenFolderRouteRepository {
 
     private repo: Repository<FolderEntity>;
 
-    constructor(private readonly dataSource: DataSource) {
+    constructor(
+        private readonly dataSource: DataSource
+    ) {
         this.repo = this.dataSource.getRepository(FolderEntity);
+    }
+
+    setManager = (manager: EntityManager) => {
+        this.repo = manager.getRepository(FolderEntity);
+        return this;
+    }
+
+    setDefaultManager = () => {
+        this.repo = this.dataSource.getRepository(FolderEntity);
+        return this;
     }
 
 
@@ -17,12 +29,12 @@ export class CrepenFolderRouteRepository {
         return this.repo.findOne({
             where: {
                 ownerUid: userUid,
-                parentFolderUid : IsNull()
+                parentFolderUid: IsNull()
             }
         })
     }
 
-    initRootFolder = (userUid : string) => {
+    initRootFolder = (userUid: string) => {
         const entity = new FolderEntity();
         entity.ownerUid = userUid;
         entity.uid = randomUUID()
@@ -31,31 +43,31 @@ export class CrepenFolderRouteRepository {
         return this.repo.save(entity);
     }
 
-    getFolder = (folderUid : string) => {
+    getFolder = (folderUid: string) => {
         return this.repo.findOne({
-            where : {
-                uid : folderUid
+            where: {
+                uid: folderUid
             }
         })
     }
 
-    addFolder = (folderData : FolderEntity) => {
+    addFolder = (folderData: FolderEntity) => {
         return this.repo.save(folderData);
     }
 
-    getDuplicateTitleFolders = (title: string , parentFolderUid : string) => {
+    getDuplicateTitleFolders = (title: string, parentFolderUid: string) => {
         return this.repo.find({
-            where : {
-                parentFolderUid : parentFolderUid,
-                folderTitle : title
+            where: {
+                parentFolderUid: parentFolderUid,
+                folderTitle: title
             }
         })
     }
 
-    getChildFolders = (parentFolderUid : string) => {
+    getChildFolders = (parentFolderUid: string) => {
         return this.repo.find({
-            where : {
-                parentFolderUid : parentFolderUid
+            where: {
+                parentFolderUid: parentFolderUid
             }
         })
     }

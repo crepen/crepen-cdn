@@ -75,11 +75,24 @@ export class CrepenEnvConfigService {
         if (!secretJwt || typeof secretJwt !== 'string' || StringUtil.isEmpty(secretJwt)) {
             errorMessageArray.push('Secret.jwt not defined.');
         }
+
+        const secretFile = this.configService.get<string>('secret.file') ?? undefined;
+        if (!secretFile || typeof secretFile !== 'string' || StringUtil.isEmpty(secretFile)) {
+            errorMessageArray.push('Secret.file not defined.');
+        }
  
         //JWT
         const jwtExpireTime = this.configService.get<string>('jwt.expireTime') ?? undefined;
         if (!jwtExpireTime || typeof jwtExpireTime !== 'string' || StringUtil.isEmpty(jwtExpireTime)) {
             errorMessageArray.push('Jwt.expireTime not defined.');
+        }
+
+
+
+        //STORE
+        const fileStorePath = this.configService.get<string>('path.fileStore') ?? undefined;
+        if (!fileStorePath || typeof fileStorePath !== 'string' || StringUtil.isEmpty(fileStorePath)) {
+            errorMessageArray.push('path.fileStore not defined.');
         }
 
 

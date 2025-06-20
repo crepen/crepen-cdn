@@ -3,7 +3,8 @@
 import { CommonPageError } from "@web/components/page/common/error-page.common";
 import { StringUtil } from "@web/lib/util/string.util";
 import { Params } from "next/dist/server/request/params";
-import { SearchParams } from "next/dist/server/request/search-params";
+import '@web/assets/style/cloud/page/file/add.file.scss'
+import AddFileForm from "@web/components/page/file/add-form.file";
 
 
 interface ExplorerDefaultAddFileRoutePageProp {
@@ -32,15 +33,6 @@ const ExplorerDefaultAddFileRoutePage = async (prop: ExplorerDefaultAddFileRoute
     )
 }
 
-interface AddFileFormProp {
-    folderUid: string
-}
 
-const AddFileForm = (prop: AddFileFormProp) => {
-    return (
-        <div>{prop.folderUid}</div>
-    )
-    
-}
 
 export default ExplorerDefaultAddFileRoutePage;
