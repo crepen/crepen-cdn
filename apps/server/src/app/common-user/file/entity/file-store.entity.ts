@@ -30,7 +30,7 @@ export class FileStoreEntity {
     updateDate?: Date;
 
 
-    @OneToOne(() => FileEntity, (file) => file.fileStore)
+    @OneToOne(() => FileEntity, (file) => file.fileStore, {createForeignKeyConstraints : false})
     file: FileEntity;
 
 }

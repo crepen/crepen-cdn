@@ -33,11 +33,11 @@ export class FileEntity {
     updateDate?: Date;
 
 
-    @OneToOne(() => FileStoreEntity)
+    @OneToOne(() => FileStoreEntity, {createForeignKeyConstraints : false})
     @JoinColumn({ name: 'file_uid', referencedColumnName: 'uid' })
     fileStore: FileStoreEntity;
 
-    @ManyToOne(() => FolderEntity , (obj) => obj.files)
+    @ManyToOne(() => FolderEntity , (obj) => obj.files, {createForeignKeyConstraints : false})
     @JoinColumn({ name: 'parent_folder_uid', referencedColumnName: 'uid' })
     relativeFolder : FolderEntity
     
