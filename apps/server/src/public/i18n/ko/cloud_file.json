@@ -11,5 +11,11 @@
   "FILE_ADD_FAILED_FILE_UNDEFINED" : "파일이 등록되지 않았습니다.",
   "FILE_ADD_FAILED_FILE_SAVE_FAILED" : "파일을 저장할 수 없습니다.",
 
+
+  
+  "FILE_REL_FAILED_FILE_UID_UNDEFINED" : "파일 고유 키가 입력되지 않았습니다.",
+  "FILE_REL_FAILED_FOLDER_UID_UNDEFINED" : "등록할 폴더가 입력되지 않았습니다.",
+  "FILE_REL_FAILED_FILE_TITLE_UNDEFINED" : "파일명이 입력되지 않았습니다.",
+
   "FILE_ADD_FAILED_OPTION_BOOLEAN_TYPE" : "옵션값이 Boolean이 아닙니다."
 }

@@ -1,4 +1,5 @@
 import { UserEntity } from "@crepen-nest/app/common-user/user/entity/user.entity"
+import { Request as ExpressRequest } from "express"
 
 ////// V1
 export type CrepenTokenType = 'access_token' | 'refresh_token'
@@ -16,6 +17,10 @@ export interface CrepenTokenData {
 }
 
 export interface JwtUserRequest extends Request {
+    user? : CrepenTokenData
+}
+
+export interface JwtUserExpressRequest extends ExpressRequest {
     user? : CrepenTokenData
 }
 

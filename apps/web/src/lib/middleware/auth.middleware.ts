@@ -23,11 +23,10 @@ export class AuthMiddleware implements BaseMiddleware {
 
     public init = async (req: NextRequest, res: NextResponse): Promise<BaseMiddlewareResponse> => {
 
-        this.urlMatch(req, '/*');
 
 
 
-        const realUrl = req.nextUrl.origin + process.env.BASE_PATH + req.nextUrl.pathname;
+        // const realUrl = req.nextUrl.origin + process.env.BASE_PATH + req.nextUrl.pathname;
 
         if (req.method !== 'GET') {
             return {

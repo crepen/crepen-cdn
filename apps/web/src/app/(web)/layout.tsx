@@ -43,10 +43,14 @@ const RootLayoutRouter = async ({ children }: PropsWithChildren) => {
     const basePath = (await headers()).get('x-crepen-basepath')?.toString()
 
 
+
     return (
         <html lang={lang.data}>
             <body>
-                <InitClient basePath={basePath}>
+                <InitClient
+                    basePath={basePath}
+                    language={lang.data}
+                >
                     <div id="root">
                         {children}
                     </div>

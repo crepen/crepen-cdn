@@ -18,6 +18,12 @@ export class CrepenCryptoService {
     private readonly algorithm = 'aes-256-cbc';
 
 
+    getFileHash = (buffer : Buffer) => {
+        const sha256 = crypto.createHash('sha256');
+        sha256.update(buffer);
+
+        return sha256.digest('hex');
+    }
 
     encryptFile = async (file: Express.Multer.File, convertName: string): Promise<{ file: Express.Multer.File, encryptMime: string }> => {
 

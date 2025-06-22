@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
+import { FileStoreEntity } from "./file-store.entity";
+import { FolderEntity } from "../../folder/entity/folder.entity";
 
 @Entity('file')
 export class FileEntity {
@@ -15,15 +17,11 @@ export class FileEntity {
     @Column({ type: 'varchar', name: 'parent_folder_uid' })
     parentFolderUid?: string;
 
-    @Column({ type: 'boolean', name: 'is_shared' })
+    @Column({ type: 'boolean', name: 'is_shared', default: () => false })
     isShared?: boolean;
 
-    @Column({ type: 'varchar', name: 'file_name' })
-    fileName: string
-
-
-    @Column({type : 'varchar' , name : 'origin_file_mine' , length : 1000})
-    originFileMine : string
+    @Column({ type: 'varchar', name: 'file_uid' })
+    fileUid: string
 
 
     @Column({ name: 'create_date', type: "datetime", default: () => 'sysdate()' })
@@ -34,4 +32,13 @@ export class FileEntity {
     // @Exclude()
     updateDate?: Date;
 
+
+    @OneToOne(() => FileStoreEntity)
+    @JoinColumn({ name: 'file_uid', referencedColumnName: 'uid' })
+    fileStore: FileStoreEntity;
+
+    @ManyToOne(() => FolderEntity , (obj) => obj.files)
+    @JoinColumn({ name: 'parent_folder_uid', referencedColumnName: 'uid' })
+    relativeFolder : FolderEntity
+    
 }

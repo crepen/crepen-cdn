@@ -154,4 +154,18 @@ export class CrepenFolderRouteController {
     }
 
 
+    @Get('test')
+    async test(
+        @Query('uid') uid : string
+    ){
+        const ss = await this.folderService.test(uid);
+        console.log('EEE',ss);
+
+        return BaseResponse.ok(
+            ss,
+            HttpStatus.OK,
+            'OK'
+        )
+    }
+
 }

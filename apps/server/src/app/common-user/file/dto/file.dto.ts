@@ -31,3 +31,17 @@ export class AddFileDto {
 
 
 }
+
+export class RelationFileDto {
+    @ApiProperty()
+    @IsNotEmpty({ message: 'cloud_file.FILE_REL_FAILED_FILE_UID_UNDEFINED' })
+    fileUid : string;
+
+    @ApiProperty()
+    @IsNotEmpty({ message: 'cloud_file.FILE_REL_FAILED_FOLDER_UID_UNDEFINED' })
+    folderUid : string;
+
+    @ApiProperty()
+    @IsNotEmpty({ message: 'cloud_file.FILE_REL_FAILED_FILE_TITLE_UNDEFINED' })
+    fileTitle : string;
+}

@@ -7,6 +7,7 @@ import { CrepenHttpService } from "@web/services/common/http.service"
 import { FolderObjectButton } from "@web/components/page/folder/folder-button.folder"
 import { AddFolderButton } from "@web/components/page/folder/add-folder-button.folder"
 import Link from "next/link"
+import { FastAddFileModalButton } from "@web/components/page/file/fast-add/fast-add-button.file"
 
 interface ExplorerFolderRoutePageProp {
     params: Promise<{
@@ -49,8 +50,9 @@ export const ExplorerFolderRoutePage = async (prop: ExplorerFolderRoutePageProp)
                         />
                         <Link href={`/explorer/file/add?folder=${folderData.data?.info.uid}`}>
                             <button>Add Files</button>
+                            
                         </Link>
-
+                        <FastAddFileModalButton value="Add File (Fast)" folderUid={folderData.data?.info.uid}/>
                     </div>
                 </div>
                 <div className="cp-child-folder-list">

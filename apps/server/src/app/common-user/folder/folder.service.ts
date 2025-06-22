@@ -73,4 +73,16 @@ export class CrepenFolderRouteService {
         return childFolders;
     }
 
+    test = async (uid : string) => {
+        try{
+            console.log('READ FOLDER : ' , uid);
+            return this.repo.test(uid);
+        }
+        catch(e){
+            console.log('TEST ERROR' , e);
+            return undefined;
+        }
+        
+    }
+
 }

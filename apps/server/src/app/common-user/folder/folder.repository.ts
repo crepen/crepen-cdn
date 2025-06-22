@@ -71,4 +71,14 @@ export class CrepenFolderRouteRepository {
             }
         })
     }
+
+
+    test = (uid : string) => {
+        return this.repo.find({
+            where : {
+                uid : uid
+            },
+            relations : ['files' , 'files.fileStore' , 'parentFolder' , 'childFolder']
+        })
+    }
 }

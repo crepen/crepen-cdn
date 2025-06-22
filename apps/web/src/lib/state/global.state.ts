@@ -40,3 +40,18 @@ export const useGlobalBasePath = create<GlobalBasePathResult>()(((set, get) => (
         return joinUrl;
     }
 })))   
+
+interface GlobalLanguageResult {
+    value: string,
+    update: (value?: string) => void,
+}
+
+export const useGlobalLanguage = create<GlobalLanguageResult>()(((set, get) => ({
+    value: 'en',
+    update: (value?: string) => set(() => {
+        return {
+            value : value
+        };
+    })
+})))   
+
