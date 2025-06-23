@@ -10,7 +10,13 @@ export class FileStoreEntity {
     uploaderUid?: string;
 
     @Column({ type: 'varchar', name: 'file_name' })
-    fileName: string
+    fileName: string;
+
+    @Column({type : 'varchar' , name : 'file_type'})
+    fileType : string;
+
+    @Column({type : 'int' , name :'file_size'})
+    fileSize : number;
 
     @Column({ type: 'varchar', name: 'origin_file_mine', length: 2000 })
     originFileMine: string;

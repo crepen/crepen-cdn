@@ -10,13 +10,14 @@ export const PUT = async (req: NextRequest, res: NextResponse) => {
     try {
         const renewToken = await CrepenAuthOpereationService.renewToken();
         if (renewToken.success !== true) {
-            throw new CrepenCommonError('사용자 인증이 만료되었습니다. 다시 로그인해주세요.');
+            console.log('G',renewToken.message);
+            throw new CrepenCommonError(renewToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.');
         }
         else {
             const applyToken = await CrepenCookieOperationService.insertTokenData(renewToken.data);
             if (applyToken.success !== true) {
                 console.log(applyToken.message);
-                throw new CrepenCommonError('사용자 인증이 만료되었습니다. 다시 로그인해주세요.');
+                throw new CrepenCommonError(applyToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.');
             }
         }
 

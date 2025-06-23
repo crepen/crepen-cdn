@@ -1,142 +1,56 @@
 .cp-fast-add-file-modal {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
 
-    .cp-modal-backdrop {
-        width: 100%;
-        height: 100%;
-        backdrop-filter: blur(2px);
-        background-color: rgba(0, 0, 0, 0.1);
-
-    }
 
     .cp-modal-box {
         width: 90%;
         max-width: 400px;
         height: 90%;
-        background-color: white;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-
-        border-radius: 5px;
-
-        box-shadow: 0 0 6px 1px gray;
-
-
-        display: grid;
-        grid-template-rows: minmax(auto, 40px) minmax(auto, calc(100% - 100px)) minmax(auto, 60px);
-        grid-template-areas:
-            "header"
-            "content"
-            "footer"
-        ;
-
-        .cp-modal-header {
-            grid-area: 'header';
-            border-bottom: 1px solid #dfdfdf;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-inline: 10px;
-
-            span {
-                font-weight: bold;
-                font-size: 16px;
-                text-transform: uppercase;
-            }
-        }
-
 
         .cp-modal-context {
             grid-area: 'content';
             height: 100%;
 
-                padding: 10px;
-                max-height: 100%;
-                // overflow-y: auto;
-
-                display: grid;
-                grid-template-areas:
-                    'button'
-                    'list'
-                ;
-                grid-template-columns: 100%;
-                grid-template-rows: 50px auto;
-                gap: 10px;
-
-                .cp-upload-bt {
-                    grid-area: 'button';
-                    width: 100%;
-                    border: 2px dashed #aaaaaa;
-                    background-color: transparent;
-                    padding: 10px;
-                }
-
-                .cp-file-input {
-                    display: none;
-                }
-
-                .cp-upload-list {
-                    grid-area: 'list';
-                    height: 100%;
-                    display: flex;
-                    justify-content: flex-start;
-                    align-items: flex-start;
-                    flex-direction: column;
-
-                    overflow: auto;
-                }
-
-        }
-
-        .cp-modal-footer {
-            grid-area: 'footer';
-            border-top: 1px solid #dfdfdf;
-
+            padding: 10px;
+            max-height: 100%;
+            // overflow-y: auto;
 
             display: grid;
-            grid-template-columns: 50% 50%;
-            padding: 5px;
+            grid-template-areas:
+                'button'
+                'list'
+            ;
+            grid-template-columns: 100%;
+            grid-template-rows: 50px auto;
+            gap: 10px;
 
-            .cp-footer-action-box {
+            .cp-upload-bt {
+                grid-area: 'button';
                 width: 100%;
-                height: 100%;
-
-                padding: 6px;
-
-                &:nth-child(1) {
-                    text-align: start;
-                }
-
-                &:nth-child(2) {
-                    text-align: end;
-                }
-
-                button {
-                    border-radius: 5px;
-                    border: 1px solid #aaaaaa;
-                    height: 100%;
-                    padding-inline: 30px;
-
-                    &.cp-upload-bt {
-                        // background-color: green;
-                    }
-
-                    &.cp-close-bt {
-                        // background-color: red;
-                    }
-                }
+                border: 2px dashed #aaaaaa;
+                background-color: transparent;
+                padding: 10px;
+                font-weight: bold;
+                font-family: var(--global-font-family);
             }
 
+            .cp-file-input {
+                display: none;
+            }
 
+            .cp-upload-list {
+                grid-area: 'list';
+                height: 100%;
+                display: flex;
+                justify-content: flex-start;
+                align-items: flex-start;
+                flex-direction: column;
+
+                overflow: auto;
+            }
 
         }
+
+        
     }
 }
 

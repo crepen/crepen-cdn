@@ -21,8 +21,6 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 
         const bodyData = await req.json();
 
-        console.log("POOO", bodyData)
-
         let apiUrl = process.env.API_URL ?? '';
 
         if ((process.env.API_URL ?? '').endsWith('/')) {

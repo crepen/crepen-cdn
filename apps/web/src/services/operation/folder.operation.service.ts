@@ -1,9 +1,6 @@
-import { CrepenAuthApiService } from "../api/auth.api.service";
 import { CrepenFolderApiService } from "../api/folder.api.service";
-import { CrepenSessionEdgeService } from "../edge-runtime/edge.session.service";
 import { BaseServiceResult } from "../types/common.service";
-import { CrepenFolder, CrepenFolderWithRelation } from "../types/object/folder.object";
-import { CrepenAuthOpereationService } from "./auth.operation.service";
+import { CrepenFolder } from "../types/object/folder.object";
 import { CrepenCookieOperationService } from "./cookie.operation.service";
 
 export class CrepenFolderOperationService {
@@ -29,7 +26,7 @@ export class CrepenFolderOperationService {
 
     }
 
-    static getFolderData = async (targetFolderUid?: string, includeChild?: boolean): Promise<BaseServiceResult<CrepenFolderWithRelation | undefined>> => {
+    static getFolderData = async (targetFolderUid?: string, includeChild?: boolean): Promise<BaseServiceResult<CrepenFolder | undefined>> => {
 
         const tokenGroup = await CrepenCookieOperationService.getTokenData();
 

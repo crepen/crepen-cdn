@@ -73,10 +73,10 @@ export class CrepenFolderRouteService {
         return childFolders;
     }
 
-    test = async (uid : string) => {
+    getFolderDataWithChild = async (uid : string) => {
         try{
             console.log('READ FOLDER : ' , uid);
-            return this.repo.test(uid);
+            return this.repo.setDefaultManager().getFolderInfoWithChildData(uid);
         }
         catch(e){
             console.log('TEST ERROR' , e);

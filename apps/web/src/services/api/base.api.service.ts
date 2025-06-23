@@ -27,7 +27,7 @@ export class CrepenApiService {
                 try {
                     reqHeader = {
                         ...reqHeader,
-                        'Accept-Language': (await CrepenLanguageService.getSessionLocale()).data! 
+                        'Accept-Language': (await CrepenLanguageService.getSessionLocale()).data!
                     }
                 }
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -70,6 +70,7 @@ export class CrepenApiService {
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         catch (e) {
+
             return {
                 success: false,
                 message: "서버와 연결이 원활하지 않습니다.",

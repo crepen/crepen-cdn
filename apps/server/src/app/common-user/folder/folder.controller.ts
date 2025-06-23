@@ -21,11 +21,47 @@ import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
 export class CrepenFolderRouteController {
     constructor(
         private readonly folderService: CrepenFolderRouteService,
-        private readonly fileService : CrepenFileRouteService
+        private readonly fileService: CrepenFileRouteService
     ) { }
 
-
     @Get()
+    //#region Decorator
+    @ApiOperation({ summary: '사용자 폴더 조회', description: '로그인된 사용자의 특정 폴더 정보 조회' })
+    @ApiBearerAuth('token')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    //#endregion
+    async getFolderData(
+        @Req() req: JwtUserRequest,
+        @I18n() i18n: I18nContext,
+        @Query('uid') uid?: string,
+        @Query('child') isLoadChild?: boolean
+    ) {
+        if (StringUtil.isEmpty(uid)) {
+            throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_LOAD_FOLDER_UID_UNDEFINED', HttpStatus.BAD_REQUEST);
+        }
+
+        let targetData : FolderEntity = undefined;
+
+        if (isLoadChild) {
+            targetData = await this.folderService.getFolderDataWithChild(uid);
+        }
+        else {
+            targetData = await this.folderService.getFolderData(uid);
+        }
+
+
+
+        return BaseResponse.ok(
+            targetData,
+            HttpStatus.OK,
+            i18n.t('cloud_folder.FOLDER_COMMON_SUCCESS')
+        )
+
+    }
+
+
+    @Get('backup-1')
     //#region Decorator
     @ApiOperation({ summary: '사용자 폴더 조회', description: '로그인된 사용자의 특정 폴더 정보 조회' })
     @ApiBearerAuth('token')
@@ -132,15 +168,15 @@ export class CrepenFolderRouteController {
         @I18n() i18n: I18nContext,
         @Query('uid') uid?: string
     ) {
-        if(StringUtil.isEmpty(uid)){
-            throw new CrepenLocaleHttpException('cloud_folder','FOLDER_LOAD_FOLDER_UID_UNDEFINED',HttpStatus.BAD_REQUEST);
+        if (StringUtil.isEmpty(uid)) {
+            throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_LOAD_FOLDER_UID_UNDEFINED', HttpStatus.BAD_REQUEST);
         }
 
 
         const folderData = await this.folderService.getFolderData(uid);
 
-        if(ObjectUtil.isNullOrUndefined(folderData)){
-            throw new CrepenLocaleHttpException('cloud_folder' , 'FOLDER_LOAD_FOLDER_TARGET_NOT_FOUND' , HttpStatus.NOT_FOUND);
+        if (ObjectUtil.isNullOrUndefined(folderData)) {
+            throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_LOAD_FOLDER_TARGET_NOT_FOUND', HttpStatus.NOT_FOUND);
         }
 
         const fileList = await this.fileService.getFolderFiles(folderData.uid);
@@ -156,10 +192,10 @@ export class CrepenFolderRouteController {
 
     @Get('test')
     async test(
-        @Query('uid') uid : string
-    ){
-        const ss = await this.folderService.test(uid);
-        console.log('EEE',ss);
+        @Query('uid') uid: string
+    ) {
+        const ss = await this.folderService.getFolderDataWithChild(uid);
+        console.log('EEE', ss);
 
         return BaseResponse.ok(
             ss,

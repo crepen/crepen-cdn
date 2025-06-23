@@ -1,0 +1,63 @@
+@use '@web/assets/style/common/variable.scss' as variable;
+
+.cp-folder-link-bt {
+
+    --one-line-item-count: 3;
+
+    width: calc(100% / var(--one-line-item-count) - (10px * (var(--one-line-item-count) - 1) / var(--one-line-item-count)));
+    text-decoration: none;
+
+
+    @media screen and (max-width : #{variable.$screen-width-tablet}) {
+        --one-line-item-count: 2;
+    }
+
+    
+
+    button {
+        cursor: pointer;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        flex-direction: column;
+
+
+        border: 1px solid #cccccc;
+        border-radius: 5px;
+
+        padding: 10px;
+
+        text-decoration: none;
+
+        background-color: #e5e5e5;
+
+        &:hover {
+            background-color: #d8d6d6;
+        }
+
+
+        .cp-link-value-span {
+            font-size: 14px;
+            color: #292929;
+            font-family: var(--cp-global-font-family);
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            text-align: start;
+
+            &::before {
+                content: '\f07b';
+                font-family: 'Font Awesome 6 Free';
+                padding-right: 5px;
+                font-weight: 100;
+                color: #292929;
+
+            }
+        }
+    }
+
+
+
+}

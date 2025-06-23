@@ -1,5 +1,5 @@
 import { CrepenApiResponse } from "../types/common.api"
-import { CrepenFolder, CrepenFolderWithRelation } from "../types/object/folder.object"
+import { CrepenFolder } from "../types/object/folder.object"
 import { CrepenApiService } from "./base.api.service"
 
 export class CrepenFolderApiService {
@@ -12,8 +12,8 @@ export class CrepenFolderApiService {
     }
 
 
-    static getFolderData = (token: string | undefined, folderUid?: string, option?: { includeChild?: boolean }): Promise<CrepenApiResponse<CrepenFolderWithRelation | undefined>> => {
-        return CrepenApiService.fetch<CrepenFolderWithRelation>(
+    static getFolderData = (token: string | undefined, folderUid?: string, option?: { includeChild?: boolean }): Promise<CrepenApiResponse<CrepenFolder | undefined>> => {
+        return CrepenApiService.fetch<CrepenFolder>(
             'GET', `/explorer/folder?uid=${folderUid}${option?.includeChild === true ? '&child=true' : ''}`,
             undefined,
             { token: token }

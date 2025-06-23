@@ -140,6 +140,10 @@ export class CrepenFileRouteService {
                 fileStoreEntity.fileName = randomUUID();
                 fileStoreEntity.uploaderUid = uploadUserUid;
                 fileStoreEntity.hash = this.cryptoService.getFileHash(file.buffer);
+                fileStoreEntity.fileType = decodeURIComponent(file.mimetype);
+                fileStoreEntity.fileSize = file.size;
+
+                console.log("==========> ",decodeURIComponent(file.mimetype) )
 
                 const encryptFile = await this.cryptoService.encryptFile(file, fileStoreEntity.fileName);
 

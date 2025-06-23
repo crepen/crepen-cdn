@@ -5,5 +5,6 @@ export interface BaseServiceResult<T=unknown> extends BaseServiceResult {
 export interface BaseServiceResult {
     success: boolean,
     message?: string,
-    innerError? : Error
+    innerError? : Error,
+    statusCode? : number
 }

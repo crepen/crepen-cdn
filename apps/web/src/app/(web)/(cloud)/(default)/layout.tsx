@@ -1,7 +1,7 @@
 import '@web/assets/style/cloud/layout/cloud.layout.scss';
 
 
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, Suspense } from "react";
 import CloudGlobalAside from '@web/components/layout/cloud/aside/cloud.aside';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faBars, faHelmetSafety } from '@fortawesome/free-solid-svg-icons';
@@ -18,7 +18,10 @@ const CloudGlobalLayoutRouter = (prop: CloudGlobalLayoutRouterProp) => {
             <div className='cp-container'>
                 <CloudGlobalHeader />
                 <div className='cp-main'>
+                    <Suspense fallback={<div>LOADING</div>}>
                     {prop.children}
+                    </Suspense>
+                    
                 </div>
             </div>
 

@@ -1,0 +1,37 @@
+.cp-category-group {
+    box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+
+    margin-bottom: 10px;
+    padding-block: 10px;
+
+    .cp-category-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        padding-inline: 13px;
+
+        
+
+        outline: 0;
+        -webkit-tap-highlight-color : transparent;
+
+        .cp-category-action {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+
+            gap: 10px;
+
+            .cp-expand-icon {
+                cursor: pointer;
+            }
+           
+        }
+    }
+
+    .cp-category-content {
+        padding-inline: 13px;
+    }
+}

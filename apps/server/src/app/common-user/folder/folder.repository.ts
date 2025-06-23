@@ -73,8 +73,8 @@ export class CrepenFolderRouteRepository {
     }
 
 
-    test = (uid : string) => {
-        return this.repo.find({
+    getFolderInfoWithChildData = (uid : string) => {
+        return this.repo.findOne({
             where : {
                 uid : uid
             },

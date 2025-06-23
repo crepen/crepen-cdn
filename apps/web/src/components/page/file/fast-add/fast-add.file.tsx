@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, Fragment, useEffect, useRef, useState } from 'react';
 import './fast-add-button.file.scss';
 import { UploadFileItemObject, useUploadFileState } from '@web/lib/state/file.state';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,11 +7,12 @@ import { StringUtil } from '@web/lib/util/string.util';
 import { useGlobalBasePath, useGlobalLanguage } from '@web/lib/state/global.state';
 import { CrepenCommonError } from '@web/lib/common/common-error';
 import { faRefresh, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { CrepenModal } from '../../common/base-modal.common';
 
 interface FastAddFileModalProp {
     folderUid: string,
     open: boolean,
-    close: () => void
+    close: (isEdit: boolean) => void
 }
 
 export const FastAddFileModal = (prop: FastAddFileModalProp) => {
@@ -19,6 +20,8 @@ export const FastAddFileModal = (prop: FastAddFileModalProp) => {
     const uploadInputRef = useRef<HTMLInputElement>(null);
 
     const uploadList = useUploadFileState();
+
+    const [isEdit, setEditState] = useState<boolean>(false);
 
 
 
@@ -28,10 +31,14 @@ export const FastAddFileModal = (prop: FastAddFileModalProp) => {
 
     const modalCloseEventHandler = () => {
         uploadList.reset();
-        prop.close()
+        prop.close(isEdit)
     }
 
     const fileInputChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+
+        if (!isEdit && (e.currentTarget.files ?? []).length > 0) {
+            setEditState(true);
+        }
 
         uploadList.appendFiles(Array.from(e.currentTarget.files ?? []));
         e.target.value = '';
@@ -48,52 +55,47 @@ export const FastAddFileModal = (prop: FastAddFileModalProp) => {
     //#endregion
 
     return (
-        <div className="cp-fast-add-file-modal cp-modal" data-state={prop.open ? 'open' : 'close'}>
-            <div className='cp-modal-backdrop' onClick={modalCloseEventHandler}></div>
-            <div className='cp-modal-box'>
-                <div className='cp-modal-header'>
-                    <span>Upload Files</span>
-                </div>
-                <div className='cp-modal-context'>
-                    <button className='cp-upload-bt' onClick={() => uploadInputRef.current?.click()}>UPLOAD</button>
+        <CrepenModal
+            className='cp-fast-add-file-modal'
+            close={modalCloseEventHandler}
+            isOpen={prop.open}
+            headerOptions={{
+                title : 'Add Files',
+                enableCloseButton : false
+            }}
+            footerOptions={{
+                enableCloseButton : true,
+                enableSubmitButton : false
+            }}
+        >
+            <button className='cp-upload-bt' onClick={() => uploadInputRef.current?.click()}>UPLOAD</button>
 
-                    <div className='cp-upload-list'>
-                        {
-                            uploadList.value
-                                .sort((x, y) => {
-                                    if ((x.state === 'error' ? -1 : 1) === (y.state === 'error' ? -1 : 1)) {
-                                        return (x.timestamp - y.timestamp) > 0 ? 1 : -1;
-                                    }
-                                    else {
-                                        return (x.state === 'error' ? -1 : 1) - (y.state === 'error' ? -1 : 1)
-                                    }
-                                })
-                                .filter(item => item !== undefined)
-                                .map((item, idx) => (
-                                    <FastAddFileItem
-                                        key={idx}
-                                        folderUid={prop.folderUid}
-                                        item={item}
-                                        onRemove={onRemoveItem}
-                                        onUpdateItem={onUpdateItem}
-                                    />
-                                ))
-                        }
-                    </div>
-
-                    <input type='file' multiple className='cp-file-input' ref={uploadInputRef} onChange={fileInputChangeHandler}></input>
-
-                </div>
-                <div className='cp-modal-footer'>
-                    <div className='cp-footer-action-box'>
-                        {/* <button className='cp-button cp-upload-bt' type='button'>Upload</button> */}
-                    </div>
-                    <div className='cp-footer-action-box'>
-                        <button className='cp-button cp-close-bt' type='button' onClick={modalCloseEventHandler}>close</button>
-                    </div>
-                </div>
+            <div className='cp-upload-list'>
+                {
+                    uploadList.value
+                        .sort((x, y) => {
+                            if ((x.state === 'error' ? -1 : 1) === (y.state === 'error' ? -1 : 1)) {
+                                return (x.timestamp - y.timestamp) > 0 ? 1 : -1;
+                            }
+                            else {
+                                return (x.state === 'error' ? -1 : 1) - (y.state === 'error' ? -1 : 1)
+                            }
+                        })
+                        .filter(item => item !== undefined)
+                        .map((item, idx) => (
+                            <FastAddFileItem
+                                key={idx}
+                                folderUid={prop.folderUid}
+                                item={item}
+                                onRemove={onRemoveItem}
+                                onUpdateItem={onUpdateItem}
+                            />
+                        ))
+                }
             </div>
-        </div>
+
+            <input type='file' multiple className='cp-file-input' ref={uploadInputRef} onChange={fileInputChangeHandler}></input>
+        </CrepenModal>
     )
 }
 
