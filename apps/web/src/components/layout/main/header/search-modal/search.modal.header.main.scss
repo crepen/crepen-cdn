@@ -1,0 +1,32 @@
+.cp-header-search-modal {
+
+    .cp-modal-box {
+        width: 90%;
+        height: 90%;
+        max-width: 500px;
+
+
+        .cp-modal-context {
+            padding: 10px;
+
+            .cp-modal-search-box {
+                width: 100%;
+                
+                .cp-search-input {
+                    width: 100%;
+                    padding: 10px;
+                    border: 1px solid #aaaaaa;
+                    border-radius: 10px;
+                    outline: none;
+                }
+            }
+
+
+            .cp-modal-match-box {
+
+            }
+
+        }
+
+    }
+}

@@ -2,21 +2,14 @@
 
 import { CrepenFolderOperationService } from "@web/services/operation/folder.operation.service"
 import '@web/assets/style/cloud/page/folder/cloud.folder.scss'
-import { MoveParentFolderButton } from "@web/components/page/folder/move-parent-button.folder"
 import { CrepenHttpService } from "@web/services/common/http.service"
 import Link from "next/link"
-import { FastAddFileModalButton } from "@web/components/page/file/fast-add/fast-add-button.file"
-import { FolderLinkButton } from "@web/components/page/folder/link-button/folder.link-button.folder"
-import { AddFolderModalButton } from "@web/components/page/folder/add-modal/button.add-modal.folder"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faAdd, faArrowTurnUp, faEllipsisVertical, faGear, faImage } from "@fortawesome/free-solid-svg-icons"
+import { faArrowTurnUp, faEllipsisVertical, faGear, faImage } from "@fortawesome/free-solid-svg-icons"
 import { StringUtil } from "@web/lib/util/string.util"
 import { faFile, faFolder } from "@fortawesome/free-regular-svg-icons"
-import { FolderCategoryExpandGroup } from "@web/components/page/folder/category-group/base.category-group.folder"
-import { Fragment } from "react"
 import { FolderListCategoryGroup } from "@web/components/page/folder/category-group/folder-group.category-group.folder"
 import { FileListCategoryGroup } from "@web/components/page/folder/category-group/file.category-group.folder"
-import { redirect } from "next/navigation"
 
 interface ExplorerFolderRoutePageProp {
     params: Promise<{
@@ -44,9 +37,13 @@ export const ExplorerFolderRoutePage = async (prop: ExplorerFolderRoutePageProp)
                     <strong>{folderData.data?.folderTitle}</strong>
                 </div>
                 <div className="cp-header-action">
-                    <Link href={`/explorer/folder/${folderData.data?.uid}/setting`}>
-                        <FontAwesomeIcon icon={faGear} />
-                    </Link>
+                    {
+                        !StringUtil.isEmpty(folderData.data?.parentFolder?.uid) &&
+                        <Link href={`/explorer/folder/${folderData.data?.uid}/setting`}>
+                            <FontAwesomeIcon icon={faGear} />
+                        </Link>
+                    }
+
                 </div>
 
             </div>

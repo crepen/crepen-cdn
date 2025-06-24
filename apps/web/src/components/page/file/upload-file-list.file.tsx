@@ -136,7 +136,7 @@ export const UploadFileItem = (prop: UploadFileItemProp) => {
             const formData = new FormData();
             formData.set('file', prop.item.file);
 
-            const uploadFileRequest = await fetch(`${basePath.basePath}/api/file`, {
+            const uploadFileRequest = await fetch(`${basePath.value}/api/file`, {
                 method: 'PUT',
                 body: formData,
                 signal: abortController.signal,

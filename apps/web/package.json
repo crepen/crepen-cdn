@@ -21,6 +21,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@repo/ui": "*",
     "accept-language-parser": "^1.5.0",
+    "countries-and-timezones": "^3.8.0",
     "crypto-js": "^4.2.0",
     "date-fns": "^4.1.0",
     "luxon": "^3.6.1",

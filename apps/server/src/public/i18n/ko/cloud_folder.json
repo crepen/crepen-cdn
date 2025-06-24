@@ -11,5 +11,8 @@
     "FOLDER_INSERT_VALIDATE_ERROR_PARENT_UID_EMPTY" : "상위 폴더가 입력되지 않았습니다.",
     "FOLDER_INSERT_VALIDATE_ERROR_PARENT_NOT_FOUND" : "상위 폴더를 찾을 수 없습니다.",
 
-    "FOLDER_INSERT_VALIDATE_ERROR_DUPLICATE_TITLE" : "같은 이름의 폴더가 존재합니다."
+    "FOLDER_INSERT_VALIDATE_ERROR_DUPLICATE_TITLE" : "같은 이름의 폴더가 존재합니다.",
+
+
+    "FOLDER_EDIT_VALIDATE_TITLE_NOT_STRING" : "폴더명의 형식이 잘못되었습니다."
 }

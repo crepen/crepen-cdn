@@ -5,8 +5,9 @@ const CloudMainRoutePage = async () => {
 
     const userData = await CrepenUserOperationService.getLoginUserData();
 
+    
     return (
-        <div className='cp-main-home'>
+        <div className='cp-page cp-main-home'>
             Login User : {userData.data?.name}
         </div>
     )

@@ -5,11 +5,15 @@ import { CrepenLocaleHttpException } from "@crepen-nest/lib/exception/crepen.htt
 import { FolderEntity } from "./entity/folder.entity";
 import { randomUUID } from "crypto";
 import { CrepenFileRouteService } from "../file/file.service";
+import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
+import { DataSource } from "typeorm";
+import { CrepenFolderError } from "./exception/folder.exception";
 
 @Injectable()
 export class CrepenFolderRouteService {
     constructor(
-        private readonly repo: CrepenFolderRouteRepository
+        private readonly repo: CrepenFolderRouteRepository,
+        private readonly dataSource: DataSource,
     ) { }
 
     getRootFolder = async (userUid?: string): Promise<FolderEntity | null> => {
@@ -32,7 +36,11 @@ export class CrepenFolderRouteService {
 
     getFolderData = async (folderUid: string): Promise<FolderEntity | null> => {
 
-        const targetFolder = this.repo.setDefaultManager().getFolder(folderUid);
+        const targetFolder = await this.repo.setDefaultManager().getFolder(folderUid);
+        if (!ObjectUtil.isNullOrUndefined(targetFolder)) {
+            targetFolder.childFolder = undefined;
+            targetFolder.files = undefined;
+        }
 
         return targetFolder;
     }
@@ -48,11 +56,11 @@ export class CrepenFolderRouteService {
             throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_LOAD_UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
         }
 
-        const matchTitleFolders = await this.repo.setDefaultManager().getDuplicateTitleFolders(title, parentFolder.uid);
+        // const matchTitleFolders = await this.repo.setDefaultManager().getDuplicateTitleFolders(title, parentFolder.uid);
 
-        if (matchTitleFolders.length > 0) {
-            throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_INSERT_VALIDATE_ERROR_DUPLICATE_TITLE', HttpStatus.BAD_REQUEST);
-        }
+        // if (matchTitleFolders.length > 0) {
+        //     throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_INSERT_VALIDATE_ERROR_DUPLICATE_TITLE', HttpStatus.BAD_REQUEST);
+        // }
 
         const insertFolderUUID = randomUUID();
 
@@ -73,16 +81,25 @@ export class CrepenFolderRouteService {
         return childFolders;
     }
 
-    getFolderDataWithChild = async (uid : string) => {
-        try{
-            console.log('READ FOLDER : ' , uid);
-            return this.repo.setDefaultManager().getFolderInfoWithChildData(uid);
-        }
-        catch(e){
-            console.log('TEST ERROR' , e);
-            return undefined;
-        }
-        
+    getFolderDataWithChild = async (uid: string) => {
+        return this.repo.setDefaultManager().getFolderInfoWithChildData(uid)
+    }
+
+
+
+    editFolderData = async (uid: string, entity: FolderEntity) => {
+        return this.dataSource.transaction(async (manager) => {
+
+            entity.updateDate = new Date();
+
+            const folderData = await this.getFolderData(uid);
+
+            if (ObjectUtil.isNullOrUndefined(folderData)) {
+                throw CrepenFolderError.FOLDER_NOT_FOUND;
+            }
+
+            await this.repo.setManager(manager).editFolderData(uid, entity);
+        });
     }
 
 }

@@ -74,7 +74,6 @@ export class CrepenCookieOperationService {
     }
 
     static insertTokenDataInEdge = async (res: NextResponse, tokenGroup?: CrepenToken): Promise<BaseServiceResult> => {
-        res.cookies.set('gwgw', '???')
         return await this.baseInsertTokenData(tokenGroup, res.cookies);
     }
 
@@ -135,6 +134,218 @@ export class CrepenCookieOperationService {
 
     //#endregion
 
+    //#region DELETE_TOKEN
+
+    private static baseLogoutUser = async (cookieFunc: ReadonlyRequestCookies | ResponseCookies): Promise<BaseServiceResult> => {
+        try {
+            const cookie = cookieFunc;
+            cookie.delete(this.TOKEN_COOKIE_KEY);
+
+            return {
+                success: true
+            }
+        }
+        catch (e) {
+            if (e instanceof CrepenCommonError) {
+                return {
+                    success: false,
+                    message: e.message
+                }
+            }
+
+            return {
+                success: false,
+                message: 'Unknown Error',
+                innerError: e as Error
+            }
+        }
+    }
+
+    static logoutUser = async (): Promise<BaseServiceResult> => {
+        return await this.baseLogoutUser(await cookies())
+    }
+
+    static logoutUserInEdge = async (res: NextResponse): Promise<BaseServiceResult> => {
+        return await this.baseLogoutUser(res.cookies);
+    }
+
+    //#endregion DELETE_TOKEN
+
+
+
+
+
+    //#region USER_ROOT_FOLDER
+
+    private static readonly USER_ROOT_FOLDER_KEY = 'CPUF_ID';
+
+    //#region GET_USER_ROOT_FOLDER
+    private static baseGetRootFolderUid = async (cookieFunc: ReadonlyRequestCookies | ResponseCookies): Promise<BaseServiceResult<string | undefined>> => {
+        try {
+            const cookie = cookieFunc;
+            const uid = cookie.get(this.USER_ROOT_FOLDER_KEY )?.value;
+
+            return {
+                success: true,
+                data: uid
+            }
+        }
+        catch (e) {
+            if (e instanceof CrepenCommonError) {
+                return {
+                    success: false,
+                    message: e.message
+                }
+            }
+
+            return {
+                success: false,
+                message: 'Unknown Error',
+                innerError: e as Error
+            }
+        }
+    }
+
+    static getRootFolderUid = async () => {
+        return this.baseGetRootFolderUid(await cookies());
+    }
+
+    static getRootFolderUidInEdge = async (res: NextResponse) => {
+        return this.baseGetRootFolderUid(res.cookies);
+    }
+    //#endregion GET_USER_ROOT_FOLDER
+
+
+
+    //#region SET_USER_ROOT_FOLDER
+
+
+    private static baseSetRootFolderUid = async (cookieFunc: ReadonlyRequestCookies | ResponseCookies, rootFolderUid: string): Promise<BaseServiceResult<string | undefined>> => {
+        try {
+            const cookie = cookieFunc;
+            const uid = cookie.set(this.USER_ROOT_FOLDER_KEY , rootFolderUid);
+
+            return {
+                success: true
+            }
+        }
+        catch (e) {
+            if (e instanceof CrepenCommonError) {
+                return {
+                    success: false,
+                    message: e.message
+                }
+            }
+
+            return {
+                success: false,
+                message: 'Unknown Error',
+                innerError: e as Error
+            }
+        }
+    }
+
+    static setRootFolderUid = async (uid: string) => {
+        return this.baseSetRootFolderUid(await cookies(), uid);
+    }
+
+    static setRootFolderUidInEdge = async (res: NextResponse, uid: string) => {
+        return this.baseSetRootFolderUid(res.cookies, uid);
+    }
+    //#endregion SET_USER_ROOT_FOLDER
+
+
+    //#endregion
+
+
+    //#region LOGIN_UNIQUE_STRING
+
+    private static readonly LOGIN_UNIQUE_STRING_KEY = 'CPLUK';
+
+    //#region GET_LOGIN_UNIQUE_STRING
+    private static baseGetLoginUniqueString = async (cookieFunc: ReadonlyRequestCookies | ResponseCookies): Promise<BaseServiceResult<string | undefined>> => {
+        try {
+            const cookie = cookieFunc;
+            const uid = cookie.get(this.LOGIN_UNIQUE_STRING_KEY)?.value;
+
+            return {
+                success: true,
+                data: uid
+            }
+        }
+        catch (e) {
+            if (e instanceof CrepenCommonError) {
+                return {
+                    success: false,
+                    message: e.message
+                }
+            }
+
+            return {
+                success: false,
+                message: 'Unknown Error',
+                innerError: e as Error
+            }
+        }
+    }
+
+    static getLoginUniqueString = async () => {
+        return this.baseGetLoginUniqueString(await cookies());
+    }
+
+    static getLoginUniqueStringInEdge = async (res: NextResponse) => {
+        return this.baseGetLoginUniqueString(res.cookies);
+    }
+    //#endregion GET_LOGIN_UNIQUE_STRING
+
+
+
+    //#region SET_LOGIN_UNIQUE_STRING
+
+
+    private static baseSetLoginUniqueString = async (cookieFunc: ReadonlyRequestCookies | ResponseCookies, str: string): Promise<BaseServiceResult<string | undefined>> => {
+        try {
+            const cookie = cookieFunc;
+            const strs = cookie.set(this.LOGIN_UNIQUE_STRING_KEY, str);
+
+            return {
+                success: true
+            }
+        }
+        catch (e) {
+            if (e instanceof CrepenCommonError) {
+                return {
+                    success: false,
+                    message: e.message
+                }
+            }
+
+            return {
+                success: false,
+                message: 'Unknown Error',
+                innerError: e as Error
+            }
+        }
+    }
+
+    static setLoginUniqueString = async (str: string) => {
+        return this.baseSetLoginUniqueString(await cookies(), str);
+    }
+
+    static setLoginUniqueStringInEdge = async (res: NextResponse, uid: string) => {
+        return this.baseSetLoginUniqueString(res.cookies, uid);
+    }
+    //#endregion SET_LOGIN_UNIQUE_STRING
+
+
+    //#endregion
+
+
+
+
+
+
+
 
 
 
@@ -172,10 +383,10 @@ export class CrepenCookieOperationService {
         }
     }
 
-    static insertLocaleData = async (locale : string) : Promise<BaseServiceResult> => {
+    static insertLocaleData = async (locale: string): Promise<BaseServiceResult> => {
         try {
             const cookie = cookies();
-            (await cookie).set(this.LOCALE_COOKIE_KEY , locale);
+            (await cookie).set(this.LOCALE_COOKIE_KEY, locale);
 
             return {
                 success: true,

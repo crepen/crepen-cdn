@@ -149,7 +149,7 @@ const FastAddFileItem = (prop: FastAddFileItemProp) => {
             const formData = new FormData();
             formData.set('file', prop.item.file);
 
-            const uploadFileRequest = await fetch(`${basePath.basePath}/api/file`, {
+            const uploadFileRequest = await fetch(`${basePath.value}/api/file`, {
                 method: 'PUT',
                 body: formData,
                 signal: abortController.signal,
@@ -173,7 +173,7 @@ const FastAddFileItem = (prop: FastAddFileItemProp) => {
                 fileTitle: prop.item.file.name
             }
 
-            const relFileRequest = await fetch(`${basePath.basePath}/api/file/rel`, {
+            const relFileRequest = await fetch(`${basePath.value}/api/file/rel`, {
                 method: 'POST',
                 body: JSON.stringify(bodyData),
                 signal: abortController.signal,

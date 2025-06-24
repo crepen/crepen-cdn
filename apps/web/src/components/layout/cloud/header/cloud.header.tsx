@@ -4,6 +4,7 @@ import { ProfileButton } from "@web/components/controls/button/profile/profile.b
 import { CrepenUserOperationService } from "@web/services/operation/user.operation.service";
 import { redirect } from "next/navigation";
 
+/** @deprecated */
 const CloudGlobalHeader = async () => {
 
     const loginUserData = await CrepenUserOperationService.getLoginUserData();

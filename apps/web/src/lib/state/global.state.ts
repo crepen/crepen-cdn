@@ -5,13 +5,13 @@
 import { create } from "zustand";
 
 interface GlobalBasePathResult {
-    basePath: string,
+    value: string,
     update: (changePath?: string) => void,
     join: (pathname?: string) => string
 }
 
 export const useGlobalBasePath = create<GlobalBasePathResult>()(((set, get) => ({
-    basePath: '/',
+    value: '/',
     update: (changePath?: string) => set(() => {
 
         let path = changePath;
@@ -21,7 +21,7 @@ export const useGlobalBasePath = create<GlobalBasePathResult>()(((set, get) => (
         }
 
         return {
-            basePath: path
+            value: path
         }
     }),
     join: (pathName?: string) => {
@@ -31,7 +31,7 @@ export const useGlobalBasePath = create<GlobalBasePathResult>()(((set, get) => (
             joinUrl = '/' + joinUrl;
         }
 
-        joinUrl = get().basePath + joinUrl;
+        joinUrl = get().value + joinUrl;
 
         if (joinUrl.endsWith('/')) {
             joinUrl = joinUrl.slice(0, joinUrl.length - 1);

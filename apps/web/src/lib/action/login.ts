@@ -5,6 +5,8 @@ import { CrepenActionError } from "../common/action-error";
 import { CrepenAuthOpereationService } from "@web/services/operation/auth.operation.service";
 import { CommonUtil } from "../util/common.util";
 import { cookies } from "next/headers";
+import { StringUtil } from "../util/string.util";
+import { CrepenFolderOperationService } from "@web/services/operation/folder.operation.service";
 
 interface LoginUserActionResult {
     success?: boolean,
@@ -28,14 +30,23 @@ export const loginUser = async (currentState: unknown, formData: FormData): Prom
             throw new CrepenActionError(requestLogin.message);
         }
 
-        
+
         const saveCookie = await CrepenCookieOperationService.insertTokenData(requestLogin.data);
 
         if (saveCookie.success !== true) {
             throw new CrepenActionError(saveCookie.message, saveCookie.innerError)
         }
 
+        // const randomString = StringUtil.randomString(10)
+        // await CrepenCookieOperationService.setLoginUniqueString(randomString);
 
+
+
+        const rootMenuData = await CrepenFolderOperationService.getRootFolder();
+
+        if(rootMenuData.success === true){
+            await CrepenCookieOperationService.setRootFolderUid(rootMenuData.data?.uid ?? '');
+        }
 
 
         return {

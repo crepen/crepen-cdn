@@ -81,4 +81,8 @@ export class CrepenFolderRouteRepository {
             relations : ['files' , 'files.fileStore' , 'parentFolder' , 'childFolder']
         })
     }
+
+    editFolderData = (uid : string , entity : FolderEntity) => {
+        return this.repo.update(uid , entity)
+    }
 }

@@ -1,13 +1,21 @@
 import { CrepenCommonError } from "@web/lib/common/common-error";
-import { CommonUtil } from "@web/lib/util/common.util";
+import { StringUtil } from "@web/lib/util/string.util";
 import { CrepenAuthOpereationService } from "@web/services/operation/auth.operation.service";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
+// export const runtime = 'node';
 
-export const PUT = async (req: NextRequest, res: NextResponse) => {
+export const POST = async (req: NextRequest, res: NextResponse) => {
     try {
+        const { searchParams } = new URL(req.url);
+
+        const uid = searchParams.get('uid');
+
+        if(StringUtil.isEmpty(uid)){
+            throw new CrepenCommonError('대상 폴더를 찾을 수 없습니다.')
+        }
+
         const renewToken = await CrepenAuthOpereationService.renewToken();
         if (renewToken.success !== true) {
             throw new CrepenCommonError(renewToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.');
@@ -20,14 +28,13 @@ export const PUT = async (req: NextRequest, res: NextResponse) => {
             }
         }
 
-        const formData = await req.formData();
-        const file = formData.get("file") as File;
+        const bodyDataStr = await req.text();
+        console.log('------>',bodyDataStr)
+        let bodyData = {};
 
-        if (!file) {
-            return NextResponse.json({ success: false, message: 'No Files.' });
+        if(!StringUtil.isEmpty(bodyDataStr)){
+            bodyData = JSON.parse(bodyDataStr)
         }
-
-        const stream = file.stream(); // ReadableStream
 
         let apiUrl = process.env.API_URL ?? '';
 
@@ -35,19 +42,15 @@ export const PUT = async (req: NextRequest, res: NextResponse) => {
             apiUrl = apiUrl.slice(0, apiUrl.length - 1);
         }
 
-        const response = await fetch(`${apiUrl}/explorer/file/stream`, {
-            method: "PUT",
+        const response = await fetch(`${apiUrl}/explorer/folder?uid=${uid}`, {
+            method: "POST",
             headers: {
-                "Content-Type": "application/octet-stream",
+                "Content-Type": "application/json",
                 'Accept-Language': req.headers.get('Accept-Language')?.toString() ?? 'en',
-                'Authorization': `Bearer ${renewToken.data?.accessToken}`,
-                'x-file-name': encodeURIComponent(file.name),
-                'x-file-type': encodeURIComponent(file.type)
+                'Authorization': `Bearer ${renewToken.data?.accessToken}`
             },
-            body: stream, // TS 오류 무시
-            // duplex 필요!
-            duplex: "half",
-        } as any);
+            body: JSON.stringify(bodyData)
+        });
 
         const data = await response.json()
 
@@ -59,8 +62,7 @@ export const PUT = async (req: NextRequest, res: NextResponse) => {
 
         return NextResponse.json({
             success: true,
-            message: data.message,
-            uid: data.data
+            message: data.message
         });
     }
     catch (e) {
@@ -82,6 +84,4 @@ export const PUT = async (req: NextRequest, res: NextResponse) => {
             }
         );
     }
-
 }
-

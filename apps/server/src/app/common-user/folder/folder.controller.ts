@@ -12,6 +12,9 @@ import { AddFolderDto } from "./dto/add.folder.dto";
 import { FolderEntity } from "./entity/folder.entity";
 import { CrepenFileRouteService } from "../file/file.service";
 import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
+import { EditFolderDto } from "./dto/edit.folder.dto";
+import { CrepenFolderError } from "./exception/folder.exception";
+import { FileEntity } from "../file/entity/file.entity";
 
 @ApiTags('[Common] 사용자 폴더 관리 컨트롤러')
 @ApiHeader({
@@ -41,7 +44,7 @@ export class CrepenFolderRouteController {
             throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_LOAD_FOLDER_UID_UNDEFINED', HttpStatus.BAD_REQUEST);
         }
 
-        let targetData : FolderEntity = undefined;
+        let targetData: FolderEntity = undefined;
 
         if (isLoadChild) {
             targetData = await this.folderService.getFolderDataWithChild(uid);
@@ -61,6 +64,37 @@ export class CrepenFolderRouteController {
     }
 
 
+    @Post()
+    //#region Decorator
+    @ApiOperation({ summary: '사용자 폴더 수정', description: '폴더 수정' })
+    @ApiBearerAuth('token')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    //#endregion
+    async editFolder(
+        @Req() req: JwtUserRequest,
+        @I18n() i18n: I18nContext,
+        @Query('uid') uid?: string,
+        @Body() bodyData?: EditFolderDto
+    ) {
+
+        const entity = new FolderEntity();
+        entity.folderTitle = bodyData.folderTitle;
+
+        const editFolderResult = await this.folderService.editFolderData(uid, entity)
+
+        return BaseResponse.ok(
+            bodyData,
+            HttpStatus.OK,
+            i18n.t('common.SUCCESS')
+        )
+    }
+
+
+
+
+
+    /** @deprecated */
     @Get('backup-1')
     //#region Decorator
     @ApiOperation({ summary: '사용자 폴더 조회', description: '로그인된 사용자의 특정 폴더 정보 조회' })
@@ -190,18 +224,6 @@ export class CrepenFolderRouteController {
     }
 
 
-    @Get('test')
-    async test(
-        @Query('uid') uid: string
-    ) {
-        const ss = await this.folderService.getFolderDataWithChild(uid);
-        console.log('EEE', ss);
 
-        return BaseResponse.ok(
-            ss,
-            HttpStatus.OK,
-            'OK'
-        )
-    }
 
 }

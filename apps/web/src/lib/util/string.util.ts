@@ -18,13 +18,26 @@ export class StringUtil {
     }
 
     static joinClassName = (className: string | undefined, ...addClass: (string | undefined)[]) => {
-        let classNames = className ?? '';
-        for (const item of addClass) {
-            classNames += ` ${addClass}`
-            classNames = classNames.trim();
+
+        const classList = [];
+
+        if (!StringUtil.isEmpty(className)) {
+            classList.push(className?.trim());
         }
 
-        return classNames;
+        for (const classItem of addClass) {
+            for (const splitClassItem of (classItem?.split(' ') ?? [])) {
+                if (classList.indexOf(splitClassItem) === -1) {
+                    if (!StringUtil.isEmpty(splitClassItem)) {
+                        classList.push(splitClassItem.trim());
+                    }
+                }
+            }
+
+        }
+
+
+        return classList.join(' ');
     }
 
     static isEmpty = (text?: string | null) => {
@@ -53,7 +66,7 @@ export class StringUtil {
 
     }
 
-    static convertFormatByte = (bytes : number, decimals = 2) => {
+    static convertFormatByte = (bytes: number, decimals = 2) => {
         if (bytes === 0) return '0 Bytes';
 
         const k = 1024;
@@ -63,6 +76,17 @@ export class StringUtil {
         const i = Math.floor(Math.log(bytes) / Math.log(k));
 
         return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    }
+
+
+    static randomString = (length : number) => {
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
     }
 
 }
