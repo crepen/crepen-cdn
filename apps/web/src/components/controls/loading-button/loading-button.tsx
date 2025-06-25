@@ -10,6 +10,7 @@ interface LoadingButtonProp {
     label : string
 }
 
+/** @deprecated */
 const LoadingButton = (prop: LoadingButtonProp) => {
     return (
         <BaseButton

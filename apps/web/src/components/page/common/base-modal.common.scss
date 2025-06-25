@@ -28,7 +28,7 @@
         border-radius: 5px;
         
         display: grid;
-        grid-template-rows: minmax(auto, 40px) minmax(auto, calc(100% - 100px)) auto;
+        grid-template-rows: minmax(auto, 40px) auto min-content;
         grid-template-areas:
             "header"
             "content"
@@ -37,7 +37,7 @@
 
 
         .cp-modal-header {
-            grid-area: 'header';
+            grid-area: header;
             border-bottom: 1px solid #dfdfdf;
             display: flex;
             justify-content: space-between;
@@ -56,9 +56,17 @@
         }
 
 
+        .cp-modal-content {
+            grid-area: content;
+        }
+
+      
+
         .cp-modal-footer {
-            grid-area: 'footer';
+            grid-area: footer;
             border-top: 1px solid #dfdfdf;
+
+            height: fit-content;
 
 
 

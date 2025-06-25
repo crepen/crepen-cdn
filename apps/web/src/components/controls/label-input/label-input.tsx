@@ -16,6 +16,7 @@ interface LabelInputProp {
     inputId? : string
 }
 
+/** @deprecated */
 const LabelInput = (prop: LabelInputProp) => {
 
     const [isShowPassword, setShowPassword] = useState<boolean>(false);

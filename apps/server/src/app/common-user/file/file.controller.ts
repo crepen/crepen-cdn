@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Header, Headers, HttpCode, HttpStatus, Post, Put, Query, Req, Res, StreamableFile, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Header, Headers, HttpCode, HttpStatus, Param, Post, Put, Query, Req, Res, StreamableFile, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { ApiTags, ApiHeader, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { CrepenFileRouteService } from "./file.service";
 import { CrepenAuthJwtGuard } from "@crepen-nest/config/passport/jwt/jwt.guard";
@@ -14,6 +14,7 @@ import { CrepenFolderRouteService } from "../folder/folder.service";
 import { Transaction } from "typeorm";
 import { Request as ExpressRequest, Response } from "express";
 import { createReadStream } from "fs";
+import { CrepenFileError } from "./exception/file.exception";
 
 @ApiTags('[Common] 사용자 파일 관리 컨트롤러')
 @ApiHeader({
@@ -26,142 +27,41 @@ export class CrepenFileRouteController {
         private readonly folderService: CrepenFolderRouteService
     ) { }
 
-    @Get()
-    async test(
-        @Query('uid') uid: string,
-        @I18n() i18n: I18nContext,
-    ) {
-        const ss = await this.fileService.test(uid);
-        return BaseResponse.ok(
-            ss,
-            HttpStatus.OK,
-            i18n.t('cloud_file.FILE_COMMON_SUCCESS')
-        )
-    }
+    //#region FILE INFO READ
 
-
-    @Get('info')
+    @Get(':uid')
     //#region Decorator
-    @ApiOperation({ summary: '파일 조회', description: '파일 정보 조회' })
+    @ApiOperation({ summary: '파일 정보 조회', description: '파일 정보 조회' })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
     @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
     //#endregion
-    async getFileInfo(
+    async getFileData(
         @Req() req: JwtUserRequest,
         @I18n() i18n: I18nContext,
-        @Query('uid') uid?: string,
+        @Param('uid') uid: string
     ) {
-        if (StringUtil.isEmpty(uid)) {
-            throw new CrepenLocaleHttpException('cloud_file', 'FILE_LOAD_INFO_UID_NOT_FOUND', HttpStatus.BAD_REQUEST);
+        const fileData = await this.fileService.getFileWithStore(uid);
+
+        if (ObjectUtil.isNullOrUndefined(fileData)) {
+            throw CrepenFileError.FILE_NOT_FOUND;
         }
 
-        const targetFileData = await this.fileService.getFileInfo(uid);
-
-        if (ObjectUtil.isNullOrUndefined(targetFileData)) {
-            throw new CrepenLocaleHttpException('cloud_file', 'FILE_NOT_FOUND', HttpStatus.NOT_FOUND);
+        if (fileData.ownerUid !== req.user.entity.uid) {
+            throw CrepenFileError.FILE_ACCESS_UNAUTHORIZED;
         }
-        else if (targetFileData.ownerUid !== req.user.entity.uid) {
-            throw new CrepenLocaleHttpException('cloud_file', 'FILE_UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
-        }
-
 
         return BaseResponse.ok(
-            targetFileData,
+            fileData,
             HttpStatus.OK,
-            i18n.t('cloud_file.FILE_COMMON_SUCCESS')
-        );
+            i18n.t('common.SUCCESS')
+        )
     }
 
-    // @Get()
-    // //#region Decorator
-    // @ApiOperation({ summary: '파일 데이터 조회', description: '파일 데이터 조회' })
-    // @ApiBearerAuth('token')
-    // @HttpCode(HttpStatus.OK)
-    // @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
-    // //#endregion
-    // async getFileData(
-    //     @Req() req: JwtUserRequest,
-    //     @Res() res: Response,
-    //     @I18n() i18n: I18nContext,
-    //     @Query('uid') uid?: string,
-    // ) {
-    //     if (StringUtil.isEmpty(uid)) {
-    //         throw new CrepenLocaleHttpException('cloud_file', 'FILE_LOAD_INFO_UID_NOT_FOUND', HttpStatus.BAD_REQUEST);
-    //     }
+    //#endregion FILE INFO READ
 
-    //     const fileData = await this.fileService.getFileData(uid, req.user.entity.uid);
 
-    //     res.set({
-    //         'Content-Type': fileData.mimetype,
-    //         'Content-Length': fileData.size,
-    //         'Content-Disposition': `attachment; filename=${fileData.originalname}`
-    //     })
-    //     res.send(fileData.buffer)
-    // }
-
-    // @Get('stream')
-    // //#region Decorator
-    // @ApiOperation({ summary: '파일 데이터 스트리밍 조회', description: '파일 데이터 조회' })
-    // @ApiBearerAuth('token')
-    // @HttpCode(HttpStatus.OK)
-    // @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
-    // //#endregion
-    // async getFileDataStream(
-    //     @Req() req: JwtUserRequest,
-    //     @Res() res: Response,
-    //     @I18n() i18n: I18nContext,
-    //     @Query('uid') uid?: string,
-    // ) {
-    //     if (StringUtil.isEmpty(uid)) {
-    //         throw new CrepenLocaleHttpException('cloud_file', 'FILE_LOAD_INFO_UID_NOT_FOUND', HttpStatus.BAD_REQUEST);
-    //     }
-
-    //     const fileData = await this.fileService.getFileData(uid, req.user.entity.uid);
-
-    //     return new StreamableFile(fileData.buffer, {
-    //         disposition: `attachment; filename=${fileData.originalname}`,
-    //         length: fileData.size,
-    //         type: fileData.mimetype,
-    //     })
-
-    // }
-
-    // @Put()
-    // //#region Decorator
-    // @ApiOperation({ summary: '파일 등록', description: '파일 정보 등록' })
-    // @ApiBearerAuth('token')
-    // @HttpCode(HttpStatus.OK)
-    // @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
-    // @UseInterceptors(FileInterceptor('file'))
-    // //#endregion
-    // async addFile(
-    //     @Req() req: JwtUserRequest,
-    //     @I18n() i18n: I18nContext,
-    //     @UploadedFile() file: Express.Multer.File,
-    //     @Body() bodyData: AddFileDto
-    // ) {
-
-    //     if (ObjectUtil.isNullOrUndefined(file)) {
-    //         throw new CrepenLocaleHttpException('cloud_file', 'FILE_ADD_FAILED_FILE_UNDEFINED', HttpStatus.BAD_REQUEST);
-    //     }
-
-    //     const addFileData = await this.fileService.addFile(
-    //         bodyData.fileTitle,
-    //         file,
-    //         bodyData.parentFolderUid,
-    //         req.user.entity.uid,
-    //         {
-    //             shared: bodyData.optionShared
-    //         }
-    //     )
-
-    //     return BaseResponse.ok(
-    //         addFileData,
-    //         HttpStatus.OK,
-    //         i18n.t('cloud_file.FILE_COMMON_SUCCESS')
-    //     );
-    // }
+    //#region FILE INFO CONTROL
 
     @Post('rel')
     //#region Decorator
@@ -185,6 +85,11 @@ export class CrepenFileRouteController {
             i18n.t('cloud_file.FILE_COMMON_SUCCESS')
         )
     }
+
+    //#endregion FILE INFO CONTROL
+
+
+    //#region FILE UPLOAD
 
     @Put('stream')
     //#region Decorator
@@ -315,4 +220,195 @@ export class CrepenFileRouteController {
 
         return BaseResponse.ok();
     }
+
+    //#endregion FILE UPLOAD
+
+
+    //#region FILE DOWNLOAD
+
+    @Get(':uid/download')
+    //#region Decorator
+    @ApiOperation({ summary: '파일 다운로드 ', description: '파일 다운로드 (스트림 지원)' })
+    @ApiBearerAuth('token')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    //#endregion
+    async downloadFileStream(
+        @Req() req: JwtUserRequest,
+        @Res({ passthrough: true }) res: Response,
+        @I18n() i18n: I18nContext,
+        @Param('uid') uid: string
+    ) {
+        const fileData = await this.fileService.getFileData(uid);
+
+        const fileSize = fileData.buffer.length;
+        const range = res.req.headers.range;
+
+        if (range) {
+            console.log("STREAM RANGE");
+            const parts = range.replace(/bytes=/, '').split('-');
+            const start = parseInt(parts[0], 10);
+            const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+            const chunksize = (end - start) + 1;
+
+
+            const chunk = fileData.buffer.subarray(start, end + 1);
+
+            res.status(HttpStatus.PARTIAL_CONTENT);
+            res.header('Content-Range', `bytes ${start}-${end}/${fileSize}`);
+            res.header('Accept-Ranges', 'bytes');
+            res.header('Content-Length', chunksize.toString());
+            res.header('Content-Type', fileData.mimetype);
+
+            return new StreamableFile(chunk);
+        } else {
+            console.log("FULL");
+            res.status(HttpStatus.OK); // 200 OK
+            res.header('Content-Length', fileSize.toString());
+            res.header('Content-Type', fileData.mimetype);
+
+            return new StreamableFile(fileData.buffer);
+        }
+    }
+
+    @Get(':uid/download/shared')
+    //#region Decorator
+    @ApiOperation({ summary: '파일 다운로드 (공개)', description: '공개 파일 다운로드' })
+    @HttpCode(HttpStatus.OK)
+    //#endregion
+    async downloadSharedFile(
+        @Req() req: JwtUserRequest,
+        @Res({ passthrough: true }) res: Response,
+        @I18n() i18n: I18nContext,
+        @Param('uid') uid: string
+    ) {
+        // console.log(uid);
+        const fileData = await this.fileService.getSharedFile(uid);
+
+        const fileSize = fileData.buffer.length;
+        const range = res.req.headers.range;
+
+        if (range) {
+            console.log("STREAM RANGE");
+            const parts = range.replace(/bytes=/, '').split('-');
+            const start = parseInt(parts[0], 10);
+            const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+            const chunksize = (end - start) + 1;
+
+
+            const chunk = fileData.buffer.subarray(start, end + 1);
+
+            res.status(HttpStatus.PARTIAL_CONTENT);
+            res.header('Content-Range', `bytes ${start}-${end}/${fileSize}`);
+            res.header('Accept-Ranges', 'bytes');
+            res.header('Content-Length', chunksize.toString());
+            res.header('Content-Type', fileData.mimetype);
+
+            return new StreamableFile(chunk);
+        } else {
+            console.log("FULL");
+            res.status(HttpStatus.OK); // 200 OK
+            res.header('Content-Length', fileSize.toString());
+            res.header('Content-Type', fileData.mimetype);
+
+            return new StreamableFile(fileData.buffer);
+        }
+    }
+
+    //#endregion FILE DOWNLOAD
+
+
+
+    //#region FILE REMOVE
+
+    @Delete(':uid')
+    //#region Decorator
+    @ApiOperation({ summary: '파일 삭제 ', description: '파일 삭제' })
+    @ApiBearerAuth('token')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    //#endregion
+    async removeFile(
+        @Req() req: JwtUserRequest,
+        // @Res() res: Response,
+        @I18n() i18n: I18nContext,
+        @Param('uid') uid: string
+    ) {
+        console.log("REMOVE FILE" , uid);
+
+        // throw CrepenFileError.FILE_NOT_FOUND;
+        const removeFileRequest = await this.fileService.removeFile(uid , req.user.entity.uid);
+       
+
+        return BaseResponse.ok(
+            undefined,
+            HttpStatus.OK,
+            i18n.t('common.SUCCESS')
+        )
+    }
+
+
+    //#endregion FILE REMOVE
+
+
+
+
+
+
+
+
+    //#region  DEPRECATED
+
+
+    // @Get('info')
+    // //#region Decorator
+    // @ApiOperation({ summary: '파일 조회', description: '파일 정보 조회' })
+    // @ApiBearerAuth('token')
+    // @HttpCode(HttpStatus.OK)
+    // @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    // //#endregion
+    // async getFileInfo(
+    //     @Req() req: JwtUserRequest,
+    //     @I18n() i18n: I18nContext,
+    //     @Query('uid') uid?: string,
+    // ) {
+    //     if (StringUtil.isEmpty(uid)) {
+    //         throw new CrepenLocaleHttpException('cloud_file', 'FILE_LOAD_INFO_UID_NOT_FOUND', HttpStatus.BAD_REQUEST);
+    //     }
+
+    //     const targetFileData = await this.fileService.getFileInfo(uid);
+
+    //     if (ObjectUtil.isNullOrUndefined(targetFileData)) {
+    //         throw new CrepenLocaleHttpException('cloud_file', 'FILE_NOT_FOUND', HttpStatus.NOT_FOUND);
+    //     }
+    //     else if (targetFileData.ownerUid !== req.user.entity.uid) {
+    //         throw new CrepenLocaleHttpException('cloud_file', 'FILE_UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
+    //     }
+
+
+    //     return BaseResponse.ok(
+    //         targetFileData,
+    //         HttpStatus.OK,
+    //         i18n.t('cloud_file.FILE_COMMON_SUCCESS')
+    //     );
+    // }
+
+    //#endregion DEPRECATED
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

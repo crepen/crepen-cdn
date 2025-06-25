@@ -7,6 +7,7 @@ import { AddFolderModal } from "./modal.add-modal.folder";
 import { StringUtil } from "@web/lib/util/string.util";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { CrepenIconButton } from '@web/components/control/icon-button/icon-button.control';
 
 interface AddFolderModalButtonProp {
     folderUid?: string
@@ -28,15 +29,16 @@ export const AddFolderModalButton = (prop: AddFolderModalButtonProp) => {
 
     return (
         <Fragment>
-            <FontAwesomeIcon
+            <CrepenIconButton
                 icon={faAdd}
-                className="cp-folder-action-bt cp-add-folder-bt"
+                 className="cp-folder-action-bt cp-add-folder-bt"
                 onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     setModalState(true);
                 }}
             />
+            
 
 
             {

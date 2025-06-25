@@ -7,6 +7,7 @@ import { StringUtil } from '@web/lib/util/string.util'
 import { useRouter } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAdd } from '@fortawesome/free-solid-svg-icons'
+import { CrepenIconButton } from '@web/components/control/icon-button/icon-button.control'
 
 interface FastAddFileModalButtonProp {
     // value: string,
@@ -18,7 +19,7 @@ export const FastAddFileModalButton = (prop: FastAddFileModalButtonProp) => {
     const router = useRouter();
     const [isModalOpen, setModalState] = useState<boolean>(false);
 
-    const onClickEventHandler = (e: MouseEvent<SVGSVGElement>) => {
+    const onClickEventHandler = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         e.stopPropagation();
 
@@ -39,11 +40,12 @@ export const FastAddFileModalButton = (prop: FastAddFileModalButtonProp) => {
 
     return (
         <Fragment>
-            <FontAwesomeIcon
-                className='cp-fast-add-modal-open-bt cp-button'
+            <CrepenIconButton
                 icon={faAdd}
+                className='cp-fast-add-modal-open-bt cp-button'
                 onClick={onClickEventHandler}
             />
+
             {/* <button
 
                 onClick={onClickEventHandler}

@@ -1,0 +1,87 @@
+@use '../../../common/variable.scss' as variable;
+
+
+
+.cp-common-page.cp-file-info-page {
+
+    .cp-page-header {
+        width: 100%;
+
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        word-break: break-all;
+
+        .cp-page-title {
+            width: 100%;
+            font-size: 20px;
+            font-weight: bold;
+
+
+
+            .cp-file-icon {
+                margin-right: 10px;
+            }
+        }
+    }
+
+    .cp-page-content {
+        width: 100%;
+
+        display: grid;
+        grid-auto-flow: dense;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+
+        gap: 10px;
+        margin-top: 10px;
+
+        .cp-action-box {
+            grid-column: 1 / -1;
+
+            .cp-action-content-box {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+            }
+        }
+
+        .cp-preview-box {
+
+            video {
+                width: 100%;
+            }
+
+            img {
+                width: 100%;
+                position: relative !important;
+
+            }
+        }
+
+
+    }
+
+}
+
+
+@media screen and (max-width : #{variable.$screen-width-tablet}) {
+    .cp-common-page.cp-file-info-page {
+        .cp-page-content {
+            .cp-preview-box {
+                grid-column: 1 / -1;
+            }
+        }
+    }
+}
+
+
+@media screen and (max-width : #{variable.$screen-width-tablet}) {
+    .cp-common-page.cp-file-info-page {
+        .cp-page-content {
+            grid-template-columns: 1fr;
+
+           
+        }
+    }
+}

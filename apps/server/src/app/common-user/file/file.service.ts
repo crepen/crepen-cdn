@@ -12,6 +12,8 @@ import { CrepenCryptoService } from "@crepen-nest/app/common/crypto/crypto.servi
 import { join } from "path";
 import { ConfigService } from "@nestjs/config";
 import { FileStoreEntity } from "./entity/file-store.entity";
+import { CrepenFileError } from "./exception/file.exception";
+import { StringUtil } from "@crepen-nest/lib/util/string.util";
 
 @Injectable()
 export class CrepenFileRouteService {
@@ -143,7 +145,7 @@ export class CrepenFileRouteService {
                 fileStoreEntity.fileType = decodeURIComponent(file.mimetype);
                 fileStoreEntity.fileSize = file.size;
 
-                console.log("==========> ",decodeURIComponent(file.mimetype) )
+                console.log("==========> ", decodeURIComponent(file.mimetype))
 
                 const encryptFile = await this.cryptoService.encryptFile(file, fileStoreEntity.fileName);
 
@@ -204,8 +206,70 @@ export class CrepenFileRouteService {
     }
 
 
-    test = async (uid: string) => {
-        return await this.repo.getFileWithStore(uid);
+    getFileWithStore = async (uid: string) => {
+        return await this.repo.defaultManager().getFileWithStore(uid);
     }
+
+
+
+
+    getSharedFile = async (fileUid: string): Promise<Express.Multer.File | undefined> => {
+        const fileInfo = await this.repo.defaultManager().getSharedFileWithStore(fileUid);
+        return this.getFileDataFromFileEntity(fileInfo);
+    }
+
+
+    getFileData = async (fileUid: string): Promise<Express.Multer.File | undefined> => {
+        const fileInfo = await this.getFileWithStore(fileUid);
+        return this.getFileDataFromFileEntity(fileInfo);
+    }
+
+
+
+    getFileDataFromFileEntity = (fileInfo?: FileEntity) => {
+        if (ObjectUtil.isNullOrUndefined(fileInfo)) {
+            throw CrepenFileError.FILE_NOT_FOUND;
+        }
+
+        const savePath = join(
+            this.configService.get('path.fileStore'),
+            fileInfo.fileStore.fileName
+        );
+
+        const fileBuffer = fs.readFileSync(savePath);
+
+        const decryptFile = this.cryptoService.decryptFile(fileBuffer, fileInfo.fileStore.originFileMine);
+
+
+        return decryptFile.file;
+    }
+
+
+    removeFile = async (fileUid?: string, requestUserUid?: string) => {
+        if (StringUtil.isEmpty(fileUid)) {
+            throw CrepenFileError.FILE_UID_UNDEFINED
+        }
+
+        const fileData = await this.getFileInfo(fileUid);
+
+        if (ObjectUtil.isNullOrUndefined(fileData)) {
+            throw CrepenFileError.FILE_NOT_FOUND;
+        }
+
+        if (fileData.ownerUid !== requestUserUid) {
+            throw CrepenFileError.FILE_ACCESS_UNAUTHORIZED;
+        }
+
+        try {
+            const removeFile = await this.repo.defaultManager().removeFile(fileData)
+        }
+        catch (e) {
+            throw CrepenFileError.FILE_REMOVE_FAILED;
+        }
+
+
+
+    }
+
 
 }

@@ -11,6 +11,7 @@ interface BaseButtonProp extends PropsWithChildren {
     type : 'submit' | 'button'
 }
 
+/** @deprecated */
 const BaseButton = (prop: BaseButtonProp) => {
     return (
         <button 

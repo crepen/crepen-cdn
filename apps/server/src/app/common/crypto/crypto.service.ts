@@ -18,7 +18,7 @@ export class CrepenCryptoService {
     private readonly algorithm = 'aes-256-cbc';
 
 
-    getFileHash = (buffer : Buffer) => {
+    getFileHash = (buffer: Buffer) => {
         const sha256 = crypto.createHash('sha256');
         sha256.update(buffer);
 
@@ -38,7 +38,8 @@ export class CrepenCryptoService {
             ...file,
             buffer: Buffer.from(encryptFileBuffer.toString('hex'), 'hex'),
             size: encryptFileBuffer.length,
-            originalname: await this.hashText(convertName),
+            // originalname: await this.hashText(convertName),
+            originalname: convertName,
         }
 
         file.buffer = undefined;
@@ -54,7 +55,7 @@ export class CrepenCryptoService {
         }
     }
 
-    decryptFile = (fileBuffer: Buffer, originMime: string  ): { file: Express.Multer.File, decryptMime: string } => {
+    decryptFile = (fileBuffer: Buffer, originMime: string): { file: Express.Multer.File, decryptMime: string } => {
 
         const key: Buffer = crypto.scryptSync(this.configService.get('secret.file'), 'salt', 32); // 32 byte key
 
@@ -74,12 +75,12 @@ export class CrepenCryptoService {
         const decipher = crypto.createDecipheriv(this.algorithm, key, mimeIv);
         const decryptFile = Buffer.concat([decipher.update(encrypted), decipher.final()]);
 
-        const originFileMime = JSON.parse(decryptMime.toString('utf8')) as Express.Multer.File
+        const originFileMime = JSON.parse(decodeURIComponent(decryptMime.toString('utf8'))) as Express.Multer.File
 
         const decryptFileObj: Express.Multer.File = {
             ...originFileMime,
             buffer: decryptFile,
-            filename : originFileMime.originalname
+            filename: originFileMime.originalname
         }
 
         return {

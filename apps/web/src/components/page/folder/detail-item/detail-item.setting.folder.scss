@@ -6,7 +6,7 @@
     // align-items: center;
 
     grid-template-areas: 'title value';
-    grid-template-columns: 50% 50%;
+    grid-template-columns: 1fr 1fr;
 
     padding-block: 8px;
     padding-inline: 4px;

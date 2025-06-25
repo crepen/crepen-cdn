@@ -14,7 +14,7 @@ interface CrepenModalFooterOption {
     render?: React.ReactNode,
     enableCloseButton?: boolean,
     enableSubmitButton?: boolean,
-    isLoadingSubmitButton? : boolean,
+    isLoadingSubmitButton?: boolean,
     submit?: () => void
 }
 
@@ -23,7 +23,8 @@ interface CrepenModalProp extends PropsWithChildren {
     close: () => void,
     isOpen: boolean,
     headerOptions?: CrepenModalHeaderOption,
-    footerOptions?: CrepenModalFooterOption
+    footerOptions?: CrepenModalFooterOption,
+    modalBoxClassName?: string
 }
 
 export const CrepenModal = (prop: CrepenModalProp) => {
@@ -32,8 +33,12 @@ export const CrepenModal = (prop: CrepenModalProp) => {
             className={StringUtil.joinClassName('cp-modal', prop.className)}
             data-state={prop.isOpen ? 'open' : 'close'}
         >
-            <div className='cp-modal-backdrop' onClick={prop.close}></div>
-            <div className="cp-modal-box">
+            <div className='cp-modal-backdrop' onClick={() => {
+                if (!prop.footerOptions?.isLoadingSubmitButton) {
+                    prop.close();
+                }
+            }}></div>
+            <div className={StringUtil.joinClassName("cp-modal-box", prop.modalBoxClassName)}>
                 <div className='cp-modal-header'>
                     <span>{prop.headerOptions?.title}</span>
                     {
@@ -53,7 +58,11 @@ export const CrepenModal = (prop: CrepenModalProp) => {
                     {prop.footerOptions?.render}
                     {
                         (prop.footerOptions?.enableCloseButton ?? false) === true &&
-                        <button className='cp-modal-close-bt cp-footer-bt' onClick={prop.close}>
+                        <button className='cp-modal-close-bt cp-footer-bt' onClick={() => {
+                            if (!prop.footerOptions?.isLoadingSubmitButton) {
+                                prop.close();
+                            }
+                        }}>
                             Close
                         </button>
                     }
@@ -62,8 +71,8 @@ export const CrepenModal = (prop: CrepenModalProp) => {
                         <button className='cp-modal-submit-bt cp-footer-bt' onClick={prop.footerOptions?.submit} disabled={prop.footerOptions?.isLoadingSubmitButton === true}>
                             {
                                 prop.footerOptions?.isLoadingSubmitButton
-                                ? 'Loading..'
-                                : 'Submit'
+                                    ? 'Loading..'
+                                    : 'Submit'
                             }
                         </button>
                     }

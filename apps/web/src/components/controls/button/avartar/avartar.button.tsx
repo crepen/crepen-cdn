@@ -9,6 +9,7 @@ interface AvartarIconButtonProp {
     ref? : RefObject<HTMLButtonElement | null>
 }
 
+/** @deprecated */
 export const AvartarIconButton = (prop: AvartarIconButtonProp) => {
     return (
         <button

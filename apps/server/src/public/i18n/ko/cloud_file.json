@@ -17,5 +17,11 @@
   "FILE_REL_FAILED_FOLDER_UID_UNDEFINED" : "등록할 폴더가 입력되지 않았습니다.",
   "FILE_REL_FAILED_FILE_TITLE_UNDEFINED" : "파일명이 입력되지 않았습니다.",
 
-  "FILE_ADD_FAILED_OPTION_BOOLEAN_TYPE" : "옵션값이 Boolean이 아닙니다."
+  "FILE_ADD_FAILED_OPTION_BOOLEAN_TYPE" : "옵션값이 Boolean이 아닙니다.",
+
+
+  "FILE_UID_UNDEFINED" : "파일 고유값이 입력되지 않았습니다.",
+
+
+  "FILE_REMOVE_FAILED" : "파일을 삭제할 수 없습니다."
 }

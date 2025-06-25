@@ -1,11 +1,24 @@
 import { CrepenCommonError } from "@web/lib/common/common-error";
+import { CrepenRouteError } from "@web/lib/common/route-error";
 import { CrepenAuthOpereationService } from "@web/services/operation/auth.operation.service";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { NextRequest, NextResponse } from "next/server";
 
+interface RequestContext {
+    params: Promise<
+        {
+            uid: string;
+        }
+    >;
+}
 
-export const PUT = async (req: NextRequest) => {
+export const GET = async (req: NextRequest, res: NextResponse & RequestContext) => {
     try {
+        const uid = (await res.params).uid;
+
+
+
+
         const renewToken = await CrepenAuthOpereationService.renewToken();
         if (renewToken.success !== true) {
             throw new CrepenCommonError(renewToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.');
@@ -18,14 +31,6 @@ export const PUT = async (req: NextRequest) => {
             }
         }
 
-        const formData = await req.formData();
-        const file = formData.get("file") as File;
-
-        if (!file) {
-            return NextResponse.json({ success: false, message: 'No Files.' });
-        }
-
-        const stream = file.stream(); // ReadableStream
 
         let apiUrl = process.env.API_URL ?? '';
 
@@ -33,42 +38,41 @@ export const PUT = async (req: NextRequest) => {
             apiUrl = apiUrl.slice(0, apiUrl.length - 1);
         }
 
-        const response = await fetch(`${apiUrl}/explorer/file/stream`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/octet-stream",
-                'Accept-Language': req.headers.get('Accept-Language')?.toString() ?? 'en',
-                'Authorization': `Bearer ${renewToken.data?.accessToken}`,
-                'x-file-name': encodeURIComponent(file.name),
-                'x-file-type': encodeURIComponent(file.type)
-            },
-            body: stream, // TS 오류 무시
-            // duplex 필요!
-            duplex: "half",
-        } as never);
 
-        const data = await response.json()
-
-        if (data.success !== true) {
-            throw new CrepenCommonError(data.message);
+        const range = req.headers.get('range');
+        const headers: HeadersInit = {};
+        if (range) {
+            headers['range'] = range;
         }
 
 
+        const requestUrl = `${apiUrl}/explorer/file/${uid}/download`
 
-        return NextResponse.json({
-            success: true,
-            message: data.message,
-            uid: data.data
-        });
+        const requestFile = await fetch(requestUrl, {
+            method: 'GET',
+            headers: {
+                ...headers,
+                'Accept-Language': req.headers.get('Accept-Language')?.toString() ?? 'en',
+                'Authorization': `Bearer ${renewToken.data?.accessToken}`,
+            }
+        })
+        
+
+        if (!requestFile.ok) {
+            throw new CrepenRouteError('Failed to fetch video stream');
+        }
+
+        const responseHeaders = new Headers(requestFile.headers);
+        return new NextResponse(requestFile.body, { status: requestFile.status, headers: responseHeaders });
     }
     catch (e) {
-        console.log('ROUTE ERROR', e);
-
         let message = 'Unknown Error';
 
         if (e instanceof CrepenCommonError) {
             message = e.message ?? message;
         }
+
+        console.log(e);
 
         return NextResponse.json(
             {
@@ -80,6 +84,4 @@ export const PUT = async (req: NextRequest) => {
             }
         );
     }
-
 }
-

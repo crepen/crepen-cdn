@@ -11,7 +11,7 @@ interface ProfileButtonProp {
     userInfo: CrepenUser
 }
 
-
+/** @deprecated */
 export const ProfileButton = (prop: ProfileButtonProp) => {
 
     const router = useRouter();

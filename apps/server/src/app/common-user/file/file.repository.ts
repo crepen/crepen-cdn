@@ -58,7 +58,7 @@ export class CrepenFileRouteRepository {
     }
 
     getFileWithStore = (uid : string) => {
-        return this.repo.find({
+        return this.repo.findOne({
             where : {
                 uid : uid
             },
@@ -66,4 +66,18 @@ export class CrepenFileRouteRepository {
         })
     }
 
+    getSharedFileWithStore = (uid : string) => {
+        return this.repo.findOne({
+            where : {
+                uid : uid,
+                isShared : true
+            },
+            relations : ['fileStore']
+        })
+    }
+
+
+    removeFile = (fileEntity : FileEntity) => {
+        return this.repo.remove(fileEntity);
+    }
 }

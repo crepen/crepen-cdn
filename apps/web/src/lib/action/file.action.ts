@@ -1,10 +1,10 @@
 'use server'
 
-import { CrepenHttpService } from "@web/services/common/http.service";
 import { CrepenActionError } from "../common/action-error";
 import { StringUtil } from "../util/string.util"
-import { Readable } from "stream";
-import { CrepenApiService } from "@web/services/api/base.api.service";
+import { CrepenAuthOpereationService } from "@web/services/operation/auth.operation.service";
+import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
+import { CrepenFileOperationService } from "@web/services/operation/file.operation.service";
 
 interface AddFileActionResult {
     success?: boolean,
@@ -12,7 +12,7 @@ interface AddFileActionResult {
     addFileUid?: string
 }
 
-export const addFile = async (currentState: any, formData: FormData): Promise<AddFileActionResult> => {
+export const addFile = async (currentState: never, formData: FormData): Promise<AddFileActionResult> => {
 
 
     const title = formData.get('form-title')?.toString();
@@ -60,5 +60,59 @@ export const addFile = async (currentState: any, formData: FormData): Promise<Ad
 
     }
 
+}
+
+export const removeFile = async (uid? : string) => {
+
+
+    try {
+
+        const renewTokenGroup = await CrepenAuthOpereationService.renewToken();
+
+        if (renewTokenGroup.success !== true) {
+            return {
+                success: false,
+                message: renewTokenGroup.message
+            };
+        }
+        else {
+            await CrepenCookieOperationService.insertTokenData(renewTokenGroup.data);
+        }
+
+
+
+        if(StringUtil.isEmpty(uid)){
+            throw new CrepenActionError('REMOVE FILE UID NOT DEFINED');
+        }
+
+        console.log('GJOWIEGJIOEWJGOIEW');
+
+        const removeRequest = await CrepenFileOperationService.removeFile(uid!);
+        console.log('NNTTNNTT',removeRequest);
+
+        if(removeRequest.success !== true){
+            throw new CrepenActionError(removeRequest.message);
+        }
+
+
+
+        return {
+            success: true,
+            message: removeRequest.message
+        }
+    }
+    catch (e) {
+        if (e instanceof CrepenActionError) {
+            return {
+                success: false,
+                message: e.message
+            }
+        }
+
+        return {
+            success: false,
+            message: '알 수 없는 오류입니다.'
+        }
+    }
 }
 
