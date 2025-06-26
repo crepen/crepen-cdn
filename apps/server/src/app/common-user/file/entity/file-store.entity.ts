@@ -12,11 +12,14 @@ export class FileStoreEntity {
     @Column({ type: 'varchar', name: 'file_name' })
     fileName: string;
 
-    @Column({type : 'varchar' , name : 'file_type'})
-    fileType : string;
+    @Column({ type: 'varchar', name: 'file_type' })
+    fileType: string;
 
-    @Column({type : 'int' , name :'file_size'})
-    fileSize : number;
+    @Column({ type: 'int', name: 'file_size' })
+    fileSize: number;
+
+    @Column({ type: 'varchar', name: 'file_ext' })
+    fileExt: string;
 
     @Column({ type: 'varchar', name: 'origin_file_mine', length: 2000 })
     originFileMine: string;
@@ -36,7 +39,7 @@ export class FileStoreEntity {
     updateDate?: Date;
 
 
-    @OneToOne(() => FileEntity, (file) => file.fileStore, {createForeignKeyConstraints : false})
+    @OneToOne(() => FileEntity, (file) => file.fileStore, { createForeignKeyConstraints: false })
     file: FileEntity;
 
 }

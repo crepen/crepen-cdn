@@ -15,6 +15,8 @@ import { Transaction } from "typeorm";
 import { Request as ExpressRequest, Response } from "express";
 import { createReadStream } from "fs";
 import { CrepenFileError } from "./exception/file.exception";
+import { EditFileDto } from "./dto/edit.file.dto";
+import { FileEntity } from "./entity/file.entity";
 
 @ApiTags('[Common] 사용자 파일 관리 컨트롤러')
 @ApiHeader({
@@ -245,7 +247,6 @@ export class CrepenFileRouteController {
         const range = res.req.headers.range;
 
         if (range) {
-            console.log("STREAM RANGE");
             const parts = range.replace(/bytes=/, '').split('-');
             const start = parseInt(parts[0], 10);
             const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
@@ -262,7 +263,6 @@ export class CrepenFileRouteController {
 
             return new StreamableFile(chunk);
         } else {
-            console.log("FULL");
             res.status(HttpStatus.OK); // 200 OK
             res.header('Content-Length', fileSize.toString());
             res.header('Content-Type', fileData.mimetype);
@@ -285,11 +285,12 @@ export class CrepenFileRouteController {
         // console.log(uid);
         const fileData = await this.fileService.getSharedFile(uid);
 
+        console.log(fileData);
+
         const fileSize = fileData.buffer.length;
         const range = res.req.headers.range;
 
         if (range) {
-            console.log("STREAM RANGE");
             const parts = range.replace(/bytes=/, '').split('-');
             const start = parseInt(parts[0], 10);
             const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
@@ -303,13 +304,14 @@ export class CrepenFileRouteController {
             res.header('Accept-Ranges', 'bytes');
             res.header('Content-Length', chunksize.toString());
             res.header('Content-Type', fileData.mimetype);
+            res.header('Content-Disposition' , `attachment;filename="${fileData.filename}"`)
 
             return new StreamableFile(chunk);
         } else {
-            console.log("FULL");
             res.status(HttpStatus.OK); // 200 OK
             res.header('Content-Length', fileSize.toString());
             res.header('Content-Type', fileData.mimetype);
+            res.header('Content-Disposition' , `attachment;filename="${fileData.filename}"`)
 
             return new StreamableFile(fileData.buffer);
         }
@@ -334,11 +336,11 @@ export class CrepenFileRouteController {
         @I18n() i18n: I18nContext,
         @Param('uid') uid: string
     ) {
-        console.log("REMOVE FILE" , uid);
+        console.log("REMOVE FILE", uid);
 
         // throw CrepenFileError.FILE_NOT_FOUND;
-        const removeFileRequest = await this.fileService.removeFile(uid , req.user.entity.uid);
-       
+        const removeFileRequest = await this.fileService.removeFile(uid, req.user.entity.uid);
+
 
         return BaseResponse.ok(
             undefined,
@@ -351,7 +353,41 @@ export class CrepenFileRouteController {
     //#endregion FILE REMOVE
 
 
+    //#region FILE EDIT
 
+    @Post(':uid')
+    //#region Decorator
+    @ApiOperation({ summary: '파일 수정 ', description: '파일 수정' })
+    @ApiBearerAuth('token')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    //#endregion
+    async editFileInfo(
+        @Req() req: JwtUserRequest,
+        @I18n() i18n: I18nContext,
+        @Param('uid') uid: string,
+        @Body() bodyData : EditFileDto
+    ) {
+        console.log("CHANGE FILE", uid , bodyData);
+
+        // throw CrepenFileError.FILE_NOT_FOUND;
+        // const removeFileRequest = await this.fileService.removeFile(uid, req.user.entity.uid);
+
+        const editEntity = new FileEntity();
+        editEntity.fileTitle = bodyData.fileTitle;
+        editEntity.isShared = bodyData.isShared;
+
+        await this.fileService.editFile(uid , editEntity, req.user.entity.uid );
+
+
+        return BaseResponse.ok(
+            undefined,
+            HttpStatus.OK,
+            i18n.t('common.SUCCESS')
+        )
+    }
+
+    //#endregion FILE EDIT
 
 
 

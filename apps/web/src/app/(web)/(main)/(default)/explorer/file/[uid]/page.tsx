@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MimeUtil } from "@web/lib/util/mime.util";
 import { CrepenFileOperationService } from "@web/services/operation/file.operation.service";
 import { redirect } from "next/navigation";
-import { faDownload, faVideo } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faTrash, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { CrepenHttpService } from '@web/services/common/http.service';
 import { GroupExpandBox } from '@web/components/page/common/group-box/group-box.common';
@@ -13,6 +13,16 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { CrepenIconButton } from '@web/components/control/icon-button/icon-button.control';
 import { RemoveFileIconButton } from '@web/components/page/file/button/remove-bt/remove-bt.file';
+import { CrepenDetailItem } from '@web/components/page/common/detail-list/detail-item.common';
+import { StringUtil } from '@web/lib/util/string.util';
+import { CrepenDetailEditableItem } from '@web/components/page/common/detail-list/detail-edit-item.common';
+import { FileTitleEditDetailItem } from '@web/components/page/file/edit-detail/file-title.edit-detail.file';
+import { CrepenToggleButton } from '@web/components/page/common/toggle-button/toggle-button.common';
+import { FileSharedEditDetailItem } from '@web/components/page/file/edit-detail/file-shared.edit-detail.file';
+import { ClientDateLocaleWrap } from '@web/components/page/common/date-locale.wrap.common';
+import { CrepenLanguageService } from '@web/services/common/language.service';
+import { FileSharedUrlDetailItem } from '@web/components/page/file/edit-detail/file-shared-url.detail.file';
+import { FileRemoveEditDetailItem } from '@web/components/page/file/edit-detail/file-remove.edit-detail.file';
 
 interface ExplorerFileInfoRoutePageProp {
     params: Promise<{
@@ -31,6 +41,7 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
     }
 
     const fileCategory = MimeUtil.getCategory(fileData.data?.fileStore?.fileType ?? '');
+    const locale = await CrepenLanguageService.getSessionLocale();
 
     const getFileCategoryIcon = () => {
         let icon: IconProp = faFile;
@@ -76,38 +87,95 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
                     />
 
                 </GroupExpandBox>
-                <GroupExpandBox
-                    title='미리보기'
-                    className='cp-preview-box'
-                >
-                    {
-                        fileCategory === 'image' &&
-                        <Image
-                            src={fileUrl}
-                            alt=''
-                            fill
-                        />
-                    }
-                    {
-                        fileCategory === 'video' &&
-                        <video
-                            src={fileUrl}
-                            controls
-                        />
-                    }
-                </GroupExpandBox>
+                {
+                    (fileCategory === 'image' || fileCategory === 'video') &&
+                    <GroupExpandBox
+                        title='미리보기'
+                        className='cp-preview-box'
+                        defaultOpen
+                    >
+                        {
+                            fileCategory === 'image' &&
+                            <Image
+                                src={fileUrl}
+                                alt=''
+                                fill
+                            />
+                        }
+                        {
+                            fileCategory === 'video' &&
+                            <video
+                                src={fileUrl}
+                                controls
+                            />
+                        }
+                    </GroupExpandBox>
+                }
+
                 <GroupExpandBox
                     title='정보'
                     defaultOpen
                 >
-                    TYPE : {fileData.data?.fileStore?.fileType} <br />
-                    CATEGORY : {fileCategory}
+                    <FileTitleEditDetailItem
+                        title='File title'
+                        value={fileData.data?.fileTitle}
+                        fileUid={fileData.data?.uid}
+                    />
+                    <CrepenDetailItem
+                        title='TYPE'
+                    >
+                        {fileData.data?.fileStore?.fileType}
+                    </CrepenDetailItem>
+                    <CrepenDetailItem
+                        title='CATEGORY'
+                    >
+                        {fileCategory}
+                    </CrepenDetailItem>
+                    <CrepenDetailItem
+                        title='SIZE'
+                    >
+                        {StringUtil.convertFormatByte(fileData.data?.fileStore?.fileSize ?? 0)}
+                    </CrepenDetailItem>
+                    <CrepenDetailItem
+                        title='LAST UPDATE DATE'
+                    >
+                        {
+                            fileData.data?.updateDate !== undefined
+                                ? <ClientDateLocaleWrap
+                                    date={fileData.data?.updateDate}
+                                    locale={locale.data ?? 'en'}
+                                />
+                                : '-'
+                        }
+
+                    </CrepenDetailItem>
                 </GroupExpandBox>
                 <GroupExpandBox
                     title='Action'
                     defaultOpen
                 >
-                    Download : <Link href={downloadUrl} download>Download ITem</Link>
+                    <CrepenDetailItem
+                        title='DOWNLOAD'
+                    >
+                        <Link href={downloadUrl} download>Download Item</Link>
+                    </CrepenDetailItem>
+                    <FileSharedEditDetailItem
+                        title='SHARED'
+                        value={fileData.data?.isShared}
+                        fileUid={fileData.data?.uid}
+                    />
+                    {
+                        fileData.data?.isShared &&
+                        <FileSharedUrlDetailItem
+                            title='Shared Link'
+                            fileUid={fileData.data.uid}
+                        />
+                    }
+                    <FileRemoveEditDetailItem 
+                         title='Remove File'
+                         fileUid={fileData.data?.uid}
+                         parentFolderUid={fileData.data?.parentFolderUid}
+                    />
                 </GroupExpandBox>
             </div>
         </div>

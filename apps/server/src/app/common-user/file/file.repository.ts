@@ -80,4 +80,9 @@ export class CrepenFileRouteRepository {
     removeFile = (fileEntity : FileEntity) => {
         return this.repo.remove(fileEntity);
     }
+
+
+    editFile = (fileUid : string , fileEntity : FileEntity) => {
+        return this.repo.update(fileUid , fileEntity);
+    }
 }

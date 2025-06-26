@@ -27,7 +27,7 @@
 
 
 
-    @media screen and (max-width : #{variable.$screen-width-tablet}) and (min-width :#{variable.$screen-width-mobile}) {
+    @media screen and (max-width : #{variable.$screen-width-labtop}) and (min-width :#{variable.$screen-width-mobile}) {
         &[data-aside-expand=collapse] {
             grid-template-columns: 80px auto;
 

@@ -24,6 +24,8 @@ export class FileEntity {
     fileUid: string
 
 
+
+
     @Column({ name: 'create_date', type: "datetime", default: () => 'sysdate()' })
     // @Exclude()
     createDate?: Date;

@@ -31,6 +31,14 @@
                 padding: 10px;
                 font-weight: bold;
                 font-family: var(--global-font-family);
+                cursor: pointer;
+                transition: 0.3s;
+
+                &:hover {
+                    background-color: #dfdfdf;
+                    border-color: #1d1d1d;
+                }
+
             }
 
             .cp-file-input {
@@ -50,7 +58,7 @@
 
         }
 
-        
+
     }
 }
 

@@ -43,9 +43,9 @@ export const GET = async (req: NextRequest, res: NextResponse & RequestContext) 
         })
         
 
-        if (!requestFile.ok) {
-            throw new CrepenRouteError('Failed to fetch video stream');
-        }
+        // if (!requestFile.ok) {
+        //     throw new CrepenRouteError('Failed to fetch video stream');
+        // }
 
         const responseHeaders = new Headers(requestFile.headers);
         return new NextResponse(requestFile.body, { status: requestFile.status, headers: responseHeaders });

@@ -23,5 +23,10 @@
   "FILE_UID_UNDEFINED" : "파일 고유값이 입력되지 않았습니다.",
 
 
-  "FILE_REMOVE_FAILED" : "파일을 삭제할 수 없습니다."
+  "FILE_REMOVE_FAILED" : "파일을 삭제할 수 없습니다.",
+  "FILE_EDIT_FAILED" : "파일을 수정할 수 없습니다.",
+
+
+  "FILE_TITLE_TYPE_NOT_STRING" : "파일명 형식이 문자열이 아닙니다.",
+  "FILE_SHARED_TYPE_NOT_BOOLEAN" : "파일 공유 유무 형식이 Boolean이 아닙니다."
 }

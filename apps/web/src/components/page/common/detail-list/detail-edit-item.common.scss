@@ -1,0 +1,135 @@
+@use '../../../../assets/style/common/variable.scss' as variable;
+
+.cp-detail-editable-item {
+
+
+    .cp-detail-edit-box {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+
+
+        .cp-edit-input {
+            padding-inline: 10px;
+            padding-block: 4px;
+            border-radius: 5px;
+            border: 1px solid #aaaaaa;
+            outline: none;
+            width: 100%;
+            // margin-right: 6px;
+        }
+
+        .cp-detail-icon-bt {
+            font-size: 16px;
+            padding-inline: 4px;
+
+        }
+
+        .cp-edit-action {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-top: 4px;
+
+            .cp-edit-submit-bt {
+                padding-inline: 10px;
+                padding-block: 4px;
+                border-radius: 5px;
+                border: 1px solid #aaaaaa;
+                outline: none;
+                cursor: pointer;
+                margin-right: 6px;
+            }
+
+            .cp-edit-cancel-bt {
+                padding-inline: 10px;
+                padding-block: 4px;
+                border-radius: 5px;
+                border: 1px solid #aaaaaa;
+                outline: none;
+                cursor: pointer;
+            }
+        }
+
+
+
+
+
+
+        .cp-view-text {
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        .cp-view-edit-bt {
+            margin-left: 12px;
+            cursor: pointer;
+        }
+
+
+        &[data-editable=true] {
+            display: block;
+        }
+    }
+}
+
+@media screen and (max-width : #{variable.$screen-width-desktop}) {
+    .cp-detail-editable-item {
+
+        .cp-detail-edit-box {
+            width: 100%;
+
+            display: grid;
+            grid-template-columns: 1fr max-content;
+
+
+        }
+    }
+}
+
+
+@media screen and (max-width : #{variable.$screen-width-mobile}) {
+    .cp-detail-editable-item {
+
+        .cp-detail-edit-box {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+
+            margin-top: 10px;
+
+            .cp-edit-input {
+                width: 100%;
+                font-size: 14px;
+                padding: 8px 13px;
+            }
+
+            .cp-edit-action {
+                margin-top: 10px;
+                width: 100%;
+                gap: 10px;
+
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+
+                .cp-edit-submit-bt {
+                    width: 100%;
+
+                    padding: 8px;
+                }
+
+                .cp-edit-cancel-bt {
+                    width: 100%;
+                    padding: 8px;
+                }
+            }
+
+            &[data-editable=true] {
+                flex-direction: column;
+            }
+
+
+        }
+    }
+}

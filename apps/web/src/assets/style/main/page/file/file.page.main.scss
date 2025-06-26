@@ -43,6 +43,7 @@
                 display: flex;
                 justify-content: flex-end;
                 align-items: center;
+                display: none;
             }
         }
 
@@ -64,6 +65,13 @@
 
 }
 
+@media screen and (max-width : #{variable.$screen-width-desktop}){
+    .cp-common-page.cp-file-info-page {
+        .cp-page-content {
+            grid-template-columns: 1fr;
+        }
+    }
+}
 
 @media screen and (max-width : #{variable.$screen-width-tablet}) {
     .cp-common-page.cp-file-info-page {
@@ -76,12 +84,12 @@
 }
 
 
-@media screen and (max-width : #{variable.$screen-width-tablet}) {
-    .cp-common-page.cp-file-info-page {
-        .cp-page-content {
-            grid-template-columns: 1fr;
+// @media screen and (max-width : #{variable.$screen-width-mobile}) {
+//     .cp-common-page.cp-file-info-page {
+//         .cp-page-content {
+//             grid-template-columns: 1fr;
 
            
-        }
-    }
-}
+//         }
+//     }
+// }

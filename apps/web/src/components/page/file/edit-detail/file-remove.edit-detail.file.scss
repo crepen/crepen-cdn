@@ -1,0 +1,12 @@
+.cp-file-remove-edit-detail-item{
+
+
+    .cp-file-remove-bt{
+        transition: 0.3s;
+        cursor: pointer;
+        
+        &:hover {
+            transform: rotate(20deg);
+        }
+    }
+}

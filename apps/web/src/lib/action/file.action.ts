@@ -19,15 +19,6 @@ export const addFile = async (currentState: never, formData: FormData): Promise<
     const file = formData.get('form-file') as File
     const sharedOption = formData.get('form-option-shared');
 
-    console.log('================================')
-    console.log('TITLE', title);
-    console.log('FILE', file);
-    console.log('OPTION_SHARED', sharedOption);
-    console.log('================================')
-
-
-
-
     try {
         if (StringUtil.isEmpty(title)) {
             throw new CrepenActionError('title is required.');
@@ -85,10 +76,8 @@ export const removeFile = async (uid? : string) => {
             throw new CrepenActionError('REMOVE FILE UID NOT DEFINED');
         }
 
-        console.log('GJOWIEGJIOEWJGOIEW');
 
         const removeRequest = await CrepenFileOperationService.removeFile(uid!);
-        console.log('NNTTNNTT',removeRequest);
 
         if(removeRequest.success !== true){
             throw new CrepenActionError(removeRequest.message);

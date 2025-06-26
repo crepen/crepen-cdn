@@ -5,11 +5,12 @@ import '@web/assets/style/cloud/page/folder/cloud.folder.scss'
 import { CrepenHttpService } from "@web/services/common/http.service"
 import Link from "next/link"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faArrowTurnUp, faEllipsisVertical, faGear, faImage } from "@fortawesome/free-solid-svg-icons"
+import { faArrowTurnUp, faEllipsisVertical, faGear, faImage, faLink } from "@fortawesome/free-solid-svg-icons"
 import { StringUtil } from "@web/lib/util/string.util"
 import { faFile, faFolder } from "@fortawesome/free-regular-svg-icons"
 import { FolderListCategoryGroup } from "@web/components/page/folder/category-group/folder-group.category-group.folder"
 import { FileListCategoryGroup } from "@web/components/page/folder/category-group/file.category-group.folder"
+import { CrepenIconButton } from "@web/components/control/icon-button/icon-button.control"
 
 interface ExplorerFolderRoutePageProp {
     params: Promise<{
@@ -71,10 +72,10 @@ export const ExplorerFolderRoutePage = async (prop: ExplorerFolderRoutePageProp)
                                 className="cp-folder-item cp-folder-table-row"
                                 href={`/explorer/folder/${folderData.data?.parentFolderUid}`}
                             >
-                                <div className="cp-file-icon">
+                                <div className="cp-folder-icon">
                                     <FontAwesomeIcon icon={faArrowTurnUp} flip="horizontal" />
                                 </div>
-                                <div className="cp-table-title">
+                                <div className="cp-folder-title">
                                     상위 폴더
                                 </div>
 
@@ -90,13 +91,16 @@ export const ExplorerFolderRoutePage = async (prop: ExplorerFolderRoutePageProp)
                                         className="cp-folder-item cp-folder-table-row"
                                         href={`/explorer/folder/${folder.uid}`}
                                     >
-                                        <div className="cp-file-icon">
+                                        <div className="cp-folder-icon">
                                             <FontAwesomeIcon icon={faFolder} />
                                         </div>
-                                        <div className="cp-table-title">
+                                        <div className="cp-folder-title">
                                             {folder.folderTitle}
                                         </div>
-                                        <div className="cp-file-action">
+                                        <div className="cp-folder-action">
+                                            {/* <CrepenIconButton
+                                                icon={faEllipsisVertical}
+                                            /> */}
                                             <FontAwesomeIcon icon={faEllipsisVertical} />
                                         </div>
                                     </Link>
@@ -121,8 +125,11 @@ export const ExplorerFolderRoutePage = async (prop: ExplorerFolderRoutePageProp)
                             <div className="cp-file-icon">
                                 {/* <FontAwesomeIcon icon={faImage} /> */}
                             </div>
-                            <div className="cp-table-title">
+                            <div className="cp-file-title">
                                 Title
+                            </div>
+                            <div className="cp-file-shared">
+                                Shared
                             </div>
                             <div className="cp-file-size">
                                 Size
@@ -146,8 +153,14 @@ export const ExplorerFolderRoutePage = async (prop: ExplorerFolderRoutePageProp)
                                                     : <FontAwesomeIcon icon={faFile} />
                                             }
                                         </div>
-                                        <div className="cp-table-title">
+                                        <div className="cp-file-title">
                                             {crepenFile.fileTitle}
+                                        </div>
+                                        <div className="cp-file-shared">
+                                            {
+                                                crepenFile.isShared === true &&
+                                                <FontAwesomeIcon icon={faLink} />
+                                            }
                                         </div>
                                         <div className="cp-file-size">
                                             {StringUtil.convertFormatByte(crepenFile.fileStore?.fileSize ?? 0)}

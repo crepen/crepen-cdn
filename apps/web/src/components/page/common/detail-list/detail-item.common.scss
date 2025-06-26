@@ -1,0 +1,64 @@
+@use '../../../../assets/style/common/variable.scss' as variable;
+
+.cp-detail-item {
+
+    width: 100%;
+
+    display: grid;
+    grid-template-areas: 'key value';
+    grid-template-columns: auto 60%;
+    align-items: center;
+
+    padding-inline: 10px;
+    padding-block: 8px;
+
+    border-bottom: 1px solid #ececec;
+
+    font-size: 16px;
+
+    &:nth-last-child(1) {
+        border-bottom: none;
+    }
+
+    .cp-detail-title {
+        grid-area: key;
+        text-align: start;
+        word-wrap: break-word;
+    }
+
+    .cp-detail-value {
+        width: 100%;
+        grid-area: value;
+        text-align: end;
+        
+
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        flex-direction: column;
+
+        word-break: break-all;
+        overflow-wrap: break-all;
+        white-space: normal;
+    }
+}
+
+
+
+@media screen and (max-width : #{variable.$screen-width-mobile}) {
+    .cp-detail-item {
+        display: block;
+
+        .cp-detail-title {
+            text-align: start;
+        }
+
+        .cp-detail-value {
+            margin-top: 4px;
+            text-align: start;
+            font-size: 14px;
+
+            display: block;
+        }
+    }
+}

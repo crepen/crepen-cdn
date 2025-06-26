@@ -9,7 +9,7 @@ import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
 import * as fs from 'fs';
 import * as crypto from 'crypto';
 import { CrepenCryptoService } from "@crepen-nest/app/common/crypto/crypto.service";
-import { join } from "path";
+import { extname, join } from "path";
 import { ConfigService } from "@nestjs/config";
 import { FileStoreEntity } from "./entity/file-store.entity";
 import { CrepenFileError } from "./exception/file.exception";
@@ -136,7 +136,6 @@ export class CrepenFileRouteService {
         return this.dataSource.transaction(async (manager) => {
             try {
 
-
                 const fileStoreEntity = new FileStoreEntity();
                 fileStoreEntity.uid = randomUUID();
                 fileStoreEntity.fileName = randomUUID();
@@ -144,6 +143,7 @@ export class CrepenFileRouteService {
                 fileStoreEntity.hash = this.cryptoService.getFileHash(file.buffer);
                 fileStoreEntity.fileType = decodeURIComponent(file.mimetype);
                 fileStoreEntity.fileSize = file.size;
+                fileStoreEntity.fileExt = extname(file.originalname).slice(1);
 
                 console.log("==========> ", decodeURIComponent(file.mimetype))
 
@@ -241,6 +241,8 @@ export class CrepenFileRouteService {
         const decryptFile = this.cryptoService.decryptFile(fileBuffer, fileInfo.fileStore.originFileMine);
 
 
+        decryptFile.file.filename = `${fileInfo.fileStore.fileName}.${fileInfo.fileStore.fileExt}`;
+
         return decryptFile.file;
     }
 
@@ -266,8 +268,32 @@ export class CrepenFileRouteService {
         catch (e) {
             throw CrepenFileError.FILE_REMOVE_FAILED;
         }
+    }
+
+    editFile = async (fileUid?: string, editFileEntity?: FileEntity, requestUserUid?: string) => {
+        if (StringUtil.isEmpty(fileUid)) {
+            throw CrepenFileError.FILE_UID_UNDEFINED
+        }
+
+        const fileData = await this.getFileInfo(fileUid);
+
+        if (ObjectUtil.isNullOrUndefined(fileData)) {
+            throw CrepenFileError.FILE_NOT_FOUND;
+        }
+
+        if (fileData.ownerUid !== requestUserUid) {
+            throw CrepenFileError.FILE_ACCESS_UNAUTHORIZED;
+        }
 
 
+        try {
+            editFileEntity.updateDate = new Date();
+
+            const editFile = await this.repo.defaultManager().editFile(fileUid, editFileEntity);
+        }
+        catch (e) {
+            throw CrepenFileError.FILE_REMOVE_FAILED;
+        }
 
     }
 

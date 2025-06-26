@@ -1,3 +1,5 @@
+@use '../../../common/variable.scss' as variable;
+
 .cp-folder-page {
 
     width: 100%;
@@ -50,10 +52,11 @@
                 width: 100%;
 
                 display: grid;
-                grid-template-columns: 30px auto 30px;
-                grid-template-areas: 'icon title action';
+                grid-template-columns: 20px auto 30px;
+                grid-template-areas: 'icon title shared action';
 
                 padding: 10px;
+                // padding-block: 4px;
                 border-bottom: 1px solid #eeeeee;
 
                 text-decoration: none;
@@ -68,15 +71,15 @@
                 }
 
 
-                div:nth-child(1) {
+                .cp-folder-icon {
                     grid-area: 'icon';
                     display: flex;
                     justify-content: center;
                     align-items: center;
                 }
 
-                div:nth-child(2) {
-                    grid-area: 'title';
+                .cp-folder-title {
+                    grid-area: title;
                     // overflow: hidden;
                     // white-space: wrap;
                     // text-overflow: ellipsis;
@@ -90,15 +93,15 @@
                 }
 
                 // div:nth-child(3) {
-                //     grid-area: 'size';
+                //     grid-area: shared;
                 //     display: flex;
                 //     justify-content: flex-start;
                 //     align-items: center;
                 //     font-size: 12px;
                 // }
 
-                div:nth-child(3) {
-                    grid-area: 'action';
+                .cp-folder-action {
+                    grid-area: action;
                     display: flex;
                     justify-content: flex-end;
                     align-items: center;
@@ -107,7 +110,7 @@
 
 
                 &.cp-folder-no-data {
-                    grid-area: 'icon';
+                    grid-area: icon;
                     grid-column: 1 / -1;
 
                     display: flex;
@@ -128,8 +131,8 @@
                 width: 100%;
 
                 display: grid;
-                grid-template-columns: 30px auto 70px 30px;
-                grid-template-areas: 'icon title size action';
+                grid-template-columns: 20px auto 70px 70px 30px;
+                grid-template-areas: 'icon title shared size action';
 
                 padding: 10px;
                 border-bottom: 1px solid #eeeeee;
@@ -146,15 +149,15 @@
                 }
 
 
-                div:nth-child(1) {
-                    grid-area: 'icon';
+                .cp-file-icon {
+                    grid-area: icon;
                     display: flex;
                     justify-content: center;
                     align-items: center;
                 }
 
-                div:nth-child(2) {
-                    grid-area: 'title';
+                .cp-file-title {
+                    grid-area: title;
                     // overflow: hidden;
                     // white-space: wrap;
                     // text-overflow: ellipsis;
@@ -167,21 +170,33 @@
                     align-items: center;
                 }
 
-                div:nth-child(3) {
-                    grid-area: 'size';
+                .cp-file-shared {
+                    grid-area: shared;
                     display: flex;
-                    justify-content: flex-start;
+                    justify-content: center;
                     align-items: center;
                     font-size: 12px;
                 }
 
-                div:nth-child(4) {
-                    grid-area: 'action';
+                .cp-file-size {
+                    grid-area: size;
                     display: flex;
                     justify-content: flex-end;
                     align-items: center;
                     font-size: 12px;
                 }
+
+
+
+                .cp-file-action {
+                    grid-area: action;
+                    display: flex;
+                    justify-content: flex-end;
+                    align-items: center;
+                    font-size: 12px;
+                }
+
+
 
 
                 &.cp-file-no-data {
@@ -201,4 +216,48 @@
     }
 
 
+}
+
+
+
+@media screen and (max-width : #{variable.$screen-width-mobile}) {
+    .cp-folder-page {
+        padding-inline : 0px;
+
+        .cp-folder-context {
+            .cp-category-group {
+
+                // width: 100%;
+                // box-shadow: none;
+
+                // border-radius: 0px;
+
+                .cp-category-header{
+                    // // box-shadow: 0px 0px 6px -2px gray;
+                    // // border-radius: 5px;
+                    // padding-block: 4px;
+                    // border-bottom: 1px solid #dfdfdf;
+                }
+
+                .cp-category-content {
+
+
+                    .cp-child-file-list {
+
+                        .cp-file-table-row {
+                            grid-template-columns: 20px auto 70px 30px;
+                            grid-template-areas: 'icon title size action';
+
+                        }
+
+
+
+                        .cp-file-shared {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
