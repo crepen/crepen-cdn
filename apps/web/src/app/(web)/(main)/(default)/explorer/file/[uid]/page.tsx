@@ -3,9 +3,8 @@ import '@web/assets/style/main/page/file/file.page.main.scss'
 import { faFile, faFileAudio, faFileZipper, faImage } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MimeUtil } from "@web/lib/util/mime.util";
-import { CrepenFileOperationService } from "@web/services/operation/file.operation.service";
 import { redirect } from "next/navigation";
-import { faDownload, faTrash, faVideo } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { CrepenHttpService } from '@web/services/common/http.service';
 import { GroupExpandBox } from '@web/components/page/common/group-box/group-box.common';
@@ -15,14 +14,13 @@ import { CrepenIconButton } from '@web/components/control/icon-button/icon-butto
 import { RemoveFileIconButton } from '@web/components/page/file/button/remove-bt/remove-bt.file';
 import { CrepenDetailItem } from '@web/components/page/common/detail-list/detail-item.common';
 import { StringUtil } from '@web/lib/util/string.util';
-import { CrepenDetailEditableItem } from '@web/components/page/common/detail-list/detail-edit-item.common';
 import { FileTitleEditDetailItem } from '@web/components/page/file/edit-detail/file-title.edit-detail.file';
-import { CrepenToggleButton } from '@web/components/page/common/toggle-button/toggle-button.common';
 import { FileSharedEditDetailItem } from '@web/components/page/file/edit-detail/file-shared.edit-detail.file';
 import { ClientDateLocaleWrap } from '@web/components/page/common/date-locale.wrap.common';
 import { CrepenLanguageService } from '@web/services/common/language.service';
 import { FileSharedUrlDetailItem } from '@web/components/page/file/edit-detail/file-shared-url.detail.file';
 import { FileRemoveEditDetailItem } from '@web/components/page/file/edit-detail/file-remove.edit-detail.file';
+import { CrepenFileOperationService } from '@web/modules/crepen/explorer/file/CrepenFileOperationService';
 
 interface ExplorerFileInfoRoutePageProp {
     params: Promise<{

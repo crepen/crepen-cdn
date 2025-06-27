@@ -1,0 +1,17 @@
+.cp-context-item{
+    width: 100%;
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+
+    font-size: 14px;
+
+
+    &:nth-last-child(1){
+        border-bottom: none;
+    }
+
+    &:hover {
+        background-color: #e0e0e0;
+    }
+}

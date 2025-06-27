@@ -3,8 +3,9 @@
 import { useGlobalBasePath } from "@web/lib/state/global.state"
 import { CrepenDetailEditableItem } from "../../common/detail-list/detail-edit-item.common"
 import { useRouter } from "next/navigation"
-import { CrepenCommonError } from "@web/lib/common/common-error"
 import { StringUtil } from "@web/lib/util/string.util"
+import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError"
+import { CrepenComponentError } from "@web/modules/common/error/CrepenComponentError"
 
 interface FileTitleEditDetailItemProp {
     title: string,
@@ -42,7 +43,7 @@ export const FileTitleEditDetailItem = (prop: FileTitleEditDetailItemProp) => {
             
 
             if(data.success !== true){
-                throw new CrepenCommonError(data.message);
+                throw new CrepenComponentError(data.message);
             }
 
             route.refresh();
@@ -51,7 +52,7 @@ export const FileTitleEditDetailItem = (prop: FileTitleEditDetailItemProp) => {
         }
         catch (e) {
             let message = 'Unknown Error';
-            if(e instanceof CrepenCommonError){
+            if(e instanceof CrepenBaseError){
                 if(!StringUtil.isEmpty(e.message)){
                     message = e.message;
                 }

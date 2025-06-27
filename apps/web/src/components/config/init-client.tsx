@@ -9,6 +9,7 @@ interface InitClientProp extends PropsWithChildren {
     language?: string
 }
 
+/** @deprecated */
 export const InitClient = (prop: InitClientProp) => {
 
     useScreenSize();

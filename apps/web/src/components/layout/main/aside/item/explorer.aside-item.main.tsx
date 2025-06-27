@@ -1,6 +1,6 @@
 'use server'
 
-import { CrepenFolderOperationService } from "@web/services/operation/folder.operation.service";
+import { CrepenFolderOperationService } from "../../../../../modules/crepen/explorer/folder/CrepenFolderOperationService";
 import { MainAsideMenuLinkItem } from "./link.aside-item.main";
 import { faFolder } from "@fortawesome/free-solid-svg-icons";
 import urlJoin from "url-join";

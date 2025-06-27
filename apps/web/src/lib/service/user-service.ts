@@ -1,5 +1,0 @@
-/** @deprecated */
-export class CrepenUserService {
-    
-    
-}

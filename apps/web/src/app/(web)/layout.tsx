@@ -16,6 +16,7 @@ import { InitClient } from '../../components/config/init-client';
 import { config } from '@fortawesome/fontawesome-svg-core'
 import { CrepenLanguageService } from '@web/services/common/language.service';
 import { cookies, headers } from 'next/headers';
+import { InitSiteConfig } from '@web/components-new/global/config/init-site/InitSiteConfig';
 
 
 
@@ -47,6 +48,7 @@ const RootLayoutRouter = async ({ children }: PropsWithChildren) => {
     return (
         <html lang={lang.data}>
             <body>
+                <InitSiteConfig />
                 <InitClient
                     basePath={basePath}
                     language={lang.data}

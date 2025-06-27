@@ -1,12 +1,10 @@
 'use server'
 
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
-import { CrepenActionError } from "../common/action-error";
-import { CrepenAuthOpereationService } from "@web/services/operation/auth.operation.service";
-import { CommonUtil } from "../util/common.util";
-import { cookies } from "next/headers";
-import { StringUtil } from "../util/string.util";
-import { CrepenFolderOperationService } from "@web/services/operation/folder.operation.service";
+import { CrepenFolderOperationService } from "../../modules/crepen/explorer/folder/CrepenFolderOperationService";
+import { CrepenAuthOpereationService } from "@web/modules/crepen/auth/CrepenAuthOpereationService";
+import { CrepenActionError } from "@web/modules/common/error/CrepenActionError";
+import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError";
 
 interface LoginUserActionResult {
     success?: boolean,
@@ -34,7 +32,7 @@ export const loginUser = async (currentState: unknown, formData: FormData): Prom
         const saveCookie = await CrepenCookieOperationService.insertTokenData(requestLogin.data);
 
         if (saveCookie.success !== true) {
-            throw new CrepenActionError(saveCookie.message, saveCookie.innerError)
+            throw new CrepenActionError(saveCookie.message, saveCookie.statusCode , saveCookie.innerError)
         }
 
         // const randomString = StringUtil.randomString(10)
@@ -54,7 +52,7 @@ export const loginUser = async (currentState: unknown, formData: FormData): Prom
         }
     }
     catch (e) {
-        if (e instanceof CrepenActionError) {
+        if (e instanceof CrepenBaseError) {
             return {
                 success: false,
                 message: e.message,

@@ -85,4 +85,12 @@ export class CrepenFolderRouteRepository {
     editFolderData = (uid : string , entity : FolderEntity) => {
         return this.repo.update(uid , entity)
     }
+
+
+    removeFolderData = async (uid : string) : Promise<FolderEntity> => {
+        const entity = new FolderEntity();
+        entity.uid = uid;
+
+        return this.repo.remove(entity);
+    }
 }

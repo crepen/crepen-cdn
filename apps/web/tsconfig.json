@@ -10,7 +10,9 @@
       "@web/assets/*" : ["./src/assets/*"],
       "@web/components/*" : ["./src/components/*"],
       "@web/lib/*" : ["./src/lib/*"],
-      "@web/services/*" : ["./src/services/*"]
+      "@web/services/*" : ["./src/services/*"],
+      "@web/components-new/*" : ["./src/components-new/*"],
+      "@web/modules/*" : ["./src/modules/*"],
     }
   },
   "include": [

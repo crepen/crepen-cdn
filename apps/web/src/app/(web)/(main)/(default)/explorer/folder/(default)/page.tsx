@@ -1,7 +1,7 @@
 'use server'
 
 import { CrepenHttpService } from "@web/services/common/http.service";
-import { CrepenFolderOperationService } from "@web/services/operation/folder.operation.service";
+import { CrepenFolderOperationService } from "../../../../../../../modules/crepen/explorer/folder/CrepenFolderOperationService";
 import { redirect } from "next/navigation";
 
 const ExplorerDefaultFolderRoutePage = async () => {

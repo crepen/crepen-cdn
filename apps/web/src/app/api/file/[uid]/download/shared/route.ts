@@ -1,8 +1,4 @@
-import { CrepenCommonError } from "@web/lib/common/common-error";
-import { CrepenRouteError } from "@web/lib/common/route-error";
-import { CrepenAuthOpereationService } from "@web/services/operation/auth.operation.service";
-import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
-import { NextApiRequest, NextApiResponse } from "next";
+import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError";
 import { NextRequest, NextResponse } from "next/server";
 
 interface RequestContext {
@@ -41,32 +37,17 @@ export const GET = async (req: NextRequest, res: NextResponse & RequestContext) 
                 'Accept-Language': req.headers.get('Accept-Language')?.toString() ?? 'en'
             }
         })
-        
-
-        // if (!requestFile.ok) {
-        //     throw new CrepenRouteError('Failed to fetch video stream');
-        // }
 
         const responseHeaders = new Headers(requestFile.headers);
         return new NextResponse(requestFile.body, { status: requestFile.status, headers: responseHeaders });
     }
     catch (e) {
-        let message = 'Unknown Error';
-
-        if (e instanceof CrepenCommonError) {
-            message = e.message ?? message;
+        if (e instanceof CrepenBaseError) {
+            return NextResponse.json(e.toJson(), { status: e.statusCode })
         }
-
-        console.log(e);
-
-        return NextResponse.json(
-            {
-                success: false,
-                message: message
-            },
-            {
-                status: 500
-            }
-        );
+        else {
+            const err = new CrepenBaseError('Unknown Error', 501, e as Error);
+            return NextResponse.json(err.toJson(), { status: err.statusCode })
+        }
     }
 }

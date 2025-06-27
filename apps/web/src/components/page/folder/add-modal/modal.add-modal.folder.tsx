@@ -2,7 +2,7 @@ import './modal.add-modal.folder.scss'
 import { useEffect, useRef, useState } from "react"
 import { CrepenModal } from "../../common/base-modal.common"
 import { StringUtil } from '@web/lib/util/string.util'
-import { CrepenActionStateType } from '../../../../interfaces/common/action.common'
+import { CrepenActionStateType } from '../../../../types/action.common'
 import { FolderAction } from '@web/lib/action'
 
 interface AddFolderModalProp {

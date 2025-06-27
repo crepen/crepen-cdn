@@ -1,10 +1,14 @@
 import { CrepenLocaleHttpException } from "@crepen-nest/lib/exception/crepen.http.exception";
 import { HttpStatus } from "@nestjs/common";
 
-export class CrepenFolderError extends CrepenLocaleHttpException{
+export class CrepenFolderError extends CrepenLocaleHttpException {
 
-    
+    constructor(messageCode: string, status: number) {
+        super('cloud_folder', messageCode, status);
+    }
 
-    static FOLDER_NOT_FOUND = new CrepenFolderError('cloud_folder' , 'FOLDER_LOAD_FOLDER_TARGET_NOT_FOUND' , HttpStatus.NOT_FOUND)
+    static FOLDER_UID_UNDEFINED = new CrepenFolderError('FOLDER_UID_UNDEFINED', HttpStatus.BAD_REQUEST);
+    static FOLDER_NOT_FOUND = new CrepenFolderError('FOLDER_NOT_FOUND', HttpStatus.NOT_FOUND);
+    static FOLDER_ACCESS_DENIED = new CrepenFolderError('FOLDER_ACCESS_DENIED', HttpStatus.UNAUTHORIZED);
 }
 

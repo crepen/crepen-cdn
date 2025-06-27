@@ -39,7 +39,7 @@ export const useGlobalBasePath = create<GlobalBasePathResult>()(((set, get) => (
 
         return joinUrl;
     }
-})))   
+})))
 
 interface GlobalLanguageResult {
     value: string,
@@ -50,8 +50,21 @@ export const useGlobalLanguage = create<GlobalLanguageResult>()(((set, get) => (
     value: 'en',
     update: (value?: string) => set(() => {
         return {
-            value : value
+            value: value
+        };
+    })
+})))
+
+interface GlobalLoadingStateResult {
+    isLoading: boolean,
+    active: (value?: boolean) => void,
+}
+
+export const useGlobalLoadingState = create<GlobalLoadingStateResult>()(((set, get) => ({
+    isLoading: false,
+    active: (value?: boolean) => set(() => {
+        return {
+            isLoading: value
         };
     })
 })))   
-

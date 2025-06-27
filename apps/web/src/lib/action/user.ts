@@ -2,9 +2,9 @@
 
 import { CrepenUserOperationService } from "@web/services/operation/user.operation.service";
 import { StringUtil } from "../util/string.util";
-import { CrepenAuthOpereationService } from "@web/services/operation/auth.operation.service";
-import { CrepenActionError } from "../common/action-error";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
+import { CrepenActionError } from "@web/modules/common/error/CrepenActionError";
+import { CrepenAuthOpereationService } from "@web/modules/crepen/auth/CrepenAuthOpereationService";
 
 
 interface ChangePasswordActionResult {

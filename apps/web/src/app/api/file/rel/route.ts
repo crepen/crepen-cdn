@@ -1,5 +1,6 @@
-import { CrepenCommonError } from "@web/lib/common/common-error";
-import { CrepenAuthOpereationService } from "@web/services/operation/auth.operation.service";
+import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError";
+import { CrepenRouteError } from "@web/modules/common/error/CrepenRouteError";
+import { CrepenAuthOpereationService } from "@web/modules/crepen/auth/CrepenAuthOpereationService";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { NextRequest, NextResponse } from "next/server"
 
@@ -7,15 +8,13 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 
     try {
         const renewToken = await CrepenAuthOpereationService.renewToken();
-
         if (renewToken.success !== true) {
-            throw new CrepenCommonError('사용자 인증이 만료되었습니다. 다시 로그인해주세요.');
+            throw new CrepenRouteError(renewToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.', 401, renewToken.innerError);
         }
         else {
             const applyToken = await CrepenCookieOperationService.insertTokenData(renewToken.data);
             if (applyToken.success !== true) {
-                console.log(applyToken.message);
-                throw new CrepenCommonError('사용자 인증이 만료되었습니다. 다시 로그인해주세요.');
+                throw new CrepenRouteError(applyToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.', 401, applyToken.innerError);
             }
         }
 
@@ -40,7 +39,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
         const resultData = await response.json()
 
         if (resultData.success !== true) {
-            throw new CrepenCommonError(resultData.message);
+            throw new CrepenRouteError(resultData.message , resultData.statusCode);
         }
 
 
@@ -48,21 +47,13 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     }
     catch (e) {
 
-        let message = 'Unknown Error';
-
-        if (e instanceof CrepenCommonError) {
-            message = e.message ?? message;
+        if (e instanceof CrepenBaseError) {
+            return NextResponse.json(e.toJson(), { status: e.statusCode })
         }
-
-        return NextResponse.json(
-            {
-                success: false,
-                message: message
-            },
-            {
-                status: 500
-            }
-        );
+        else {
+            const err = new CrepenBaseError('Unknown Error', 501, e as Error);
+            return NextResponse.json(err.toJson(), { status: err.statusCode })
+        }
     }
 
 

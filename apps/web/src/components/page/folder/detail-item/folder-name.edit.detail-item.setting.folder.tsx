@@ -3,8 +3,8 @@
 import { useGlobalBasePath } from "@web/lib/state/global.state"
 import { EditDetialItem } from "./edit.detail-item.setting.folder"
 import urlJoin from "url-join"
-import { CrepenCommonError } from "@web/lib/common/common-error"
 import { useRouter } from "next/navigation"
+import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError"
 
 interface EditFolderNameDetailItemProp {
     title : string,
@@ -47,7 +47,7 @@ export const EditFolderNameDetailItem = (prop : EditFolderNameDetailItemProp) =>
             return true;
         }
         catch(e){
-            if(e instanceof CrepenCommonError){
+            if(e instanceof CrepenBaseError){
                 alert(e.message);
                 return false;
             }

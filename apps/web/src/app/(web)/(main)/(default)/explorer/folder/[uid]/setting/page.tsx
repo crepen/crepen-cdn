@@ -9,7 +9,7 @@ import { EditFolderNameDetailItem } from '@web/components/page/folder/detail-ite
 import { StringUtil } from '@web/lib/util/string.util';
 import { CrepenLanguageService } from '@web/services/common/language.service';
 
-import { CrepenFolderOperationService } from "@web/services/operation/folder.operation.service";
+import { CrepenFolderOperationService } from "../../../../../../../../modules/crepen/explorer/folder/CrepenFolderOperationService";
 import Link from 'next/link';
 import { PropsWithChildren } from 'react';
 

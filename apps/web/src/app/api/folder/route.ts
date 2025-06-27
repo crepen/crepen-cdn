@@ -1,38 +1,37 @@
-import { CrepenCommonError } from "@web/lib/common/common-error";
 import { StringUtil } from "@web/lib/util/string.util";
-import { CrepenAuthOpereationService } from "@web/services/operation/auth.operation.service";
+import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError";
+import { CrepenRouteError } from "@web/modules/common/error/CrepenRouteError";
+import { CrepenAuthOpereationService } from "@web/modules/crepen/auth/CrepenAuthOpereationService";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { NextRequest, NextResponse } from "next/server";
 
 // export const runtime = 'node';
 
-export const POST = async (req: NextRequest, res: NextResponse) => {
+export const POST = async (req: NextRequest) => {
     try {
         const { searchParams } = new URL(req.url);
 
         const uid = searchParams.get('uid');
 
-        if(StringUtil.isEmpty(uid)){
-            throw new CrepenCommonError('대상 폴더를 찾을 수 없습니다.')
+        if (StringUtil.isEmpty(uid)) {
+            throw new CrepenRouteError('대상 폴더를 찾을 수 없습니다.', 404)
         }
 
         const renewToken = await CrepenAuthOpereationService.renewToken();
         if (renewToken.success !== true) {
-            throw new CrepenCommonError(renewToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.');
+            throw new CrepenRouteError(renewToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.', 401, renewToken.innerError);
         }
         else {
             const applyToken = await CrepenCookieOperationService.insertTokenData(renewToken.data);
             if (applyToken.success !== true) {
-                console.log(applyToken.message);
-                throw new CrepenCommonError(applyToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.');
+                throw new CrepenRouteError(applyToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.', 401, applyToken.innerError);
             }
         }
 
         const bodyDataStr = await req.text();
-        console.log('------>',bodyDataStr)
         let bodyData = {};
 
-        if(!StringUtil.isEmpty(bodyDataStr)){
+        if (!StringUtil.isEmpty(bodyDataStr)) {
             bodyData = JSON.parse(bodyDataStr)
         }
 
@@ -55,7 +54,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
         const data = await response.json()
 
         if (data.success !== true) {
-            throw new CrepenCommonError(data.message);
+            throw new CrepenRouteError(data.message , data.statusCode);
         }
 
 
@@ -66,22 +65,13 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
         });
     }
     catch (e) {
-        console.log('ROUTE ERROR', e);
-
-        let message = 'Unknown Error';
-
-        if (e instanceof CrepenCommonError) {
-            message = e.message ?? message;
+        if (e instanceof CrepenBaseError) {
+            return NextResponse.json(e.toJson(), { status: e.statusCode })
         }
-
-        return NextResponse.json(
-            {
-                success: false,
-                message: message
-            },
-            {
-                status: 500
-            }
-        );
+        else {
+            const err = new CrepenBaseError('Unknown Error', 501, e as Error);
+            return NextResponse.json(err.toJson(), { status: err.statusCode })
+        }
     }
 }
+

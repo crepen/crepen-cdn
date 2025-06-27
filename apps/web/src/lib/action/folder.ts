@@ -1,6 +1,6 @@
 'use server'
 
-import { CrepenFolderOperationService } from "@web/services/operation/folder.operation.service";
+import { CrepenFolderOperationService } from "../../modules/crepen/explorer/folder/CrepenFolderOperationService";
 import { CrepenActionError } from "../common/action-error";
 import { CrepenAuthOpereationService } from "@web/services/operation/auth.operation.service";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";

@@ -1,10 +1,7 @@
 'use server'
 
-import { CrepenActionError } from "../common/action-error";
 import { StringUtil } from "../util/string.util"
-import { CrepenAuthOpereationService } from "@web/services/operation/auth.operation.service";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
-import { CrepenFileOperationService } from "@web/services/operation/file.operation.service";
 
 interface AddFileActionResult {
     success?: boolean,
@@ -12,7 +9,7 @@ interface AddFileActionResult {
     addFileUid?: string
 }
 
-export const addFile = async (currentState: never, formData: FormData): Promise<AddFileActionResult> => {
+export const addFile = async (currentState: any, formData: FormData): Promise<AddFileActionResult> => {
 
 
     const title = formData.get('form-title')?.toString();
@@ -49,11 +46,14 @@ export const addFile = async (currentState: never, formData: FormData): Promise<
         }
 
 
+
+
+
     }
 
 }
 
-export const removeFile = async (uid? : string) => {
+export const removeFile = async (uid?: string) => {
 
 
     try {
@@ -72,14 +72,14 @@ export const removeFile = async (uid? : string) => {
 
 
 
-        if(StringUtil.isEmpty(uid)){
+        if (StringUtil.isEmpty(uid)) {
             throw new CrepenActionError('REMOVE FILE UID NOT DEFINED');
         }
 
 
         const removeRequest = await CrepenFileOperationService.removeFile(uid!);
 
-        if(removeRequest.success !== true){
+        if (removeRequest.success !== true) {
             throw new CrepenActionError(removeRequest.message);
         }
 

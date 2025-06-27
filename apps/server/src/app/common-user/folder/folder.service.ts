@@ -102,4 +102,20 @@ export class CrepenFolderRouteService {
         });
     }
 
+    removeFolderData = async (uid: string , userUid : string) => {
+         return this.dataSource.transaction(async (manager) => {
+
+            const folderData = await this.getFolderData(uid);
+
+            if (ObjectUtil.isNullOrUndefined(folderData)) {
+                throw CrepenFolderError.FOLDER_NOT_FOUND;
+            }
+
+            if(userUid.trim() !== folderData.ownerUid){
+                throw CrepenFolderError.FOLDER_ACCESS_DENIED;
+            }
+
+            await this.repo.setManager(manager).removeFolderData(uid);
+        });
+    }
 }

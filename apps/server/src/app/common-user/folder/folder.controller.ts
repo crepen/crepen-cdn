@@ -1,5 +1,5 @@
 import { CrepenAuthJwtGuard } from "@crepen-nest/config/passport/jwt/jwt.guard";
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiHeader, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { CrepenFolderRouteService } from "./folder.service";
 import { BaseResponse } from "@crepen-nest/lib/util/base.response";
@@ -27,7 +27,32 @@ export class CrepenFolderRouteController {
         private readonly fileService: CrepenFileRouteService
     ) { }
 
-    @Get()
+    @Get('root')
+    //#region Decorator
+    @ApiOperation({
+        summary: '사용자 최상위 폴더 조회',
+        description: ' 로그인된 사용자의 최상위 폴더 정보 조회 <br />(최상위 폴더가 없을 시 생성 후 해당 정보 출력)'
+
+    })
+    @ApiBearerAuth('token')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    //#endregion
+    async getRootFolder(
+        @Req() req: JwtUserRequest,
+        @I18n() i18n: I18nContext,
+
+    ) {
+        const rootFolder = await this.folderService.getRootFolder(req.user.entity.uid)
+        return BaseResponse.ok<FolderEntity>(
+            rootFolder,
+            HttpStatus.OK,
+            i18n.t('cloud_folder.FOLDER_COMMON_SUCCESS')
+        )
+    }
+
+
+    @Get(':uid')
     //#region Decorator
     @ApiOperation({ summary: '사용자 폴더 조회', description: '로그인된 사용자의 특정 폴더 정보 조회' })
     @ApiBearerAuth('token')
@@ -37,11 +62,11 @@ export class CrepenFolderRouteController {
     async getFolderData(
         @Req() req: JwtUserRequest,
         @I18n() i18n: I18nContext,
-        @Query('uid') uid?: string,
+        @Param('uid') uid: string,
         @Query('child') isLoadChild?: boolean
     ) {
         if (StringUtil.isEmpty(uid)) {
-            throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_LOAD_FOLDER_UID_UNDEFINED', HttpStatus.BAD_REQUEST);
+            throw CrepenFolderError.FOLDER_UID_UNDEFINED;
         }
 
         let targetData: FolderEntity = undefined;
@@ -53,14 +78,15 @@ export class CrepenFolderRouteController {
             targetData = await this.folderService.getFolderData(uid);
         }
 
-
+        if (targetData === null) {
+            throw CrepenFolderError.FOLDER_NOT_FOUND;
+        }
 
         return BaseResponse.ok(
             targetData,
             HttpStatus.OK,
-            i18n.t('cloud_folder.FOLDER_COMMON_SUCCESS')
+            i18n.t('common.SUCCESS')
         )
-
     }
 
 
@@ -147,29 +173,7 @@ export class CrepenFolderRouteController {
     }
 
 
-    @Get('root')
-    //#region Decorator
-    @ApiOperation({
-        summary: '사용자 최상위 폴더 조회',
-        description: ' 로그인된 사용자의 최상위 폴더 정보 조회 <br />(최상위 폴더가 없을 시 생성 후 해당 정보 출력)'
 
-    })
-    @ApiBearerAuth('token')
-    @HttpCode(HttpStatus.OK)
-    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
-    //#endregion
-    async getRootFolder(
-        @Req() req: JwtUserRequest,
-        @I18n() i18n: I18nContext,
-
-    ) {
-        const rootFolder = await this.folderService.getRootFolder(req.user.entity.uid)
-        return BaseResponse.ok<FolderEntity>(
-            rootFolder,
-            HttpStatus.OK,
-            i18n.t('cloud_folder.FOLDER_COMMON_SUCCESS')
-        )
-    }
 
     @Put()
     //#region Decorator
@@ -223,6 +227,31 @@ export class CrepenFolderRouteController {
         )
     }
 
+
+
+    @Delete(':uid')
+    //#region Decorator
+    @ApiOperation({ summary: '폴더 삭제 ', description: '폴더 삭제' })
+    @ApiBearerAuth('token')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    //#endregion
+    async removeFolder(
+        @Req() req: JwtUserRequest,
+        // @Res() res: Response,
+        @I18n() i18n: I18nContext,
+        @Param('uid') uid: string
+    ) {
+        await this.folderService.removeFolderData(uid, req.user.entity.uid);
+
+        // throw new CrepenLocaleHttpException('cc' , '개발안됨' , HttpStatus.INTERNAL_SERVER_ERROR)
+
+        return BaseResponse.ok(
+            undefined,
+            HttpStatus.OK,
+            i18n.t('common.SUCCESS')
+        )
+    }
 
 
 

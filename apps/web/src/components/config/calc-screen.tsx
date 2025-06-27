@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 
+/** @deprecated */
 export const useScreenSize = () => {
 
     const getScreenHeight = () => {

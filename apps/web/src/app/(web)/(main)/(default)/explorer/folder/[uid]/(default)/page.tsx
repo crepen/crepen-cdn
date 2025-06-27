@@ -1,16 +1,7 @@
-'use server'
-
-import { CrepenFolderOperationService } from "@web/services/operation/folder.operation.service"
-import '@web/assets/style/cloud/page/folder/cloud.folder.scss'
-import { CrepenHttpService } from "@web/services/common/http.service"
-import Link from "next/link"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faArrowTurnUp, faEllipsisVertical, faGear, faImage, faLink } from "@fortawesome/free-solid-svg-icons"
-import { StringUtil } from "@web/lib/util/string.util"
-import { faFile, faFolder } from "@fortawesome/free-regular-svg-icons"
-import { FolderListCategoryGroup } from "@web/components/page/folder/category-group/folder-group.category-group.folder"
-import { FileListCategoryGroup } from "@web/components/page/folder/category-group/file.category-group.folder"
-import { CrepenIconButton } from "@web/components/control/icon-button/icon-button.control"
+import { FolderDefaultPageContainer } from "@web/components-new/page/folder/default/FolderDefaultPageContainer";
+import { CrepenFolderOperationService } from "../../../../../../../../modules/crepen/explorer/folder/CrepenFolderOperationService";
+import Head from "next/head";
+import { Fragment } from "react";
 
 interface ExplorerFolderRoutePageProp {
     params: Promise<{
@@ -18,172 +9,36 @@ interface ExplorerFolderRoutePageProp {
     }>
 }
 
+export const metadata = {
+    title: 'CrepenCDN | Explorer',
+};
+
 export const ExplorerFolderRoutePage = async (prop: ExplorerFolderRoutePageProp) => {
-
-
-    const url = await CrepenHttpService.getUrl();
-
 
     const targetFolderUid = (await prop.params).uid;
 
     const folderData = await CrepenFolderOperationService.getFolderData(targetFolderUid, true);
 
 
-    const folderBaseUrl = new URL('./', url).toString();
-
     return (
-        <div className="cp-common-page cp-folder-page">
-            <div className="cp-page-header">
-                <div className="cp-header-title">
-                    <strong>{folderData.data?.folderTitle}</strong>
-                </div>
-                <div className="cp-header-action">
-                    {
-                        !StringUtil.isEmpty(folderData.data?.parentFolder?.uid) &&
-                        <Link href={`/explorer/folder/${folderData.data?.uid}/setting`}>
-                            <FontAwesomeIcon icon={faGear} />
-                        </Link>
-                    }
-
-                </div>
-
-            </div>
-            <div className="cp-folder-context">
-                <FolderListCategoryGroup
-                    folderData={folderData.data}
+        <Fragment>
+            {
+                folderData.success === true &&
+                <FolderDefaultPageContainer
+                    data={folderData.data}
+                />
+            }
+            {
+                folderData.success !== true &&
+                <div
+                    className="cp-error"
+                    data-error-code={folderData.errorCode}
                 >
-                    <div className="cp-child-folder-list">
-                        <div className="cp-folder-header cp-folder-table-row">
-                            <div className="cp-folder-icon">
-                                {/* <FontAwesomeIcon icon={faImage} /> */}
-                            </div>
-                            <div className="cp-folder-title">
-                                Title
-                            </div>
-                            {/* <div className="cp-folder-size">
-                                Size
-                            </div> */}
-                            <div className="cp-folder-action">
-                            </div>
-                        </div>
-                        {
-                            !StringUtil.isEmpty(folderData.data?.parentFolderUid) &&
-                            <Link
-                                className="cp-folder-item cp-folder-table-row"
-                                href={`/explorer/folder/${folderData.data?.parentFolderUid}`}
-                            >
-                                <div className="cp-folder-icon">
-                                    <FontAwesomeIcon icon={faArrowTurnUp} flip="horizontal" />
-                                </div>
-                                <div className="cp-folder-title">
-                                    상위 폴더
-                                </div>
+                    {folderData.message}
+                </div>
+            }
 
-                            </Link>
-                        }
-
-                        {
-                            (folderData.data?.childFolder ?? [])
-                                .sort((x, y) => x.folderTitle < y.folderTitle ? -1 : 1)
-                                .map((folder, idx) => (
-                                    <Link
-                                        key={idx}
-                                        className="cp-folder-item cp-folder-table-row"
-                                        href={`/explorer/folder/${folder.uid}`}
-                                    >
-                                        <div className="cp-folder-icon">
-                                            <FontAwesomeIcon icon={faFolder} />
-                                        </div>
-                                        <div className="cp-folder-title">
-                                            {folder.folderTitle}
-                                        </div>
-                                        <div className="cp-folder-action">
-                                            {/* <CrepenIconButton
-                                                icon={faEllipsisVertical}
-                                            /> */}
-                                            <FontAwesomeIcon icon={faEllipsisVertical} />
-                                        </div>
-                                    </Link>
-                                ))
-
-
-                        }
-
-                        {
-                            (folderData.data?.childFolder ?? []).length === 0 &&
-                            <div className="cp-folder-table-row cp-folder-no-data">No Data</div>
-                        }
-                    </div>
-
-                </FolderListCategoryGroup>
-
-                <FileListCategoryGroup
-                    folderData={folderData.data}
-                >
-                    <div className="cp-child-file-list">
-                        <div className="cp-file-header cp-file-table-row">
-                            <div className="cp-file-icon">
-                                {/* <FontAwesomeIcon icon={faImage} /> */}
-                            </div>
-                            <div className="cp-file-title">
-                                Title
-                            </div>
-                            <div className="cp-file-shared">
-                                Shared
-                            </div>
-                            <div className="cp-file-size">
-                                Size
-                            </div>
-                            <div className="cp-file-action">
-                            </div>
-                        </div>
-                        {
-                            (folderData.data?.files ?? [])
-                                .sort((x, y) => x.fileTitle < y.fileTitle ? -1 : 1)
-                                .map((crepenFile, idx) => (
-                                    <Link
-                                        key={idx}
-                                        className="cp-file-item cp-file-table-row"
-                                        href={`/explorer/file/${crepenFile.uid}`}
-                                    >
-                                        <div className="cp-file-icon">
-                                            {
-                                                crepenFile.fileStore?.fileType.split('/')[0] === 'image'
-                                                    ? <FontAwesomeIcon icon={faImage} />
-                                                    : <FontAwesomeIcon icon={faFile} />
-                                            }
-                                        </div>
-                                        <div className="cp-file-title">
-                                            {crepenFile.fileTitle}
-                                        </div>
-                                        <div className="cp-file-shared">
-                                            {
-                                                crepenFile.isShared === true &&
-                                                <FontAwesomeIcon icon={faLink} />
-                                            }
-                                        </div>
-                                        <div className="cp-file-size">
-                                            {StringUtil.convertFormatByte(crepenFile.fileStore?.fileSize ?? 0)}
-                                        </div>
-                                        <div className="cp-file-action">
-                                            <FontAwesomeIcon icon={faEllipsisVertical} />
-                                        </div>
-                                    </Link>
-                                ))
-
-
-                        }
-
-                        {
-                            (folderData.data?.files ?? []).length === 0 &&
-                            <div className="cp-file-table-row cp-file-no-data">No Data</div>
-                        }
-                    </div>
-                </FileListCategoryGroup>
-
-
-            </div>
-        </div>
+        </Fragment>
     )
 }
 

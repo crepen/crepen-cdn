@@ -1,10 +1,11 @@
 import { faFolder } from "@fortawesome/free-regular-svg-icons"
 import { faRefresh, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { CrepenCommonError } from "@web/lib/common/common-error"
 import { UploadFileItemObject, UploadStateType, useUploadFileState } from "@web/lib/state/file.state"
 import { useGlobalBasePath, useGlobalLanguage } from "@web/lib/state/global.state"
 import { StringUtil } from "@web/lib/util/string.util"
+import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError"
+import { CrepenComponentError } from "@web/modules/common/error/CrepenComponentError"
 import { Ref, useEffect, useImperativeHandle, useState } from "react"
 
 interface UploadFileListProp {
@@ -162,12 +163,12 @@ export const UploadFileItem = (prop: UploadFileItemProp) => {
                 })
             }
             else {
-                throw new CrepenCommonError(data.message ?? "UNKNOWN EXCEPTION")
+                throw new CrepenComponentError(data.message ?? "UNKNOWN EXCEPTION" , 500)
             }
         }
         catch (e) {
             let message = 'UNKNOWN EXCEPTION'
-            if (e instanceof CrepenCommonError) {
+            if (e instanceof CrepenBaseError) {
                 message = e.message ?? message;
             }
 

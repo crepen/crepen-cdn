@@ -5,9 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFile, faFolder } from '@fortawesome/free-regular-svg-icons';
 import { StringUtil } from '@web/lib/util/string.util';
 import { useGlobalBasePath, useGlobalLanguage } from '@web/lib/state/global.state';
-import { CrepenCommonError } from '@web/lib/common/common-error';
 import { faRefresh, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { CrepenModal } from '../../common/base-modal.common';
+import { CrepenComponentError } from '@web/modules/common/error/CrepenComponentError';
+import { CrepenBaseError } from '@web/modules/common/error/CrepenBaseError';
 
 interface FastAddFileModalProp {
     folderUid: string,
@@ -161,7 +162,7 @@ const FastAddFileItem = (prop: FastAddFileItemProp) => {
             const data = await uploadFileRequest.json();
 
             if (data.success !== true) {
-                throw new CrepenCommonError(data.message ?? "UNKNOWN EXCEPTION")
+                throw new CrepenComponentError(data.message ?? "UNKNOWN EXCEPTION" , 500)
             }
 
 
@@ -185,7 +186,7 @@ const FastAddFileItem = (prop: FastAddFileItemProp) => {
             const dataResult = await relFileRequest.json();
 
             if (dataResult.success !== true) {
-                throw new CrepenCommonError(dataResult.message ?? "UNKNOWN EXCEPTION")
+                throw new CrepenComponentError(dataResult.message ?? "UNKNOWN EXCEPTION" , 500)
             }
 
 
@@ -204,7 +205,7 @@ const FastAddFileItem = (prop: FastAddFileItemProp) => {
         }
         catch (e) {
             let message = 'UNKNOWN EXCEPTION'
-            if (e instanceof CrepenCommonError) {
+            if (e instanceof CrepenBaseError) {
                 message = e.message ?? message;
             }
 

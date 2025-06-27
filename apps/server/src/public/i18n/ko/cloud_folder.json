@@ -14,5 +14,10 @@
     "FOLDER_INSERT_VALIDATE_ERROR_DUPLICATE_TITLE" : "같은 이름의 폴더가 존재합니다.",
 
 
-    "FOLDER_EDIT_VALIDATE_TITLE_NOT_STRING" : "폴더명의 형식이 잘못되었습니다."
+    "FOLDER_EDIT_VALIDATE_TITLE_NOT_STRING" : "폴더명의 형식이 잘못되었습니다.",
+
+
+    "FOLDER_NOT_FOUND" : "폴더를 찾을 수 없습니다.",
+    "FOLDER_ACCESS_DENIED" : "해당 폴더에 대한 권한이 없습니다.",
+    "FOLDER_UID_UNDEFINED" : "찾으려는 폴더의 UID가 빈 값입니다."
 }

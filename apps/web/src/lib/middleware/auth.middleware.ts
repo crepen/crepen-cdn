@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse, URLPattern } from "next/server"
 import { BaseMiddleware, BaseMiddlewareResponse } from "./base.middleware";
-import { CrepenSessionEdgeService } from "../../services/edge-runtime/edge.session.service";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
-import { CrepenAuthOpereationService } from "@web/services/operation/auth.operation.service";
+import { CrepenAuthOpereationService } from "@web/modules/crepen/auth/CrepenAuthOpereationService";
 
 export class AuthMiddleware implements BaseMiddleware {
 
@@ -53,9 +52,9 @@ export class AuthMiddleware implements BaseMiddleware {
         const token = await CrepenCookieOperationService.getTokenDataInEdge(req);
 
 
-        if (this.urlMatch(req , '/login')) {
+        if (this.urlMatch(req, '/login')) {
 
-            const checkAccTk = await CrepenAuthOpereationService.isTokenExpired('access_token', token?.data?.accessToken)
+            const checkAccTk = await CrepenAuthOpereationService.isAccessTokenExpired(token?.data?.accessToken)
 
             if (checkAccTk.data?.expired === false) {
                 return {
@@ -65,7 +64,7 @@ export class AuthMiddleware implements BaseMiddleware {
             }
             else {
 
-                const checkRefTk = await CrepenAuthOpereationService.isTokenExpired('refresh_token', token?.data?.refreshToken)
+                const checkRefTk = await CrepenAuthOpereationService.isRefreshTokenExpired(token?.data?.refreshToken)
                 if (checkRefTk.data?.expired === false) {
 
                     return {

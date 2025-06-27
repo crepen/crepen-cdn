@@ -1,4 +1,4 @@
-import { CrepenApiService } from "@web/services/api/base.api.service";
+import { CrepenApiService } from "../../modules/common/CrepenApiService";
 import { CrepenApiResponse } from "@web/services/types/common.api";
 import { CrepenUser } from "@web/services/types/object/user.object";
 
