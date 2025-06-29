@@ -57,10 +57,11 @@ export class CrepenFileRouteRepository {
         })
     }
 
-    getFileWithStore = (uid : string) => {
+    getFileWithStore = (uid : string , includeRemoveFile? : boolean) => {
         return this.repo.findOne({
             where : {
-                uid : uid
+                uid : uid,
+                isRemoved : includeRemoveFile === true ? undefined : false
             },
             relations : ['fileStore']
         })
@@ -70,7 +71,8 @@ export class CrepenFileRouteRepository {
         return this.repo.findOne({
             where : {
                 uid : uid,
-                isShared : true
+                isShared : true,
+                isRemoved : false
             },
             relations : ['fileStore']
         })
@@ -78,11 +80,25 @@ export class CrepenFileRouteRepository {
 
 
     removeFile = (fileEntity : FileEntity) => {
-        return this.repo.remove(fileEntity);
+        fileEntity.isRemoved = true;
+        fileEntity.updateDate = new Date();
+
+        return this.repo.update(fileEntity.uid,fileEntity);
     }
 
 
     editFile = (fileUid : string , fileEntity : FileEntity) => {
         return this.repo.update(fileUid , fileEntity);
+    }
+
+
+    getFilesWithStoreFromFolder = (folderUid : string , includeRemoveFile? :boolean) => {
+         return this.repo.find({
+            where : {
+                parentFolderUid : folderUid,
+                isRemoved : includeRemoveFile === true ? undefined : false
+            },
+            relations : ['fileStore']
+        })
     }
 }

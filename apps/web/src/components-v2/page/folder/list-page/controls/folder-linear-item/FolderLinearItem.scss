@@ -1,0 +1,77 @@
+.cp-folder-item.cp-item-linear {
+    min-height: 50px;
+
+    display: grid;
+
+
+    grid-template-areas: 'checkbox icon title shared size';
+    grid-template-columns: 20px 20px auto max-content minmax(150px , max-content);
+    align-items: center;
+
+    gap: 5px;
+
+    font-size: 14px;
+    padding-inline: 20px;
+
+    cursor: pointer;
+
+    &:hover {
+        background: #efefef;
+    }
+
+    .cp-item-check-box {
+        grid-area: checkbox;
+
+        display: grid;
+        place-items: center;
+
+        svg {
+            color: rgb(206, 206, 206);
+        }
+
+    }
+
+    .cp-item-type-icon {
+        grid-area: icon;
+        display: grid;
+        place-items: center;
+
+
+    }
+
+
+    .cp-item-title {
+        grid-area: title;
+    }
+
+    .cp-item-shared{
+        grid-area: shared;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        
+        svg {
+            margin-right: 4px;
+            color: #424a87;
+        }
+    }
+
+    .cp-item-size {
+        grid-area: size;
+        text-align: end;
+    }
+
+
+    &[data-selected=true] {
+        background: #efefef;
+
+        .cp-item-check-box {
+            svg {
+                color: #48afcf;
+            }
+
+        }
+
+        border-left: 3px solid #48afcf;
+    }
+}

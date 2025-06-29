@@ -24,10 +24,12 @@ export class CrepenBaseError extends Error {
 
     toJson = () => {
 
-        const errorClone = {...this};
-
-        errorClone.innerError = undefined;
-
-        return errorClone;
+        return {
+            success: false,
+            message: this.message,
+            statusCode: this.statusCode,
+        };
     }
+
+   
 }

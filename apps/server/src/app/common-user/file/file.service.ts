@@ -248,26 +248,41 @@ export class CrepenFileRouteService {
 
 
     removeFile = async (fileUid?: string, requestUserUid?: string) => {
-        if (StringUtil.isEmpty(fileUid)) {
-            throw CrepenFileError.FILE_UID_UNDEFINED
-        }
+        return this.dataSource.transaction(async (manager) => {
+            if (StringUtil.isEmpty(fileUid)) {
+                throw CrepenFileError.FILE_UID_UNDEFINED
+            }
 
-        const fileData = await this.getFileInfo(fileUid);
+            const fileData = await this.getFileWithStore(fileUid);
 
-        if (ObjectUtil.isNullOrUndefined(fileData)) {
-            throw CrepenFileError.FILE_NOT_FOUND;
-        }
+            if (ObjectUtil.isNullOrUndefined(fileData)) {
+                throw CrepenFileError.FILE_NOT_FOUND;
+            }
 
-        if (fileData.ownerUid !== requestUserUid) {
-            throw CrepenFileError.FILE_ACCESS_UNAUTHORIZED;
-        }
+            if (fileData.ownerUid !== requestUserUid) {
+                throw CrepenFileError.FILE_ACCESS_UNAUTHORIZED;
+            }
 
-        try {
-            const removeFile = await this.repo.defaultManager().removeFile(fileData)
-        }
-        catch (e) {
-            throw CrepenFileError.FILE_REMOVE_FAILED;
-        }
+            try {
+                const removeFile = await this.repo.setManager(manager).removeFile(fileData)
+
+                console.log(removeFile)
+                // const savePath = join(
+                //     this.configService.get('path.fileStore'),
+                //     fileData.fileStore.fileName
+                // );
+
+                // if (fs.existsSync(savePath)) {
+                //     fs.rmSync(savePath);
+                // }
+                // else {
+                //     console.log("NOT EXIST FILE : ", savePath);
+                // }
+            }
+            catch (e) {
+                throw CrepenFileError.FILE_REMOVE_FAILED;
+            }
+        })
     }
 
     editFile = async (fileUid?: string, editFileEntity?: FileEntity, requestUserUid?: string) => {

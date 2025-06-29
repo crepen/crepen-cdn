@@ -21,6 +21,7 @@ interface UploadFileStateResult {
     updateItem: (itemUid: string, updateObj: UploadFileItemObject) => void
 }
 
+/** @deprecated */
 export const useUploadFileState = create<UploadFileStateResult>()((
     (set, get) => ({
         value: [],

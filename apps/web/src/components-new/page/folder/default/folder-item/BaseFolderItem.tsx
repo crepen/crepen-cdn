@@ -1,3 +1,4 @@
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import './BaseFolderItem.scss'
 
 import { faFile, faFolder } from "@fortawesome/free-regular-svg-icons";
@@ -8,6 +9,7 @@ import { StringUtil } from "@web/lib/util/string.util";
 export interface BaseFolderItemProp extends MobileDivElementProp {
     type: 'file' | 'folder',
     value?: string,
+    icon?: IconProp
 }
 
 export const BaseFolderItem = (prop: BaseFolderItemProp) => {
@@ -19,7 +21,7 @@ export const BaseFolderItem = (prop: BaseFolderItemProp) => {
         >
             <div className='cp-item-box'>
                 <FontAwesomeIcon
-                    icon={prop.type === 'file' ? faFile : faFolder}
+                    icon={prop.icon !== undefined ? prop.icon : prop.type === 'file' ? faFile : faFolder}
                     className='cp-item-icon'
                 />
             </div>

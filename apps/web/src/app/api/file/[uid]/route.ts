@@ -20,7 +20,7 @@ export const POST = async (req: NextRequest, res: NextResponse & RequestContext)
 
 
 
-        const renewToken = await CrepenAuthOpereationService.renewToken();
+        const renewToken = await CrepenAuthOpereationService.renewToken(true);
         if (renewToken.success !== true) {
             throw new CrepenRouteError(renewToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.', 401, renewToken.innerError);
         }
@@ -84,7 +84,7 @@ export const DELETE = async (req: NextRequest, res: NextResponse & RequestContex
     try {
         const uid = (await res.params).uid;
 
-        const renewToken = await CrepenAuthOpereationService.renewToken();
+        const renewToken = await CrepenAuthOpereationService.renewToken(true);
         if (renewToken.success !== true) {
             throw new CrepenRouteError(renewToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.', 401, renewToken.innerError);
         }

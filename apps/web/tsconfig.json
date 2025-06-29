@@ -12,7 +12,9 @@
       "@web/lib/*" : ["./src/lib/*"],
       "@web/services/*" : ["./src/services/*"],
       "@web/components-new/*" : ["./src/components-new/*"],
+      "@web/components-v2/*" : ["./src/components-v2/*"],
       "@web/modules/*" : ["./src/modules/*"],
+      "@web/types/*" : ["./src/types/*"],
     }
   },
   "include": [

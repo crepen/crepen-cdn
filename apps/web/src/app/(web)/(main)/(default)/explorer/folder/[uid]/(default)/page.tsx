@@ -1,7 +1,8 @@
-import { FolderDefaultPageContainer } from "@web/components-new/page/folder/default/FolderDefaultPageContainer";
+import { FolderDefaultPageContainer } from "@web/components-new/page/folder/default/layout/FolderDefaultPageContainer";
 import { CrepenFolderOperationService } from "../../../../../../../../modules/crepen/explorer/folder/CrepenFolderOperationService";
 import Head from "next/head";
 import { Fragment } from "react";
+import { FolderListPageLayout } from "@web/components-v2/page/folder/list-page/layout/FolderListPageLayout";
 
 interface ExplorerFolderRoutePageProp {
     params: Promise<{
@@ -23,13 +24,13 @@ export const ExplorerFolderRoutePage = async (prop: ExplorerFolderRoutePageProp)
     return (
         <Fragment>
             {
-                folderData.success === true &&
-                <FolderDefaultPageContainer
-                    data={folderData.data}
+                (folderData.success === true && folderData.data) &&
+                <FolderListPageLayout
+                    data={folderData.data!}
                 />
             }
             {
-                folderData.success !== true &&
+                (folderData.success !== true || folderData.data === undefined || folderData.data === null) &&
                 <div
                     className="cp-error"
                     data-error-code={folderData.errorCode}

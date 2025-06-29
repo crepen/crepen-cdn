@@ -19,13 +19,11 @@ const CloudGlobalLayoutRouter = (prop: CloudGlobalLayoutRouterProp) => {
             <MainHeader />
             {/* <CloudGlobalHeader /> */}
             <div className='cp-container'>
-                
-                <div className='cp-main'>
-                    <Suspense fallback={<div>LOADING</div>}>
+
+                <Suspense fallback={<div>LOADING</div>}>
                     {prop.children}
-                    </Suspense>
-                    
-                </div>
+                </Suspense>
+
             </div>
 
         </MainWrapper>

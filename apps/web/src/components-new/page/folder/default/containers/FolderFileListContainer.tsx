@@ -9,7 +9,7 @@ import { FolderItem } from "../folder-item/FolderItem"
 import { FolderContextMenu, FolderContextMenuRef } from "../controls/folder-context-menu/FolderContextMenu"
 import { MoveParentFolderItem } from '../folder-item/MoveParentFolderItem'
 import { CrepenFolder } from '@web/modules/crepen/explorer/folder/dto/CrepenFolder'
-
+import Selecto from "react-selecto";
 interface FolderFileListContainerProp {
     className?: string,
     data?: CrepenFolder
@@ -19,6 +19,8 @@ export const FolderFileListContainer = (prop: FolderFileListContainerProp) => {
 
     const [selectItem, setSelectItem] = useState<{ type: 'file' | 'folder', data: (CrepenFile | CrepenFolder) }[]>([])
     const contextMenuRef = useRef<FolderContextMenuRef>(null);
+
+    const listRef = useRef<HTMLDivElement>(null);
 
 
     const selectItemEvent = (type: 'file' | 'folder', data: CrepenFile | CrepenFolder) => {
@@ -40,22 +42,45 @@ export const FolderFileListContainer = (prop: FolderFileListContainerProp) => {
 
     return (
         <Fragment>
+            <Selecto
+                container={listRef.current}
+                selectableTargets={['.cp-folder-item']}
+                hitRate={50}
+                selectByClick={true}
+                selectFromInside={true}
+                toggleContinueSelect={"shift"}
+                onSelect={(e) => {
+
+                }}
+                onSelectEnd={e => {
+
+
+                    const newSelected = e.selected.map((el) => el);
+                    newSelected.forEach(item => {
+                        item.setAttribute('data-selected', 'true');
+                    })
+                    console.log(newSelected);
+                }}
+                scrollOptions={{
+                    container : () => listRef.current!,
+                    throttleTime: 30,
+                    threshold: 10,
+                    getScrollPosition : (el) => [el.container.scrollTop , el.container.scrollLeft]
+                    // getScrollPosition: (el) => ({
+                    //     top: el.scrollTop,
+                    //     left: el.scrollLeft,
+                    // }),
+                }}
+
+            />
             <div
                 className={StringUtil.joinClassName('cp-folder-item-list', prop.className)}
+                ref={listRef}
                 onContextMenu={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                 }}
             >
-                {/* <FolderItem
-                type='folder'
-                title={'상위로 이동'}
-                isSelect={selectItem.filter(x => x.type === 'folder' && x.data.uid === folder.uid).length > 0}
-                onSelectChange={(isSelect: boolean, data: CrepenFolder | CrepenFile) => {
-                    console.log(data.uid, isSelect);
-                }}
-              
-            /> */}
                 {
                     (
                         (prop.data?.parentFolderUid ?? undefined) === undefined
@@ -67,7 +92,7 @@ export const FolderFileListContainer = (prop: FolderFileListContainerProp) => {
                 }
                 {
                     (prop.data?.parentFolderUid ?? undefined) !== undefined &&
-                    <MoveParentFolderItem 
+                    <MoveParentFolderItem
                         parentFolderUid={prop.data?.parentFolderUid}
                     />
                 }
@@ -108,6 +133,12 @@ export const FolderFileListContainer = (prop: FolderFileListContainerProp) => {
                         />
                     ))
                 }
+
+
+
+
+
+
             </div>
 
 

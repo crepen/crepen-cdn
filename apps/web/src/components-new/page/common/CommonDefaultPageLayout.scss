@@ -1,7 +1,14 @@
 .cp-common-page {
 
-    padding-inline: 10px;
-    padding-bottom: 30px;
+    // padding-inline: 0px;
+    // padding-bottom: 30px;
+
+    // min-height: 100%;
+
+    &>* {
+        display: none !important; 
+    }
+
 
     .cp-page-header {
         .cp-page-title {

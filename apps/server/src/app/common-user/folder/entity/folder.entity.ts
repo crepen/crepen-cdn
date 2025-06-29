@@ -23,6 +23,9 @@ export class FolderEntity {
     state?: boolean;
 
 
+    @Column({ type: 'boolean', name: 'is_removed', default: () => false })
+    isRemoved?: boolean;
+
 
 
 
@@ -35,14 +38,14 @@ export class FolderEntity {
     updateDate?: Date;
 
 
-    @OneToMany(() => FileEntity, (obj) => obj.relativeFolder, {createForeignKeyConstraints : false})
+    @OneToMany(() => FileEntity, (obj) => obj.relativeFolder, { createForeignKeyConstraints: false })
     files: FileEntity[]
 
-    @ManyToOne(() => FolderEntity, (obj) => obj.childFolder, {createForeignKeyConstraints : false})
+    @ManyToOne(() => FolderEntity, (obj) => obj.childFolder, { createForeignKeyConstraints: false })
     @JoinColumn({ name: 'parent_folder_uid', referencedColumnName: 'uid' })
     parentFolder: FolderEntity
 
-    @OneToMany(() => FolderEntity, (obj) => obj.parentFolder , {createForeignKeyConstraints : false})
+    @OneToMany(() => FolderEntity, (obj) => obj.parentFolder, { createForeignKeyConstraints: false })
     @JoinColumn({ name: 'uid', referencedColumnName: 'parent_folder_uid' })
     childFolder: FolderEntity[]
 

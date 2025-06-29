@@ -18,7 +18,7 @@ export class CrepenCookieOperationService {
 
     //#region INSERT_TOKEN
 
-    private static baseInsertTokenData = async (tokenGroup: CrepenToken | undefined, cookieFunc: ReadonlyRequestCookies | ResponseCookies): Promise<CrepenServiceResult> => {
+    private static baseInsertTokenData = async (tokenGroup: CrepenToken | undefined, cookieFunc: ReadonlyRequestCookies | ResponseCookies): Promise<CrepenServiceResult<{key : string , value? : string} | undefined>> => {
         try {
             const cookie = cookieFunc;
             //ENCRYPT
@@ -44,20 +44,27 @@ export class CrepenCookieOperationService {
                 httpOnly: process.env.NODE_ENV === 'development' ? false : true,
             });
 
+            cookie.delete('CPTKRFDT');
+            cookie.set('CPTKRFDT' , new Date().toUTCString())
+
             return {
                 success: true,
-                message: 'Success'
+                message: 'Success',
+                data : {
+                    key : this.TOKEN_COOKIE_KEY,
+                    value : encryptStr
+                }
             }
         }
         catch (e) {
-            let err = new CrepenServiceResult({
+            let err = new CrepenServiceResult<{ key: string; value?: string | undefined; } | undefined>({
                 success: false,
                 message: '알 수 없는 오류입니다.',
                 innerError: e as Error
             })
 
             if (e instanceof CrepenBaseError) {
-                err = new CrepenServiceResult({
+                err = new CrepenServiceResult<{ key: string; value?: string | undefined; } | undefined>({
                     ...e.toResult()
                 })
             }

@@ -7,6 +7,9 @@ import { FolderContextMenuRef } from '../controls/folder-context-menu/FolderCont
 import { useCheckMobileAgent } from '@web/lib/hook/useCheckMobileAgent'
 import { BaseFolderItem } from './BaseFolderItem'
 import { CrepenFolder } from '@web/modules/crepen/explorer/folder/dto/CrepenFolder'
+import { MimeUtil } from '@web/lib/util/mime.util'
+import { faImage } from '@fortawesome/free-regular-svg-icons'
+import { faVideo } from '@fortawesome/free-solid-svg-icons'
 
 interface FolderItemProp {
     type: 'file' | 'folder',
@@ -123,6 +126,7 @@ export const FolderItem = (prop: FolderItemProp) => {
                 data-selected={prop.isSelect}
                 data-drag-active={isActiveDrag}
                 data-type={prop.type}
+                data-uid={prop.data.uid}
                 data-shared={
                     (prop.type === 'file' && (prop.data as CrepenFile).isShared === true)
                 }
@@ -141,8 +145,18 @@ export const FolderItem = (prop: FolderItemProp) => {
 
                 type={prop.type}
                 value={prop.value}
+
+                icon={
+                    prop.type === 'file' ?
+                        MimeUtil.getCategory((prop.data as CrepenFile).fileStore?.fileType ?? '') === 'image'
+                            ? faImage
+                            : MimeUtil.getCategory((prop.data as CrepenFile).fileStore?.fileType ?? '') === 'video'
+                                ? faVideo
+                                : undefined
+                        : undefined
+                }
             />
-               
+
 
 
         </Fragment>

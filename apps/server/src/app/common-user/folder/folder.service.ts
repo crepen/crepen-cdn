@@ -115,7 +115,7 @@ export class CrepenFolderRouteService {
                 throw CrepenFolderError.FOLDER_ACCESS_DENIED;
             }
 
-            await this.repo.setManager(manager).removeFolderData(uid);
+            await this.repo.setManager(manager).removeFolderData(folderData);
         });
     }
 }

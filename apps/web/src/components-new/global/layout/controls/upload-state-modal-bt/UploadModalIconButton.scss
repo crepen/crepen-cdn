@@ -1,0 +1,27 @@
+.upload-monitor-active-bt {
+    position: relative;
+
+    &[data-file-length] {
+        &::before {
+            content: attr(data-file-length);
+            // background-color: black;
+            position: absolute;
+            top: -2;
+            right: -3;
+            aspect-ratio: 1;
+
+            font-size: 9px;
+            width: 14px;
+            border-radius: 14px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            color: white;
+            background-color: #504773;
+            border: 2px solid white;
+        }
+    }
+
+}

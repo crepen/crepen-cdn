@@ -3,7 +3,7 @@ import './icon-button.control.scss';
 import { IconProp } from "@fortawesome/fontawesome-svg-core"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { StringUtil } from '@web/lib/util/string.util';
-import { ButtonHTMLAttributes, MouseEventHandler } from 'react';
+import { ButtonHTMLAttributes, DOMAttributes, MouseEventHandler } from 'react';
 
 interface CrepenIconButtonProp {
     icon: IconProp,
@@ -11,7 +11,8 @@ interface CrepenIconButtonProp {
     onClick?: MouseEventHandler<HTMLButtonElement> ,
     className? : string,
     enableTooltip? : boolean,
-    tooltipText? : string
+    tooltipText? : string,
+    overrideAttr? : {[key: `data-${string}`]: unknown}
 }
 
 export const CrepenIconButton = (prop: CrepenIconButtonProp) => {
@@ -28,6 +29,7 @@ export const CrepenIconButton = (prop: CrepenIconButtonProp) => {
             data-type={StringUtil.isEmpty(prop.text) ? 'icon' : 'full'}
             data-enable-tooltip={prop.enableTooltip}
             data-tooltip={prop.tooltipText}
+            {...prop.overrideAttr}
         >
             <FontAwesomeIcon
                 icon={prop.icon}

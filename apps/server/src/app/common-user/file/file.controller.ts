@@ -138,6 +138,8 @@ export class CrepenFileRouteController {
 
                 saveFile
                     .then(fileRes => {
+                        console.log(fileRes);
+
                         res.status(200).send(
                             BaseResponse.ok(
                                 fileRes.uid,
@@ -341,6 +343,7 @@ export class CrepenFileRouteController {
         // throw CrepenFileError.FILE_NOT_FOUND;
         const removeFileRequest = await this.fileService.removeFile(uid, req.user.entity.uid);
 
+        console.log('SUCCESS');
 
         return BaseResponse.ok(
             undefined,

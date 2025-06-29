@@ -1,7 +1,10 @@
 'use server'
 
+import { CrepenAuthOpereationService } from "@web/modules/crepen/auth/CrepenAuthOpereationService";
 import { StringUtil } from "../util/string.util"
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
+import { CrepenActionError } from "@web/modules/common/error/CrepenActionError";
+import { CrepenFileOperationService } from "@web/modules/crepen/explorer/file/CrepenFileOperationService";
 
 interface AddFileActionResult {
     success?: boolean,
@@ -57,7 +60,6 @@ export const removeFile = async (uid?: string) => {
 
 
     try {
-
         const renewTokenGroup = await CrepenAuthOpereationService.renewToken();
 
         if (renewTokenGroup.success !== true) {
@@ -73,14 +75,14 @@ export const removeFile = async (uid?: string) => {
 
 
         if (StringUtil.isEmpty(uid)) {
-            throw new CrepenActionError('REMOVE FILE UID NOT DEFINED');
+            throw new CrepenActionError('REMOVE FILE UID NOT DEFINED' , 403);
         }
 
 
         const removeRequest = await CrepenFileOperationService.removeFile(uid!);
 
         if (removeRequest.success !== true) {
-            throw new CrepenActionError(removeRequest.message);
+            throw new CrepenActionError(removeRequest.message , removeRequest.statusCode , removeRequest.innerError);
         }
 
 

@@ -4,9 +4,9 @@ import { CrepenAuthOpereationService } from "@web/modules/crepen/auth/CrepenAuth
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { NextRequest, NextResponse } from "next/server";
 
-export const PUT = async (req: NextRequest) => {
+export const PUT = async (req: NextRequest , res : NextResponse) => {
     try {
-        const renewToken = await CrepenAuthOpereationService.renewToken();
+        const renewToken = await CrepenAuthOpereationService.renewToken(true);
         if (renewToken.success !== true) {
             throw new CrepenRouteError(renewToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.', 401, renewToken.innerError);
         }

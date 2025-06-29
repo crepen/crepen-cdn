@@ -1,0 +1,62 @@
+.cp-folder-default-page {
+    width: 100%;
+
+
+    min-height: 100%;
+    padding-bottom: 0px;
+
+    .cp-content-group-box {
+        min-height: 100%;
+        height: 100%;
+
+        display: grid;
+        grid-template-areas:
+            'header'
+            'list'
+        ;
+
+        grid-template-rows: min-content auto;
+
+
+        .cp-page-header {
+        grid-area: header;
+
+
+
+        .cp-folder-action-bar {
+            padding-top: 10px;
+        }
+
+        hr {
+            background-color: #dbdbdb;
+            border: none;
+            height: 1px;
+        }
+
+
+        .cp-page-title {
+            display: flex;
+            justify-self: flex-start;
+            align-items: center;
+
+            .cp-page-title-folder-icon {
+                margin-right: 6px;
+            }
+
+            .cp-page-title-info-icon {
+                margin-left: 6px;
+                font-size: 14px;
+                color: #395383;
+            }
+        }
+    }
+
+    .cp-page-content {
+        grid-area: list;
+    }
+    }
+
+
+
+    
+}

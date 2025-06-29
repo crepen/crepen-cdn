@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { DataSource, EntityManager, IsNull, Repository, TreeRepository } from "typeorm";
 import { FolderEntity } from "./entity/folder.entity";
 import { randomUUID } from "crypto";
+import { FileEntity } from "../file/entity/file.entity";
+import { CrepenFileRouteRepository } from "../file/file.repository";
 
 @Injectable()
 export class CrepenFolderRouteRepository {
@@ -9,7 +11,8 @@ export class CrepenFolderRouteRepository {
     private repo: Repository<FolderEntity>;
 
     constructor(
-        private readonly dataSource: DataSource
+        private readonly dataSource: DataSource,
+        private readonly fileRepo: CrepenFileRouteRepository
     ) {
         this.repo = this.dataSource.getRepository(FolderEntity);
     }
@@ -64,33 +67,45 @@ export class CrepenFolderRouteRepository {
         })
     }
 
-    getChildFolders = (parentFolderUid: string) => {
+    getChildFolders = (parentFolderUid: string, includeRemoveFile?: boolean) => {
         return this.repo.find({
             where: {
-                parentFolderUid: parentFolderUid
+                parentFolderUid: parentFolderUid,
+                isRemoved : includeRemoveFile === true ? undefined : false
             }
         })
     }
 
 
-    getFolderInfoWithChildData = (uid : string) => {
-        return this.repo.findOne({
-            where : {
-                uid : uid
+    getFolderInfoWithChildData = async (uid: string, includeRemoveFile?: boolean): Promise<FolderEntity> => {
+ 
+        const folderData = await this.repo.findOne({
+            where: {
+                uid: uid
             },
-            relations : ['files' , 'files.fileStore' , 'parentFolder' , 'childFolder']
+            relations: ['parentFolder']
         })
+
+        const fileData = await this.fileRepo.setManager(this.repo.manager).getFilesWithStoreFromFolder(uid , includeRemoveFile);
+
+        const childFolderData = await this.getChildFolders(uid , includeRemoveFile);
+        
+
+        folderData.files = fileData;
+        folderData.childFolder = childFolderData;
+
+        return folderData;
     }
 
-    editFolderData = (uid : string , entity : FolderEntity) => {
-        return this.repo.update(uid , entity)
+    editFolderData = (uid: string, entity: FolderEntity) => {
+        return this.repo.update(uid, entity)
     }
 
 
-    removeFolderData = async (uid : string) : Promise<FolderEntity> => {
-        const entity = new FolderEntity();
-        entity.uid = uid;
+    removeFolderData = async (entity: FolderEntity) => {
+        entity.isRemoved = true;
+        entity.updateDate = new Date();
 
-        return this.repo.remove(entity);
+        return this.repo.update(entity.uid , entity);
     }
 }

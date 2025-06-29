@@ -20,6 +20,9 @@ export class FileEntity {
     @Column({ type: 'boolean', name: 'is_shared', default: () => false })
     isShared?: boolean;
 
+    @Column({ type: 'boolean', name: 'is_removed', default: () => false })
+    isRemoved?: boolean;
+
     @Column({ type: 'varchar', name: 'file_uid' })
     fileUid: string
 

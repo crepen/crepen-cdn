@@ -1,0 +1,87 @@
+.cp-page-layout.cp-folder-list-page-layout {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    // padding-right: 10px;
+    // padding-top: 10px;
+    // padding-left: 4px;
+    // padding-bottom: 10px;
+
+
+    display: grid;
+    grid-template-areas:
+        'header'
+        'content'
+        'footer'
+    ;
+
+    grid-template-rows: min-content auto min-content;
+
+
+    .cp-page-header {
+
+        padding: 10px;
+        width: 100%;
+
+        border-bottom: 1px solid #e4e4e4;
+
+
+
+
+        .cp-page-title {
+            grid-area: title;
+
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+
+            font-size: 20px;
+            font-weight: bold;
+
+            .cp-title-folder-icon {
+                margin-right: 6px;
+            }
+
+            .cp-title-info-icon {
+                margin-left: 6px;
+                font-size: 12px;
+                cursor: pointer;
+                color: #177575;
+            }
+        }
+
+        .cp-page-toolbar {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin-top: 5px;
+        }
+    }
+
+    .cp-page-content {
+        grid-area: content;
+
+        overflow-y: auto;
+
+        max-height: 100%;
+        
+
+
+
+
+       
+    }
+
+    .cp-page-footer {
+        grid-area: footer;
+
+        display: grid;
+        place-items: center;
+        padding-bottom: 10px;
+
+
+        &:empty{
+            // display: none;
+        }
+    }
+}
