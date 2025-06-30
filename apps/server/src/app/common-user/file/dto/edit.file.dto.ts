@@ -12,7 +12,7 @@ export class EditFileDto {
 
 
     @ApiProperty()
-    @ValidateIf((obj: EditFileDto) => !ObjectUtil.isNullOrUndefined(obj.isShared))
+    @ValidateIf((obj: EditFileDto) => !ObjectUtil.isNullOrUndefined(obj.isPublished))
     @IsBoolean({ message: 'cloud_file.FILE_SHARED_TYPE_NOT_BOOLEAN' })
-    isShared?: boolean;
+    isPublished?: boolean;
 }

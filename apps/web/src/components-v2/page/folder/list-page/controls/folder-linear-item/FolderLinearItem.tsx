@@ -40,14 +40,19 @@ export const FolderLinearItem = (prop: FolderLinearItemProp) => {
                         : faFile
     }
 
+    const divTitleAttribute = {
+        title : prop.title
+    }
+
     useEffect(() => {
-        console.log("FILE_SIZE", prop.size)
+        // console.log("FILE_SIZE", prop.size)
     }, [])
 
     return (
         <div
             className="cp-folder-item cp-item-linear"
             data-selected={prop.disableSelect === true ? undefined : prop.isSelected}
+            data-disabled-select={prop.disableSelect}
             onDoubleClick={() => {
                 if (prop.type === 'file') {
                     router.push(`/explorer/file/${prop.uid}`);
@@ -71,14 +76,14 @@ export const FolderLinearItem = (prop: FolderLinearItemProp) => {
                 />
             </div>
 
-            <div className='cp-item-title'>{prop.title}</div>
+            <div className='cp-item-title' {...divTitleAttribute}>{prop.title}</div>
             {
                 (prop.type === 'file' && prop.isFileShared === true) &&
-                <div className='cp-item-shared'>
+                <div className='cp-item-published'>
                     <FontAwesomeIcon 
                         icon={faGlobeAsia} 
                     />
-                    <span>Shared</span>
+                    <span>Published</span>
                 </div>
             }
             {

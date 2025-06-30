@@ -4,8 +4,8 @@
     display: grid;
 
 
-    grid-template-areas: 'checkbox icon title shared size';
-    grid-template-columns: 20px 20px auto max-content minmax(150px , max-content);
+    grid-template-areas: 'checkbox icon title published size';
+    grid-template-columns: 20px 20px auto max-content minmax(100px , max-content);
     align-items: center;
 
     gap: 5px;
@@ -13,10 +13,19 @@
     font-size: 14px;
     padding-inline: 20px;
 
+    user-select: none;
+
     cursor: pointer;
 
     &:hover {
         background: #efefef;
+    }
+
+
+    &[data-disabled-select=true]{
+        .cp-item-check-box{
+            display: none;
+        }
     }
 
     .cp-item-check-box {
@@ -44,8 +53,8 @@
         grid-area: title;
     }
 
-    .cp-item-shared{
-        grid-area: shared;
+    .cp-item-published{
+        grid-area: published;
         display: flex;
         justify-content: flex-start;
         align-items: center;
@@ -73,5 +82,13 @@
         }
 
         border-left: 3px solid #48afcf;
+    }
+}
+
+
+body[data-device=mobile] {
+    .cp-folder-item.cp-item-linear {
+        grid-template-areas: 'checkbox icon title size';
+        grid-template-columns: 20px 20px auto minmax(100px , max-content);
     }
 }

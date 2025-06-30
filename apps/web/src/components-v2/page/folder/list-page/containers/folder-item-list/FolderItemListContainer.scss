@@ -4,13 +4,13 @@
      height: 100%;
 
 
-    //  padding-inline-start: 10px;
+     //  padding-inline-start: 10px;
 
 
 
      .cp-item-list {
          width: 100%;
-        //  height: fit-content;
+         //  height: fit-content;
      }
 
      .cp-dropzone-input {
@@ -39,8 +39,18 @@
 
      &[data-enable-dropzone=true] {
          position: relative;
-         .cp-dropzone-viewbox{
-            visibility: visible;
+
+         .cp-dropzone-viewbox {
+             visibility: visible;
+         }
+     }
+ }
+
+
+ body[data-device=mobile] {
+     .cp-item-list-dropzone {
+         .cp-item-list {
+            width: 100vw;
          }
      }
  }

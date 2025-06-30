@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { CrepenComponentError } from '@web/modules/common/error/CrepenComponentError';
 import { CrepenBaseError } from '@web/modules/common/error/CrepenBaseError';
 import { useGlobalBasePath, useGlobalLanguage } from '@web/lib/state/global.state';
+import { Virtuoso } from 'react-virtuoso';
 
 export const UploadMonitorModal = () => {
 
@@ -106,6 +107,36 @@ export const UploadMonitorModal = () => {
 
 
     }
+
+    //#region  DATA_SORT
+    const convertNumState = (state: CrepenUploadFileStateType) => {
+        switch (state) {
+            case 'error': return 2;
+            case 'running': return 1;
+            case 'upload': return 4;
+            case 'wait': return 3;
+            default: return 5;
+        }
+    }
+    const dataSort = (x: CrepenUploadFile, y: CrepenUploadFile) => {
+
+        if (convertNumState(x.uploadState) !== convertNumState(y.uploadState)) {
+            return convertNumState(x.uploadState) > convertNumState(y.uploadState) ? 1 : -1
+        }
+
+        if (x.createDate !== y.createDate) {
+            return x.createDate > y.createDate ? 1 : -1
+        }
+
+        if (x.data.name !== y.data.name) {
+            return x.data.name > y.data.name ? 1 : -1
+        }
+
+        return 1;
+    }
+
+
+    //#endregion
 
     useEffect(() => {
         if (isUploading === false) {
@@ -226,47 +257,66 @@ export const UploadMonitorModal = () => {
                         NO DATA
                     </div>
                 }
-                {
+
+                <Virtuoso
+                    classID='cp-upload-list-box'
+                    totalCount={
+                        uploadHook.value
+                            .filter(
+                                x => {
+                                    if (itemFilterArray.length === 0) {
+                                        return true;
+                                    }
+                                    else {
+                                        return itemFilterArray.indexOf(x.uploadState) > -1
+                                    }
+                                }
+                            )
+                            .length
+                    }
+                    itemContent={(idx) => {
+                        const data = uploadHook.value
+                            .filter(
+                                x => {
+                                    if (itemFilterArray.length === 0) {
+                                        return true;
+                                    }
+                                    else {
+                                        return itemFilterArray.indexOf(x.uploadState) > -1
+                                    }
+                                }
+                            )
+                            .sort(dataSort)[idx] as CrepenUploadFile;
+                        return (
+                            <UploadMonitorItem
+                                key={idx}
+                                fileData={data}
+                                hidden={
+                                    itemFilterArray.length === 0
+                                        ? false
+                                        : !(itemFilterArray.indexOf(data.uploadState) > -1)
+                                }
+                            />
+                        )
+                    }}
+                />
+
+                {/* {
                     uploadHook.value
                         // .filter(x => itemFilterArray.length === 0 ? true : itemFilterArray.indexOf(x.uploadState) > -1)
-                        .sort((x, y) => {
-
-                            const convertNumState = (state: CrepenUploadFileStateType) => {
-                                switch (state) {
-                                    case 'error': return 2;
-                                    case 'running': return 1;
-                                    case 'upload': return 4;
-                                    case 'wait': return 3;
-                                    default: return 5;
-                                }
-                            }
-                            if (convertNumState(x.uploadState) !== convertNumState(y.uploadState)) {
-                                return convertNumState(x.uploadState) > convertNumState(y.uploadState) ? 1 : -1
-                            }
-
-                            if (x.createDate !== y.createDate) {
-                                return x.createDate > y.createDate ? 1 : -1
-                            }
-
-                            if (x.data.name !== y.data.name) {
-                                return x.data.name > y.data.name ? 1 : -1
-                            }
-
-                            return 1;
-
-                        })
+                        .sort(dataSort)
                         .map((file: CrepenUploadFile, idx: number) => (
                             <UploadMonitorItem
                                 key={idx}
                                 fileData={file}
                                 hidden={
-                                    itemFilterArray.length === 0 
-                                    ? false 
-                                    : !(itemFilterArray.indexOf(file.uploadState) > -1)
+                                    itemFilterArray.length === 0
+                                        ? false
+                                        : !(itemFilterArray.indexOf(file.uploadState) > -1)
                                 }
                             />
                         ))
-                }
+                } */}
             </div>
             <div className='cp-modal-footer'>
                 <button

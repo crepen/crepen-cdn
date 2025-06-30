@@ -29,7 +29,7 @@ export const FileSharedEditDetailItem = (prop: FileSharedEditDetailItemProp) => 
             const fetchRequest = await fetch(`${basePath.value}/api/file/${prop.fileUid ?? 'ntf'}`, {
                 method: 'POST',
                 body: JSON.stringify({
-                    isShared: value
+                    isPublished: value
                 })
             })
 

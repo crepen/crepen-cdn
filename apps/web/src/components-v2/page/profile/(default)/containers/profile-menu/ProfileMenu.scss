@@ -1,0 +1,44 @@
+.cp-profile-menu {
+    width: 200px;
+    height: 100%;
+
+    // padding-block: 10px;
+
+    border-radius: 0;
+
+
+    .cp-menu-item {
+        width: 100%;
+        // border: 1px solid #aaaaaa;
+        padding: 10px;
+
+        display: block;
+
+        cursor: pointer;
+
+        text-decoration: none;
+        color: initial;
+
+
+        &:hover {
+            background-color: #eeeeee;
+        }
+
+        &[data-selected=true] {
+            background-color: #eeeeee;
+            border-left: 4px solid #89b3d7;
+        }
+    }
+
+
+    &:has(.cp-menu-item:hover) {
+        .cp-menu-item:not(:hover) {
+            background-color: transparent;
+            // background-color: black;
+
+            // &[data-selected=true] {
+            //     background-color: transparent;
+            // }
+        }
+    }
+}

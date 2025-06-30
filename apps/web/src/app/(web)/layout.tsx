@@ -17,6 +17,7 @@ import { config } from '@fortawesome/fontawesome-svg-core'
 import { CrepenLanguageService } from '@web/services/common/language.service';
 import { cookies, headers } from 'next/headers';
 import { InitSiteConfig } from '@web/components-new/global/config/init-site/InitSiteConfig';
+import { CrepenGlobalProvider } from '@web/components-v2/page/(global)/config/global-provider/CrepenGlobalProvider';
 
 
 
@@ -48,15 +49,17 @@ const RootLayoutRouter = async ({ children }: PropsWithChildren) => {
     return (
         <html lang={lang.data}>
             <body>
-                <InitSiteConfig />
-                <InitClient
-                    basePath={basePath}
-                    language={lang.data}
-                >
-                    <div id="root">
-                        {children}
-                    </div>
-                </InitClient>
+                <CrepenGlobalProvider>
+                    <InitSiteConfig />
+                    <InitClient
+                        basePath={basePath}
+                        language={lang.data}
+                    >
+                        <div id="root">
+                            {children}
+                        </div>
+                    </InitClient>
+                </CrepenGlobalProvider>
             </body>
         </html>
     )

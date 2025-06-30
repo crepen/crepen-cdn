@@ -3,8 +3,8 @@ export interface CrepenUser {
     id?: string,
     name?: string,
     email?: string,
-    createDate?: string,
-    updateDate?: string,
+    createDate?: Date,
+    updateDate?: Date,
     isLock?: boolean,
     roles?: string[],
 }

@@ -4,10 +4,11 @@ import { ChangeEvent, MouseEvent, useRef } from 'react'
 import './FolderUploadFileButton.scss'
 import { useFileUploadMonitorVisible } from '@web/modules/common/state/useFileUploadMonitorVisible'
 import { useFileUploadState } from '@web/modules/common/state/useFileUploadState'
+import { useFolderData } from '../../../containers/folder-info-provider/FolderDataProvider'
 
 interface AddFolderFileButtonProp {
     onChangeFileList?: (files: File[]) => void,
-    folderUid : string
+    loadSelectItemFunc? : (items : {type : 'folder '| 'file' , uid : string}[]) => void
 }
 
 export const FolderUploadFileButton = (prop: AddFolderFileButtonProp) => {
@@ -15,6 +16,7 @@ export const FolderUploadFileButton = (prop: AddFolderFileButtonProp) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const monitorHook = useFileUploadMonitorVisible();
     const uploadHook = useFileUploadState();
+    const folderDataHook = useFolderData();
 
 
     const buttonEventHandler = {
@@ -31,7 +33,7 @@ export const FolderUploadFileButton = (prop: AddFolderFileButtonProp) => {
             e.target.value='';
 
 
-            uploadHook.uploadData(fileList , prop.folderUid );
+            uploadHook.uploadData(fileList , folderDataHook.uid , folderDataHook.folderTitle );
 
             monitorHook.changeState(true)
         }

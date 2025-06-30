@@ -6,7 +6,7 @@ import { CrepenFolder } from "@web/modules/crepen/explorer/folder/dto/CrepenFold
 interface FileUploadStateResult {
     value: CrepenUploadFile[],
     reset: () => void,
-    uploadData: (files: File[], targetFolderUid : string) => void,
+    uploadData: (files: File[], targetFolderUid : string, targetFolderTitle : string) => void,
     removeItem: (file: CrepenUploadFile) => void,
     updateUploadState: (uuid: string, state: CrepenUploadFileStateType , message?: string) => void,
     removeSpecificStateItems: (uploadState : CrepenUploadFileStateType) => void
@@ -18,12 +18,12 @@ export const useFileUploadState = create<FileUploadStateResult>()((
     (set, get) => ({
         value: [],
         reset: () => set(() => ({ value: [] })),
-        uploadData: (files: File[] , targetFolderUid : string) => set((state) => {
+        uploadData: (files: File[] , targetFolderUid : string , targetFolderTitle : string) => set((state) => {
 
             return ({
                 value: [
                     ...state.value,
-                    ...files.map(x => new CrepenUploadFile(x , targetFolderUid))
+                    ...files.map(x => new CrepenUploadFile(x , targetFolderUid , targetFolderTitle))
                 ]
             })
         }),

@@ -71,7 +71,7 @@ export class CrepenFileRouteRepository {
         return this.repo.findOne({
             where : {
                 uid : uid,
-                isShared : true,
+                isPublished : true,
                 isRemoved : false
             },
             relations : ['fileStore']

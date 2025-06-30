@@ -128,7 +128,7 @@ export const FolderItem = (prop: FolderItemProp) => {
                 data-type={prop.type}
                 data-uid={prop.data.uid}
                 data-shared={
-                    (prop.type === 'file' && (prop.data as CrepenFile).isShared === true)
+                    (prop.type === 'file' && (prop.data as CrepenFile).isPublished === true)
                 }
                 ref={itemRef}
 

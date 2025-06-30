@@ -12,7 +12,7 @@ import { faFolder } from '@fortawesome/free-regular-svg-icons'
 
 interface UploadMonitorItemProp {
     fileData: CrepenUploadFile,
-    hidden? : boolean
+    hidden? : boolean,
 }
 
 export const UploadMonitorItem = (prop: UploadMonitorItemProp) => {
@@ -21,14 +21,10 @@ export const UploadMonitorItem = (prop: UploadMonitorItemProp) => {
 
     const uploadHook = useFileUploadState();
 
+    const fileNameTitleAttr = {
+        title : prop.fileData.data.name
+    }
 
-    useEffect(() => {
-        return (() => {
-            if (prop.fileData.abortControl.signal.aborted !== true) {
-                prop.fileData.abortControl.abort();
-            }
-        })
-    }, [])
 
     return (
         <div 
@@ -37,11 +33,11 @@ export const UploadMonitorItem = (prop: UploadMonitorItemProp) => {
             data-hidden={prop.hidden}
         >
             <div className='cp-file-info'>
-                <div className='cp-file-name'>{prop.fileData.data.name}</div>
+                <div className='cp-file-name' {...fileNameTitleAttr}>{prop.fileData.data.name}</div>
                 <div className='cp-file-desc'>
                     <div className='cp-file-save-dir'>
                         <FontAwesomeIcon icon={faFolder} className='cp-file-dir-icon' />
-                        {prop.fileData.targetFolderUid.folderTitle}
+                        {prop.fileData.targetFolderTitle}
                     </div>
                     <div className='cp-file-size'>{StringUtil.convertFormatByte(prop.fileData.data.size)}</div>
                 </div>

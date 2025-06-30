@@ -1,0 +1,28 @@
+.cp-page-toolbar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 5px;
+    gap: 6px;
+
+
+    button {
+        border: 1px solid #aaaaaa;
+        padding: 3px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        background-color: transparent;
+
+        cursor: pointer;
+
+        position: relative;
+        overflow: hidden;
+        z-index: 10;
+
+        transition: 0.3s;
+
+       
+
+
+    }
+}

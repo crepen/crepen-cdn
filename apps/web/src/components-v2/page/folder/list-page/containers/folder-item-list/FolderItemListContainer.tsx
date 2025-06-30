@@ -10,25 +10,31 @@ import { useDropzone } from 'react-dropzone'
 import { useFileUploadState } from '@web/modules/common/state/useFileUploadState'
 import { StringUtil } from '@web/lib/util/string.util'
 import { useEffect, useRef, useState } from 'react'
+import { SelectFolderItemProp, useSelectFolderItem } from '../folder-select-item-provider/FolderSelectItemProvider'
+import { useFolderData } from '../folder-info-provider/FolderDataProvider'
 
 interface FolderItemListContainerProp {
-    folderUid: string,
-    parentFolderUid?: string,
-    dataList: FolderItemData[]
+    dataList: FolderItemData[],
 }
+
 
 interface FolderItemData {
     type: string,
-    data: CrepenFile | CrepenFolder
+    data: CrepenFile | CrepenFolder,
+
 }
 
 export const FolderItemListContainer = (prop: FolderItemListContainerProp) => {
+
+    const selectItemHook = useSelectFolderItem()
 
     const uploadHook = useFileUploadState();
 
     const listRef = useRef<HTMLDivElement>(null);
 
-    const [selectItemUid, setSelectItemUid] = useState<{ type: 'folder' | 'file', uid: string }[]>([]);
+    const folderData = useFolderData();
+
+    // const [selectItemUid, setSelectItemUid] = useState<{ type: 'folder' | 'file', uid: string }[]>([]);
 
     const dataSort = (x: FolderItemData, y: FolderItemData): number => {
 
@@ -51,15 +57,35 @@ export const FolderItemListContainer = (prop: FolderItemListContainerProp) => {
 
 
     const dropZoneHook = useDropzone({
-        onDrop: (acceptedFiles, fileRejections) => {
-            console.log('Accepted files:', acceptedFiles);
-            console.log('Rejected files:', fileRejections);
-            uploadHook.uploadData(acceptedFiles, prop.folderUid);
+        onDrop: (acceptedFiles) => {
+            uploadHook.uploadData(acceptedFiles, folderData.uid , folderData.folderTitle);
         },
         noClick: true,
     })
 
 
+    useEffect(() => {
+
+        // if(selectItemHook.event.existEvent('all-check')){
+        //     selectItemHook.event.unSubscribe('all-check');
+
+        //     console.log("UNSUB")
+        // }
+
+        selectItemHook.event.subscribe('all-check', () => {
+            console.log("HUUUD", [...prop.dataList.map(x => ({
+                type: x.type,
+                uid: x.data.uid
+            }) as SelectFolderItemProp)])
+
+            selectItemHook.update([
+                ...prop.dataList.map(x => ({
+                    type: x.type,
+                    uid: x.data.uid
+                }) as SelectFolderItemProp)
+            ])
+        })
+    }, [])
 
 
 
@@ -74,18 +100,18 @@ export const FolderItemListContainer = (prop: FolderItemListContainerProp) => {
 
             <Virtuoso
                 className="cp-item-list"
-                totalCount={prop.dataList.length + (StringUtil.isEmpty(prop.parentFolderUid) ? 0 : 1)}
+                totalCount={prop.dataList.length + (StringUtil.isEmpty(folderData.parentFolderUid) ? 0 : 1)}
                 itemContent={(idx) => {
                     let targetIdx = idx;
 
-                    if (!StringUtil.isEmpty(prop.parentFolderUid)) {
+                    if (!StringUtil.isEmpty(folderData.parentFolderUid)) {
                         targetIdx--;
                         if (idx === 0) {
                             return (
                                 <FolderLinearItem
                                     type="folder"
                                     title={'.. Parent Folder'}
-                                    uid={prop.parentFolderUid!}
+                                    uid={folderData.parentFolderUid!}
                                     disableSelect
 
                                 />
@@ -103,25 +129,23 @@ export const FolderItemListContainer = (prop: FolderItemListContainerProp) => {
                                 title={objData.folderTitle}
                                 uid={objData.uid}
                                 isSelected={
-                                    selectItemUid.filter(
+                                    selectItemHook.value.filter(
                                         x => x.type === 'folder'
                                             && x.uid === objData.uid
                                     ).length > 0
                                 }
                                 onSelectChange={(isSelect) => {
+                                    console.log('SELECT ITEM :', isSelect);
                                     if (isSelect) {
-                                        setSelectItemUid([
-                                            ...selectItemUid,
+                                        selectItemHook.update([
                                             { type: 'folder', uid: objData.uid }
                                         ])
                                     }
                                     else {
-                                        setSelectItemUid(
-                                            selectItemUid.filter(
-                                                x=> !(x.type === 'folder'
-                                                && x.uid === objData.uid)
-                                            )
-                                        );
+                                        selectItemHook.remove({
+                                            type: 'folder',
+                                            uid: objData.uid
+                                        })
                                     }
                                 }}
                             />
@@ -136,27 +160,25 @@ export const FolderItemListContainer = (prop: FolderItemListContainerProp) => {
                                 uid={objData.uid}
                                 fileType={objData.fileStore?.fileType}
                                 size={objData.fileStore?.fileSize}
-                                isFileShared={objData.isShared}
+                                isFileShared={objData.isPublished}
                                 isSelected={
-                                    selectItemUid.filter(
+                                    selectItemHook.value.filter(
                                         x => x.type === 'file'
                                             && x.uid === objData.uid
                                     ).length > 0
                                 }
                                 onSelectChange={(isSelect) => {
+                                    console.log('SELECT ITEM :', isSelect, selectItemHook);
                                     if (isSelect) {
-                                        setSelectItemUid([
-                                            ...selectItemUid,
+                                        selectItemHook.update([
                                             { type: 'file', uid: objData.uid }
                                         ])
                                     }
                                     else {
-                                        setSelectItemUid(
-                                            selectItemUid.filter(
-                                                x=> !(x.type === 'file'
-                                                && x.uid === objData.uid)
-                                            )
-                                        );
+                                        selectItemHook.remove({
+                                            type: 'file',
+                                            uid: objData.uid
+                                        })
                                     }
                                 }}
                             />

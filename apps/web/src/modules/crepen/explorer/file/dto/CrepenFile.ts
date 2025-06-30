@@ -6,7 +6,7 @@ export class CrepenFile {
         this.uid = '';
         this.fileTitle = '';
         this.ownerUid = '';
-        this.isShared = false;
+        this.isPublished = false;
         this.fileUid = '';
         this.createDate = new Date();
         this.updateDate = new Date();
@@ -16,7 +16,7 @@ export class CrepenFile {
     fileTitle: string;
     ownerUid: string;
     parentFolderUid?: string;
-    isShared: boolean;
+    isPublished: boolean;
     fileUid: string;
     createDate: Date;
     updateDate: Date;

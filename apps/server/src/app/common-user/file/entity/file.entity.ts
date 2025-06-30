@@ -17,8 +17,8 @@ export class FileEntity {
     @Column({ type: 'varchar', name: 'parent_folder_uid' })
     parentFolderUid?: string;
 
-    @Column({ type: 'boolean', name: 'is_shared', default: () => false })
-    isShared?: boolean;
+    @Column({ type: 'boolean', name: 'is_published', default: () => false })
+    isPublished?: boolean;
 
     @Column({ type: 'boolean', name: 'is_removed', default: () => false })
     isRemoved?: boolean;

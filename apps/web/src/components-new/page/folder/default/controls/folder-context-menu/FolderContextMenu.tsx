@@ -46,9 +46,9 @@ export const FolderContextMenu = (prop: FolderContextMenuProp) => {
 
     //#region ACTION_EVENT
 
-    const updateSharedState = async (isShare: boolean, fileUid: string) => {
+    const updateSharedState = async (isPublished: boolean, fileUid: string) => {
         try {
-            console.log(`UPDATE SHARED STATE : ${isShare} ====> ${fileUid}`)
+            console.log(`UPDATE SHARED STATE : ${isPublished} ====> ${fileUid}`)
 
             globalLoadingHook.active(true);
 
@@ -58,7 +58,7 @@ export const FolderContextMenu = (prop: FolderContextMenuProp) => {
             const updateRequest = await fetch(apiUrl, {
                 method: 'POST',
                 body: JSON.stringify({
-                    isShared: isShare
+                    isPublished: isPublished
                 })
             })
 
@@ -154,7 +154,7 @@ export const FolderContextMenu = (prop: FolderContextMenuProp) => {
                     className="cp-context-file-shared-bt"
                     onClick={() => {
                         const file = itemData as CrepenFile;
-                        updateSharedState(!file.isShared, file.uid)
+                        updateSharedState(!file.isPublished, file.uid)
                             .catch(err => {
                                 if (err instanceof CrepenComponentError) {
                                     console.group('Fetch Error');
@@ -175,7 +175,7 @@ export const FolderContextMenu = (prop: FolderContextMenuProp) => {
                     }}
                 >
                     {
-                        (itemData as CrepenFile).isShared
+                        (itemData as CrepenFile).isPublished
                             ? 'Disconnect Share'
                             : 'Connect Share'
                     }

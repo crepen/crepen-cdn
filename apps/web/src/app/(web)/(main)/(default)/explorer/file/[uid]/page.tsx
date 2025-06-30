@@ -159,11 +159,11 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
                     </CrepenDetailItem>
                     <FileSharedEditDetailItem
                         title='SHARED'
-                        value={fileData.data?.isShared}
+                        value={fileData.data?.isPublished}
                         fileUid={fileData.data?.uid}
                     />
                     {
-                        fileData.data?.isShared &&
+                        fileData.data?.isPublished &&
                         <FileSharedUrlDetailItem
                             title='Shared Link'
                             fileUid={fileData.data.uid}

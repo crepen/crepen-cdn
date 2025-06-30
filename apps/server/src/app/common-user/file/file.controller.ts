@@ -378,7 +378,7 @@ export class CrepenFileRouteController {
 
         const editEntity = new FileEntity();
         editEntity.fileTitle = bodyData.fileTitle;
-        editEntity.isShared = bodyData.isShared;
+        editEntity.isPublished = bodyData.isPublished;
 
         await this.fileService.editFile(uid , editEntity, req.user.entity.uid );
 
