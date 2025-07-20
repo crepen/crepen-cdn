@@ -62,6 +62,7 @@ export const LoginForm = () => {
                 formName='id'
                 showResetButton
                 inputRef={idInputRef}
+                defaultValue='demo'
             />
 
             <LabelInput
@@ -71,6 +72,7 @@ export const LoginForm = () => {
                 showResetButton
                 showPasswordVisibleButton
                 inputRef={passwordInputRef}
+                defaultValue='qwer1234qwer1234'
             />
 
             <LoadingButton

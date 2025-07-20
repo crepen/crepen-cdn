@@ -4,8 +4,8 @@
     display: grid;
 
 
-    grid-template-areas: 'checkbox icon title published size';
-    grid-template-columns: 20px 20px auto max-content minmax(100px , max-content);
+    grid-template-areas: 'checkbox icon title';
+    grid-template-columns: 20px 20px auto;
     align-items: center;
 
     gap: 5px;
@@ -22,8 +22,8 @@
     }
 
 
-    &[data-disabled-select=true]{
-        .cp-item-check-box{
+    &[data-disabled-select=true] {
+        .cp-item-check-box {
             display: none;
         }
     }
@@ -53,24 +53,6 @@
         grid-area: title;
     }
 
-    .cp-item-published{
-        grid-area: published;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        
-        svg {
-            margin-right: 4px;
-            color: #424a87;
-        }
-    }
-
-    .cp-item-size {
-        grid-area: size;
-        text-align: end;
-    }
-
-
     &[data-selected=true] {
         background: #efefef;
 
@@ -83,12 +65,80 @@
 
         border-left: 3px solid #48afcf;
     }
+
+
+    &.cp-item-file {
+        grid-template-areas: 'checkbox icon title published size action';
+        grid-template-columns: 20px 20px auto max-content minmax(100px, max-content) minmax(100px, max-content);
+
+        .cp-item-published {
+            grid-area: published;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+
+            svg {
+                margin-right: 4px;
+                color: #424a87;
+            }
+        }
+
+        .cp-item-size {
+            grid-area: size;
+            text-align: end;
+        }
+
+        .cp-item-action {
+            grid-area: action;
+            text-align: end;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+
+
+            .cp-action-bt {
+
+
+
+
+                cursor: pointer;
+
+                width: 28px;
+                aspect-ratio: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 24px;
+                transition: 0.3s;
+                color: initial;
+
+                &:hover {
+                    box-shadow: 0px 0px 6px -2px gray;
+                    background-color: #b9b9b9;
+                }
+
+                .cp-action-bt-icon {}
+            }
+        }
+    }
+
+    &.cp-item-folder {
+        // grid-template-areas: 'checkbox icon title';
+        // grid-template-columns: 20px 20px auto;
+    }
+
+
+
+
+
+
+
 }
 
 
 body[data-device=mobile] {
     .cp-folder-item.cp-item-linear {
         grid-template-areas: 'checkbox icon title size';
-        grid-template-columns: 20px 20px auto minmax(100px , max-content);
+        grid-template-columns: 20px 20px auto minmax(100px, max-content);
     }
 }

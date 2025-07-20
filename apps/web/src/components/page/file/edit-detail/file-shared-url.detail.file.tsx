@@ -32,11 +32,11 @@ export const FileSharedUrlDetailItem = (prop: FileSharedUrlDetailItemProp) => {
             className="cp-file-shared-url-detail-item"
         >
             <div className="cp-shared-url-box">
-                <Link href={fileUrl ?? '#'} className='cp-shared-link' target='_blank'>
+                {/* <Link href={fileUrl ?? '#'} className='cp-shared-link' target='_blank'>
                     <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='cp-shared-link-icon' />
                     <span>{fileUrl}</span>
                     
-                </Link>
+                </Link> */}
 
                 {/* <CrepenIconButton 
                     icon={faCopy}

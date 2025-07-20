@@ -23,15 +23,15 @@ export const ProfileUserPageLayout = async (prop: ProfileUserPageLayoutProp) => 
                     USER : 1
                 </CrepenShadowGroup> */}
 
-                <div className='cp-section-line'>
+                {/* <div className='cp-section-line'>
                     <div className='cp-section-key'>
                         USER UID
                     </div>
                     <div className='cp-section-value'>
                         {prop.data.uid}
                     </div>
-                </div>
-                    <div className='cp-section-line'>
+                </div> */}
+                <div className='cp-section-line'>
                     <div className='cp-section-key'>
                         USER ID
                     </div>
@@ -48,7 +48,7 @@ export const ProfileUserPageLayout = async (prop: ProfileUserPageLayoutProp) => 
                     </div>
 
                 </div>
-            
+
                 <div className='cp-section-line'>
                     <div className='cp-section-key'>
                         USER EMAIL

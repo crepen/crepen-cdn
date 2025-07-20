@@ -4,7 +4,7 @@ import { faFile, faFileAudio, faFileZipper, faImage } from "@fortawesome/free-re
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MimeUtil } from "@web/lib/util/mime.util";
 import { redirect } from "next/navigation";
-import { faDownload, faVideo } from '@fortawesome/free-solid-svg-icons';
+import { faCloudDownload, faDownload, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { CrepenHttpService } from '@web/services/common/http.service';
 import { GroupExpandBox } from '@web/components/page/common/group-box/group-box.common';
@@ -21,6 +21,7 @@ import { CrepenLanguageService } from '@web/services/common/language.service';
 import { FileSharedUrlDetailItem } from '@web/components/page/file/edit-detail/file-shared-url.detail.file';
 import { FileRemoveEditDetailItem } from '@web/components/page/file/edit-detail/file-remove.edit-detail.file';
 import { CrepenFileOperationService } from '@web/modules/crepen/explorer/file/CrepenFileOperationService';
+import urlJoin from 'url-join';
 
 interface ExplorerFileInfoRoutePageProp {
     params: Promise<{
@@ -56,7 +57,7 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
 
     const basePath = await CrepenHttpService.getBasePath();
     const downloadUrl = `/api/file/${fileData.data?.uid ?? 'ntf'}/download`
-    const fileUrl = `${basePath}${downloadUrl}`;
+    const fileUrl = urlJoin(basePath ?? '/' ,  downloadUrl , );
 
     return (
         <div className="cp-common-page cp-file-info-page">
@@ -155,7 +156,11 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
                     <CrepenDetailItem
                         title='DOWNLOAD'
                     >
-                        <Link href={downloadUrl} download>Download Item</Link>
+                        <Link href={downloadUrl} download>
+                            <FontAwesomeIcon
+                                icon={faCloudDownload} 
+                                />
+                        </Link>
                     </CrepenDetailItem>
                     <FileSharedEditDetailItem
                         title='SHARED'
@@ -165,7 +170,7 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
                     {
                         fileData.data?.isPublished &&
                         <FileSharedUrlDetailItem
-                            title='Shared Link'
+                            title='Copy Publish URL'
                             fileUid={fileData.data.uid}
                         />
                     }

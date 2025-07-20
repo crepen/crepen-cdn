@@ -14,6 +14,7 @@ interface LabelInputProp {
     showResetButton?: boolean,
     showPasswordVisibleButton? : boolean,
     inputId? : string
+    defaultValue? : string
 }
 
 /** @deprecated */
@@ -29,7 +30,7 @@ const LabelInput = (prop: LabelInputProp) => {
                 id={prop.inputId}
                 type={isShowPassword === true ? 'text' : prop.inputType}
                 name={prop.formName}
-                placeholder=''
+                defaultValue={prop.defaultValue ?? ''}
                 ref={inputRef}
             ></input>
             <div className='inner-actions'>

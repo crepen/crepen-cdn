@@ -262,12 +262,14 @@ export class CrepenFileRouteController {
             res.header('Accept-Ranges', 'bytes');
             res.header('Content-Length', chunksize.toString());
             res.header('Content-Type', fileData.mimetype);
+            res.header('Content-Disposition', `attachment;filename="${fileData.filename}"`)
 
             return new StreamableFile(chunk);
         } else {
             res.status(HttpStatus.OK); // 200 OK
             res.header('Content-Length', fileSize.toString());
             res.header('Content-Type', fileData.mimetype);
+            res.header('Content-Disposition', `attachment;filename="${fileData.filename}"`)
 
             return new StreamableFile(fileData.buffer);
         }
@@ -306,14 +308,14 @@ export class CrepenFileRouteController {
             res.header('Accept-Ranges', 'bytes');
             res.header('Content-Length', chunksize.toString());
             res.header('Content-Type', fileData.mimetype);
-            res.header('Content-Disposition' , `attachment;filename="${fileData.filename}"`)
+            res.header('Content-Disposition', `attachment;filename="${fileData.filename}"`)
 
             return new StreamableFile(chunk);
         } else {
             res.status(HttpStatus.OK); // 200 OK
             res.header('Content-Length', fileSize.toString());
             res.header('Content-Type', fileData.mimetype);
-            res.header('Content-Disposition' , `attachment;filename="${fileData.filename}"`)
+            res.header('Content-Disposition', `attachment;filename="${fileData.filename}"`)
 
             return new StreamableFile(fileData.buffer);
         }
@@ -369,9 +371,9 @@ export class CrepenFileRouteController {
         @Req() req: JwtUserRequest,
         @I18n() i18n: I18nContext,
         @Param('uid') uid: string,
-        @Body() bodyData : EditFileDto
+        @Body() bodyData: EditFileDto
     ) {
-        console.log("CHANGE FILE", uid , bodyData);
+        console.log("CHANGE FILE", uid, bodyData);
 
         // throw CrepenFileError.FILE_NOT_FOUND;
         // const removeFileRequest = await this.fileService.removeFile(uid, req.user.entity.uid);
@@ -380,7 +382,7 @@ export class CrepenFileRouteController {
         editEntity.fileTitle = bodyData.fileTitle;
         editEntity.isPublished = bodyData.isPublished;
 
-        await this.fileService.editFile(uid , editEntity, req.user.entity.uid );
+        await this.fileService.editFile(uid, editEntity, req.user.entity.uid);
 
 
         return BaseResponse.ok(
