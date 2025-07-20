@@ -13,6 +13,7 @@ import { CrepenComponentError } from '@web/modules/common/error/CrepenComponentE
 import { CrepenBaseError } from '@web/modules/common/error/CrepenBaseError';
 import { useGlobalBasePath, useGlobalLanguage } from '@web/lib/state/global.state';
 import { Virtuoso } from 'react-virtuoso';
+import urlJoin from 'url-join';
 
 export const UploadMonitorModal = () => {
 
@@ -44,8 +45,12 @@ export const UploadMonitorModal = () => {
 
             const formData = new FormData();
             formData.set('file', file.data);
+            formData.set('title' , file.data.name);
+            formData.set('folderUid' , file.targetFolderUid);
 
-            const uploadFileRequest = await fetch(`${basePath.value}/api/file`, {
+            console.log(urlJoin(basePath.value , '/api/file'))
+
+            const uploadFileRequest = await fetch(urlJoin(basePath.value , '/api/file'), {
                 method: 'PUT',
                 body: formData,
                 signal: file.abortControl.signal,
@@ -62,26 +67,26 @@ export const UploadMonitorModal = () => {
             }
 
             // RELATION FILE - FILE GROUP
-            const bodyData = {
-                fileUid: data.uid,
-                folderUid: file.targetFolderUid,
-                fileTitle: file.data.name
-            }
+            // const bodyData = {
+            //     fileUid: data.uid,
+            //     folderUid: file.targetFolderUid,
+            //     fileTitle: file.data.name
+            // }
 
-            const relFileRequest = await fetch(`${basePath.value}/api/file/rel`, {
-                method: 'POST',
-                body: JSON.stringify(bodyData),
-                signal: file.abortControl.signal,
-                headers: {
-                    'Accept-Language': language.value
-                },
-            })
+            // const relFileRequest = await fetch(urlJoin(basePath.value , '/api/file/rel'), {
+            //     method: 'POST',
+            //     body: JSON.stringify(bodyData),
+            //     signal: file.abortControl.signal,
+            //     headers: {
+            //         'Accept-Language': language.value
+            //     },
+            // })
 
-            const dataResult = await relFileRequest.json();
+            // const dataResult = await relFileRequest.json();
 
-            if (dataResult.success !== true) {
-                throw new CrepenComponentError(dataResult.message ?? "UNKNOWN EXCEPTION", dataResult.statusCode ?? 500)
-            }
+            // if (dataResult.success !== true) {
+            //     throw new CrepenComponentError(dataResult.message ?? "UNKNOWN EXCEPTION", dataResult.statusCode ?? 500)
+            // }
 
             //#endregion
 

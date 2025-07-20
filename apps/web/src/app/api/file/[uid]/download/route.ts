@@ -1,3 +1,4 @@
+import { StringUtil } from "@web/lib/util/string.util";
 import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError";
 import { CrepenRouteError } from "@web/modules/common/error/CrepenRouteError";
 import { CrepenAuthOpereationService } from "@web/modules/crepen/auth/CrepenAuthOpereationService";
@@ -10,9 +11,13 @@ interface RequestContext {
             uid: string;
         }
     >;
+    searchParams: Promise<any>
 }
 
 export const GET = async (req: NextRequest, res: NextResponse & RequestContext) => {
+    const searchParams = req.nextUrl.searchParams;
+    const resultFormat = searchParams.get('format') ?? 'file';
+
     try {
         const uid = (await res.params).uid;
 
@@ -57,20 +62,53 @@ export const GET = async (req: NextRequest, res: NextResponse & RequestContext) 
         })
 
 
-        if (!requestFile.ok) {
-            throw new CrepenRouteError('Failed to fetch video stream');
+
+        if (resultFormat === 'json') {
+            let resultData = { message: undefined, statusCode: 500 };
+
+            try {
+                resultData = await requestFile.json();
+            }
+            catch (e) { /* empty */ }
+
+            if (!requestFile.ok) {
+                if (!StringUtil.isEmpty(resultData.message)) {
+                    throw new CrepenRouteError(resultData.message, resultData.statusCode);
+                }
+
+                throw new CrepenRouteError('Failed to fetch video stream');
+            }
         }
+
+
+
+
+
+
 
         const responseHeaders = new Headers(requestFile.headers);
         return new NextResponse(requestFile.body, { status: requestFile.status, headers: responseHeaders });
     }
     catch (e) {
+
+
         if (e instanceof CrepenBaseError) {
-            return NextResponse.json(e.toJson(), { status: e.statusCode })
+            if (resultFormat === 'json') {
+                return NextResponse.json(e.toJson(), { status: e.statusCode })
+            }
+
+            return new NextResponse(null, { status: e.statusCode });
+
         }
         else {
-            const err = new CrepenBaseError('Unknown Error', 501, e as Error);
-            return NextResponse.json(err.toJson(), { status: err.statusCode })
+            if (resultFormat === 'json') {
+                const err = new CrepenBaseError('Unknown Error', 501, e as Error);
+                return NextResponse.json(err.toJson(), { status: err.statusCode })
+            }
+
+
+            return new NextResponse(null, { status: 404 });
+
         }
     }
 }

@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
 import { FileStoreEntity } from "./file-store.entity";
 import { FolderEntity } from "../../folder/entity/folder.entity";
+import { FilePermissionEntity } from "./file-permission.entity";
 
 @Entity('file')
 export class FileEntity {
@@ -45,5 +46,9 @@ export class FileEntity {
     @ManyToOne(() => FolderEntity , (obj) => obj.files, {createForeignKeyConstraints : false})
     @JoinColumn({ name: 'parent_folder_uid', referencedColumnName: 'uid' })
     relativeFolder : FolderEntity
+ 
     
+    @OneToMany(() => FilePermissionEntity , (obj) => obj.file ,{createForeignKeyConstraints : false})
+    @JoinColumn({name : 'uid' , referencedColumnName : 'file_uid'})
+    matchPermissions : FilePermissionEntity[]
 }

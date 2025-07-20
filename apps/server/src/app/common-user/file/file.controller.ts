@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Header, Headers, HttpCode, HttpStatus, Param, Post, Put, Query, Req, Res, StreamableFile, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Headers, HttpCode, HttpStatus, Param, Post, Put, Req, Res, StreamableFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { ApiTags, ApiHeader, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { CrepenFileRouteService } from "./file.service";
 import { CrepenAuthJwtGuard } from "@crepen-nest/config/passport/jwt/jwt.guard";
@@ -9,14 +9,15 @@ import { StringUtil } from "@crepen-nest/lib/util/string.util";
 import { CrepenLocaleHttpException } from "@crepen-nest/lib/exception/crepen.http.exception";
 import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { AddFileDto, RelationFileDto } from "./dto/file.dto";
+import { RelationFileDto } from "./dto/file.dto";
 import { CrepenFolderRouteService } from "../folder/folder.service";
-import { Transaction } from "typeorm";
-import { Request as ExpressRequest, Response } from "express";
-import { createReadStream } from "fs";
+import { Response } from "express";
 import { CrepenFileError } from "./exception/file.exception";
 import { EditFileDto } from "./dto/edit.file.dto";
 import { FileEntity } from "./entity/file.entity";
+import { AuthUser } from "@crepen-nest/lib/decorator/param/auth-user.param.decorator";
+import { UserEntity } from "../user/entity/user.entity";
+import { FilePermissionType } from "@crepen-nest/lib/enum/file-permission-type.enum";
 
 @ApiTags('[Common] 사용자 파일 관리 컨트롤러')
 @ApiHeader({
@@ -65,28 +66,28 @@ export class CrepenFileRouteController {
 
     //#region FILE INFO CONTROL
 
-    @Post('rel')
-    //#region Decorator
-    @ApiOperation({ summary: '파일 연결/등록', description: '파일 연결/등록' })
-    @ApiBearerAuth('token')
-    @HttpCode(HttpStatus.OK)
-    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
-    //#endregion
-    async relationFile(
-        @Req() req: JwtUserExpressRequest,
-        @I18n() i18n: I18nContext,
-        @Body() bodyData: RelationFileDto,
-    ) {
-        console.log(bodyData);
+    // @Post('rel')
+    // //#region Decorator
+    // @ApiOperation({ summary: '파일 연결/등록', description: '파일 연결/등록' })
+    // @ApiBearerAuth('token')
+    // @HttpCode(HttpStatus.OK)
+    // @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    // //#endregion
+    // async relationFile(
+    //     @Req() req: JwtUserExpressRequest,
+    //     @I18n() i18n: I18nContext,
+    //     @Body() bodyData: RelationFileDto,
+    // ) {
+    //     console.log(bodyData);
 
-        const relationFile = this.fileService.relationFile(bodyData.fileUid, bodyData.fileTitle, bodyData.folderUid, req.user.entity.uid);
+    //     const relationFile = this.fileService.relationFile(bodyData.fileUid, bodyData.fileTitle, bodyData.folderUid, req.user.entity.uid);
 
-        return BaseResponse.ok(
-            undefined,
-            HttpStatus.OK,
-            i18n.t('cloud_file.FILE_COMMON_SUCCESS')
-        )
-    }
+    //     return BaseResponse.ok(
+    //         undefined,
+    //         HttpStatus.OK,
+    //         i18n.t('cloud_file.FILE_COMMON_SUCCESS')
+    //     )
+    // }
 
     //#endregion FILE INFO CONTROL
 
@@ -106,8 +107,20 @@ export class CrepenFileRouteController {
         @Res() res: Response,
         @I18n() i18n: I18nContext,
         @Headers('x-file-name') fileName: string,
-        @Headers('x-file-type') fileType: string
+        @Headers('x-file-type') fileType: string,
+        @Headers('x-file-title') fileTitle: string,
+        @Headers('x-file-save-folder') folderUid: string,
+        @AuthUser() user: UserEntity
     ) {
+        if (StringUtil.isEmpty(fileTitle)) {
+            throw CrepenFileError.FILE_TITLE_NOT_CORRECT;
+        }
+
+        if (StringUtil.isEmpty(folderUid)) {
+            throw CrepenFileError.FILE_FOLDER_NOT_CORRECT;
+        }
+
+
 
 
         const chunks: Buffer[] = [];
@@ -134,7 +147,7 @@ export class CrepenFileRouteController {
                     stream: undefined as any,
                 }
 
-                const saveFile = this.fileService.saveFile(file, req.user.entity.uid);
+                const saveFile = this.fileService.uploadFile(file, fileTitle, user.uid, folderUid);
 
                 saveFile
                     .then(fileRes => {
@@ -238,12 +251,31 @@ export class CrepenFileRouteController {
     @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
     //#endregion
     async downloadFileStream(
-        @Req() req: JwtUserRequest,
+        @Req() req: Request,
         @Res({ passthrough: true }) res: Response,
         @I18n() i18n: I18nContext,
-        @Param('uid') uid: string
+        @Param('uid') uid: string,
+        @AuthUser() user: UserEntity
     ) {
-        const fileData = await this.fileService.getFileData(uid);
+
+
+        const fileInfo = await this.fileService.getFileInfoWithPermission(uid, user.uid);
+
+
+        if (ObjectUtil.isNullOrUndefined(fileInfo)) {
+            res.status(404);
+            return new StreamableFile(Buffer.alloc(0));
+            // throw CrepenFileError.FILE_NOT_FOUND;            
+        }
+
+        if(fileInfo.matchPermissions.filter(x=>x.permissionType === FilePermissionType.DOWNLOAD).length === 0){
+            res.status(403);
+            return new StreamableFile(Buffer.alloc(0));
+        }
+
+        const fileData = await this.fileService.getFileData(fileInfo.uid);
+
+        
 
         const fileSize = fileData.buffer.length;
         const range = res.req.headers.range;

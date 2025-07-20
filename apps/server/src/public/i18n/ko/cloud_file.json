@@ -28,5 +28,7 @@
 
 
   "FILE_TITLE_TYPE_NOT_STRING" : "파일명 형식이 문자열이 아닙니다.",
-  "FILE_SHARED_TYPE_NOT_BOOLEAN" : "파일 공유 유무 형식이 Boolean이 아닙니다."
+  "FILE_SHARED_TYPE_NOT_BOOLEAN" : "파일 공유 유무 형식이 Boolean이 아닙니다.",
+  "FILE_TITLE_NOT_CORRECT" : "파일명이 올바르지 않습니다",
+  "FILE_FOLDER_NOT_CORRECT" : "저장 폴더가 설정되지 않았습니다."
 }

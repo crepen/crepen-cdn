@@ -39,7 +39,9 @@ export const PUT = async (req: NextRequest , res : NextResponse) => {
                 'Accept-Language': req.headers.get('Accept-Language')?.toString() ?? 'en',
                 'Authorization': `Bearer ${renewToken.data?.accessToken}`,
                 'x-file-name': encodeURIComponent(file.name),
-                'x-file-type': encodeURIComponent(file.type)
+                'x-file-type': encodeURIComponent(file.type),
+                'x-file-title' : encodeURIComponent(formData.get('title')?.toString() ?? ''),
+                'x-file-save-folder' : encodeURIComponent(formData.get('folderUid')?.toString() ?? '')
             },
             body: stream, // TS 오류 무시
             // duplex 필요!

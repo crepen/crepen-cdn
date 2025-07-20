@@ -14,6 +14,7 @@ import { ConfigService } from "@nestjs/config";
 import { FileStoreEntity } from "./entity/file-store.entity";
 import { CrepenFileError } from "./exception/file.exception";
 import { StringUtil } from "@crepen-nest/lib/util/string.util";
+import { FilePermissionType } from "@crepen-nest/lib/enum/file-permission-type.enum";
 
 @Injectable()
 export class CrepenFileRouteService {
@@ -31,6 +32,8 @@ export class CrepenFileRouteService {
     getFileInfo = async (uid: string): Promise<FileEntity | undefined> => {
 
         const fileData = await this.repo.defaultManager().getFile(uid);
+
+        
 
         return fileData;
     }
@@ -125,6 +128,7 @@ export class CrepenFileRouteService {
     // }
 
 
+
     /**
      * 
      * @param file 
@@ -145,8 +149,6 @@ export class CrepenFileRouteService {
                 fileStoreEntity.fileSize = file.size;
                 fileStoreEntity.fileExt = extname(file.originalname).slice(1);
 
-                console.log("==========> ", decodeURIComponent(file.mimetype))
-
                 const encryptFile = await this.cryptoService.encryptFile(file, fileStoreEntity.fileName);
 
                 fileStoreEntity.originFileMine = encryptFile.encryptMime;
@@ -159,6 +161,8 @@ export class CrepenFileRouteService {
                 );
 
                 fs.writeFileSync(savePath, encryptFile.file.buffer);
+
+
 
                 return addFileData;
             }
@@ -310,6 +314,91 @@ export class CrepenFileRouteService {
             throw CrepenFileError.FILE_REMOVE_FAILED;
         }
 
+    }
+
+    /**
+     * 
+     * FILE UPLOAD
+     * 
+     * @param file upload file
+     * @param title file object title
+     * @param userUid create file user uid
+     * @param folderUid file save folder uid
+     * 
+     * @since 2025.07.21
+     */
+    uploadFile = (file: Express.Multer.File, title: string, userUid: string, folderUid: string) => {
+        return this.dataSource.transaction(async (manager) => {
+            try {
+                // INSERT FILE STORE
+                const fileStoreEntity = new FileStoreEntity();
+                fileStoreEntity.uid = randomUUID();
+                fileStoreEntity.fileName = randomUUID();
+                fileStoreEntity.uploaderUid = userUid;
+                fileStoreEntity.hash = this.cryptoService.getFileHash(file.buffer);
+                fileStoreEntity.fileType = decodeURIComponent(file.mimetype);
+                fileStoreEntity.fileSize = file.size;
+                fileStoreEntity.fileExt = extname(file.originalname).slice(1);
+
+                const encryptFile = await this.cryptoService.encryptFile(file, fileStoreEntity.fileName);
+
+                fileStoreEntity.originFileMine = encryptFile.encryptMime;
+
+                const addFileData = await this.repo.setManager(manager).addFileStore(fileStoreEntity);
+
+
+
+                // INSERT FILE
+                const fileEntity = new FileEntity();
+                fileEntity.fileTitle = title;
+                fileEntity.fileUid = fileStoreEntity.uid;
+                fileEntity.ownerUid = userUid;
+                fileEntity.parentFolderUid = folderUid;
+                fileEntity.uid = randomUUID();
+
+                const addFile = await this.repo.setManager(manager).addFile(fileEntity);
+
+
+
+                // SAVE FILE
+                const savePath = join(
+                    this.configService.get('path.fileStore'),
+                    encryptFile.file.originalname
+                );
+
+                fs.writeFileSync(savePath, encryptFile.file.buffer);
+
+
+
+                // ADD PERMISSION
+                await this.repo.addFilePermission(fileEntity.uid, userUid,
+                    FilePermissionType.READ,
+                    FilePermissionType.WRITE,
+                    FilePermissionType.DOWNLOAD
+                )
+
+                // LOGGING
+
+
+                return addFile;
+            }
+            catch (e) {
+                if (e instanceof CrepenLocaleHttpException) {
+                    throw e;
+                }
+                else {
+                    throw new CrepenLocaleHttpException('cloud_file', 'FILE_ADD_FAILED_FILE_SAVE_FAILED', HttpStatus.INTERNAL_SERVER_ERROR, {
+                        innerError: e
+                    });
+                }
+            }
+        })
+    }
+
+
+    getFileInfoWithPermission = async (fileUid : string , userUid : string) => {
+        const filePermission = await this.repo.defaultManager().getFileInfoWithPermissionCheck(fileUid, userUid)
+        return filePermission;
     }
 
 

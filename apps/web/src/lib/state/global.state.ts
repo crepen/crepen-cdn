@@ -21,7 +21,7 @@ export const useGlobalBasePath = create<GlobalBasePathResult>()(((set, get) => (
         }
 
         return {
-            value: path
+            value: path ?? '/'
         }
     }),
     join: (pathName?: string) => {
