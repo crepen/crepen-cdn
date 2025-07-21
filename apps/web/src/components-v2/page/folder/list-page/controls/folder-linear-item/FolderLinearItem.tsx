@@ -44,7 +44,7 @@ export const FolderLinearItem = (prop: FolderLinearItemProp) => {
     }
 
     const divTitleAttribute = {
-        title: prop.title
+        title: decodeURIComponent(prop.title)
     }
 
     useEffect(() => {
@@ -79,7 +79,7 @@ export const FolderLinearItem = (prop: FolderLinearItemProp) => {
                 />
             </div>
 
-            <div className='cp-item-title' {...divTitleAttribute}>{prop.title}</div>
+            <div className='cp-item-title' {...divTitleAttribute}>{decodeURIComponent(prop.title)}</div>
             {
                 (prop.type === 'file' && prop.isFileShared === true) &&
                 <div className='cp-item-published'>

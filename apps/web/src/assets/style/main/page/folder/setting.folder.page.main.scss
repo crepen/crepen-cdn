@@ -1,18 +1,24 @@
 @use '../../../common/variable.scss' as variable;
 
 .cp-folder-setting-page {
+
+
+
     .cp-page-header {
+        padding-inline: 10px;
+
         .cp-header-title {
             font-size: 20px;
             font-weight: bold;
-            
+
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
             word-break: break-all;
 
+
             .cp-header-icon {
-                margin-right: 10px;
+                margin-right: 6px;
             }
         }
 
@@ -20,12 +26,15 @@
     }
 
     .cp-page-content {
-
+        padding-left: 2px;
+        padding-right: 10px;
+        
         width: 100%;
+        max-width: 100%;
 
         display: grid;
         grid-auto-flow: dense;
-        grid-template-columns: 50% 50%;
+        grid-template-columns: 1fr 1fr;
 
         gap: 10px;
         margin-top: 10px;

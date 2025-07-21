@@ -7,6 +7,8 @@
     width: 400px;
     z-index: 9999;
 
+    
+
     display: grid;
     grid-template-areas:
         'header'
@@ -35,6 +37,7 @@
             'filter  action'
         ;
 
+        user-select: none;
 
         .cp-title {
             grid-area: title;
@@ -64,6 +67,10 @@
                 font-size: 12px;
                 // border-style: dashed;
                 cursor: pointer;
+
+                user-select: none;
+
+                text-transform: uppercase;
 
                 &[data-selected=true] {
                     background-color: #a4c7d1;
@@ -95,7 +102,12 @@
             height: 100%;
             display: grid;
             place-items: center;
-            padding-block: 10px;
+            padding-block: 30px;
+
+            font-size: 14px;
+            font-weight: bold;
+
+            user-select: none;
         }
 
         .cp-upload-monitor-item[data-hidden=true] {
@@ -121,6 +133,8 @@
     .cp-modal-footer {
         grid-area: footer;
         padding: 10px;
+
+        user-select: none;
     }
 
 

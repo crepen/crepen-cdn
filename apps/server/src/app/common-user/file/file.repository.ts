@@ -1,5 +1,5 @@
-import { Injectable } from "@nestjs/common";
-import { DataSource, EntityManager, Repository } from "typeorm";
+import { ConsoleLogger, Injectable } from "@nestjs/common";
+import { DataSource, EntityManager, Repository, SelectQueryBuilder } from "typeorm";
 import { FileEntity } from "./entity/file.entity";
 import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
 import { FileStoreEntity } from "./entity/file-store.entity";
@@ -7,6 +7,8 @@ import { UserEntity } from "../user/entity/user.entity";
 import { FilePermissionType } from "@crepen-nest/lib/enum/file-permission-type.enum";
 import { FilePermissionEntity } from "./entity/file-permission.entity";
 import { randomUUID } from "crypto";
+import { SearchFileInfoOptions } from "./types/search-file-info-option";
+import { FileTrafficLoggerEntity } from "@crepen-nest/app/common/logger/entity/file-traffic-logger.entity";
 
 @Injectable()
 export class CrepenFileRouteRepository {
@@ -71,14 +73,22 @@ export class CrepenFileRouteRepository {
         })
     }
 
-    getSharedFileWithStore = (uid: string) => {
+
+    getPublishedFile = (uid: string, includeStore?: boolean) => {
+
+        const relations = [];
+
+        if (includeStore === true) {
+            relations.push('fileStore');
+        }
+
         return this.repo.findOne({
             where: {
                 uid: uid,
                 isPublished: true,
                 isRemoved: false
             },
-            relations: ['fileStore']
+            relations: relations
         })
     }
 
@@ -110,6 +120,7 @@ export class CrepenFileRouteRepository {
 
 
 
+
     /**
      * User UID를 이용한 File 권한 체크 이후 해당 파일 조회
      * 
@@ -118,14 +129,59 @@ export class CrepenFileRouteRepository {
      * 
      * @since 2025.07.21
      */
-    getFileInfoWithPermissionCheck = async (fileUid : string , userUid : string) => {
-        return  this.repo
+    getFileInfo = async (fileUid: string, options?: SearchFileInfoOptions) => {
+
+        let builder = this.repo
             .createQueryBuilder('file')
-            .leftJoinAndSelect('file.matchPermissions', 'file_permission')
-            .select()
-            .where('file.uid = :fileUid' , {fileUid : fileUid})
-            .andWhere('file_permission.user_uid = :userUid' , {userUid : userUid})
-            .getOne();
+            // .addSelect('file.uid' , 'file_uid')
+            .leftJoinAndSelect('file.matchPermissions', 'file_permission');
+
+        if (options?.includeTrafficSize === true) {
+            builder = builder.leftJoinAndSelect(
+                ((qb: SelectQueryBuilder<FileTrafficLoggerEntity>) => (
+                    qb.select('fileTraffic.file_uid', 'traffic_file_uid')
+                        .addSelect('SUM(fileTraffic.traffic_size)', 'traffic_size')
+                        .from('file-traffic-log', 'fileTraffic')
+                        .groupBy('fileTraffic.file_uid')
+                ))
+                , 'traffic'
+                , 'traffic.traffic_file_uid = file.uid'
+            )
+                .addSelect('COALESCE(traffic.traffic_size, 0)', 'file_trafficSize')
+        }
+
+        if (options?.includeStore === true) {
+            builder.leftJoinAndSelect('file.fileStore', 'file_store')
+        }
+
+        builder = builder.where('file.uid = :fileUid', { fileUid: fileUid })
+
+
+
+        if (options?.permission) {
+            builder = builder
+                .andWhere('file_permission.user_uid = :userUid', { userUid: options.permission.userUid })
+                .andWhere('file_permission.permission_type = :permissionType', { permissionType: options.permission.permissionType })
+        }
+
+
+
+        // console.log(builder.getQueryAndParameters())
+
+        const result = await builder.getRawAndEntities();
+
+        // console.log(await result);
+        if (result.entities.length === 0) {
+            return null;
+        }
+
+        const entity = result.entities[0];
+
+        if (options?.includeTrafficSize) {
+            entity.trafficSize = Number((result.raw[0] as { [key: string]: any, file_trafficSize?: string | number })?.['file_trafficSize']) || 0;
+        }
+
+        return entity;
     }
 
 
@@ -153,4 +209,6 @@ export class CrepenFileRouteRepository {
             })))
             .execute();
     }
+
+
 }

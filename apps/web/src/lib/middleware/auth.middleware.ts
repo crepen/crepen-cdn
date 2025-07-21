@@ -2,6 +2,8 @@ import { NextRequest, NextResponse, URLPattern } from "next/server"
 import { BaseMiddleware, BaseMiddlewareResponse } from "./base.middleware";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { CrepenAuthOpereationService } from "@web/modules/crepen/auth/CrepenAuthOpereationService";
+import urlJoin from "url-join";
+import { StringUtil } from "../util/string.util";
 
 export class AuthMiddleware implements BaseMiddleware {
 
@@ -23,6 +25,8 @@ export class AuthMiddleware implements BaseMiddleware {
     public init = async (req: NextRequest, res: NextResponse): Promise<BaseMiddlewareResponse> => {
 
 
+        const basePath = StringUtil.isEmpty(req.nextUrl.basePath) ? '/' : req.nextUrl.basePath;
+
 
 
         // const realUrl = req.nextUrl.origin + process.env.BASE_PATH + req.nextUrl.pathname;
@@ -42,24 +46,19 @@ export class AuthMiddleware implements BaseMiddleware {
             };
         }
 
-        // if (this.isMatchUrl('/logout', req.url)) {
-        //     return {
-        //         response: res,
-        //         type: 'next'
-        //     };
-        // }
 
         const token = await CrepenCookieOperationService.getTokenDataInEdge(req);
 
-
         if (this.urlMatch(req, '/login')) {
+
+            const callbackUrl = req.nextUrl.searchParams.get('callback');
 
             const checkAccTk = await CrepenAuthOpereationService.isAccessTokenExpired(token?.data?.accessToken)
 
             if (checkAccTk.data?.expired === false) {
                 return {
                     type: 'end',
-                    response: NextResponse.redirect(new URL(req.nextUrl.basePath, req.url))
+                    response: NextResponse.redirect(new URL(urlJoin(basePath, callbackUrl ?? '/'), req.url))
                 }
             }
             else {
@@ -67,20 +66,41 @@ export class AuthMiddleware implements BaseMiddleware {
                 const checkRefTk = await CrepenAuthOpereationService.isRefreshTokenExpired(token?.data?.refreshToken)
                 if (checkRefTk.data?.expired === false) {
 
+                    const renewToken = await CrepenAuthOpereationService.renewTokenInEdge(req, true);
+                    if (renewToken.success !== true) {
+                        return {
+                            type: 'end',
+                            response: NextResponse.redirect(new URL(urlJoin(basePath, '/login', StringUtil.isEmpty(callbackUrl) ? '' : `?callback=${callbackUrl}`), req.url))
+                        }
+                    }
+
+                    const insertCookie = await CrepenCookieOperationService.insertTokenDataInEdge(res, renewToken.data);
+                    if (insertCookie.success !== true) {
+                        return {
+                            type: 'end',
+                            response: NextResponse.redirect(new URL(urlJoin(basePath, '/login', StringUtil.isEmpty(callbackUrl) ? '' : `?callback=${callbackUrl}`), req.url))
+                        }
+                    }
+
+
+
                     return {
                         type: 'end',
-                        response: NextResponse.redirect(new URL(req.nextUrl.basePath, req.url))
+                        response: NextResponse.redirect(new URL(urlJoin(basePath, callbackUrl ?? '/'), req.url))
                     }
                 }
             }
 
         }
+        else if (this.urlMatch(req, '/logout')) { /* empty */ }
         else {
+            console.log(req.nextUrl);
+
             const renewToken = await CrepenAuthOpereationService.renewTokenInEdge(req, true);
             if (renewToken.success !== true) {
                 return {
                     type: 'end',
-                    response: NextResponse.redirect(new URL(req.nextUrl.basePath + '/login', req.url))
+                    response: NextResponse.redirect(new URL(urlJoin(basePath, '/login' , `?callback=${req.nextUrl.pathname}`), req.url))
                 }
             }
 
@@ -88,11 +108,9 @@ export class AuthMiddleware implements BaseMiddleware {
             if (insertCookie.success !== true) {
                 return {
                     type: 'end',
-                    response: NextResponse.redirect(new URL(req.nextUrl.basePath + '/login', req.url))
+                    response: NextResponse.redirect(new URL(urlJoin(basePath, '/login', `?callback=${req.nextUrl.pathname}`), req.url))
                 }
             }
-
-
         }
 
 

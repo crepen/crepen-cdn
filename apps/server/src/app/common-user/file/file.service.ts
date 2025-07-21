@@ -15,6 +15,7 @@ import { FileStoreEntity } from "./entity/file-store.entity";
 import { CrepenFileError } from "./exception/file.exception";
 import { StringUtil } from "@crepen-nest/lib/util/string.util";
 import { FilePermissionType } from "@crepen-nest/lib/enum/file-permission-type.enum";
+import { CrepenLoggerService } from "@crepen-nest/app/common/logger/logger.service";
 
 @Injectable()
 export class CrepenFileRouteService {
@@ -24,16 +25,15 @@ export class CrepenFileRouteService {
         private readonly dataSource: DataSource,
         private readonly cryptoService: CrepenCryptoService,
         private readonly configService: ConfigService,
+        private readonly loggerService: CrepenLoggerService
     ) { }
 
 
 
 
     getFileInfo = async (uid: string): Promise<FileEntity | undefined> => {
+        const fileData = await this.repo.defaultManager().getFileInfo(uid );
 
-        const fileData = await this.repo.defaultManager().getFile(uid);
-
-        
 
         return fileData;
     }
@@ -210,27 +210,29 @@ export class CrepenFileRouteService {
     }
 
 
-    getFileWithStore = async (uid: string) => {
+    getFileInfoWithStore = async (uid: string) => {
         return await this.repo.defaultManager().getFileWithStore(uid);
     }
 
 
+    getPublishedFileInfo = async (fileUid : string , includeStore? : boolean) => {
+        return this.repo.defaultManager().getPublishedFile(fileUid , includeStore);
+    }
 
-
-    getSharedFile = async (fileUid: string): Promise<Express.Multer.File | undefined> => {
-        const fileInfo = await this.repo.defaultManager().getSharedFileWithStore(fileUid);
-        return this.getFileDataFromFileEntity(fileInfo);
+    getPublishedFile = async (fileUid: string): Promise<Express.Multer.File | undefined> => {
+        const fileInfo = await this.repo.defaultManager().getPublishedFile(fileUid);
+        return this.getLocalFile(fileInfo);
     }
 
 
-    getFileData = async (fileUid: string): Promise<Express.Multer.File | undefined> => {
-        const fileInfo = await this.getFileWithStore(fileUid);
-        return this.getFileDataFromFileEntity(fileInfo);
+    getFileDataWithStoreAndLocalFile = async (fileUid: string): Promise<FileEntity | undefined> => {
+        const fileInfo = await this.getFileInfoWithStore(fileUid);
+        return fileInfo;
     }
 
 
 
-    getFileDataFromFileEntity = (fileInfo?: FileEntity) => {
+    getLocalFile = (fileInfo?: FileEntity) => {
         if (ObjectUtil.isNullOrUndefined(fileInfo)) {
             throw CrepenFileError.FILE_NOT_FOUND;
         }
@@ -257,7 +259,7 @@ export class CrepenFileRouteService {
                 throw CrepenFileError.FILE_UID_UNDEFINED
             }
 
-            const fileData = await this.getFileWithStore(fileUid);
+            const fileData = await this.getFileInfoWithStore(fileUid);
 
             if (ObjectUtil.isNullOrUndefined(fileData)) {
                 throw CrepenFileError.FILE_NOT_FOUND;
@@ -373,8 +375,7 @@ export class CrepenFileRouteService {
                 // ADD PERMISSION
                 await this.repo.addFilePermission(fileEntity.uid, userUid,
                     FilePermissionType.READ,
-                    FilePermissionType.WRITE,
-                    FilePermissionType.DOWNLOAD
+                    FilePermissionType.WRITE
                 )
 
                 // LOGGING
@@ -396,9 +397,30 @@ export class CrepenFileRouteService {
     }
 
 
-    getFileInfoWithPermission = async (fileUid : string , userUid : string) => {
-        const filePermission = await this.repo.defaultManager().getFileInfoWithPermissionCheck(fileUid, userUid)
+    getFileInfoWithPermission = async (fileUid: string, userUid: string, permissionType : FilePermissionType, includeStore?: boolean) => {
+        const filePermission =
+            await this.repo.defaultManager()
+                .getFileInfo(fileUid, {
+                    includeStore : includeStore,
+                    permission : {
+                        userUid : userUid,
+                        permissionType : permissionType
+                    }
+                })
         return filePermission;
+    }
+
+
+    getDetailFileInfo = async (fileUid : string , userUid : string) => {
+        return this.repo.defaultManager()
+            .getFileInfo(fileUid , {
+                includeStore : true,
+                includeTrafficSize : true,
+                permission : {
+                    permissionType : FilePermissionType.READ,
+                    userUid : userUid
+                }
+            })
     }
 
 

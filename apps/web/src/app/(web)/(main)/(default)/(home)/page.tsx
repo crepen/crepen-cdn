@@ -1,3 +1,4 @@
+import { DashboardPageLayout } from "@web/components-v2/page/dashboard/layout/DashboardPageLayout";
 import { CrepenUserOperationService } from "@web/services/operation/user.operation.service";
 
 
@@ -7,9 +8,7 @@ const CloudMainRoutePage = async () => {
 
     
     return (
-        <div className='cp-page cp-main-home'>
-            Login User : {userData.data?.name}
-        </div>
+        <DashboardPageLayout />
     )
 }
 

@@ -1,0 +1,45 @@
+.cp-cumulative-data-usage-widget {
+    overflow: hidden;
+
+    .cp-group-content {
+        padding: 0;
+
+    }
+
+    .cp-monitor-widget.cp-cumulative-data-usage {
+        width: calc(100% + 1px);
+        height: 200px;
+
+
+
+
+
+
+        .cp-graph-cell-label {
+            font-size: 12px;
+            color: #8884d8;
+            background-color: white;
+            color: white;
+        }
+
+        .cp-graph-custom-tooltip {
+            position: absolute;
+            top: 10;
+            left: 10;
+            width: 200px;
+            // max-width: 60%;
+            font-size: 12px;
+
+            // word-break: keep-all;
+
+            .cp-tooltip-title{
+                font-size: 12px;
+            }
+
+            .cp-tooltip-value {
+                font-size: 12px;
+            }
+        }
+    }
+
+}

@@ -24,7 +24,7 @@ export const InitClient = (prop: InitClientProp) => {
     }, [])
 
     useEffect(() => {
-        globalLanguage.update(prop.language);
+        // globalLanguage.update(prop.language);
     }, [prop.language])
 
 

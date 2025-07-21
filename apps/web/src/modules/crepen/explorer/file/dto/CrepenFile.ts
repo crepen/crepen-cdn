@@ -21,6 +21,8 @@ export class CrepenFile {
     createDate: Date;
     updateDate: Date;
 
+    trafficSize: number = 0;
+
     fileStore?: CrepenFileStore
 }
 

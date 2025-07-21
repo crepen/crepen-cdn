@@ -16,6 +16,7 @@
             width: 100%;
             font-size: 20px;
             font-weight: bold;
+            padding-left: 4px;
 
 
 
@@ -37,6 +38,7 @@
         margin-top: 10px;
         padding-right: 10px;
         padding-left: 2px;
+        padding-bottom: 10px;
 
         .cp-action-box {
             grid-column: 1 / -1;
@@ -63,7 +65,11 @@
                 overflow: hidden;
 
                 video {
-                    width: 100%;
+                     width: auto !important;
+                    position: inherit !important;
+                    // max-height: 300px !important;
+                    height: 400px !important;
+                    max-width: 100%;
                 }
 
                 img {
@@ -71,7 +77,7 @@
                     width: auto !important;
                     position: inherit !important;
                     // max-height: 300px !important;
-                    height: 300px !important;
+                    height: 400px !important;
                     max-width: 100%;
 
 

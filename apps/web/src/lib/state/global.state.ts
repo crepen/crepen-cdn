@@ -49,6 +49,8 @@ interface GlobalLanguageResult {
 export const useGlobalLanguage = create<GlobalLanguageResult>()(((set, get) => ({
     value: 'en',
     update: (value?: string) => set(() => {
+
+        console.log('GLOBAL LANGUAGE : ',value);
         return {
             value: value
         };

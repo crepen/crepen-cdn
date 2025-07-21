@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn, ViewColumn } from "typeorm";
 import { FileStoreEntity } from "./file-store.entity";
 import { FolderEntity } from "../../folder/entity/folder.entity";
 import { FilePermissionEntity } from "./file-permission.entity";
@@ -50,5 +50,8 @@ export class FileEntity {
     
     @OneToMany(() => FilePermissionEntity , (obj) => obj.file ,{createForeignKeyConstraints : false})
     @JoinColumn({name : 'uid' , referencedColumnName : 'file_uid'})
-    matchPermissions : FilePermissionEntity[]
+    matchPermissions : FilePermissionEntity[];
+
+    
+    trafficSize? : number;
 }

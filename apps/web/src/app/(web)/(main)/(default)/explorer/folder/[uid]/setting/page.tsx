@@ -55,11 +55,22 @@ export const ExplorerFolderSettingRoutePage = async (prop: ExplorerFolderSetting
             </div>
             <div className="cp-page-content">
                 <div className='cp-content-box'>
-                    <EditFolderNameDetailItem
-                        title='Folder name'
-                        value={folderData.data?.folderTitle}
-                        folderUid={folderData.data?.uid}
-                    />
+                    {
+                        folderData.data?.parentFolder
+                            ?
+                            <EditFolderNameDetailItem
+                                title='Folder Name'
+                                value={folderData.data?.folderTitle}
+                                folderUid={folderData.data?.uid}
+                            />
+                            :
+                            <DetailItem
+                                title='Folder Name'
+                            >
+                                {folderData.data?.folderTitle}
+                            </DetailItem>
+                    }
+
                     <DetailItem title='Folder Create Date'>
                         <span>
                             <ClientDateLocaleWrap
@@ -120,9 +131,13 @@ export const ExplorerFolderSettingRoutePage = async (prop: ExplorerFolderSetting
                             <button>Go to explorer</button>
                         </Link>
                     </DetailItem>
-                    <DetailItem title='Delete Folder'>
-                        <button>Remove Folder</button>
-                    </DetailItem>
+                    {
+                        folderData.data?.parentFolder &&
+                        <DetailItem title='Delete Folder'>
+                            <button>Remove Folder</button>
+                        </DetailItem>
+                    }
+
                 </div>
                 {/* Create Data : {folderData.data?.createDate} */}
             </div>

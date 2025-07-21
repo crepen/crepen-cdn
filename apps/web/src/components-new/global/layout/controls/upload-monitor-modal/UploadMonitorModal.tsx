@@ -168,6 +168,7 @@ export const UploadMonitorModal = () => {
         <div
             className="cp-upload-monitor-modal"
             data-visible={monitorVisibleHook.value ? 'visible' : 'hide'}
+            
         >
             <div className='cp-modal-header'>
                 <div className='cp-title'>

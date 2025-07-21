@@ -33,6 +33,8 @@ export const LoginForm = () => {
             if (state.success === true) {
                 const callbackUrl = searchParams.get('callback')?.toString();
                 // location.href = StringUtil.shiftEmptyString(callbackUrl, '/');
+                // alert(callbackUrl)
+                // console.log(searchParams.keys());
                 redirect(StringUtil.shiftEmptyString(callbackUrl, '/'));
             }
             else {

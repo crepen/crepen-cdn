@@ -33,11 +33,14 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
 
     const targetFileUid = (await prop.params).uid;
 
+    console.log('WW',targetFileUid);
     const fileData = await CrepenFileOperationService.getFiledata(targetFileUid ?? 'ntf');
+
+    console.log('WW',fileData);
 
     if (fileData.success !== true) {
         redirect('/error')
-    }
+    }   
 
     const fileCategory = MimeUtil.getCategory(fileData.data?.fileStore?.fileType ?? '');
     const locale = await CrepenLanguageService.getSessionLocale();
@@ -59,12 +62,14 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
     const downloadUrl = `/api/file/${fileData.data?.uid ?? 'ntf'}/download`
     const fileUrl = urlJoin(basePath ?? '/' ,  downloadUrl , );
 
+     console.log('WW',fileUrl);
+
     return (
         <div className="cp-common-page cp-file-info-page">
             <div className="cp-page-header">
                 <span className='cp-page-title'>
                     <FontAwesomeIcon icon={getFileCategoryIcon()} className='cp-file-icon' />
-                    {fileData.data?.fileTitle}
+                    {decodeURIComponent(fileData.data?.fileTitle ?? '')}
                 </span>
 
             </div>
@@ -117,7 +122,7 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
                 >
                     <FileTitleEditDetailItem
                         title='File title'
-                        value={fileData.data?.fileTitle}
+                        value={decodeURIComponent(fileData.data?.fileTitle ?? '')}
                         fileUid={fileData.data?.uid}
                     />
                     <CrepenDetailItem
@@ -147,6 +152,11 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
                                 : '-'
                         }
 
+                    </CrepenDetailItem>
+                      <CrepenDetailItem
+                        title='TOTAL TRAFFIC SIZE'
+                    >
+                        {StringUtil.convertFormatByte(fileData.data?.trafficSize ?? 0)}
                     </CrepenDetailItem>
                 </GroupExpandBox>
                 <GroupExpandBox

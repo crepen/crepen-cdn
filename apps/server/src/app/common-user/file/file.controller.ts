@@ -18,6 +18,8 @@ import { FileEntity } from "./entity/file.entity";
 import { AuthUser } from "@crepen-nest/lib/decorator/param/auth-user.param.decorator";
 import { UserEntity } from "../user/entity/user.entity";
 import { FilePermissionType } from "@crepen-nest/lib/enum/file-permission-type.enum";
+import { CrepenLoggerService } from "@crepen-nest/app/common/logger/logger.service";
+import { Int32 } from "typeorm";
 
 @ApiTags('[Common] 사용자 파일 관리 컨트롤러')
 @ApiHeader({
@@ -27,7 +29,8 @@ import { FilePermissionType } from "@crepen-nest/lib/enum/file-permission-type.e
 export class CrepenFileRouteController {
     constructor(
         private readonly fileService: CrepenFileRouteService,
-        private readonly folderService: CrepenFolderRouteService
+        private readonly folderService: CrepenFolderRouteService,
+        private readonly loggerService: CrepenLoggerService
     ) { }
 
     //#region FILE INFO READ
@@ -42,15 +45,18 @@ export class CrepenFileRouteController {
     async getFileData(
         @Req() req: JwtUserRequest,
         @I18n() i18n: I18nContext,
-        @Param('uid') uid: string
+        @Param('uid') fileUid: string,
+        @AuthUser() user: UserEntity,
     ) {
-        const fileData = await this.fileService.getFileWithStore(uid);
+        const fileData = await this.fileService.getDetailFileInfo(fileUid, user.uid);
+
+
 
         if (ObjectUtil.isNullOrUndefined(fileData)) {
             throw CrepenFileError.FILE_NOT_FOUND;
         }
 
-        if (fileData.ownerUid !== req.user.entity.uid) {
+        if (fileData.ownerUid !== user.uid) {
             throw CrepenFileError.FILE_ACCESS_UNAUTHORIZED;
         }
 
@@ -259,8 +265,7 @@ export class CrepenFileRouteController {
     ) {
 
 
-        const fileInfo = await this.fileService.getFileInfoWithPermission(uid, user.uid);
-
+        const fileInfo = await this.fileService.getFileInfoWithPermission(uid, user.uid, FilePermissionType.READ, true);
 
         if (ObjectUtil.isNullOrUndefined(fileInfo)) {
             res.status(404);
@@ -268,26 +273,34 @@ export class CrepenFileRouteController {
             // throw CrepenFileError.FILE_NOT_FOUND;            
         }
 
-        if(fileInfo.matchPermissions.filter(x=>x.permissionType === FilePermissionType.DOWNLOAD).length === 0){
+        if (fileInfo.matchPermissions.filter(x => x.permissionType === FilePermissionType.READ).length === 0) {
             res.status(403);
             return new StreamableFile(Buffer.alloc(0));
         }
 
-        const fileData = await this.fileService.getFileData(fileInfo.uid);
 
-        
+
+        const fileData = this.fileService.getLocalFile(fileInfo);
 
         const fileSize = fileData.buffer.length;
         const range = res.req.headers.range;
 
+
         if (range) {
+            const CHUNK_SIZE_LIMIT = 1024 * 1024 * 2;
+
             const parts = range.replace(/bytes=/, '').split('-');
             const start = parseInt(parts[0], 10);
-            const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+            const end =
+                parts[1] && parseInt(parts[1]) < CHUNK_SIZE_LIMIT
+                    ? parseInt(parts[1], 10)
+                    : Math.min(start + CHUNK_SIZE_LIMIT, fileSize - 1);
             const chunksize = (end - start) + 1;
 
+            console.log('PARTS', chunksize);
 
             const chunk = fileData.buffer.subarray(start, end + 1);
+            console.log('chk-size', chunk.length)
 
             res.status(HttpStatus.PARTIAL_CONTENT);
             res.header('Content-Range', `bytes ${start}-${end}/${fileSize}`);
@@ -296,12 +309,17 @@ export class CrepenFileRouteController {
             res.header('Content-Type', fileData.mimetype);
             res.header('Content-Disposition', `attachment;filename="${fileData.filename}"`)
 
+
+            void this.loggerService.logFileTraffic(fileInfo.uid, user.uid, chunksize);
+
             return new StreamableFile(chunk);
         } else {
             res.status(HttpStatus.OK); // 200 OK
             res.header('Content-Length', fileSize.toString());
             res.header('Content-Type', fileData.mimetype);
             res.header('Content-Disposition', `attachment;filename="${fileData.filename}"`)
+
+            void this.loggerService.logFileTraffic(fileInfo.uid, user.uid, fileData.size);
 
             return new StreamableFile(fileData.buffer);
         }
@@ -319,17 +337,21 @@ export class CrepenFileRouteController {
         @Param('uid') uid: string
     ) {
         // console.log(uid);
-        const fileData = await this.fileService.getSharedFile(uid);
-
-        console.log(fileData);
+        const fileInfo = await this.fileService.getPublishedFileInfo(uid, true);
+        const fileData = this.fileService.getLocalFile(fileInfo);
 
         const fileSize = fileData.buffer.length;
         const range = res.req.headers.range;
 
         if (range) {
+            const CHUNK_SIZE_LIMIT = 1024 * 1024 * 2;
+
             const parts = range.replace(/bytes=/, '').split('-');
             const start = parseInt(parts[0], 10);
-            const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+            const end =
+                parts[1] && parseInt(parts[1]) < CHUNK_SIZE_LIMIT
+                    ? parseInt(parts[1], 10)
+                    : Math.min(start + CHUNK_SIZE_LIMIT, fileSize - 1);
             const chunksize = (end - start) + 1;
 
 
@@ -342,12 +364,18 @@ export class CrepenFileRouteController {
             res.header('Content-Type', fileData.mimetype);
             res.header('Content-Disposition', `attachment;filename="${fileData.filename}"`)
 
+            void this.loggerService.logPublishedFileTraffic(fileInfo.uid, chunksize);
+
             return new StreamableFile(chunk);
         } else {
+            // this.loggerService.logFileTraffic()
+
             res.status(HttpStatus.OK); // 200 OK
             res.header('Content-Length', fileSize.toString());
             res.header('Content-Type', fileData.mimetype);
             res.header('Content-Disposition', `attachment;filename="${fileData.filename}"`)
+
+            void this.loggerService.logPublishedFileTraffic(fileInfo.uid, fileData.size);
 
             return new StreamableFile(fileData.buffer);
         }

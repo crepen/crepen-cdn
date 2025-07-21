@@ -7,6 +7,7 @@ import { CrepenDetailItem } from "../../common/detail-list/detail-item.common"
 import { CrepenToggleButton } from "../../common/toggle-button/toggle-button.common"
 import { CrepenComponentError } from "@web/modules/common/error/CrepenComponentError"
 import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError"
+import urlJoin from "url-join"
 
 interface FileSharedEditDetailItemProp {
     title: string,
@@ -24,9 +25,11 @@ export const FileSharedEditDetailItem = (prop: FileSharedEditDetailItemProp) => 
 
         try {
 
-            console.log('VALUE : ', value)
 
-            const fetchRequest = await fetch(`${basePath.value}/api/file/${prop.fileUid ?? 'ntf'}`, {
+            const apiUrl = urlJoin(basePath.value, '/api/file', prop.fileUid ?? 'ntf')
+            console.log('VALUE : ', apiUrl)
+
+            const fetchRequest = await fetch(apiUrl, {
                 method: 'POST',
                 body: JSON.stringify({
                     isPublished: value
