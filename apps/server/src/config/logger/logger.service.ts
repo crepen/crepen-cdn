@@ -5,7 +5,8 @@ import * as path from "path";
 import { ConfigService } from "@nestjs/config";
 import 'winston-daily-rotate-file';
 import chalk from "chalk";
-import { CrepenSystemService } from "@crepen-nest/app/system/system.service";
+import { CrepenLogPath } from "@crepen-nest/lib/enum/os-path.enum";
+import * as os from 'os';
 
 @Injectable()
 export class CrepenLoggerConfigService {
@@ -14,7 +15,7 @@ export class CrepenLoggerConfigService {
 
     constructor(
         private readonly configService: ConfigService,
-        private readonly envConfig: CrepenSystemService
+        // private readonly envConfig: CrepenSystemService
     ) { }
 
 
@@ -22,7 +23,17 @@ export class CrepenLoggerConfigService {
 
     private getWinstonOptions = (): Winston.LoggerOptions => {
 
-        const logPath = this.envConfig.getGlobalPath('log');
+        let logPath = CrepenLogPath.LOG_DIR_PATH_LINUX
+
+        if (os.type() === 'Linux') {
+            logPath = CrepenLogPath.LOG_DIR_PATH_LINUX;
+        }
+        else if (os.type() === 'Windows_NT') {
+            logPath = CrepenLogPath.LOG_DIR_PATH_WIN;
+        }
+        else if (os.type() === 'Darwin') {
+            logPath = CrepenLogPath.LOG_DIR_PATH_MAC;
+        }
 
         return {
             level: 'info',
@@ -71,7 +82,7 @@ export class CrepenLoggerConfigService {
                                 // default : levelColor = chalk.reset(levelColor);break;
                             }
 
-                            return `[${info.timestamp as string}] ${levelColor} [${chalk.yellow(info.context ?? '')}]  ${info.message  as string}`
+                            return `[${info.timestamp as string}] ${levelColor} [${chalk.yellow(info.context ?? '')}]  ${info.message as string}`
                         })
                     )
                 }),

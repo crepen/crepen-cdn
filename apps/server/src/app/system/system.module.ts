@@ -1,16 +1,13 @@
 import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { CrepenSystemEntity } from "./entity/system.entity";
-import { CrepenSystemRepository } from "./system.repository";
-import { CrepenSystemService } from "./system.service";
-import { CrepenUserRouteModule } from "../common-user/user/user.module";
+import { CrepenSystemHealthModule } from "./health/health.system.module";
+import { CrepenSystemDatabaseModule } from "./db/db.system.module";
+import { CrepenSystemInstallModule } from "./install/install.system.module";
 
 @Module({
     imports : [
-        TypeOrmModule.forFeature([CrepenSystemEntity]),
-        CrepenUserRouteModule
-    ],
-    providers : [CrepenSystemRepository , CrepenSystemService],
-    exports : [CrepenSystemService]
+      CrepenSystemHealthModule,
+      CrepenSystemDatabaseModule,
+      CrepenSystemInstallModule
+    ]
 })
 export class CrepenSystemModule {}
