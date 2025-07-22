@@ -13,69 +13,41 @@ import { CrepenNestExpressConfig } from "./module/config/nest-express/express.co
 import { CrepenInitProvider } from "./module/config/provider/init-provider";
 
 const bootstrap = async () => {
-    // const loggerService = new CrepenLoggerConfigService(undefined, new CrepenSystemService())
-
     const app = await NestFactory.create(GlobalModule, {
         // logger: loggerService.getWinstonLogger(),
     });
 
     const config = app.get(ConfigService);
-    // const envService = app.get(CrepenEnvConfigService);
-
-    // console.log('CONFIG', envService)
-
 
     app.useGlobalPipes(new CrepenI18nValidationPipe());
     app.useGlobalFilters(new CrepenI18nValidationExceptionFilter());
     app.useGlobalFilters(new ExceptionResponseFilter());
     app.useGlobalInterceptors(new CheckConnDBInterceptor(app.get(Reflector)));
-
-
-    CrepenSwaggerConfig.setup(app);
-
-
     app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
-
-
-
+    CrepenSwaggerConfig.setup(app);
     CrepenNestExpressConfig.setup(app as NestExpressApplication);
-
-    // await app.get(CrepenSystemService).initDatabase();
-
-
-
-
-    // const validateConfigState = await envService.validConfigData();
-
 
     try {
         void await CrepenInitProvider.init(config);
     }
     catch (e) {
-        if(e instanceof CrepenSystemError){
-            Logger.error(e.message , e.context);
+        if (e instanceof CrepenSystemError) {
+            Logger.error(e.message, e.context);
 
-            if(e.cause){
+            if (e.cause) {
                 Logger.error(e.cause)
             }
         }
-        else if(e instanceof Error){
-            Logger.error(e.message , 'SYSTEM')
+        else if (e instanceof Error) {
+            Logger.error(e.message, 'SYSTEM')
         }
-        
+
         process.exit(1)
     }
-
-
-    // console.log("CONFIG" , config);
-
-
-
-    // if (validateConfigState === true) {
-        await app.listen(config.get("server.port"));
-        Logger.log(`Run Server : ${config.get("server.port")}`, undefined, 'MAIN')
-    // }
+   
+    await app.listen(config.get("server.port") || 13332);
+    Logger.log(`Run Server : ${config.get("server.port") || 13332}`, 'MAIN')
 
 }
 
