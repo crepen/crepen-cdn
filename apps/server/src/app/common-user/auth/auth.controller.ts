@@ -1,13 +1,13 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards, UseInterceptors } from "@nestjs/common";
 import { CrepenAuthRouteService } from "./auth.service";
 import { CrepenTokenGroup, JwtUserRequest } from "src/interface/jwt";
-import { BaseResponse } from "@crepen-nest/lib/common/base.response";
 import { ConfigService } from "@nestjs/config";
 import { CrepenAuthJwtGuard } from "src/config/passport/jwt/jwt.guard";
 import { NoFilesInterceptor } from "@nestjs/platform-express";
 import { I18n, I18nContext } from "nestjs-i18n";
 import { AuthLoginRequestDto, AuthTokenResponseDto } from "./dto/auth.login.dto";
 import { ApiOperation, ApiQuery, ApiBearerAuth, ApiTags, ApiHeader } from "@nestjs/swagger";
+import { BaseResponse } from "src/module/common/base.response";
 
 @ApiTags('인증 관리 컨트롤러')
 @ApiHeader({

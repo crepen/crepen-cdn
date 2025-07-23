@@ -1,6 +1,6 @@
 import { ArgumentsHost } from "@nestjs/common";
 import { I18nValidationException, I18nValidationExceptionFilter } from "nestjs-i18n";
-import { BaseResponse } from "@crepen-nest/lib/common/base.response";
+import { BaseResponse } from "src/module/common/base.response";
 
 export class CrepenI18nValidationExceptionFilter extends I18nValidationExceptionFilter {
     constructor() {

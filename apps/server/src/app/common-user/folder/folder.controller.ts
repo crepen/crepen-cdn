@@ -2,7 +2,6 @@ import { CrepenAuthJwtGuard } from "@crepen-nest/config/passport/jwt/jwt.guard";
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiHeader, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { CrepenFolderRouteService } from "./folder.service";
-import { BaseResponse } from "@crepen-nest/lib/common/base.response";
 import { I18n, I18nContext } from "nestjs-i18n";
 import { StringUtil } from "@crepen-nest/lib/util/string.util";
 import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
@@ -15,6 +14,7 @@ import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
 import { EditFolderDto } from "./dto/edit.folder.dto";
 import { CrepenFolderError } from "./exception/folder.exception";
 import { FileEntity } from "../file/entity/file.default.entity";
+import { BaseResponse } from "src/module/common/base.response";
 
 @ApiTags('[Common] 사용자 폴더 관리 컨트롤러')
 @ApiHeader({

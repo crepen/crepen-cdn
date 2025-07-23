@@ -1,6 +1,5 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { JwtUserRequest } from "src/interface/jwt";
-import { BaseResponse } from "@crepen-nest/lib/common/base.response";
 import { ConfigService } from "@nestjs/config";
 import { CrepenAuthJwtGuard } from "src/config/passport/jwt/jwt.guard";
 import { CrepenUserRouteService } from "./user.service";
@@ -10,6 +9,7 @@ import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.
 import { CrepenAuthRouteService } from "../auth/auth.service";
 import { I18n, I18nContext } from "nestjs-i18n";
 import { CryptoUtil } from "@crepen-nest/lib/util/crypto.util";
+import { BaseResponse } from "src/module/common/base.response";
 
 
 @ApiTags('일반 사용자 > 사용자 관리 컨트롤러')

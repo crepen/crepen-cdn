@@ -8,8 +8,8 @@ import { randomUUID } from "crypto";
 import { SearchFileInfoOptions } from "./types/search-file-info-option";
 import { FileTrafficLoggerEntity } from "@crepen-nest/app/common/logger/entity/file-traffic-logger.default.entity";
 import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
-import { CrepenBaseRepository } from "@crepen-nest/lib/common/base.repository";
 import { RepositoryOptions } from "@crepen-nest/interface/repo";
+import { CrepenBaseRepository } from "src/module/common/base.repository";
 
 @Injectable()
 export class CrepenFileRouteRepository extends CrepenBaseRepository {

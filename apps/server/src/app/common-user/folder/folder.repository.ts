@@ -6,7 +6,7 @@ import { FileEntity } from "../file/entity/file.default.entity";
 import { CrepenFileRouteRepository } from "../file/file.repository";
 import { RepositoryOptions } from "@crepen-nest/interface/repo";
 import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
-import { CrepenBaseRepository } from "@crepen-nest/lib/common/base.repository";
+import { CrepenBaseRepository } from "src/module/common/base.repository";
 
 @Injectable()
 export class CrepenFolderRouteRepository extends CrepenBaseRepository {

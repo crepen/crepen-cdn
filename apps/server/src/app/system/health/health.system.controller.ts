@@ -1,7 +1,6 @@
-import { CheckConnDB } from "src/module/decorator/chk-conn-db/chk-conn-db.decorator";
-import { BaseResponse } from "@crepen-nest/lib/common/base.response";
 import { Controller, Get } from "@nestjs/common";
 import { CrepenSystemHealthService } from "./health.system.service";
+import { BaseResponse } from "src/module/common/base.response";
 
 @Controller('system/health')
 export class CrepenSystemHealthController {

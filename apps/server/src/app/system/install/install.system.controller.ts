@@ -1,9 +1,9 @@
-import { BaseResponse } from "@crepen-nest/lib/common/base.response";
 import { Body, ClassSerializerInterceptor, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseInterceptors } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { ApiHeader, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { SystemInstallRequestDto, SystemInstallResponseDto } from "./dto/install.system.dto";
 import { CrepenSystemInstallService } from "./install.system.service";
+import { BaseResponse } from "src/module/common/base.response";
 
 
 @ApiTags('[SYSTEM] 시스템 컨트롤러')

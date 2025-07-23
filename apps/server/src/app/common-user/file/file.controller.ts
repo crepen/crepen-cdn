@@ -4,7 +4,6 @@ import { CrepenFileRouteService } from "./file.service";
 import { CrepenAuthJwtGuard } from "@crepen-nest/config/passport/jwt/jwt.guard";
 import { JwtUserExpressRequest, JwtUserRequest } from "@crepen-nest/interface/jwt";
 import { I18n, I18nContext } from "nestjs-i18n";
-import { BaseResponse } from "@crepen-nest/lib/common/base.response";
 import { StringUtil } from "@crepen-nest/lib/util/string.util";
 import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
 import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
@@ -20,6 +19,7 @@ import { UserEntity } from "../user/entity/user.default.entity";
 import { FilePermissionType } from "@crepen-nest/lib/enum/file-permission-type.enum";
 import { CrepenLoggerService } from "@crepen-nest/app/common/logger/logger.service";
 import { Int32 } from "typeorm";
+import { BaseResponse } from "src/module/common/base.response";
 
 @ApiTags('[Common] 사용자 파일 관리 컨트롤러')
 @ApiHeader({
