@@ -1,5 +1,4 @@
-import { Inject, Injectable, Scope } from "@nestjs/common";
-import { CrepenDatabaseModuleOptions, MODULE_OPTIONS_TOKEN } from "./database.config.module";
+import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { DataSource } from "typeorm";
 import { DefaultDataSourceProvider } from "src/module/config/database/provider/default.database.provider";
@@ -22,7 +21,6 @@ export class CrepenDatabaseService {
 
         if (!dataSource?.isInitialized) {
             this.activeDefault = await DefaultDataSourceProvider.getDataSource(this.configService).initialize();
-            console.log('ACTIVE DEFAULT DATABASE');
         }
 
         return this.activeDefault;
@@ -33,7 +31,6 @@ export class CrepenDatabaseService {
 
         if (!dataSource.isInitialized) {
             this.activeLocal = await SQLiteDataSourceProvider.getDataSource().initialize();
-            console.log('ACTIVE LOCAL DATABASE');
         }
 
         return this.activeLocal;
