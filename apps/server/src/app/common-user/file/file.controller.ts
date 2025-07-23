@@ -157,8 +157,6 @@ export class CrepenFileRouteController {
 
                 saveFile
                     .then(fileRes => {
-                        console.log(fileRes);
-
                         res.status(200).send(
                             BaseResponse.ok(
                                 fileRes.uid,

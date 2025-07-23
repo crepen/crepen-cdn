@@ -12,10 +12,6 @@ import { CrepenPassportConfigModule } from "./passport/passport.module";
         CrepenI18nConfigModule,
         CrepenLoggerConfigModule,
         CrepenPassportConfigModule,
-        ConfigModule.forRoot({
-            isGlobal: true,
-            ignoreEnvFile: true
-        }),
         CrepenDatabaseModule
     ]
 })
