@@ -1,28 +1,27 @@
 import { HttpStatus, Injectable } from "@nestjs/common";
 import { CrepenFileRouteRepository } from "./file.repository";
-import { FileEntity } from "./entity/file.entity";
-import { DataSource } from "typeorm";
+import { FileEntity } from "./entity/file.default.entity";
 import { CrepenFolderRouteService } from "../folder/folder.service";
 import { randomUUID } from "crypto";
-import { CrepenLocaleHttpException } from "@crepen-nest/lib/exception/crepen.http.exception";
+import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
 import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
 import * as fs from 'fs';
-import * as crypto from 'crypto';
 import { CrepenCryptoService } from "@crepen-nest/app/common/crypto/crypto.service";
 import { extname, join } from "path";
 import { ConfigService } from "@nestjs/config";
-import { FileStoreEntity } from "./entity/file-store.entity";
+import { FileStoreEntity } from "./entity/file-store.default.entity";
 import { CrepenFileError } from "./exception/file.exception";
 import { StringUtil } from "@crepen-nest/lib/util/string.util";
 import { FilePermissionType } from "@crepen-nest/lib/enum/file-permission-type.enum";
 import { CrepenLoggerService } from "@crepen-nest/app/common/logger/logger.service";
+import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
 
 @Injectable()
 export class CrepenFileRouteService {
     constructor(
         private readonly repo: CrepenFileRouteRepository,
         private readonly folderService: CrepenFolderRouteService,
-        private readonly dataSource: DataSource,
+        private readonly databaseService: CrepenDatabaseService,
         private readonly cryptoService: CrepenCryptoService,
         private readonly configService: ConfigService,
         private readonly loggerService: CrepenLoggerService
@@ -32,7 +31,7 @@ export class CrepenFileRouteService {
 
 
     getFileInfo = async (uid: string): Promise<FileEntity | undefined> => {
-        const fileData = await this.repo.defaultManager().getFileInfo(uid );
+        const fileData = await this.repo.getFileInfo(uid);
 
 
         return fileData;
@@ -40,7 +39,7 @@ export class CrepenFileRouteService {
 
 
     getFolderFiles = async (parentFolderUid: string): Promise<FileEntity[]> => {
-        const files = await this.repo.defaultManager().getFolderFiles(parentFolderUid);
+        const files = await this.repo.getFolderFiles(parentFolderUid);
 
         return files;
     }
@@ -133,11 +132,11 @@ export class CrepenFileRouteService {
      * 
      * @param file 
      * @param uploadUserUid 
-     * @throws {CrepenLocaleHttpException}
+     * @throws {CrepenCommonHttpLocaleError}
      * @returns 
      */
-    saveFile = (file: Express.Multer.File, uploadUserUid: string): Promise<FileStoreEntity> => {
-        return this.dataSource.transaction(async (manager) => {
+    saveFile = async (file: Express.Multer.File, uploadUserUid: string): Promise<FileStoreEntity> => {
+        return (await this.databaseService.getDefault()).transaction(async (manager) => {
             try {
 
                 const fileStoreEntity = new FileStoreEntity();
@@ -153,7 +152,7 @@ export class CrepenFileRouteService {
 
                 fileStoreEntity.originFileMine = encryptFile.encryptMime;
 
-                const addFileData = await this.repo.setManager(manager).addFileStore(fileStoreEntity);
+                const addFileData = await this.repo.addFileStore(fileStoreEntity, { manager: manager });
 
                 const savePath = join(
                     this.configService.get('path.fileStore'),
@@ -167,11 +166,11 @@ export class CrepenFileRouteService {
                 return addFileData;
             }
             catch (e) {
-                if (e instanceof CrepenLocaleHttpException) {
+                if (e instanceof CrepenCommonHttpLocaleError) {
                     throw e;
                 }
                 else {
-                    throw new CrepenLocaleHttpException('cloud_file', 'FILE_ADD_FAILED_FILE_SAVE_FAILED', HttpStatus.INTERNAL_SERVER_ERROR, {
+                    throw new CrepenCommonHttpLocaleError('cloud_file', 'FILE_ADD_FAILED_FILE_SAVE_FAILED', HttpStatus.INTERNAL_SERVER_ERROR, {
                         innerError: e
                     });
                 }
@@ -193,15 +192,15 @@ export class CrepenFileRouteService {
             fileEntity.parentFolderUid = folderUid;
             fileEntity.uid = randomUUID();
 
-            const addFile = await this.repo.defaultManager().addFile(fileEntity);
+            const addFile = await this.repo.addFile(fileEntity);
             return addFile;
         }
         catch (e) {
-            if (e instanceof CrepenLocaleHttpException) {
+            if (e instanceof CrepenCommonHttpLocaleError) {
                 throw e;
             }
             else {
-                throw new CrepenLocaleHttpException('cloud_file', 'FILE_ADD_FAILED_FILE_SAVE_FAILED', HttpStatus.INTERNAL_SERVER_ERROR, {
+                throw new CrepenCommonHttpLocaleError('cloud_file', 'FILE_ADD_FAILED_FILE_SAVE_FAILED', HttpStatus.INTERNAL_SERVER_ERROR, {
                     innerError: e
                 });
             }
@@ -211,16 +210,16 @@ export class CrepenFileRouteService {
 
 
     getFileInfoWithStore = async (uid: string) => {
-        return await this.repo.defaultManager().getFileWithStore(uid);
+        return await this.repo.getFileWithStore(uid);
     }
 
 
-    getPublishedFileInfo = async (fileUid : string , includeStore? : boolean) => {
-        return this.repo.defaultManager().getPublishedFile(fileUid , includeStore);
+    getPublishedFileInfo = async (fileUid: string, includeStore?: boolean) => {
+        return this.repo.getPublishedFile(fileUid, { includeStore: includeStore });
     }
 
     getPublishedFile = async (fileUid: string): Promise<Express.Multer.File | undefined> => {
-        const fileInfo = await this.repo.defaultManager().getPublishedFile(fileUid);
+        const fileInfo = await this.repo.getPublishedFile(fileUid);
         return this.getLocalFile(fileInfo);
     }
 
@@ -254,7 +253,7 @@ export class CrepenFileRouteService {
 
 
     removeFile = async (fileUid?: string, requestUserUid?: string) => {
-        return this.dataSource.transaction(async (manager) => {
+        return (await this.databaseService.getDefault()).transaction(async (manager) => {
             if (StringUtil.isEmpty(fileUid)) {
                 throw CrepenFileError.FILE_UID_UNDEFINED
             }
@@ -270,7 +269,7 @@ export class CrepenFileRouteService {
             }
 
             try {
-                const removeFile = await this.repo.setManager(manager).removeFile(fileData)
+                const removeFile = await this.repo.removeFile(fileData, { manager: manager })
 
                 console.log(removeFile)
                 // const savePath = join(
@@ -310,7 +309,7 @@ export class CrepenFileRouteService {
         try {
             editFileEntity.updateDate = new Date();
 
-            const editFile = await this.repo.defaultManager().editFile(fileUid, editFileEntity);
+            const editFile = await this.repo.editFile(fileUid, editFileEntity);
         }
         catch (e) {
             throw CrepenFileError.FILE_REMOVE_FAILED;
@@ -329,8 +328,8 @@ export class CrepenFileRouteService {
      * 
      * @since 2025.07.21
      */
-    uploadFile = (file: Express.Multer.File, title: string, userUid: string, folderUid: string) => {
-        return this.dataSource.transaction(async (manager) => {
+    uploadFile = async (file: Express.Multer.File, title: string, userUid: string, folderUid: string) => {
+        return (await this.databaseService.getDefault()).transaction(async (manager) => {
             try {
                 // INSERT FILE STORE
                 const fileStoreEntity = new FileStoreEntity();
@@ -346,9 +345,9 @@ export class CrepenFileRouteService {
 
                 fileStoreEntity.originFileMine = encryptFile.encryptMime;
 
-                const addFileData = await this.repo.setManager(manager).addFileStore(fileStoreEntity);
+                const addFileData = await this.repo.addFileStore(fileStoreEntity, { manager: manager });
 
-                
+
 
                 // INSERT FILE
                 const fileEntity = new FileEntity();
@@ -358,7 +357,7 @@ export class CrepenFileRouteService {
                 fileEntity.parentFolderUid = folderUid;
                 fileEntity.uid = randomUUID();
 
-                const addFile = await this.repo.setManager(manager).addFile(fileEntity);
+                const addFile = await this.repo.addFile(fileEntity, { manager: manager });
 
 
 
@@ -373,10 +372,14 @@ export class CrepenFileRouteService {
 
 
                 // ADD PERMISSION
-                await this.repo.addFilePermission(fileEntity.uid, userUid,
-                    FilePermissionType.READ,
-                    FilePermissionType.WRITE
-                )
+                await this.repo.addFilePermission({
+                    fileUid: fileEntity.uid,
+                    permissionArray: [
+                        FilePermissionType.READ,
+                        FilePermissionType.WRITE
+                    ],
+                    userUid: userUid
+                }, { manager: manager })
 
                 // LOGGING
 
@@ -384,11 +387,11 @@ export class CrepenFileRouteService {
                 return addFile;
             }
             catch (e) {
-                if (e instanceof CrepenLocaleHttpException) {
+                if (e instanceof CrepenCommonHttpLocaleError) {
                     throw e;
                 }
                 else {
-                    throw new CrepenLocaleHttpException('cloud_file', 'FILE_ADD_FAILED_FILE_SAVE_FAILED', HttpStatus.INTERNAL_SERVER_ERROR, {
+                    throw new CrepenCommonHttpLocaleError('cloud_file', 'FILE_ADD_FAILED_FILE_SAVE_FAILED', HttpStatus.INTERNAL_SERVER_ERROR, {
                         innerError: e
                     });
                 }
@@ -397,28 +400,28 @@ export class CrepenFileRouteService {
     }
 
 
-    getFileInfoWithPermission = async (fileUid: string, userUid: string, permissionType : FilePermissionType, includeStore?: boolean) => {
+    getFileInfoWithPermission = async (fileUid: string, userUid: string, permissionType: FilePermissionType, includeStore?: boolean) => {
         const filePermission =
-            await this.repo.defaultManager()
+            await this.repo
                 .getFileInfo(fileUid, {
-                    includeStore : includeStore,
-                    permission : {
-                        userUid : userUid,
-                        permissionType : permissionType
+                    includeStore: includeStore,
+                    permission: {
+                        userUid: userUid,
+                        permissionType: permissionType
                     }
                 })
         return filePermission;
     }
 
 
-    getDetailFileInfo = async (fileUid : string , userUid : string) => {
-        return this.repo.defaultManager()
-            .getFileInfo(fileUid , {
-                includeStore : true,
-                includeTrafficSize : true,
-                permission : {
-                    permissionType : FilePermissionType.READ,
-                    userUid : userUid
+    getDetailFileInfo = async (fileUid: string, userUid: string) => {
+        return this.repo
+            .getFileInfo(fileUid, {
+                includeStore: true,
+                includeTrafficSize: true,
+                permission: {
+                    permissionType: FilePermissionType.READ,
+                    userUid: userUid
                 }
             })
     }

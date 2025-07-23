@@ -1,7 +1,9 @@
 import { BaseResponse } from "@crepen-nest/lib/util/base.response";
-import { Body, Controller, HttpCode, HttpStatus, Post, Req, Res } from "@nestjs/common";
+import { Body, ClassSerializerInterceptor, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseInterceptors } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { ApiHeader, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { SystemInstallRequestDto, SystemInstallResponseDto } from "./dto/install.system.dto";
+import { CrepenSystemInstallService } from "./install.system.service";
 
 
 @ApiTags('[SYSTEM] 시스템 컨트롤러')
@@ -9,10 +11,12 @@ import { ApiHeader, ApiOperation, ApiTags } from "@nestjs/swagger";
     name: 'Accept-Language', required: false, enum: ['en', 'ko']
 })
 @Controller('system/install')
+@UseInterceptors(ClassSerializerInterceptor)
 export class CrepenSystemInstallController {
 
     constructor(
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
+        private readonly installService: CrepenSystemInstallService
     ) { }
 
     @Post()
@@ -21,8 +25,28 @@ export class CrepenSystemInstallController {
     @HttpCode(HttpStatus.OK)
     //#endregion
     async installSystem(
-        @Req() req : Request
+        @Req() req: Request,
+        @Body() bodyData: SystemInstallRequestDto
     ) {
+
+        await this.installService.applySystemInit(
+            bodyData.dbHost,
+            bodyData.dbPort,
+            bodyData.dbUser,
+            bodyData.dbPassword,
+            bodyData.dbDatabase
+        );
+
         return BaseResponse.ok();
+    }
+
+
+    @Get()
+    async getInstallState(
+        @Req() req: Request,
+    ) {
+        return BaseResponse.ok<SystemInstallResponseDto>({
+            installState : await this.installService.getInstallState()
+        })
     }
 }

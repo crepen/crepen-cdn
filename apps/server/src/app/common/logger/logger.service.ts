@@ -5,8 +5,7 @@ import { DataSource } from "typeorm";
 @Injectable()
 export class CrepenLoggerService {
     constructor(
-        private readonly trafficLoggerRepo : CrepenFileTrafficLoggerRepository,
-        private readonly dataSource: DataSource
+        private readonly trafficLoggerRepo : CrepenFileTrafficLoggerRepository
     ){}
 
     logFileTraffic = async (fileUid : string , accessUserUid : string, trafficSize : number) => {

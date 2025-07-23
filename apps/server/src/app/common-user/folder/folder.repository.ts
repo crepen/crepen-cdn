@@ -1,35 +1,30 @@
 import { Injectable } from "@nestjs/common";
 import { DataSource, EntityManager, IsNull, Repository, TreeRepository } from "typeorm";
-import { FolderEntity } from "./entity/folder.entity";
+import { FolderEntity } from "./entity/folder.default.entity";
 import { randomUUID } from "crypto";
-import { FileEntity } from "../file/entity/file.entity";
+import { FileEntity } from "../file/entity/file.default.entity";
 import { CrepenFileRouteRepository } from "../file/file.repository";
+import { RepositoryOptions } from "@crepen-nest/interface/repo";
+import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
+import { CrepenBaseRepository } from "@crepen-nest/lib/common/base.repository";
 
 @Injectable()
-export class CrepenFolderRouteRepository {
+export class CrepenFolderRouteRepository extends CrepenBaseRepository {
 
-    private repo: Repository<FolderEntity>;
 
     constructor(
-        private readonly dataSource: DataSource,
+        private readonly databaseService: CrepenDatabaseService,
         private readonly fileRepo: CrepenFileRouteRepository
     ) {
-        this.repo = this.dataSource.getRepository(FolderEntity);
-    }
-
-    setManager = (manager: EntityManager) => {
-        this.repo = manager.getRepository(FolderEntity);
-        return this;
-    }
-
-    setDefaultManager = () => {
-        this.repo = this.dataSource.getRepository(FolderEntity);
-        return this;
+        super(databaseService);
     }
 
 
-    getRootFolder = (userUid: string) => {
-        return this.repo.findOne({
+
+
+    getRootFolder = async (userUid: string, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(FolderEntity) ?? await this.getRepository('default', FolderEntity);
+        return dataSource.findOne({
             where: {
                 ownerUid: userUid,
                 parentFolderUid: IsNull()
@@ -37,29 +32,37 @@ export class CrepenFolderRouteRepository {
         })
     }
 
-    initRootFolder = (userUid: string) => {
+    initRootFolder = async (userUid: string, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(FolderEntity) ?? await this.getRepository('default', FolderEntity);
+
         const entity = new FolderEntity();
         entity.ownerUid = userUid;
         entity.uid = randomUUID()
         entity.folderTitle = 'Home'
 
-        return this.repo.save(entity);
+        return dataSource.save(entity);
     }
 
-    getFolder = (folderUid: string) => {
-        return this.repo.findOne({
+    getFolder = async (folderUid: string, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(FolderEntity) ?? await this.getRepository('default', FolderEntity);
+
+        return dataSource.findOne({
             where: {
                 uid: folderUid
             }
         })
     }
 
-    addFolder = (folderData: FolderEntity) => {
-        return this.repo.save(folderData);
+    addFolder = async (folderData: FolderEntity, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(FolderEntity) ?? await this.getRepository('default', FolderEntity);
+
+        return dataSource.save(folderData);
     }
 
-    getDuplicateTitleFolders = (title: string, parentFolderUid: string) => {
-        return this.repo.find({
+    getDuplicateTitleFolders = async (title: string, parentFolderUid: string, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(FolderEntity) ?? await this.getRepository('default', FolderEntity);
+
+        return dataSource.find({
             where: {
                 parentFolderUid: parentFolderUid,
                 folderTitle: title
@@ -67,29 +70,33 @@ export class CrepenFolderRouteRepository {
         })
     }
 
-    getChildFolders = (parentFolderUid: string, includeRemoveFile?: boolean) => {
-        return this.repo.find({
+    getChildFolders = async (parentFolderUid: string, options?: RepositoryOptions<{ includeRemoveFile?: boolean }>) => {
+        const dataSource = options?.manager?.getRepository(FolderEntity) ?? await this.getRepository('default', FolderEntity);
+
+        return dataSource.find({
             where: {
                 parentFolderUid: parentFolderUid,
-                isRemoved : includeRemoveFile === true ? undefined : false
+                isRemoved: options?.includeRemoveFile === true ? undefined : false
             }
         })
     }
 
 
-    getFolderInfoWithChildData = async (uid: string, includeRemoveFile?: boolean): Promise<FolderEntity> => {
- 
-        const folderData = await this.repo.findOne({
+    getFolderInfoWithChildData = async (uid: string, options?: RepositoryOptions<{ includeRemoveFile?: boolean }>): Promise<FolderEntity> => {
+
+        const dataSource = options?.manager?.getRepository(FolderEntity) ?? await this.getRepository('default', FolderEntity);
+
+        const folderData = await dataSource.findOne({
             where: {
                 uid: uid
             },
             relations: ['parentFolder']
         })
 
-        const fileData = await this.fileRepo.setManager(this.repo.manager).getFilesWithStoreFromFolder(uid , includeRemoveFile);
+        const fileData = await this.fileRepo.getFilesWithStoreFromFolder(uid, { manager: options?.manager, includeRemoveFile: options?.includeRemoveFile });
 
-        const childFolderData = await this.getChildFolders(uid , includeRemoveFile);
-        
+        const childFolderData = await this.getChildFolders(uid, { includeRemoveFile: options?.includeRemoveFile });
+
 
         folderData.files = fileData;
         folderData.childFolder = childFolderData;
@@ -97,15 +104,18 @@ export class CrepenFolderRouteRepository {
         return folderData;
     }
 
-    editFolderData = (uid: string, entity: FolderEntity) => {
-        return this.repo.update(uid, entity)
+    editFolderData = async (uid: string, entity: FolderEntity, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(FolderEntity) ?? await this.getRepository('default', FolderEntity);
+        return dataSource.update(uid, entity)
     }
 
 
-    removeFolderData = async (entity: FolderEntity) => {
+    removeFolderData = async (entity: FolderEntity, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(FolderEntity) ?? await this.getRepository('default', FolderEntity);
+
         entity.isRemoved = true;
         entity.updateDate = new Date();
 
-        return this.repo.update(entity.uid , entity);
+        return dataSource.update(entity.uid, entity);
     }
 }

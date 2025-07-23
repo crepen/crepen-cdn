@@ -1,49 +1,49 @@
-import { ConsoleLogger, Injectable } from "@nestjs/common";
-import { DataSource, EntityManager, Repository, SelectQueryBuilder } from "typeorm";
-import { FileEntity } from "./entity/file.entity";
-import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
-import { FileStoreEntity } from "./entity/file-store.entity";
-import { UserEntity } from "../user/entity/user.entity";
+import { Injectable } from "@nestjs/common";
+import { Repository, SelectQueryBuilder } from "typeorm";
+import { FileEntity } from "./entity/file.default.entity";
+import { FileStoreEntity } from "./entity/file-store.default.entity";
 import { FilePermissionType } from "@crepen-nest/lib/enum/file-permission-type.enum";
-import { FilePermissionEntity } from "./entity/file-permission.entity";
+import { FilePermissionEntity } from "./entity/file-permission.default.entity";
 import { randomUUID } from "crypto";
 import { SearchFileInfoOptions } from "./types/search-file-info-option";
-import { FileTrafficLoggerEntity } from "@crepen-nest/app/common/logger/entity/file-traffic-logger.entity";
+import { FileTrafficLoggerEntity } from "@crepen-nest/app/common/logger/entity/file-traffic-logger.default.entity";
+import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
+import { CrepenBaseRepository } from "@crepen-nest/lib/common/base.repository";
+import { RepositoryOptions } from "@crepen-nest/interface/repo";
 
 @Injectable()
-export class CrepenFileRouteRepository {
+export class CrepenFileRouteRepository extends CrepenBaseRepository {
     private repo: Repository<FileEntity>;
     private fileStoreRepo: Repository<FileStoreEntity>
 
+
+
     constructor(
-        private readonly dataSource: DataSource
+        // private readonly dataSource: DataSource,
+        private readonly databaseService: CrepenDatabaseService
     ) {
-        this.repo = this.dataSource.getRepository(FileEntity);
-        this.fileStoreRepo = this.dataSource.getRepository(FileStoreEntity);
+        super(databaseService)
+        // this.repo = this.dataSource.getRepository(FileEntity);
+        // this.fileStoreRepo = this.dataSource.getRepository(FileStoreEntity);
     }
 
 
-    setManager = (manager: EntityManager) => {
-        this.repo = manager.getRepository(FileEntity);
-        return this;
-    }
-
-    defaultManager = () => {
-        this.repo = this.dataSource.getRepository(FileEntity);
-        return this;
-    }
 
 
-    getFile = (uid: string) => {
-        return this.repo.findOne({
+    getFile = async (uid: string, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(FileEntity) ?? await this.getRepository('default', FileEntity);
+
+        return dataSource.findOne({
             where: {
                 uid: uid
             }
         })
     }
 
-    getFolderFiles = (parentFolderUid: string) => {
-        return this.repo.find({
+    getFolderFiles = async (parentFolderUid: string, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(FileEntity) ?? await this.getRepository('default', FileEntity);
+
+        return dataSource.find({
             where: {
                 parentFolderUid: parentFolderUid
             }
@@ -51,38 +51,47 @@ export class CrepenFileRouteRepository {
     }
 
 
-    addFile = (entity: FileEntity) => {
-        return this.repo.save(entity, {
+    addFile = async (entity: FileEntity, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(FileEntity) ?? await this.getRepository('default', FileEntity);
+
+        return dataSource.save(entity, {
             reload: true
         })
     }
 
-    addFileStore = (entity: FileStoreEntity) => {
-        return this.fileStoreRepo.save(entity, {
+    addFileStore = async (entity: FileStoreEntity, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(FileStoreEntity) ?? await this.getRepository('default', FileStoreEntity);
+
+        return dataSource.save(entity, {
             reload: true
         })
     }
 
-    getFileWithStore = (uid: string, includeRemoveFile?: boolean) => {
-        return this.repo.findOne({
+    getFileWithStore = async (uid: string, options?: RepositoryOptions<{ includeRemoveFile?: boolean }>) => {
+        const dataSource = options?.manager?.getRepository(FileEntity) ?? await this.getRepository('default', FileEntity);
+
+
+        return dataSource.findOne({
             where: {
                 uid: uid,
-                isRemoved: includeRemoveFile === true ? undefined : false
+                isRemoved: options?.includeRemoveFile === true ? undefined : false
             },
             relations: ['fileStore']
         })
     }
 
 
-    getPublishedFile = (uid: string, includeStore?: boolean) => {
+    getPublishedFile = async (uid: string, options?: RepositoryOptions<{ includeStore?: boolean }>) => {
+
+        const dataSource = options?.manager?.getRepository(FileEntity) ?? await this.getRepository('default', FileEntity);
 
         const relations = [];
 
-        if (includeStore === true) {
+        if (options?.includeStore === true) {
             relations.push('fileStore');
         }
 
-        return this.repo.findOne({
+        return dataSource.findOne({
             where: {
                 uid: uid,
                 isPublished: true,
@@ -93,24 +102,30 @@ export class CrepenFileRouteRepository {
     }
 
 
-    removeFile = (fileEntity: FileEntity) => {
+    removeFile = async (fileEntity: FileEntity, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(FileEntity) ?? await this.getRepository('default', FileEntity);
+
         fileEntity.isRemoved = true;
         fileEntity.updateDate = new Date();
 
-        return this.repo.update(fileEntity.uid, fileEntity);
+        return dataSource.update(fileEntity.uid, fileEntity);
     }
 
 
-    editFile = (fileUid: string, fileEntity: FileEntity) => {
-        return this.repo.update(fileUid, fileEntity);
+    editFile = async (fileUid: string, fileEntity: FileEntity, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(FileEntity) ?? await this.getRepository('default', FileEntity);
+
+        return dataSource.update(fileUid, fileEntity);
     }
 
 
-    getFilesWithStoreFromFolder = (folderUid: string, includeRemoveFile?: boolean) => {
-        return this.repo.find({
+    getFilesWithStoreFromFolder = async (folderUid: string, options?: RepositoryOptions<{ includeRemoveFile?: boolean }>) => {
+        const dataSource = options?.manager?.getRepository(FileEntity) ?? await this.getRepository('default', FileEntity);
+
+        return dataSource.find({
             where: {
                 parentFolderUid: folderUid,
-                isRemoved: includeRemoveFile === true ? undefined : false
+                isRemoved: options?.includeRemoveFile === true ? undefined : false
             },
             relations: ['fileStore']
         })
@@ -129,9 +144,11 @@ export class CrepenFileRouteRepository {
      * 
      * @since 2025.07.21
      */
-    getFileInfo = async (fileUid: string, options?: SearchFileInfoOptions) => {
+    getFileInfo = async (fileUid: string, options?: RepositoryOptions<SearchFileInfoOptions>) => {
 
-        let builder = this.repo
+        const dataSource = options?.manager?.getRepository(FileEntity) ?? await this.getRepository('default', FileEntity);
+
+        let builder = dataSource
             .createQueryBuilder('file')
             // .addSelect('file.uid' , 'file_uid')
             .leftJoinAndSelect('file.matchPermissions', 'file_permission');
@@ -194,18 +211,20 @@ export class CrepenFileRouteRepository {
      * 
      * @since 2025.07.21
      */
-    addFilePermission = (fileUid: string, userUid: string, ...permissionArray: FilePermissionType[]) => {
+    addFilePermission = async (data : {fileUid: string, userUid: string, permissionArray: FilePermissionType[]}  ,options?: RepositoryOptions ) => {
 
-        return this.repo
+        const dataSource = options?.manager?.getRepository(FileEntity) ?? await this.getRepository('default', FileEntity);
+
+        return dataSource
             .createQueryBuilder('file-permission')
             .insert()
             .into(FilePermissionEntity)
-            .values(permissionArray.map<FilePermissionEntity>(permission => ({
+            .values(data.permissionArray.map<FilePermissionEntity>(permission => ({
                 uid: randomUUID(),
                 createDate: new Date(),
-                fileUid: fileUid,
+                fileUid: data.fileUid,
                 permissionType: permission,
-                userUid: userUid
+                userUid: data.userUid
             })))
             .execute();
     }

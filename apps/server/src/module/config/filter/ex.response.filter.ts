@@ -1,5 +1,5 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, BadRequestException, NotFoundException, Logger } from '@nestjs/common';
-import { CrepenLocaleHttpException } from '@crepen-nest/lib/exception/crepen.http.exception';
+import { CrepenCommonHttpLocaleError } from '@crepen-nest/lib/error/http/common.http.error';
 import { BaseResponse } from '@crepen-nest/lib/util/base.response';
 import { StringUtil } from '@crepen-nest/lib/util/string.util';
 import { Request, Response } from 'express';
@@ -21,7 +21,7 @@ export class ExceptionResponseFilter implements ExceptionFilter {
 
         let message = "common.INTERNAL_SERVER_ERROR";
 
-        if (exception instanceof CrepenLocaleHttpException) {
+        if (exception instanceof CrepenCommonHttpLocaleError) {
             const res = exception.getResponse();
 
             message = exception.message;

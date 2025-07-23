@@ -1,11 +1,12 @@
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
-import { CrepenLocaleHttpException } from "@crepen-nest/lib/exception/crepen.http.exception";
+import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
 import { ExtractJwt, Strategy, VerifiedCallback } from "passport-jwt";
-import { UserEntity } from "@crepen-nest/app/common-user/user/entity/user.entity";
+import { UserEntity } from "@crepen-nest/app/common-user/user/entity/user.default.entity";
 import { CrepenUserRouteService } from "@crepen-nest/app/common-user/user/user.service";
 import { CrepenTokenData, CrepenTokenType } from "@crepen-nest/interface/jwt";
+import { Request } from "express";
 
 
 @Injectable()
@@ -18,12 +19,11 @@ export class CrepenAuthJwtStrategy extends PassportStrategy(Strategy) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: configService.get<string>("secret.jwt"),
-            passReqToCallback: true
+            passReqToCallback: true,
+            secretOrKey: configService.get<string>('secret.jwt')
         })
-
-
     }
+
 
 
 
@@ -33,11 +33,11 @@ export class CrepenAuthJwtStrategy extends PassportStrategy(Strategy) {
         let validateUser: UserEntity | undefined = undefined;
 
         if (token) {
- 
+
             validateUser = await this.userService.getMatchUserByUid(payload?.uid as string | undefined);
 
             if (validateUser === undefined) {
-                return done(new CrepenLocaleHttpException('cloud_auth',"AUTHORIZATION_TOKEN_EXPIRED1", HttpStatus.UNAUTHORIZED), false);
+                return done(new CrepenCommonHttpLocaleError('cloud_auth', "AUTHORIZATION_TOKEN_EXPIRED1", HttpStatus.UNAUTHORIZED), false);
             }
         }
 
@@ -46,7 +46,7 @@ export class CrepenAuthJwtStrategy extends PassportStrategy(Strategy) {
             payload: {
                 type: payload.type as CrepenTokenType,
                 uid: payload.uid as string,
-                role : payload.role as string
+                role: payload.role as string
             },
             entity: validateUser
         }

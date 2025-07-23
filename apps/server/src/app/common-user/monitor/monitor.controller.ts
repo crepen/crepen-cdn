@@ -5,7 +5,7 @@ import { ConfigService } from "@nestjs/config";
 import { CrepenAuthJwtGuard } from "@crepen-nest/config/passport/jwt/jwt.guard";
 import { I18n, I18nContext } from "nestjs-i18n";
 import { AuthUser } from "@crepen-nest/lib/decorator/param/auth-user.param.decorator";
-import { UserEntity } from "../user/entity/user.entity";
+import { UserEntity } from "../user/entity/user.default.entity";
 import { BaseResponse } from "@crepen-nest/lib/util/base.response";
 
 @ApiTags('일반 사용자 > 사용자 데이터 모니터링 컨트롤러')

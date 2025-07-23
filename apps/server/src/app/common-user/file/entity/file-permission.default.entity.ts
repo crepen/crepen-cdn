@@ -1,6 +1,6 @@
 import { FilePermissionType } from "@crepen-nest/lib/enum/file-permission-type.enum";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
-import { FileEntity } from "./file.entity";
+import { FileEntity } from "./file.default.entity";
 
 @Entity('file-permission')
 export class FilePermissionEntity {

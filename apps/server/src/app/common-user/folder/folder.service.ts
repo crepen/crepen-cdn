@@ -1,19 +1,18 @@
 import { HttpStatus, Injectable } from "@nestjs/common";
 import { CrepenFolderRouteRepository as CrepenFolderRouteRepository } from "./folder.repository";
-import { StringUtil } from "@crepen-nest/lib/util/string.util";
-import { CrepenLocaleHttpException } from "@crepen-nest/lib/exception/crepen.http.exception";
-import { FolderEntity } from "./entity/folder.entity";
+import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
+import { FolderEntity } from "./entity/folder.default.entity";
 import { randomUUID } from "crypto";
-import { CrepenFileRouteService } from "../file/file.service";
 import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
 import { DataSource } from "typeorm";
 import { CrepenFolderError } from "./exception/folder.exception";
+import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
 
 @Injectable()
 export class CrepenFolderRouteService {
     constructor(
         private readonly repo: CrepenFolderRouteRepository,
-        private readonly dataSource: DataSource,
+        private readonly databaseService : CrepenDatabaseService
     ) { }
 
     getRootFolder = async (userUid?: string): Promise<FolderEntity | null> => {
@@ -21,13 +20,13 @@ export class CrepenFolderRouteService {
         //     throw new CrepenLocaleHttpException('')
         // }
 
-        const userRootFolder = await this.repo.setDefaultManager().getRootFolder(userUid);
+        const userRootFolder = await this.repo.getRootFolder(userUid);
 
 
         if (userRootFolder === null) {
             // Root Folder를 찾을 수 없을 경우, 새로 생성
 
-            const initRootFolder = await this.repo.setDefaultManager().initRootFolder(userUid);
+            const initRootFolder = await this.repo.initRootFolder(userUid);
             return this.getRootFolder();
         }
 
@@ -36,7 +35,7 @@ export class CrepenFolderRouteService {
 
     getFolderData = async (folderUid: string): Promise<FolderEntity | null> => {
 
-        const targetFolder = await this.repo.setDefaultManager().getFolder(folderUid);
+        const targetFolder = await this.repo.getFolder(folderUid);
         if (!ObjectUtil.isNullOrUndefined(targetFolder)) {
             targetFolder.childFolder = undefined;
             targetFolder.files = undefined;
@@ -49,11 +48,11 @@ export class CrepenFolderRouteService {
         const parentFolder = await this.getFolderData(parentFolderUid);
 
         if (parentFolder === null) {
-            throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_INSERT_VALIDATE_ERROR_PARENT_NOT_FOUND', HttpStatus.NOT_FOUND);
+            throw new CrepenCommonHttpLocaleError('cloud_folder', 'FOLDER_INSERT_VALIDATE_ERROR_PARENT_NOT_FOUND', HttpStatus.NOT_FOUND);
         }
 
         if (parentFolder.ownerUid !== ownerUid) {
-            throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_LOAD_UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
+            throw new CrepenCommonHttpLocaleError('cloud_folder', 'FOLDER_LOAD_UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
         }
 
         // const matchTitleFolders = await this.repo.setDefaultManager().getDuplicateTitleFolders(title, parentFolder.uid);
@@ -70,25 +69,25 @@ export class CrepenFolderRouteService {
         insertFolderData.parentFolderUid = parentFolder.uid;
         insertFolderData.ownerUid = ownerUid;
 
-        await this.repo.setDefaultManager().addFolder(insertFolderData);
+        await this.repo.addFolder(insertFolderData);
 
         return insertFolderUUID;
     }
 
     getChildFolder = async (parentFolderUid: string) => {
-        const childFolders = this.repo.setDefaultManager().getChildFolders(parentFolderUid);
+        const childFolders = this.repo.getChildFolders(parentFolderUid);
 
         return childFolders;
     }
 
     getFolderDataWithChild = async (uid: string) => {
-        return this.repo.setDefaultManager().getFolderInfoWithChildData(uid)
+        return this.repo.getFolderInfoWithChildData(uid)
     }
 
 
 
     editFolderData = async (uid: string, entity: FolderEntity) => {
-        return this.dataSource.transaction(async (manager) => {
+        return (await this.databaseService.getDefault()).transaction(async (manager) => {
 
             entity.updateDate = new Date();
 
@@ -98,12 +97,12 @@ export class CrepenFolderRouteService {
                 throw CrepenFolderError.FOLDER_NOT_FOUND;
             }
 
-            await this.repo.setManager(manager).editFolderData(uid, entity);
+            await this.repo.editFolderData(uid, entity, { manager: manager });
         });
     }
 
-    removeFolderData = async (uid: string , userUid : string) => {
-         return this.dataSource.transaction(async (manager) => {
+    removeFolderData = async (uid: string, userUid: string) => {
+        return (await this.databaseService.getDefault()).transaction(async (manager) => {
 
             const folderData = await this.getFolderData(uid);
 
@@ -111,11 +110,11 @@ export class CrepenFolderRouteService {
                 throw CrepenFolderError.FOLDER_NOT_FOUND;
             }
 
-            if(userUid.trim() !== folderData.ownerUid){
+            if (userUid.trim() !== folderData.ownerUid) {
                 throw CrepenFolderError.FOLDER_ACCESS_DENIED;
             }
 
-            await this.repo.setManager(manager).removeFolderData(folderData);
+            await this.repo.removeFolderData(folderData, { manager: manager });
         });
     }
 }

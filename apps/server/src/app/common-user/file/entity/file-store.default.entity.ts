@@ -1,5 +1,5 @@
 import { Column, Entity, OneToOne, PrimaryColumn } from "typeorm";
-import { FileEntity } from "./file.entity";
+import { FileEntity } from "./file.default.entity";
 
 @Entity('file-store')
 export class FileStoreEntity {

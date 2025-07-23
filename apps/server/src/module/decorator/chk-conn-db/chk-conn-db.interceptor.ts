@@ -2,8 +2,8 @@ import { CallHandler, ExecutionContext, NestInterceptor } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Observable } from "rxjs";
 import { CHK_CONN_DB_DECO_KEY } from "./chk-conn-db.decorator";
-import { CrepenSystemError } from "@crepen-nest/lib/exception/crepen.system.exception";
-import { CrepenLocaleHttpException } from "@crepen-nest/lib/exception/crepen.http.exception";
+import { CrepenSystemError } from "@crepen-nest/lib/error/system/common.system.error";
+import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
 
 export class CheckConnDBInterceptor implements NestInterceptor {
     constructor(private reflector: Reflector) { }
@@ -18,7 +18,7 @@ export class CheckConnDBInterceptor implements NestInterceptor {
         if(!checkDecorator) return next.handle();
 
 
-        throw new CrepenLocaleHttpException('test' , '1' , 400);
+        throw new CrepenCommonHttpLocaleError('test' , '1' , 400);
 
         return next.handle();
     }

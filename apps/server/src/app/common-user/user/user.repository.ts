@@ -1,39 +1,39 @@
 import { Injectable } from "@nestjs/common";
 import { DataSource, FindOptionsWhere, Repository } from "typeorm";
-import { UserEntity } from "./entity/user.entity";
+import { UserEntity } from "./entity/user.default.entity";
+import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
+import { CrepenBaseRepository } from "@crepen-nest/lib/common/base.repository";
 
 
 
-@Injectable()
-export class CrepenUserRepository {
+// @Injectable()
+export class CrepenUserRepository extends CrepenBaseRepository {
 
-    private userRepo: Repository<UserEntity>;
-
-
-    constructor(private readonly dataSource: DataSource) {
-        this.userRepo = this.dataSource.getRepository(UserEntity);
+    constructor(databaseService: CrepenDatabaseService) {
+        super(databaseService);
     }
 
     addOne = async (userData: UserEntity) => {
-        return await this.userRepo.save(userData);
+        const dataSource = await this.getRepository('default', UserEntity);
+        return dataSource.save(userData);
     }
 
-    updateOne = async (uid: string , userData: UserEntity) => {
-        return await this.userRepo.update({ uid: uid }, userData)
+    updateOne = async (uid: string, userData: UserEntity) => {
+        const dataSource = await this.getRepository('default', UserEntity);
+        return dataSource.update({ uid: uid }, userData)
     }
 
-
-    
-
-    match = async (matchData : FindOptionsWhere<UserEntity>[]) => {
-        return await this.userRepo.find({
-            where : matchData
+    match = async (matchData: FindOptionsWhere<UserEntity>[]) => {
+        const dataSource = await this.getRepository('default', UserEntity);
+        return dataSource.find({
+            where: matchData
         })
     }
 
-    matchOne = async (matchData : FindOptionsWhere<UserEntity>[]) => {
-        return await this.userRepo.findOne({
-            where : matchData
+    matchOne = async (matchData: FindOptionsWhere<UserEntity>[]) => {
+        const dataSource = await this.getRepository('default', UserEntity);
+        return dataSource.findOne({
+            where: matchData
         })
     }
 

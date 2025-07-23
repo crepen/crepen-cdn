@@ -2,7 +2,7 @@ import { StringUtil } from "@crepen-nest/lib/util/string.util";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsEmpty, IsString, ValidateIf } from "class-validator";
-import { FolderEntity } from "../entity/folder.entity";
+import { FolderEntity } from "../entity/folder.default.entity";
 
 export class EditFolderDto {
     @ApiProperty()

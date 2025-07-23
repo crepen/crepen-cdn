@@ -6,7 +6,7 @@ import { JwtUserExpressRequest, JwtUserRequest } from "@crepen-nest/interface/jw
 import { I18n, I18nContext } from "nestjs-i18n";
 import { BaseResponse } from "@crepen-nest/lib/util/base.response";
 import { StringUtil } from "@crepen-nest/lib/util/string.util";
-import { CrepenLocaleHttpException } from "@crepen-nest/lib/exception/crepen.http.exception";
+import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
 import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { RelationFileDto } from "./dto/file.dto";
@@ -14,9 +14,9 @@ import { CrepenFolderRouteService } from "../folder/folder.service";
 import { Response } from "express";
 import { CrepenFileError } from "./exception/file.exception";
 import { EditFileDto } from "./dto/edit.file.dto";
-import { FileEntity } from "./entity/file.entity";
+import { FileEntity } from "./entity/file.default.entity";
 import { AuthUser } from "@crepen-nest/lib/decorator/param/auth-user.param.decorator";
-import { UserEntity } from "../user/entity/user.entity";
+import { UserEntity } from "../user/entity/user.default.entity";
 import { FilePermissionType } from "@crepen-nest/lib/enum/file-permission-type.enum";
 import { CrepenLoggerService } from "@crepen-nest/app/common/logger/logger.service";
 import { Int32 } from "typeorm";
@@ -168,7 +168,7 @@ export class CrepenFileRouteController {
                         )
                     })
                     .catch(err => {
-                        if (err instanceof CrepenLocaleHttpException) {
+                        if (err instanceof CrepenCommonHttpLocaleError) {
 
                             if (err.innerError !== undefined) {
                                 console.log(`ERR : ${err?.message}`)
@@ -195,7 +195,7 @@ export class CrepenFileRouteController {
                     })
             }
             catch (err) {
-                if (err instanceof CrepenLocaleHttpException) {
+                if (err instanceof CrepenCommonHttpLocaleError) {
 
                     if (err.innerError !== undefined) {
                         console.log(`ERR : ${err?.message}`)
@@ -235,7 +235,7 @@ export class CrepenFileRouteController {
 
         req.on('error', (e) => {
             console.log('ERRRRRRR');
-            throw new CrepenLocaleHttpException('', e.message, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CrepenCommonHttpLocaleError('', e.message, HttpStatus.INTERNAL_SERVER_ERROR);
         })
 
 

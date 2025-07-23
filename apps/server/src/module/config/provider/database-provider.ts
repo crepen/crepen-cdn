@@ -1,35 +1,31 @@
-import { CrepenSystemError } from "@crepen-nest/lib/exception/crepen.system.exception";
-import { ConfigService } from "@nestjs/config";
+import { CrepenSystemError } from "@crepen-nest/lib/error/system/common.system.error";
 import { DataSource } from "typeorm";
-import { DefaultDataSource } from "../database/default.database.config";
-import { SQLiteDataSource } from "../database/sqlite.database.config";
+import { SQLiteDataSourceProvider } from "../database/provider/sqlite.database.provider";
 
 export class CrepenDatabaseProvider {
-    constructor(config: ConfigService<unknown, boolean>) {
-        this.config = config;
-    }
+    constructor() {
 
-    config: ConfigService<unknown, boolean>;
-
-    static init = async (config: ConfigService<unknown, boolean>) => {
-        const instance = new CrepenDatabaseProvider(config);
-        await instance.initSQLiteDatabase(config);
-
-        const isConn = await DefaultDataSource.testConnection(config);
     }
 
 
 
-    initSQLiteDatabase = async (config: ConfigService<unknown, boolean>) => {
+    static init = async () => {
+        const instance = new CrepenDatabaseProvider();
+        await instance.initSQLiteDatabase();
+    }
+
+
+
+    initSQLiteDatabase = async () => {
 
         let dataSource: DataSource;
 
         try {
-            dataSource = await SQLiteDataSource.getDataSource(config);
+            dataSource = await SQLiteDataSourceProvider.getDataSource().initialize();
         }
         catch (e) {
-            throw new CrepenSystemError('Connect Failed', 'SQLite' , {
-                cause : e
+            throw new CrepenSystemError('Connect Failed', 'SQLite', {
+                cause: e
             });
         }
 
@@ -41,6 +37,16 @@ export class CrepenDatabaseProvider {
             if (!tableList.find(x => x.name === 'config')) {
                 await dataSource.query(`
                     CREATE TABLE config (
+                        "key" TEXT NOT NULL,
+                        value TEXT NOT NULL,
+                        CONSTRAINT NewTable_PK PRIMARY KEY ("key")
+                    )
+                `);
+            }
+
+            if (!tableList.find(x => x.name === 'state')) {
+                await dataSource.query(`
+                    CREATE TABLE state (
                         "key" TEXT NOT NULL,
                         value TEXT NOT NULL,
                         CONSTRAINT NewTable_PK PRIMARY KEY ("key")

@@ -1,5 +1,5 @@
 import { EntityManager } from "typeorm";
 
-export interface RepositoryOptions{
-    manager? : EntityManager
-}
+export type RepositoryOptions<T = unknown> = {
+    manager?: EntityManager,
+} & T

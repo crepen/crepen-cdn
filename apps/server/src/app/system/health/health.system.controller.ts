@@ -11,9 +11,7 @@ export class CrepenSystemHealthController {
     ) { }
 
     @Get()
-    // @CheckConnDB()
     async getHealth() {
-        // console.log(await this.healthService.getInitState())
 
         const initState = await this.healthService.getInitState();
 
@@ -21,7 +19,8 @@ export class CrepenSystemHealthController {
         return BaseResponse.ok({
             install: initState,
             database: {
-                default: await this.healthService.getDefaultDatabaseHealth()
+                default: await this.healthService.getDefaultDatabaseHealth(),
+                local: await this.healthService.getLocalDatabaseHealth()
             }
         });
     }

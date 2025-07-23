@@ -2,7 +2,7 @@ import { ExecutionContext, HttpException, HttpStatus } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Observable } from "rxjs";
 import { I18nContext } from "nestjs-i18n";
-import { CrepenLocaleHttpException } from "src/lib/exception/crepen.http.exception";
+import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
 import { StringUtil } from "@crepen-nest/lib/util/string.util";
 
 type TokenWhiteListType = 'all' | 'access_token' | 'refresh_token';
@@ -37,7 +37,7 @@ export class CrepenAuthJwtGuard extends AuthGuard('jwt') {
         if (typeof user === 'object') {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             if (this.whiteListTokenType !== 'all' && this.whiteListTokenType !== user?.payload?.type) {
-                throw new CrepenLocaleHttpException('cloud_auth', 'AUTHORIZATION_NOT_ALLOW_TYPE', HttpStatus.UNAUTHORIZED)
+                throw new CrepenCommonHttpLocaleError('cloud_auth', 'AUTHORIZATION_NOT_ALLOW_TYPE', HttpStatus.UNAUTHORIZED)
             }
             else if (this.whiteListRole.length > 0) {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -56,7 +56,7 @@ export class CrepenAuthJwtGuard extends AuthGuard('jwt') {
                     }
 
                     if (isPass === false) {
-                        throw new CrepenLocaleHttpException('cloud_auth', 'AUTHORIZATION_ROLE_BLOCK', HttpStatus.UNAUTHORIZED)
+                        throw new CrepenCommonHttpLocaleError('cloud_auth', 'AUTHORIZATION_ROLE_BLOCK', HttpStatus.UNAUTHORIZED)
                     }
                 }
 
@@ -67,7 +67,7 @@ export class CrepenAuthJwtGuard extends AuthGuard('jwt') {
 
 
         if (err || !user) {
-            throw new CrepenLocaleHttpException('cloud_auth', 'AUTHORIZATION_TOKEN_EXPIRED', HttpStatus.UNAUTHORIZED)
+            throw new CrepenCommonHttpLocaleError('cloud_auth', 'AUTHORIZATION_TOKEN_EXPIRED', HttpStatus.UNAUTHORIZED)
         }
 
         return super.handleRequest(err, user, info, context, status);

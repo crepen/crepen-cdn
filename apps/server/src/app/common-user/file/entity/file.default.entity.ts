@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn, ViewColumn } from "typeorm";
-import { FileStoreEntity } from "./file-store.entity";
-import { FolderEntity } from "../../folder/entity/folder.entity";
-import { FilePermissionEntity } from "./file-permission.entity";
+import { FileStoreEntity } from "./file-store.default.entity";
+import { FolderEntity } from "../../folder/entity/folder.default.entity";
+import { FilePermissionEntity } from "./file-permission.default.entity";
 
 @Entity('file')
 export class FileEntity {

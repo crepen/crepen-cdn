@@ -1,0 +1,4 @@
+{
+    "SYSTEM_UNINIT" : "시스템이 아직 설정되지 않았습니다.",
+    "SYSTEM_LOCAL_DB_CONNECT_FAILED" : "시스템 설정에 접근할 수 없습니다."
+}

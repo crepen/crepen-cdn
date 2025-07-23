@@ -1,4 +1,4 @@
-import { UserEntity } from "@crepen-nest/app/common-user/user/entity/user.entity"
+import { UserEntity } from "@crepen-nest/app/common-user/user/entity/user.default.entity"
 import { Request as ExpressRequest } from "express"
 
 ////// V1

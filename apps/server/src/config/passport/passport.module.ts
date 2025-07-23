@@ -6,17 +6,13 @@ import { CrepenUserRouteModule } from "@crepen-nest/app/common-user/user/user.mo
 @Module({
     imports: [
         CrepenUserRouteModule,
-        PassportModule.register({ defaultStrategy: 'jwt' }),
+        PassportModule.register({ defaultStrategy: 'jwt'}),
         JwtModule.registerAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => {
-
                 return {
-                    secret: configService.get<string>("secret.jwt"),
-                    signOptions: {
-                        expiresIn: configService.get<string>("jwt.expireTime")
-                    } 
+                    secret : configService.get('secret.jwt')
                 }
             },
         })

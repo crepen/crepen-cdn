@@ -1,9 +1,11 @@
 import { Injectable } from "@nestjs/common";
-import { CrepenSystemDatabaseService } from "../db/db.system.service";
+// import { CrepenSystemDatabaseService } from "../db/db.system.service";
 import { ConfigService } from "@nestjs/config";
-import { SystemConfigEntity } from "../common/entity/config.system.entity.ce";
 import { DataSource } from "typeorm";
 import { RepositoryOptions } from "@crepen-nest/interface/repo";
+import { LocalStateEntity } from "src/module/entity/local/state.local.entity";
+import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
+import { SQLiteDataSourceProvider } from "src/module/config/database/provider/sqlite.database.provider";
 
 @Injectable()
 export class CrepenSystemHealthRepository {
@@ -11,32 +13,21 @@ export class CrepenSystemHealthRepository {
 
 
     constructor(
-        private readonly dbService: CrepenSystemDatabaseService,
+        private readonly dbService: CrepenDatabaseService,
         private readonly configService: ConfigService
     ) { }
 
     configDataSource: DataSource = undefined;
 
-    private instanceDataSource = async () => {
-        if (!this.configDataSource) {
-            this.configDataSource = await this.dbService.getConfigDataSource(this.configService);
-        }
-    }
-
-    getDefaultDatabaseHealth = async (options?: RepositoryOptions) => {
-        return this.dbService.testDefaultDatabaseConnect(this.configService);
-    }
-
-    getInitState = async (options?: RepositoryOptions): Promise<SystemConfigEntity | null> => {
-        await this.instanceDataSource();
-        const dataSource = options.manager ?? this.configDataSource;
+    getInitState = async (options?: RepositoryOptions): Promise<LocalStateEntity | null> => {
+        const dataSource = options?.manager ?? await this.dbService.getLocal();
 
 
         return dataSource
-            .getRepository(SystemConfigEntity)
+            .getRepository(LocalStateEntity)
             .findOne({
                 where: {
-                    key: 'db'
+                    key: 'install'
                 }
             })
     }

@@ -1,7 +1,7 @@
-import { CrepenLocaleHttpException } from "@crepen-nest/lib/exception/crepen.http.exception";
+import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
 import { HttpStatus } from "@nestjs/common";
 
-export class CrepenFileError extends CrepenLocaleHttpException {
+export class CrepenFileError extends CrepenCommonHttpLocaleError {
 
 
     static FILE_NOT_FOUND = new CrepenFileError('cloud_file' , 'FILE_NOT_FOUND' , HttpStatus.NOT_FOUND);

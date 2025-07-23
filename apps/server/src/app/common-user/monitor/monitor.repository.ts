@@ -1,4 +1,4 @@
-import { FileTrafficLoggerEntity } from "@crepen-nest/app/common/logger/entity/file-traffic-logger.entity";
+import { FileTrafficLoggerEntity } from "@crepen-nest/app/common/logger/entity/file-traffic-logger.default.entity";
 import { Injectable } from "@nestjs/common";
 import { DataSource } from "typeorm";
 import { CrepenCumulativeMonitorDto } from "./dto/cumulative.monitor.dto";

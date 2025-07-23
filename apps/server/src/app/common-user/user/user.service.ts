@@ -1,10 +1,10 @@
 import { HttpStatus, Injectable } from "@nestjs/common";
-import { UserEntity } from "./entity/user.entity";
+import { UserEntity } from "./entity/user.default.entity";
 import { CrepenUserRepository } from "./user.repository";
 import { AddUserDto, UpdateUserDto } from "./dto/user.common.dto";
 import { EncryptUtil } from "@crepen-nest/lib/util/encrypt.util";
 import { randomUUID } from "crypto";
-import { CrepenLocaleHttpException } from "@crepen-nest/lib/exception/crepen.http.exception";
+import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
 import { StringUtil } from "@crepen-nest/lib/util/string.util";
 
 @Injectable()
@@ -40,7 +40,7 @@ export class CrepenUserRouteService {
         const findDuplicateUser: UserEntity[] = await this.userRepo.match([{ id: userEntity.id }, { email: userEntity.email }, { uid: userEntity.uid }])
 
         if (findDuplicateUser.length > 0) {
-            throw new CrepenLocaleHttpException("cloud_user", 'USER_ADD_FAILED_DEPLECATE_INFO', HttpStatus.BAD_REQUEST)
+            throw new CrepenCommonHttpLocaleError("cloud_user", 'USER_ADD_FAILED_DEPLECATE_INFO', HttpStatus.BAD_REQUEST)
         }
 
         return await this.userRepo.addOne(userEntity);

@@ -5,16 +5,16 @@ import { CrepenFolderRouteService } from "./folder.service";
 import { BaseResponse } from "@crepen-nest/lib/util/base.response";
 import { I18n, I18nContext } from "nestjs-i18n";
 import { StringUtil } from "@crepen-nest/lib/util/string.util";
-import { CrepenLocaleHttpException } from "@crepen-nest/lib/exception/crepen.http.exception";
+import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
 import { JwtUserRequest } from "@crepen-nest/interface/jwt";
 import { LoadFolderDataResponseDto, LoadFolderDataWithChildResponseDto } from "./dto/folder.dto";
 import { AddFolderDto } from "./dto/add.folder.dto";
-import { FolderEntity } from "./entity/folder.entity";
+import { FolderEntity } from "./entity/folder.default.entity";
 import { CrepenFileRouteService } from "../file/file.service";
 import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
 import { EditFolderDto } from "./dto/edit.folder.dto";
 import { CrepenFolderError } from "./exception/folder.exception";
-import { FileEntity } from "../file/entity/file.entity";
+import { FileEntity } from "../file/entity/file.default.entity";
 
 @ApiTags('[Common] 사용자 폴더 관리 컨트롤러')
 @ApiHeader({
@@ -136,17 +136,17 @@ export class CrepenFolderRouteController {
     ) {
 
         if (StringUtil.isEmpty(uid)) {
-            throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_LOAD_FOLDER_UID_UNDEFINED', HttpStatus.BAD_REQUEST);
+            throw new CrepenCommonHttpLocaleError('cloud_folder', 'FOLDER_LOAD_FOLDER_UID_UNDEFINED', HttpStatus.BAD_REQUEST);
         }
 
         const targetFolderData = await this.folderService.getFolderData(uid);
 
         if (targetFolderData === null) {
-            throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_LOAD_FOLDER_TARGET_NOT_FOUND', HttpStatus.BAD_REQUEST);
+            throw new CrepenCommonHttpLocaleError('cloud_folder', 'FOLDER_LOAD_FOLDER_TARGET_NOT_FOUND', HttpStatus.BAD_REQUEST);
         }
 
         if (targetFolderData.ownerUid !== req.user.entity.uid) {
-            throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_LOAD_UNAUTHORIZED', HttpStatus.UNAUTHORIZED)
+            throw new CrepenCommonHttpLocaleError('cloud_folder', 'FOLDER_LOAD_UNAUTHORIZED', HttpStatus.UNAUTHORIZED)
         }
 
         const childList: FolderEntity[] = [];
@@ -207,14 +207,14 @@ export class CrepenFolderRouteController {
         @Query('uid') uid?: string
     ) {
         if (StringUtil.isEmpty(uid)) {
-            throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_LOAD_FOLDER_UID_UNDEFINED', HttpStatus.BAD_REQUEST);
+            throw new CrepenCommonHttpLocaleError('cloud_folder', 'FOLDER_LOAD_FOLDER_UID_UNDEFINED', HttpStatus.BAD_REQUEST);
         }
 
 
         const folderData = await this.folderService.getFolderData(uid);
 
         if (ObjectUtil.isNullOrUndefined(folderData)) {
-            throw new CrepenLocaleHttpException('cloud_folder', 'FOLDER_LOAD_FOLDER_TARGET_NOT_FOUND', HttpStatus.NOT_FOUND);
+            throw new CrepenCommonHttpLocaleError('cloud_folder', 'FOLDER_LOAD_FOLDER_TARGET_NOT_FOUND', HttpStatus.NOT_FOUND);
         }
 
         const fileList = await this.fileService.getFolderFiles(folderData.uid);

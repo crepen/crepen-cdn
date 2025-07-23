@@ -1,4 +1,4 @@
-import { FolderEntity } from "../entity/folder.entity";
+import { FolderEntity } from "../entity/folder.default.entity";
 
 export interface LoadFolderDataResponseDto {
     info : FolderEntity

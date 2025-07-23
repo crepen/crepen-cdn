@@ -1,7 +1,7 @@
-import { CrepenLocaleHttpException } from "@crepen-nest/lib/exception/crepen.http.exception";
+import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
 import { HttpStatus } from "@nestjs/common";
 
-export class CrepenFolderError extends CrepenLocaleHttpException {
+export class CrepenFolderError extends CrepenCommonHttpLocaleError {
 
     constructor(messageCode: string, status: number) {
         super('cloud_folder', messageCode, status);

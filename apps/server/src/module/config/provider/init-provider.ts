@@ -12,14 +12,7 @@ export class CrepenInitProvider {
     config: ConfigService<unknown, boolean>;
 
     static init = async (config: ConfigService<unknown, boolean>) => {
+        await CrepenDatabaseProvider.init();
         await CrepenConfigProvider.init(config);
-        await CrepenDatabaseProvider.init(config);
-
     }
-
-
-    
-
-
-    
 }

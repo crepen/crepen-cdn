@@ -10,9 +10,9 @@ import { CrepenUserMonitorModule } from "./monitor/monitor.module";
         CrepenAuthRouteModule,
         CrepenUserRouteModule,
         CrepenFileRouteModule,
-        CrepenFolderRouteModule,
-        CrepenFileRouteModule,
-        CrepenUserMonitorModule
+        // CrepenFolderRouteModule,
+        // CrepenFileRouteModule,
+        // CrepenUserMonitorModule
     ]
 })
 export class CrepenCommonUserAppModule { }

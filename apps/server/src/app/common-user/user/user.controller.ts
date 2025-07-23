@@ -6,7 +6,7 @@ import { CrepenAuthJwtGuard } from "src/config/passport/jwt/jwt.guard";
 import { CrepenUserRouteService } from "./user.service";
 import { ApiBearerAuth, ApiBody, ApiHeader, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { AddUserDto, UpdateUserDto, UpdateUserPasswordDto } from "./dto/user.common.dto";
-import { CrepenLocaleHttpException } from "@crepen-nest/lib/exception/crepen.http.exception";
+import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
 import { EncryptUtil } from "@crepen-nest/lib/util/encrypt.util";
 import { CrepenAuthRouteService } from "../auth/auth.service";
 import { I18n, I18nContext } from "nestjs-i18n";
@@ -85,17 +85,17 @@ export class CrepenUserRouteController {
         @I18n() i18n: I18nContext
     ) {
         if (bodyData.confirmPassword.trim() !== bodyData.newPassword.trim()) {
-            throw new CrepenLocaleHttpException('cloud_user', 'USER_PASSWORD_CHANGE_NEW_PASSWORD_NOT_MATCH', HttpStatus.BAD_REQUEST)
+            throw new CrepenCommonHttpLocaleError('cloud_user', 'USER_PASSWORD_CHANGE_NEW_PASSWORD_NOT_MATCH', HttpStatus.BAD_REQUEST)
         }
 
         if(!this.authService.validatePassword(bodyData.newPassword)){
-            throw new CrepenLocaleHttpException('cloud_auth', 'VALIDATE_PASSWORD_REGEX_FAILED', HttpStatus.BAD_REQUEST)
+            throw new CrepenCommonHttpLocaleError('cloud_auth', 'VALIDATE_PASSWORD_REGEX_FAILED', HttpStatus.BAD_REQUEST)
         }
 
         const loginUserData = await this.userService.getMatchUserByUid(req.user.entity.uid);
 
         if(!await EncryptUtil.comparePassword(bodyData.currentPassword , loginUserData.password)){
-            throw new CrepenLocaleHttpException('cloud_user' , 'USER_PASSWORD_CHANGE_CURRENT_PASSWORD_NOT_MATCH' , HttpStatus.BAD_REQUEST);
+            throw new CrepenCommonHttpLocaleError('cloud_user' , 'USER_PASSWORD_CHANGE_CURRENT_PASSWORD_NOT_MATCH' , HttpStatus.BAD_REQUEST);
         }
 
 
