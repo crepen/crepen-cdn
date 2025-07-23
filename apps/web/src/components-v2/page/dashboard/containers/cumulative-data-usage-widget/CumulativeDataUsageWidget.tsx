@@ -27,7 +27,7 @@ export const CumulativeDataUsageWidget = (prop: CumulativeDataUsageWidgetProp) =
                     // height={300}
                     data={prop.data ?? []}
                     margin={{
-                        top: 0,
+                        top: 50,
                         right: 0,
                         left: 0,
                         bottom: 0,

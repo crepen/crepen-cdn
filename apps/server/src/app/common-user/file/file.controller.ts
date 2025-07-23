@@ -297,10 +297,7 @@ export class CrepenFileRouteController {
                     : Math.min(start + CHUNK_SIZE_LIMIT, fileSize - 1);
             const chunksize = (end - start) + 1;
 
-            console.log('PARTS', chunksize);
-
             const chunk = fileData.buffer.subarray(start, end + 1);
-            console.log('chk-size', chunk.length)
 
             res.status(HttpStatus.PARTIAL_CONTENT);
             res.header('Content-Range', `bytes ${start}-${end}/${fileSize}`);
@@ -433,11 +430,6 @@ export class CrepenFileRouteController {
         @Param('uid') uid: string,
         @Body() bodyData: EditFileDto
     ) {
-        console.log("CHANGE FILE", uid, bodyData);
-
-        // throw CrepenFileError.FILE_NOT_FOUND;
-        // const removeFileRequest = await this.fileService.removeFile(uid, req.user.entity.uid);
-
         const editEntity = new FileEntity();
         editEntity.fileTitle = bodyData.fileTitle;
         editEntity.isPublished = bodyData.isPublished;

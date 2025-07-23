@@ -2,13 +2,22 @@ import { FileTrafficLoggerEntity } from "@crepen-nest/app/common/logger/entity/f
 import { Injectable } from "@nestjs/common";
 import { DataSource } from "typeorm";
 import { CrepenCumulativeMonitorDto } from "./dto/cumulative.monitor.dto";
+import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
+import { CrepenBaseRepository } from "src/module/common/base.repository";
+import { RepositoryOptions } from "@crepen-nest/interface/repo";
 
 @Injectable()
-export class CrepenUserMonitorRepository {
-    constructor(private readonly dataSource: DataSource) {
-        // this.repo = this.dataSource.getRepository();
+export class CrepenUserMonitorRepository extends CrepenBaseRepository{
+    constructor(
+        private readonly databaseService: CrepenDatabaseService
+    ) {
+        super(databaseService)
     }
-    getCumulativeData = async (targetUserUid: string) => {
+
+
+
+
+    getCumulativeData = async (targetUserUid: string , options? : RepositoryOptions) => {
         // return this.dataSource.getRepository(FileTrafficLoggerEntity)
         //     .createQueryBuilder('traffic')
         //     .select([
@@ -22,8 +31,9 @@ export class CrepenUserMonitorRepository {
         //     .groupBy(`DATE_FORMAT(log.date, '%Y-%m-%d %H:00:00')`)
         //     .getRawMany()
 
+        const dataSource = options?.manager ?? await this.databaseService.getDefault();
 
-        const builder = this.dataSource
+        const builder = dataSource
             .createQueryBuilder()
 
             .select(`CONVERT_TZ(DATE_ADD(DATE_FORMAT(hourly_summary.hour_end_time, '%Y-%m-%d %H:00:00'),INTERVAL 1 HOUR), @@session.time_zone, '+00:00')`, 'date')

@@ -270,19 +270,6 @@ export class CrepenFileRouteService {
 
             try {
                 const removeFile = await this.repo.removeFile(fileData, { manager: manager })
-
-                console.log(removeFile)
-                // const savePath = join(
-                //     this.configService.get('path.fileStore'),
-                //     fileData.fileStore.fileName
-                // );
-
-                // if (fs.existsSync(savePath)) {
-                //     fs.rmSync(savePath);
-                // }
-                // else {
-                //     console.log("NOT EXIST FILE : ", savePath);
-                // }
             }
             catch (e) {
                 throw CrepenFileError.FILE_REMOVE_FAILED;

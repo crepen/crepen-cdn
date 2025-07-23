@@ -8,6 +8,7 @@ import { CrepenMonitorOperationService } from '@web/modules/crepen/monitor/Crepe
 export const DashboardPageLayout = async () => {
 
     const cumulativeData = await CrepenMonitorOperationService.getCumulativeTrafficMonitorData();
+    console.log('CUM',cumulativeData);
 
     return (
         <div className="cp-page-layout cp-dashboard-layout">
