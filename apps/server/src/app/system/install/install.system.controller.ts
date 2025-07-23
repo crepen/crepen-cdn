@@ -21,7 +21,7 @@ export class CrepenSystemInstallController {
 
     @Post()
     //#region Decorator
-    @ApiOperation({ summary: '시스템 설정', description: '시스템 설정' })
+    @ApiOperation({ summary: '초기 시스템 설정', description: '초기 시스템 설정' })
     @HttpCode(HttpStatus.OK)
     //#endregion
     async installSystem(

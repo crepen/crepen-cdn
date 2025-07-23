@@ -12,7 +12,7 @@ import { CryptoUtil } from "@crepen-nest/lib/util/crypto.util";
 import { BaseResponse } from "src/module/common/base.response";
 
 
-@ApiTags('일반 사용자 > 사용자 관리 컨트롤러')
+@ApiTags('[COMMON_USER] 사용자 관리 컨트롤러')
 @ApiHeader({
     name: 'Accept-Language', required: false, enum: ['en', 'ko']
 })

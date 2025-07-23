@@ -16,7 +16,7 @@ import { CrepenFolderError } from "./exception/folder.exception";
 import { FileEntity } from "../file/entity/file.default.entity";
 import { BaseResponse } from "src/module/common/base.response";
 
-@ApiTags('[Common] 사용자 폴더 관리 컨트롤러')
+@ApiTags('[COMMON_USER] 사용자 폴더 관리 컨트롤러')
 @ApiHeader({
     name: 'Accept-Language', required: false, enum: ['en', 'ko']
 })

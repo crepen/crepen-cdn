@@ -9,7 +9,7 @@ import { AuthLoginRequestDto, AuthTokenResponseDto } from "./dto/auth.login.dto"
 import { ApiOperation, ApiQuery, ApiBearerAuth, ApiTags, ApiHeader } from "@nestjs/swagger";
 import { BaseResponse } from "src/module/common/base.response";
 
-@ApiTags('인증 관리 컨트롤러')
+@ApiTags('[COMMON_USER] 인증 관리 컨트롤러')
 @ApiHeader({
     name: 'Accept-Language', required: false, enum: ['en', 'ko']
 })

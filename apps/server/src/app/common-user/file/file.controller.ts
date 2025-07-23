@@ -8,7 +8,6 @@ import { StringUtil } from "@crepen-nest/lib/util/string.util";
 import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
 import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { RelationFileDto } from "./dto/file.dto";
 import { CrepenFolderRouteService } from "../folder/folder.service";
 import { Response } from "express";
 import { CrepenFileError } from "./exception/file.exception";
@@ -18,10 +17,10 @@ import { AuthUser } from "@crepen-nest/lib/decorator/param/auth-user.param.decor
 import { UserEntity } from "../user/entity/user.default.entity";
 import { FilePermissionType } from "@crepen-nest/lib/enum/file-permission-type.enum";
 import { CrepenLoggerService } from "@crepen-nest/app/common/logger/logger.service";
-import { Int32 } from "typeorm";
 import { BaseResponse } from "src/module/common/base.response";
+import Stream from "stream";
 
-@ApiTags('[Common] 사용자 파일 관리 컨트롤러')
+@ApiTags('[COMMON_USER] 사용자 파일 관리 컨트롤러')
 @ApiHeader({
     name: 'Accept-Language', required: false, enum: ['en', 'ko']
 })
@@ -131,7 +130,7 @@ export class CrepenFileRouteController {
 
         const chunks: Buffer[] = [];
 
-        req.on('data', (chunk) => {
+        req.on('data', (chunk: Buffer<ArrayBufferLike>) => {
             chunks.push(chunk);
         })
 
@@ -149,8 +148,7 @@ export class CrepenFileRouteController {
                     encoding: '7bit',
                     destination: '',
                     path: '',
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                    stream: undefined as any,
+                    stream: undefined as Stream.Readable,
                 }
 
                 const saveFile = this.fileService.uploadFile(file, fileTitle, user.uid, folderUid);

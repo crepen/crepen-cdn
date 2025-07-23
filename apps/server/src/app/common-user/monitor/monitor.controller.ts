@@ -8,7 +8,7 @@ import { AuthUser } from "@crepen-nest/lib/decorator/param/auth-user.param.decor
 import { UserEntity } from "../user/entity/user.default.entity";
 import { BaseResponse } from "src/module/common/base.response";
 
-@ApiTags('일반 사용자 > 사용자 데이터 모니터링 컨트롤러')
+@ApiTags('[COMMON_USER] 사용자 데이터 모니터링 컨트롤러')
 @ApiHeader({
     name: 'Accept-Language', required: false, enum: ['en', 'ko']
 })

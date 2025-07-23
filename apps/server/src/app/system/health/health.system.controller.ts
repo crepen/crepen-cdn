@@ -1,7 +1,12 @@
 import { Controller, Get } from "@nestjs/common";
 import { CrepenSystemHealthService } from "./health.system.service";
 import { BaseResponse } from "src/module/common/base.response";
+import { ApiHeader, ApiTags } from "@nestjs/swagger";
 
+@ApiTags('[SYSTEM] 서버 Health 컨트롤러')
+@ApiHeader({
+    name: 'Accept-Language', required: false, enum: ['en', 'ko']
+})
 @Controller('system/health')
 export class CrepenSystemHealthController {
 
