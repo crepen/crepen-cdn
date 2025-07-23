@@ -5,7 +5,7 @@ import { Request, Response } from 'express';
 import { I18nContext, I18nService, I18nTranslation, I18nValidationException } from 'nestjs-i18n';
 import { BaseResponse } from 'src/module/common/base.response';
 
-@Catch(HttpException)
+@Catch(Error)
 export class ExceptionResponseFilter implements ExceptionFilter {
 
 
@@ -46,10 +46,6 @@ export class ExceptionResponseFilter implements ExceptionFilter {
                 )
         }
         else if (exception instanceof I18nValidationException) {
-
-
-
-
             if (exception.errors.length > 0) {
                 const errorObj = exception.errors[0].constraints;
                 const messageObj = Object.values(errorObj)[0];
@@ -65,23 +61,26 @@ export class ExceptionResponseFilter implements ExceptionFilter {
                 )
         }
         else if (exception instanceof NotFoundException) {
-            response.status(404)
-                .json()
+            response.status(404).send()
         }
         else if (exception instanceof HttpException) {
-            console.log('ELSE HTTPEXCEPTION', exception);
             response
                 .status(500)
                 .json(
-                    BaseResponse.error(500, message)
+                    BaseResponse.error(
+                        500,
+                        i18n.t(message),
+                        message.split('.')[1])
                 )
         }
         else {
-            console.log('ELSE', exception);
             response
                 .status(500)
                 .json(
-                    BaseResponse.error(500, message)
+                    BaseResponse.error(
+                        500,
+                        i18n.t(message),
+                        message.split('.')[1])
                 )
         }
 

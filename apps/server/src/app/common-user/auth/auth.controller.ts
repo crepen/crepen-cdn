@@ -34,7 +34,6 @@ export class CrepenAuthRouteController {
     ) {
         const token: CrepenTokenGroup = await this.authService.getToken(loginData.id, loginData.password);
 
-        // throw new NotFoundException('ss');
         return BaseResponse.ok<AuthTokenResponseDto>({
             accessToken: token.accessToken.value,
             refreshToken: token.refreshToken.value,
