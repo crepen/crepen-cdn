@@ -2,7 +2,7 @@ import { CrepenAuthJwtGuard } from "@crepen-nest/config/passport/jwt/jwt.guard";
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiHeader, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { CrepenFolderRouteService } from "./folder.service";
-import { BaseResponse } from "@crepen-nest/lib/util/base.response";
+import { BaseResponse } from "@crepen-nest/lib/common/base.response";
 import { I18n, I18nContext } from "nestjs-i18n";
 import { StringUtil } from "@crepen-nest/lib/util/string.util";
 import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";

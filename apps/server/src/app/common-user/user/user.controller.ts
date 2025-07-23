@@ -1,15 +1,15 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { JwtUserRequest } from "src/interface/jwt";
-import { BaseResponse } from "src/lib/util/base.response";
+import { BaseResponse } from "@crepen-nest/lib/common/base.response";
 import { ConfigService } from "@nestjs/config";
 import { CrepenAuthJwtGuard } from "src/config/passport/jwt/jwt.guard";
 import { CrepenUserRouteService } from "./user.service";
 import { ApiBearerAuth, ApiBody, ApiHeader, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { AddUserDto, UpdateUserDto, UpdateUserPasswordDto } from "./dto/user.common.dto";
 import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
-import { EncryptUtil } from "@crepen-nest/lib/util/encrypt.util";
 import { CrepenAuthRouteService } from "../auth/auth.service";
 import { I18n, I18nContext } from "nestjs-i18n";
+import { CryptoUtil } from "@crepen-nest/lib/util/crypto.util";
 
 
 @ApiTags('일반 사용자 > 사용자 관리 컨트롤러')
@@ -21,7 +21,7 @@ export class CrepenUserRouteController {
     constructor(
         private readonly userService: CrepenUserRouteService,
         private readonly configService: ConfigService,
-        private readonly authService : CrepenAuthRouteService
+        private readonly authService: CrepenAuthRouteService
     ) { }
 
 
@@ -88,22 +88,22 @@ export class CrepenUserRouteController {
             throw new CrepenCommonHttpLocaleError('cloud_user', 'USER_PASSWORD_CHANGE_NEW_PASSWORD_NOT_MATCH', HttpStatus.BAD_REQUEST)
         }
 
-        if(!this.authService.validatePassword(bodyData.newPassword)){
+        if (!this.authService.validatePassword(bodyData.newPassword)) {
             throw new CrepenCommonHttpLocaleError('cloud_auth', 'VALIDATE_PASSWORD_REGEX_FAILED', HttpStatus.BAD_REQUEST)
         }
 
         const loginUserData = await this.userService.getMatchUserByUid(req.user.entity.uid);
 
-        if(!await EncryptUtil.comparePassword(bodyData.currentPassword , loginUserData.password)){
-            throw new CrepenCommonHttpLocaleError('cloud_user' , 'USER_PASSWORD_CHANGE_CURRENT_PASSWORD_NOT_MATCH' , HttpStatus.BAD_REQUEST);
+        if (!await CryptoUtil.Hash.compare(bodyData.currentPassword, loginUserData.password)) {
+            throw new CrepenCommonHttpLocaleError('cloud_user', 'USER_PASSWORD_CHANGE_CURRENT_PASSWORD_NOT_MATCH', HttpStatus.BAD_REQUEST);
         }
 
 
-        const updatePassword = await this.userService.updateUser(loginUserData.uid , {
-            password : bodyData.newPassword
+        const updatePassword = await this.userService.updateUser(loginUserData.uid, {
+            password: bodyData.newPassword
         })
 
-        return BaseResponse.ok(undefined,undefined,i18n.t('cloud_user.USER_PASSWORD_CHANGE_SUCCESS'));
+        return BaseResponse.ok(undefined, undefined, i18n.t('cloud_user.USER_PASSWORD_CHANGE_SUCCESS'));
     }
 
 

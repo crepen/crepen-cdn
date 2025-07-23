@@ -31,7 +31,7 @@ export class CryptoUtil {
         }
     }
 
-    Hash = {
+    static Hash = {
         encrypt: async (text: string): Promise<string> => {
             const saltRounds: number = 10;
             const salt = await bcrypt.genSalt(saltRounds);

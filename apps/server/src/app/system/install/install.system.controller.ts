@@ -1,4 +1,4 @@
-import { BaseResponse } from "@crepen-nest/lib/util/base.response";
+import { BaseResponse } from "@crepen-nest/lib/common/base.response";
 import { Body, ClassSerializerInterceptor, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseInterceptors } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { ApiHeader, ApiOperation, ApiTags } from "@nestjs/swagger";

@@ -2,10 +2,9 @@ import { HttpStatus, Injectable } from "@nestjs/common";
 import { CrepenUserRouteService } from "../user/user.service";
 import { JwtService } from "@nestjs/jwt";
 import { CrepenToken, CrepenTokenGroup, CrepenTokenType, CrepenUserPayload } from "@crepen-nest/interface/jwt";
-import { UserEntity } from "../user/entity/user.default.entity";
 import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
-import { EncryptUtil } from "@crepen-nest/lib/util/encrypt.util";
 import { ConfigService } from "@nestjs/config";
+import { CryptoUtil } from "@crepen-nest/lib/util/crypto.util";
 
 @Injectable()
 export class CrepenAuthRouteService {
@@ -73,7 +72,7 @@ export class CrepenAuthRouteService {
 
         const matchUser = await this.userService.getUserDataByIdOrEmail(id);
 
-        if (matchUser === undefined || !await EncryptUtil.comparePassword(password, matchUser?.password)) {
+        if (matchUser === undefined || !await CryptoUtil.Hash.compare(password, matchUser?.password)) {
             throw new CrepenCommonHttpLocaleError('cloud_auth', 'LOGIN_FAILED_INPUT_DATA_NOT_CORRECT', HttpStatus.UNAUTHORIZED);
         }
 

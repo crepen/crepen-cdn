@@ -1,15 +1,13 @@
-import { Body, Controller, Get, Headers, HttpCode, HttpStatus, Post, Query, Req, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards, UseInterceptors } from "@nestjs/common";
 import { CrepenAuthRouteService } from "./auth.service";
-import { CrepenTokenGroup, CrepenTokenType, JwtUserRequest } from "src/interface/jwt";
-import { BaseResponse } from "src/lib/util/base.response";
+import { CrepenTokenGroup, JwtUserRequest } from "src/interface/jwt";
+import { BaseResponse } from "@crepen-nest/lib/common/base.response";
 import { ConfigService } from "@nestjs/config";
 import { CrepenAuthJwtGuard } from "src/config/passport/jwt/jwt.guard";
 import { NoFilesInterceptor } from "@nestjs/platform-express";
 import { I18n, I18nContext } from "nestjs-i18n";
 import { AuthLoginRequestDto, AuthTokenResponseDto } from "./dto/auth.login.dto";
-import { AuthUserDataResponseDto } from "./dto/auth.user.dto";
-import { ApiOperation, ApiQuery, ApiBearerAuth, ApiParam, ApiTags, ApiHeader, ApiResponse } from "@nestjs/swagger";
-import { EncryptUtil } from "@crepen-nest/lib/util/encrypt.util";
+import { ApiOperation, ApiQuery, ApiBearerAuth, ApiTags, ApiHeader } from "@nestjs/swagger";
 
 @ApiTags('인증 관리 컨트롤러')
 @ApiHeader({

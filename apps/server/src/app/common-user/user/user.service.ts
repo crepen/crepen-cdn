@@ -2,10 +2,10 @@ import { HttpStatus, Injectable } from "@nestjs/common";
 import { UserEntity } from "./entity/user.default.entity";
 import { CrepenUserRepository } from "./user.repository";
 import { AddUserDto, UpdateUserDto } from "./dto/user.common.dto";
-import { EncryptUtil } from "@crepen-nest/lib/util/encrypt.util";
 import { randomUUID } from "crypto";
 import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
 import { StringUtil } from "@crepen-nest/lib/util/string.util";
+import { CryptoUtil } from "@crepen-nest/lib/util/crypto.util";
 
 @Injectable()
 export class CrepenUserRouteService {
@@ -32,7 +32,7 @@ export class CrepenUserRouteService {
 
         const userEntity = new UserEntity();
         userEntity.id = userData.id;
-        userEntity.password = await EncryptUtil.hashPassword(userData.password);
+        userEntity.password = await CryptoUtil.Hash.encrypt(userData.password);
         userEntity.email = userData.email;
         userEntity.uid = randomUUID();
         userEntity.name = userData.name;
@@ -53,7 +53,7 @@ export class CrepenUserRouteService {
         const userEntity = new UserEntity();
         userEntity.uid = updateUserUid;
         if (!StringUtil.isEmpty(updateUserData.password)) {
-            userEntity.password = await EncryptUtil.hashPassword(updateUserData.password);
+            userEntity.password = await CryptoUtil.Hash.encrypt(updateUserData.password);
         }
         userEntity.name = updateUserData.name;
         userEntity.email = updateUserData.email;

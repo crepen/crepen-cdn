@@ -1,6 +1,6 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, BadRequestException, NotFoundException, Logger } from '@nestjs/common';
 import { CrepenCommonHttpLocaleError } from '@crepen-nest/lib/error/http/common.http.error';
-import { BaseResponse } from '@crepen-nest/lib/util/base.response';
+import { BaseResponse } from '@crepen-nest/lib/common/base.response';
 import { StringUtil } from '@crepen-nest/lib/util/string.util';
 import { Request, Response } from 'express';
 import { I18nContext, I18nService, I18nTranslation, I18nValidationException } from 'nestjs-i18n';

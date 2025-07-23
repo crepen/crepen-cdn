@@ -4,7 +4,7 @@ import { CrepenFileRouteService } from "./file.service";
 import { CrepenAuthJwtGuard } from "@crepen-nest/config/passport/jwt/jwt.guard";
 import { JwtUserExpressRequest, JwtUserRequest } from "@crepen-nest/interface/jwt";
 import { I18n, I18nContext } from "nestjs-i18n";
-import { BaseResponse } from "@crepen-nest/lib/util/base.response";
+import { BaseResponse } from "@crepen-nest/lib/common/base.response";
 import { StringUtil } from "@crepen-nest/lib/util/string.util";
 import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
 import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
