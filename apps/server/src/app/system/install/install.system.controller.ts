@@ -4,6 +4,8 @@ import { ApiHeader, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { SystemInstallRequestDto, SystemInstallResponseDto } from "./dto/install.system.dto";
 import { CrepenSystemInstallService } from "./install.system.service";
 import { BaseResponse } from "src/module/common/base.response";
+import { SystemInstallCheckDatabaseRequestDto, SystemInstallCheckDatabaseResponseDto } from "./dto/db-check.system.dto";
+import { CrepenApiSystemInstallHttpError } from "@crepen-nest/lib/error/http/install.system.api.http.error";
 
 
 @ApiTags('[SYSTEM] 시스템 컨트롤러')
@@ -29,6 +31,7 @@ export class CrepenSystemInstallController {
         @Body() bodyData: SystemInstallRequestDto
     ) {
 
+
         await this.installService.applySystemInit(
             bodyData.dbHost,
             bodyData.dbPort,
@@ -36,6 +39,8 @@ export class CrepenSystemInstallController {
             bodyData.dbPassword,
             bodyData.dbDatabase
         );
+
+        
 
         return BaseResponse.ok();
     }
@@ -47,6 +52,33 @@ export class CrepenSystemInstallController {
     ) {
         return BaseResponse.ok<SystemInstallResponseDto>({
             installState : await this.installService.getInstallState()
+        })
+    }
+
+
+    @Post('chk-db')
+    async checkDatabaseConn(
+        @Req() req: Request,
+        @Body() bodyData : SystemInstallCheckDatabaseRequestDto
+    )
+    {
+        
+        console.log('BODY DATA',bodyData);
+        
+        const connCheck = await this.installService.checkDatabaseConnection({
+            host : bodyData.dbHost,
+            database : bodyData.dbDatabase,
+            password : bodyData.dbPassword,
+            port : bodyData.dbPort,
+            user : bodyData.dbUser
+        })
+
+        if(!connCheck){
+            throw CrepenApiSystemInstallHttpError.TEST_DB_CONN_FAILED;
+        }
+
+        return BaseResponse.ok<SystemInstallCheckDatabaseResponseDto>({
+            state : connCheck
         })
     }
 }

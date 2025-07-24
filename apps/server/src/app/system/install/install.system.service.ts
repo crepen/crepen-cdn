@@ -78,4 +78,25 @@ export class CrepenSystemInstallService {
         console.log(data);
         return data?.value === '1';
     }
+
+    checkDatabaseConnection = async (data : {host: string, port: number, user: string, password: string, database: string}) : Promise<boolean> => {
+        const dataSource = new DataSource({
+            type : 'mysql',
+            host : data.host,
+            port : data.port,
+            username : data.user,
+            password : data.password,
+            database : data.database,
+            synchronize : false
+        })
+
+        try{
+            const db = await dataSource.initialize();
+            await db.destroy();
+            return true;
+        }
+        catch(e){
+            return false;
+        }
+    }
 }

@@ -1,0 +1,120 @@
+.cp-install-page {
+    width: 70%;
+    height: 80%;
+
+    box-shadow: 0px 0px 6px -2px gray;
+
+    border-radius: 10px;
+
+    // padding: 20px;
+
+
+    display: grid;
+    grid-template-areas:
+        'header'
+        'content'
+        'footer'
+    ;
+
+    grid-template-rows: min-content 1fr min-content;
+
+
+    .cp-header {
+        grid-area: header;
+        padding: 16px 20px;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+
+
+        .cp-backword {}
+
+        .cp-icon-bt {
+            cursor: pointer;
+            text-decoration: none;
+            color: initial;
+        }
+
+
+    }
+
+    .cp-content {
+        grid-area: content;
+
+        display: block;
+        padding: 20px;
+
+        .cp-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .cp-subtitle {
+            margin-top: 10px;
+            font-size: 14px;
+
+            span {
+                display: block;
+            }
+
+        }
+
+
+        .cp-form {
+
+            margin-top: 20px;
+
+            .cp-form-block {
+                margin-bottom: 10px;
+
+                .cp-form-label {
+                    display: block;
+                    font-size: 14px;
+                }
+
+                .cp-form-value {
+                    display: block;
+                    border-radius: 6px;
+                    border: 1px solid #bdbdbd;
+                    width: 300px;
+                    height: 30px;
+                    padding-inline: 10px;
+                    margin-top: 4px;
+
+                    outline: none;
+
+                    &:focus {
+                        border-width: 2px;
+                    }
+                }
+            }
+        }
+    }
+
+
+    .cp-footer {
+        grid-area: footer;
+        padding: 20px;
+
+        display: flex;
+        justify-content: end;
+        align-items: center;
+        gap: 10px;
+
+        .cp-footer-message-box{
+            text-align: end;
+            font-size: 14px;
+            color: #c31919;
+        }
+
+        .cp-footer-bt{
+            width: 100px;
+            height: 30px;
+            border: 1px solid gray;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    }
+}

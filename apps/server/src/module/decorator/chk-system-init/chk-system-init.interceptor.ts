@@ -14,6 +14,13 @@ export class CheckInitSystemInterceptor implements NestInterceptor {
     ) { }
 
     async intercept(context: ExecutionContext, next: CallHandler<any>): Promise<Observable<any>> {
+        const request = context.switchToHttp().getRequest<Request>();
+        const url = request.url;
+
+        if(url.startsWith('/system')){
+             return next.handle();
+        }
+
         let dataSource: DataSource;
 
         try {
@@ -44,7 +51,7 @@ export class CheckInitSystemInterceptor implements NestInterceptor {
             }
         }
         catch (e) {
-            if(dataSource.isInitialized){
+            if (dataSource.isInitialized) {
                 await dataSource.destroy();
             }
 

@@ -1,12 +1,14 @@
 {
-    "VALIDATION_INSTALL_DBPORT_FAILED" : "DB Port 형식이 맞지 않습니다.",
-    "VALIDATION_INSTALL_DBHOST_FAILED" : "DB Host 형식이 맞지 않습니다.",
-    "VALIDATION_INSTALL_DBUSER_FAILED" : "DB Username 형식이 맞지 않습니다.",
-    "VALIDATION_INSTALL_DBPASSWORD_FAILED" : "DB Passoword 형식이 맞지 않습니다.",
-    "VALIDATION_INSTALL_DBNAME_FAILED" : "DB Database name 형식이 맞지 않습니다.",
+    "VALIDATION_INSTALL_DBPORT_FAILED" : "DB 포트가 빈 값이거나 형식이 맞지 않습니다.",
+    "VALIDATION_INSTALL_DBHOST_FAILED" : "DB 호스트가 빈 값이거나 형식이 맞지 않습니다.",
+    "VALIDATION_INSTALL_DBUSER_FAILED" : "DB 사용자명이 빈 값이거나 형식이 맞지 않습니다.",
+    "VALIDATION_INSTALL_DBPASSWORD_FAILED" : "DB 비밀번호가 빈 값이거나 형식이 맞지 않습니다.",
+    "VALIDATION_INSTALL_DBNAME_FAILED" : "DB 데이터베이스명이 빈 값이거나 형식이 맞지 않습니다.",
 
 
 
 
-    "INIT_DB_ALREADY_COMPLETE" : "시스템 설정이 이미 완료되었습니다."
+    "INIT_DB_ALREADY_COMPLETE" : "시스템 설정이 이미 완료되었습니다.",
+
+    "TEST_DB_CONN_FAILED" : "데이터베이스에 연결할 수 없습니다."
 }

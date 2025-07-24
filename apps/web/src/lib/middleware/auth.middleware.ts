@@ -28,6 +28,7 @@ export class AuthMiddleware implements BaseMiddleware {
         const basePath = StringUtil.isEmpty(req.nextUrl.basePath) ? '/' : req.nextUrl.basePath;
 
 
+        console.log(req.url , `${req.nextUrl.basePath}${'/install/*'}` , this.urlMatch(req,'/install/*') , this.urlMatch(req,'/install'))
 
         // const realUrl = req.nextUrl.origin + process.env.BASE_PATH + req.nextUrl.pathname;
 
@@ -93,14 +94,15 @@ export class AuthMiddleware implements BaseMiddleware {
 
         }
         else if (this.urlMatch(req, '/logout')) { /* empty */ }
+        else if (this.urlMatch(req, '/install/*') || this.urlMatch(req , '/install')) {
+            console.log("INSTALL REQUEST")
+         }
         else {
-            console.log(req.nextUrl);
-
             const renewToken = await CrepenAuthOpereationService.renewTokenInEdge(req, true);
             if (renewToken.success !== true) {
                 return {
                     type: 'end',
-                    response: NextResponse.redirect(new URL(urlJoin(basePath, '/login' , `?callback=${req.nextUrl.pathname}`), req.url))
+                    response: NextResponse.redirect(new URL(urlJoin(basePath, '/login', `?callback=${req.nextUrl.pathname}`), req.url))
                 }
             }
 
@@ -128,14 +130,4 @@ export class AuthMiddleware implements BaseMiddleware {
 
 
 
-
-    isMatchUrl = (pathPattern: string, url: string) => {
-        const urlPattern: URLPattern = new URLPattern({ pathname: `${pathPattern}` });
-        const splitUrl = url.split('?')[0];
-
-        const isMatch: boolean = urlPattern.exec(splitUrl) !== null;
-
-        return isMatch;
-
-    }
 }
