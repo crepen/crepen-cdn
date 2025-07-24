@@ -1,8 +1,8 @@
-import { CrepenApiResult } from "../../../common/result/CrepenApiResult";
-import { CrepenServiceResult } from "../../../common/result/CrepenServiceResult";
 import { CrepenFolder } from "./dto/CrepenFolder";
 import { CrepenFolderApiService } from "./CrepenFolderApiService";
-import { CrepenCookieOperationService } from "../../../../services/operation/cookie.operation.service";
+import { CrepenServiceResult } from "@web/modules/common/result/CrepenServiceResult";
+import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
+import { CrepenApiResult } from "@web/modules/common/result/CrepenApiResult";
 
 export class CrepenFolderOperationService {
     static getRootFolder = async (): Promise<CrepenServiceResult<CrepenFolder | undefined>> => {
@@ -27,13 +27,13 @@ export class CrepenFolderOperationService {
 
     }
 
-    static getFolderData = async (targetFolderUid?: string, includeChild?: boolean): Promise<CrepenServiceResult<CrepenFolder | undefined>> => {
+    static getFolderData = async (targetFolderUid?: string, includeChild?: boolean): Promise<CrepenServiceResult<CrepenFolder>> => {
 
         const tokenGroup = await CrepenCookieOperationService.getTokenData();
 
         const folderData = await CrepenFolderApiService.getFolderData(tokenGroup.data?.accessToken, targetFolderUid, { includeChild: includeChild })
 
-        return CrepenApiResult.toServiceResponse(folderData);
+        return await CrepenApiResult.toServiceResponse(folderData) ;
     }
 
 

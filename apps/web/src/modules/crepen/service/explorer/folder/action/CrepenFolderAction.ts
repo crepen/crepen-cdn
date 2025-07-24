@@ -1,10 +1,10 @@
 'use server'
 
-import { CrepenAuthOpereationService } from "@web/modules/crepen/auth/CrepenAuthOpereationService";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { CrepenFolderOperationService } from "../CrepenFolderOperationService";
 import { CrepenActionError } from "@web/modules/common/error/CrepenActionError";
 import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError";
+import { CrepenAuthOpereationService } from "../../../auth/CrepenAuthOpereationService";
 
 export const CrepenFolderAddChildFolder = async (formData: FormData) => {
 
@@ -24,7 +24,7 @@ export const CrepenFolderAddChildFolder = async (formData: FormData) => {
             };
         }
         else {
-            await CrepenCookieOperationService.insertTokenData(renewTokenGroup.data);
+            await CrepenCookieOperationService.insertTokenData(renewTokenGroup.data ?? undefined);
         }
 
 

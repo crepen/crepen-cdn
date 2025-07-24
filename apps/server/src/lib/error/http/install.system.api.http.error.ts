@@ -5,7 +5,6 @@ export class CrepenApiSystemInstallHttpError extends CrepenCommonHttpLocaleError
         super('api_system', message, status, options)
     }
 
-    static INIT_DATABASE_CONNECT_TEST_FAILED = new CrepenApiSystemInstallHttpError('INIT_DATABASE_CONNECT_TEST_FAILED', 403);
     static INIT_DB_ALREADY_COMPLETE = new CrepenApiSystemInstallHttpError('INIT_DB_ALREADY_COMPLETE', 403);
     
     

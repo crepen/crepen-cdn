@@ -1,4 +1,4 @@
-import { CrepenBaseResult } from "../result/CrepenBaseResult";
+import { CrepenHttpResult } from "../result/CrepenBaseResult";
 
 
 export class CrepenBaseError extends Error {
@@ -13,8 +13,8 @@ export class CrepenBaseError extends Error {
     innerError?: Error;
 
 
-    toResult = <T,>(): CrepenBaseResult<T> => {
-        return new CrepenBaseResult<T>({
+    toResult = <T,>(): CrepenHttpResult<T> => {
+        return new CrepenHttpResult<T>({
             success: false,
             innerError: this.innerError,
             message: this.message,

@@ -1,10 +1,10 @@
 'use server'
 
-import { CrepenAuthOpereationService } from "@web/modules/crepen/auth/CrepenAuthOpereationService";
 import { StringUtil } from "../util/string.util"
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { CrepenActionError } from "@web/modules/common/error/CrepenActionError";
-import { CrepenFileOperationService } from "@web/modules/crepen/explorer/file/CrepenFileOperationService";
+import { CrepenAuthOpereationService } from "@web/modules/crepen/service/auth/CrepenAuthOpereationService";
+import { CrepenFileOperationService } from "@web/modules/crepen/service/explorer/file/CrepenFileOperationService";
 
 interface AddFileActionResult {
     success?: boolean,
@@ -69,7 +69,7 @@ export const removeFile = async (uid?: string) => {
             };
         }
         else {
-            await CrepenCookieOperationService.insertTokenData(renewTokenGroup.data);
+            await CrepenCookieOperationService.insertTokenData(renewTokenGroup.data ?? undefined);
         }
 
 

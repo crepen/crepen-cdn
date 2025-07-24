@@ -25,6 +25,7 @@ export class DefaultDataSourceProvider implements DataSourceProviderInterface {
     private dataSource: DataSource;
 
     static getDataSource = (config: ConfigService<unknown, boolean>) => {
+        console.log(config.get('database.default'));
         const instance = new DefaultDataSourceProvider(config);
         return instance.dataSource;
     }

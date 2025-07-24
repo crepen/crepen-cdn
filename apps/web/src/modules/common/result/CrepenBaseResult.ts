@@ -1,4 +1,4 @@
-interface CrepenBaseResultInterface<T = unknown> {
+export interface CrepenHttpResultInterface<T = unknown> {
     success: boolean,
     message?: string,
     errorCode?: string,
@@ -7,9 +7,9 @@ interface CrepenBaseResultInterface<T = unknown> {
     innerError?: Error
 }
 
-export class CrepenBaseResult<T = unknown> {
+export class CrepenHttpResult<T = unknown> {
 
-    constructor(prop: CrepenBaseResultInterface<T>) {
+    constructor(prop: CrepenHttpResultInterface<T>) {
         this.success = prop.success ?? false;
         this.message = prop.message;
         this.errorCode = prop.errorCode;

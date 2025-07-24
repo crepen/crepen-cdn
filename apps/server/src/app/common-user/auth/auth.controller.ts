@@ -32,6 +32,7 @@ export class CrepenAuthRouteController {
         @Body() loginData: AuthLoginRequestDto,
         @I18n() i18n: I18nContext
     ) {
+        
         const token: CrepenTokenGroup = await this.authService.getToken(loginData.id, loginData.password);
 
         return BaseResponse.ok<AuthTokenResponseDto>({

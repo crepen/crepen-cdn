@@ -1,27 +1,27 @@
 import { CrepenToken } from "@web/services/types/object/auth.object";
 import { NextRequest } from "next/server";
-import { CrepenServiceResult } from "../../common/result/CrepenServiceResult";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { CrepenAuthApiService } from "@web/services/api/auth.api.service";
 import { CrepenUserOperationService } from "@web/services/operation/user.operation.service";
-import { CrepenApiResult } from "../../common/result/CrepenApiResult";
-import { CrepenServiceError } from "../../common/error/CrepenServiceError";
 import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError";
+import { CrepenServiceResult } from "@web/modules/common/result/CrepenServiceResult";
+import { CrepenServiceError } from "@web/modules/common/error/CrepenServiceError";
+import { CommonOperationService } from "../../common/CommonOperationService";
 
-export class CrepenAuthOpereationService {
+export class CrepenAuthOpereationService extends CommonOperationService{
 
 
-    static renewTokenInEdge = async (req: NextRequest, isForce?: boolean): Promise<CrepenServiceResult<CrepenToken | undefined>> => {
+    static renewTokenInEdge = async (req: NextRequest, isForce?: boolean): Promise<CrepenServiceResult<CrepenToken>> => {
         const tokenGroup = await CrepenCookieOperationService.getTokenDataInEdge(req)
-        return this.baseRenewToken(tokenGroup.data, isForce)
+        return this.baseRenewToken(tokenGroup.data ?? undefined, isForce)
     }
 
     static renewToken = async (isForce?: boolean): Promise<CrepenServiceResult<CrepenToken | undefined>> => {
         const tokenGroup = await CrepenCookieOperationService.getTokenData();
-        return this.baseRenewToken(tokenGroup.data, isForce)
+        return this.baseRenewToken(tokenGroup.data ?? undefined, isForce)
     }
 
-    private static baseRenewToken = async (tokenGroup?: CrepenToken, isForce?: boolean): Promise<CrepenServiceResult<CrepenToken | undefined>> => {
+    private static baseRenewToken = async (tokenGroup?: CrepenToken, isForce?: boolean): Promise<CrepenServiceResult<CrepenToken>> => {
         let allowRenew = isForce ?? false;
 
         try {
@@ -34,7 +34,7 @@ export class CrepenAuthOpereationService {
             if (allowRenew === true) {
                 const refreshTokenRequest = await CrepenAuthApiService.refreshToken(tokenGroup?.refreshToken);
 
-                return CrepenApiResult.toServiceResponse(refreshTokenRequest);
+                return CrepenServiceResult.applyApiResult(refreshTokenRequest);
             }
 
             return new CrepenServiceResult({
@@ -43,19 +43,20 @@ export class CrepenAuthOpereationService {
             })
         }
         catch (e) {
-            let err = new CrepenServiceResult<CrepenToken | undefined>({
-                success: false,
-                message: '알 수 없는 오류입니다.',
-                innerError: e as Error
-            })
+            return this.getDefaultUnkownResult(e as Error);
+            // let err = new CrepenServiceResult<CrepenToken | undefined>({
+            //     success: false,
+            //     message: '알 수 없는 오류입니다.',
+            //     innerError: e as Error
+            // })
 
-            if (e instanceof CrepenBaseError) {
-                err = new CrepenServiceResult<CrepenToken | undefined>({
-                    ...e.toResult()
-                })
-            }
+            // if (e instanceof CrepenBaseError) {
+            //     err = new CrepenServiceResult<CrepenToken | undefined>({
+            //         ...e.toResult()
+            //     })
+            // }
 
-            return err;
+            // return err;
         }
     }
 
@@ -68,7 +69,7 @@ export class CrepenAuthOpereationService {
             }
 
 
-            const insertCookie = await CrepenCookieOperationService.insertTokenData(loginToken.data);
+            const insertCookie = await CrepenCookieOperationService.insertTokenData(loginToken.data ?? undefined);
             if (insertCookie.success !== true) {
                 throw new CrepenServiceError(insertCookie.message, insertCookie.statusCode, insertCookie.innerError)
             }

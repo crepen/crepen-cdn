@@ -31,14 +31,9 @@ export class CrepenSystemInstallController {
         @Body() bodyData: SystemInstallRequestDto
     ) {
 
+        
 
-        await this.installService.applySystemInit(
-            bodyData.dbHost,
-            bodyData.dbPort,
-            bodyData.dbUser,
-            bodyData.dbPassword,
-            bodyData.dbDatabase
-        );
+        await this.installService.applySystemInit(bodyData);
 
         
 
@@ -63,14 +58,12 @@ export class CrepenSystemInstallController {
     )
     {
         
-        console.log('BODY DATA',bodyData);
-        
         const connCheck = await this.installService.checkDatabaseConnection({
             host : bodyData.dbHost,
             database : bodyData.dbDatabase,
             password : bodyData.dbPassword,
             port : bodyData.dbPort,
-            user : bodyData.dbUser
+            username : bodyData.dbUser
         })
 
         if(!connCheck){

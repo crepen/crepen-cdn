@@ -1,8 +1,6 @@
-import { FolderDefaultPageContainer } from "@web/components-new/page/folder/default/layout/FolderDefaultPageContainer";
-import { CrepenFolderOperationService } from "../../../../../../../../modules/crepen/explorer/folder/CrepenFolderOperationService";
-import Head from "next/head";
 import { Fragment } from "react";
 import { FolderListPageLayout } from "@web/components-v2/page/folder/list-page/layout/FolderListPageLayout";
+import { CrepenFolderOperationService } from "@web/modules/crepen/service/explorer/folder/CrepenFolderOperationService";
 
 interface ExplorerFolderRoutePageProp {
     params: Promise<{

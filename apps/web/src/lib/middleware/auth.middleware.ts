@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse, URLPattern } from "next/server"
 import { BaseMiddleware, BaseMiddlewareResponse } from "./base.middleware";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
-import { CrepenAuthOpereationService } from "@web/modules/crepen/auth/CrepenAuthOpereationService";
 import urlJoin from "url-join";
 import { StringUtil } from "../util/string.util";
+import { CrepenAuthOpereationService } from "@web/modules/crepen/service/auth/CrepenAuthOpereationService";
 
 export class AuthMiddleware implements BaseMiddleware {
 
@@ -23,14 +23,7 @@ export class AuthMiddleware implements BaseMiddleware {
     }
 
     public init = async (req: NextRequest, res: NextResponse): Promise<BaseMiddlewareResponse> => {
-
-
         const basePath = StringUtil.isEmpty(req.nextUrl.basePath) ? '/' : req.nextUrl.basePath;
-
-
-        console.log(req.url , `${req.nextUrl.basePath}${'/install/*'}` , this.urlMatch(req,'/install/*') , this.urlMatch(req,'/install'))
-
-        // const realUrl = req.nextUrl.origin + process.env.BASE_PATH + req.nextUrl.pathname;
 
         if (req.method !== 'GET') {
             return {
@@ -75,7 +68,7 @@ export class AuthMiddleware implements BaseMiddleware {
                         }
                     }
 
-                    const insertCookie = await CrepenCookieOperationService.insertTokenDataInEdge(res, renewToken.data);
+                    const insertCookie = await CrepenCookieOperationService.insertTokenDataInEdge(res, renewToken.data ?? undefined);
                     if (insertCookie.success !== true) {
                         return {
                             type: 'end',
@@ -94,9 +87,9 @@ export class AuthMiddleware implements BaseMiddleware {
 
         }
         else if (this.urlMatch(req, '/logout')) { /* empty */ }
-        else if (this.urlMatch(req, '/install/*') || this.urlMatch(req , '/install')) {
-            console.log("INSTALL REQUEST")
-         }
+        else if (this.urlMatch(req, '/install/*') || this.urlMatch(req, '/install')) {
+            /** empty */
+        }
         else {
             const renewToken = await CrepenAuthOpereationService.renewTokenInEdge(req, true);
             if (renewToken.success !== true) {
@@ -106,7 +99,7 @@ export class AuthMiddleware implements BaseMiddleware {
                 }
             }
 
-            const insertCookie = await CrepenCookieOperationService.insertTokenDataInEdge(res, renewToken.data);
+            const insertCookie = await CrepenCookieOperationService.insertTokenDataInEdge(res, renewToken.data ?? undefined);
             if (insertCookie.success !== true) {
                 return {
                     type: 'end',

@@ -11,4 +11,6 @@
     "INIT_DB_ALREADY_COMPLETE" : "시스템 설정이 이미 완료되었습니다.",
 
     "TEST_DB_CONN_FAILED" : "데이터베이스에 연결할 수 없습니다."
+
+
 }

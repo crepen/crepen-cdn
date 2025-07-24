@@ -1,9 +1,9 @@
 import { CrepenFileApiService } from "./CrepenFileApiService";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { CrepenFile } from "./dto/CrepenFile";
-import { CrepenServiceResult } from "../../../common/result/CrepenServiceResult";
-import { CrepenApiResult } from "../../../common/result/CrepenApiResult";
 import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError";
+import { CrepenServiceResult } from "@web/modules/common/result/CrepenServiceResult";
+import { CrepenApiResult } from "@web/modules/common/result/CrepenApiResult";
 
 
 export class CrepenFileOperationService {

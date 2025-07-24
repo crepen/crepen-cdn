@@ -1,6 +1,6 @@
+import { CrepenApiService } from "@web/modules/common/CrepenApiService"
 import { CrepenFile } from "./dto/CrepenFile"
-import { CrepenApiService } from "../../../common/CrepenApiService"
-import { CrepenApiResult } from "../../../common/result/CrepenApiResult"
+import { CrepenApiResult } from "@web/modules/common/result/CrepenApiResult"
 
 export class CrepenFileApiService {
 

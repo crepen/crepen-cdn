@@ -1,7 +1,7 @@
 import { StringUtil } from "@web/lib/util/string.util";
 import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError";
 import { CrepenRouteError } from "@web/modules/common/error/CrepenRouteError";
-import { CrepenAuthOpereationService } from "@web/modules/crepen/auth/CrepenAuthOpereationService";
+import { CrepenAuthOpereationService } from "@web/modules/crepen/service/auth/CrepenAuthOpereationService";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -29,7 +29,7 @@ export const GET = async (req: NextRequest, res: NextResponse & RequestContext) 
             throw new CrepenRouteError(renewToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.', 401, renewToken.innerError);
         }
         else {
-            const applyToken = await CrepenCookieOperationService.insertTokenData(renewToken.data);
+            const applyToken = await CrepenCookieOperationService.insertTokenData(renewToken.data ?? undefined);
             if (applyToken.success !== true) {
                 throw new CrepenRouteError(applyToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.', 401, applyToken.innerError);
             }

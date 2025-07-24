@@ -5,97 +5,91 @@ import { StringUtil } from "@crepen-nest/lib/util/string.util";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { LocalConfigEntity } from "src/module/entity/local/config.local.entity";
-import { DataSource } from "typeorm";
+import { DataSource, EntityManager } from "typeorm";
 import { CrepenSystemInstallRepository } from "./install.system.repository";
+import { SystemInstallDatabaseRequestDto, SystemInstallRequestDto } from "./dto/install.system.dto";
 
 @Injectable()
 export class CrepenSystemInstallService {
     constructor(
         private readonly configService: ConfigService,
-        private readonly databaseService : CrepenDatabaseService,
-        private readonly repo : CrepenSystemInstallRepository
-    ) {  }
-
- 
-
-    applySystemInit = async (host: string, port: number, user: string, password: string, database: string) => {
-
-        const localDatabase = await this.databaseService.getDefault();
-
-        // INIT STATE CHECK
-        const initDBData = await this.repo.getDatabaseConfig();
-
-        if (initDBData !== null && !StringUtil.isEmpty(initDBData.value)) {
-            throw CrepenApiSystemInstallHttpError.INIT_DB_ALREADY_COMPLETE;
-        }
+        private readonly databaseService: CrepenDatabaseService,
+        private readonly repo: CrepenSystemInstallRepository
+    ) { }
 
 
 
-        // TEST CONNECT
+    applySystemInit = async (prop: SystemInstallRequestDto) => {
 
-        const connectionString = `mysql://${user}:${password}@${host}:${port}/${database}`;
+        const localDatabase = await this.databaseService.getLocal();
 
-        try {
-            const dataSource = new DataSource({
-                type: 'mysql',
-                url: connectionString,
-                synchronize: false,
-            })
+        await localDatabase.transaction(async (manager: EntityManager) => {
+            // INIT STATE CHECK
+            const initDBData = await this.repo.getInstallState({ manager: manager });
 
-
-
-            const conn = await dataSource.initialize();
-
-            await conn.destroy();
-        }
-        catch (e) {
-            throw CrepenApiSystemInstallHttpError.INIT_DATABASE_CONNECT_TEST_FAILED;
-        }
+            if (initDBData?.value === '1') {
+                throw CrepenApiSystemInstallHttpError.INIT_DB_ALREADY_COMPLETE;
+            }
 
 
 
+            // TEST CONNECT
 
-        // APPLY DATABASE DATA
-        const data = { host: host, port: port, username: user, password: password, database: database };
-        const dataStr = JSON.stringify(data)
+            const checkConnDB = await this.checkDatabaseConnection(prop.database);
+            if (!checkConnDB) {
+                throw CrepenApiSystemInstallHttpError.TEST_DB_CONN_FAILED;
+            }
 
 
-        await localDatabase.getRepository(LocalConfigEntity)
-            .save(
-                LocalConfigEntity.data(
-                    'db',
-                    CryptoUtil.Symmentic.encrypt(dataStr)
-                )
-            )
 
-        for (const key of Object.keys(data)) {
-            this.configService.set(`database.default.${key}`, data[key])
-        }
+            // APPLY DATABASE DATA
+            const data = { host: prop.database.host, port: prop.database.port, username: prop.database.username, password: prop.database.password, database: prop.database.database };
+            const dataStr = JSON.stringify(data)
+            const encryptDataStr = CryptoUtil.Symmentic.encrypt(dataStr)
+
+            await this.repo.applyDatabase(encryptDataStr, { manager: manager });
+            // await localDatabase.getRepository(LocalConfigEntity)
+            //     .save(
+            //         LocalConfigEntity.data(
+            //             'db',
+            //             encryptDataStr
+            //         )
+            //     )
+
+            for (const key of Object.keys(data)) {
+                this.configService.set(`database.default.${key}`, data[key])
+            }
+
+
+            await this.repo.changeInstallState(true, { manager: manager })
+        })
+
+
     }
 
     getInstallState = async () => {
-        const data = await this.repo.getInstallConfig();
-        console.log(data);
+        const data = await this.repo.getInstallState();
+        
         return data?.value === '1';
     }
 
-    checkDatabaseConnection = async (data : {host: string, port: number, user: string, password: string, database: string}) : Promise<boolean> => {
+    checkDatabaseConnection = async (data: SystemInstallDatabaseRequestDto): Promise<boolean> => {
         const dataSource = new DataSource({
-            type : 'mysql',
-            host : data.host,
-            port : data.port,
-            username : data.user,
-            password : data.password,
-            database : data.database,
-            synchronize : false
+            type: 'mysql',
+            host: data.host,
+            port: data.port,
+            username: data.username,
+            password: data.password,
+            database: data.database,
+            synchronize: false
         })
 
-        try{
+        try {
             const db = await dataSource.initialize();
             await db.destroy();
             return true;
         }
-        catch(e){
+        catch (e) {
             return false;
         }
     }

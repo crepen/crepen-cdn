@@ -1,10 +1,10 @@
 'use server'
 
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
-import { CrepenFolderOperationService } from "../../modules/crepen/explorer/folder/CrepenFolderOperationService";
-import { CrepenAuthOpereationService } from "@web/modules/crepen/auth/CrepenAuthOpereationService";
 import { CrepenActionError } from "@web/modules/common/error/CrepenActionError";
 import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError";
+import { CrepenAuthOpereationService } from "@web/modules/crepen/service/auth/CrepenAuthOpereationService";
+import { CrepenFolderOperationService } from "@web/modules/crepen/service/explorer/folder/CrepenFolderOperationService";
 
 interface LoginUserActionResult {
     success?: boolean,
@@ -29,7 +29,7 @@ export const loginUser = async (currentState: unknown, formData: FormData): Prom
         }
 
 
-        const saveCookie = await CrepenCookieOperationService.insertTokenData(requestLogin.data);
+        const saveCookie = await CrepenCookieOperationService.insertTokenData(requestLogin.data ?? undefined);
 
         if (saveCookie.success !== true) {
             throw new CrepenActionError(saveCookie.message, saveCookie.statusCode , saveCookie.innerError)

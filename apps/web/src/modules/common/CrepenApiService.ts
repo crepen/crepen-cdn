@@ -73,7 +73,8 @@ export class CrepenApiService {
                 success: false,
                 message: "서버와 연결이 원활하지 않습니다.",
                 statusCode: 500,
-                innerError : e as Error
+                innerError : e as Error,
+                errorCode : 'FETCH_UNKNOWN_ERROR'
             })
         }
     }

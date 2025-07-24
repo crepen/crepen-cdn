@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse, URLPattern } from "next/server";
 import { BaseMiddleware, BaseMiddlewareResponse } from "./base.middleware";
-import { CrepenSystemInstallOperationService } from "@web/modules/crepen/system/install/CrepenSystemInstallOperationService";
 import urlJoin from "url-join";
 import { StringUtil } from "../util/string.util";
+import { CrepenSystemInstallOperationService } from "@web/modules/crepen/service/system/install/CrepenSystemInstallOperationService";
 
 export class InstallMiddleware implements BaseMiddleware {
     public init = async (req: NextRequest, res: NextResponse): Promise<BaseMiddlewareResponse> => {
@@ -18,19 +18,19 @@ export class InstallMiddleware implements BaseMiddleware {
 
         const installStateReq = await CrepenSystemInstallOperationService.getInstallState();
 
-        console.log(installStateReq);
+
+        const accessPort = req.headers.get('x-forwarded-port');
+        const accessHost = req.headers.get('x-forwarded-host')?.replace(accessPort ?? '', '').replace(":", "");
+
 
         if (installStateReq.data?.installState !== true) {
             //SYSTEM INSTALL NOT YET
 
-
-
-            const accessPort = req.headers.get('x-forwarded-port');
-            const accessHost = req.headers.get('x-forwarded-host')?.replace(accessPort ?? '', '').replace(":", "");
-
-            console.log(accessHost);
             if (accessHost === 'localhost') {
-                if (!this.urlMatch(req, '/install') && !this.urlMatch(req, '/install/*')) {
+                if (
+                    (!this.urlMatch(req, '/install') && !this.urlMatch(req, '/install/*'))
+                    || this.urlMatch(req, '/install/success')
+                ) {
                     return {
                         type: 'end',
                         response: NextResponse.redirect(new URL(urlJoin(basePath, '/install'), req.url))
@@ -51,7 +51,10 @@ export class InstallMiddleware implements BaseMiddleware {
         else {
             // SYSTEIM INSTALL COMPLETE
 
-            if (this.urlMatch(req, '/install') || this.urlMatch(req, '/install/*')) {
+            if (accessHost === 'localhost' && this.urlMatch(req, '/install/success')) {
+                /** empty */
+            }
+            else if (this.urlMatch(req, '/install') || this.urlMatch(req, '/install/*')) {
                 return {
                     type: 'end',
                     response: NextResponse.redirect(new URL(urlJoin(basePath), req.url))

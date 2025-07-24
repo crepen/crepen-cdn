@@ -1,10 +1,10 @@
-import { CrepenBaseResult } from "./CrepenBaseResult";
+import { CrepenHttpResult } from "./CrepenBaseResult";
 import { CrepenServiceResult } from "./CrepenServiceResult";
 
-export class CrepenApiResult<T = unknown> extends CrepenBaseResult<T> {
+export class CrepenApiResult<T = unknown>  extends CrepenHttpResult<T | undefined | null> {
 
 
-    static toServiceResponse = <T,>(response: CrepenApiResult<T>): CrepenServiceResult<T> => {
+    static toServiceResponse = <T,>(response: CrepenApiResult<T | undefined | null>): CrepenServiceResult<T> => {
         const result = new CrepenServiceResult<T>({
             data: response.data,
             success: response.success,

@@ -3,12 +3,12 @@ import './DashboardPageLayout.scss'
 import { faDashboard } from '@fortawesome/free-solid-svg-icons'
 import { GroupExpandBox } from '@web/components/page/common/group-box/group-box.common'
 import { CumulativeDataUsageWidget } from '../containers/cumulative-data-usage-widget/CumulativeDataUsageWidget'
-import { CrepenMonitorOperationService } from '@web/modules/crepen/monitor/CrepenMonitorOperationService'
+import { CrepenMonitorOperationService } from '@web/modules/crepen/service/monitor/CrepenMonitorOperationService'
+import { Suspense } from 'react'
 
 export const DashboardPageLayout = async () => {
 
-    const cumulativeData = await CrepenMonitorOperationService.getCumulativeTrafficMonitorData();
-    console.log('CUM',cumulativeData);
+
 
     return (
         <div className="cp-page-layout cp-dashboard-layout">
@@ -19,15 +19,10 @@ export const DashboardPageLayout = async () => {
                 </div>
             </div>
             <div className="cp-page-content">
-                <GroupExpandBox
-                    title='Traffic'
-                    defaultOpen
-                    className='cp-cumulative-data-usage-widget'
-                >   
-                    <CumulativeDataUsageWidget 
-                        data={cumulativeData.data}
-                    />
-                </GroupExpandBox>
+                <Suspense fallback={<div>LOADING</div>}>
+                    <CumulativeDataUsageWidgetBox />
+                </Suspense>
+
                 <GroupExpandBox
                     title='Traffic'
                     defaultOpen
@@ -36,5 +31,21 @@ export const DashboardPageLayout = async () => {
                 </GroupExpandBox>
             </div>
         </div>
+    )
+}
+
+export const CumulativeDataUsageWidgetBox = async () => {
+    const cumulativeData = await CrepenMonitorOperationService.getCumulativeTrafficMonitorData();
+
+    return (
+        <GroupExpandBox
+            title='Traffic'
+            defaultOpen
+            className='cp-cumulative-data-usage-widget'
+        >
+            <CumulativeDataUsageWidget
+                data={cumulativeData.data ?? undefined}
+            />
+        </GroupExpandBox>
     )
 }

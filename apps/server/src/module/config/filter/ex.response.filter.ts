@@ -74,6 +74,8 @@ export class ExceptionResponseFilter implements ExceptionFilter {
                 )
         }
         else {
+            console.log('?' , exception)
+
             response
                 .status(500)
                 .json(

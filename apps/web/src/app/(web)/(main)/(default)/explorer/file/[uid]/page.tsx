@@ -20,8 +20,8 @@ import { ClientDateLocaleWrap } from '@web/components/page/common/date-locale.wr
 import { CrepenLanguageService } from '@web/services/common/language.service';
 import { FileSharedUrlDetailItem } from '@web/components/page/file/edit-detail/file-shared-url.detail.file';
 import { FileRemoveEditDetailItem } from '@web/components/page/file/edit-detail/file-remove.edit-detail.file';
-import { CrepenFileOperationService } from '@web/modules/crepen/explorer/file/CrepenFileOperationService';
 import urlJoin from 'url-join';
+import { CrepenFileOperationService } from '@web/modules/crepen/service/explorer/file/CrepenFileOperationService';
 
 interface ExplorerFileInfoRoutePageProp {
     params: Promise<{
@@ -33,10 +33,7 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
 
     const targetFileUid = (await prop.params).uid;
 
-    console.log('WW',targetFileUid);
     const fileData = await CrepenFileOperationService.getFiledata(targetFileUid ?? 'ntf');
-
-    console.log('WW',fileData);
 
     if (fileData.success !== true) {
         redirect('/error')
@@ -61,8 +58,6 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
     const basePath = await CrepenHttpService.getBasePath();
     const downloadUrl = `/api/file/${fileData.data?.uid ?? 'ntf'}/download`
     const fileUrl = urlJoin(basePath ?? '/' ,  downloadUrl , );
-
-     console.log('WW',fileUrl);
 
     return (
         <div className="cp-common-page cp-file-info-page">

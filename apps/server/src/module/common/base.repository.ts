@@ -12,13 +12,19 @@ export class CrepenBaseRepository {
     ) { }
 
     getRepository = async <Entity extends ObjectLiteral>(dbType: 'default' | 'local', entity: EntityTarget<Entity>) => {
+                
+        let dataSource : DataSource;
 
         if (dbType === 'local') {
-            return (await this.dbService.getLocal()).getRepository(entity);
+            dataSource = await this.dbService.getLocal();
         }
         else {
-            return (await this.dbService.getDefault()).getRepository(entity);
+            dataSource =await this.dbService.getDefault()
         }
+
+       
+
+        return dataSource.getRepository(entity);
     }
 
 
