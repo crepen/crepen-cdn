@@ -1,4 +1,4 @@
-import { useCrepenGlobalModal } from '@web/components-v2/page/(global)/config/global-modal/CrepenGlobalModalProvider';
+import { useGlobalModal } from '../../../../../../../component/config/GlobalModalProvider';
 import './FolderAddChildFolderModal.scss'
 import { RefObject, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { StringUtil } from '@web/lib/util/string.util';
@@ -22,7 +22,7 @@ export const FolderAddChildFolderModal = (prop: FolderAddChildFolderModalProp) =
 
     const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
-    const globalModalHook = useCrepenGlobalModal();
+    const globalModalHook = useGlobalModal();
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {

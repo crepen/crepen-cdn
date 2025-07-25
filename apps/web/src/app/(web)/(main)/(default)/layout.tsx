@@ -2,8 +2,7 @@ import '@web/assets/style/cloud/layout/cloud.layout.scss';
 
 
 import { PropsWithChildren, Suspense } from "react";
-import CloudGlobalHeader from '@web/components/layout/cloud/header/cloud.header';
-import { MainAside } from '@web/components/layout/main/aside/aside.main';
+import { MainAside } from '../../../../component/layout/(global)/aside/aside.main';
 import { MainWrapper } from '@web/components/layout/main/wrap/wrap.main';
 import { MainHeader } from '@web/components/layout/main/header/header.main';
 

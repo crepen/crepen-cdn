@@ -1,13 +1,12 @@
 import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
 import { CrepenApiSystemInstallHttpError } from "@crepen-nest/lib/error/http/install.system.api.http.error";
 import { CryptoUtil } from "@crepen-nest/lib/util/crypto.util";
-import { StringUtil } from "@crepen-nest/lib/util/string.util";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { LocalConfigEntity } from "src/module/entity/local/config.local.entity";
 import { DataSource, EntityManager } from "typeorm";
 import { CrepenSystemInstallRepository } from "./install.system.repository";
-import { SystemInstallDatabaseRequestDto, SystemInstallRequestDto } from "./dto/install.system.dto";
+import {  SystemInstallRequestDto } from "./dto/install.system.dto";
+import { DatabaseConnectData } from "src/module/entity/common/database";
 
 @Injectable()
 export class CrepenSystemInstallService {
@@ -35,7 +34,13 @@ export class CrepenSystemInstallService {
 
             // TEST CONNECT
 
-            const checkConnDB = await this.checkDatabaseConnection(prop.database);
+            const checkConnDB = await this.checkDatabaseConnection({
+                host : prop.dbHost,
+                port : prop.dbPort,
+                database : prop.dbDatabase,
+                password : prop.dbPassword,
+                username : prop.dbUsername
+            });
             if (!checkConnDB) {
                 throw CrepenApiSystemInstallHttpError.TEST_DB_CONN_FAILED;
             }
@@ -43,19 +48,12 @@ export class CrepenSystemInstallService {
 
 
             // APPLY DATABASE DATA
-            const data = { host: prop.database.host, port: prop.database.port, username: prop.database.username, password: prop.database.password, database: prop.database.database };
+            const data = { host: prop.dbHost, port: prop.dbPort, username: prop.dbUsername, password: prop.dbPassword, database: prop.dbDatabase };
             const dataStr = JSON.stringify(data)
             const encryptDataStr = CryptoUtil.Symmentic.encrypt(dataStr)
 
             await this.repo.applyDatabase(encryptDataStr, { manager: manager });
-            // await localDatabase.getRepository(LocalConfigEntity)
-            //     .save(
-            //         LocalConfigEntity.data(
-            //             'db',
-            //             encryptDataStr
-            //         )
-            //     )
-
+        
             for (const key of Object.keys(data)) {
                 this.configService.set(`database.default.${key}`, data[key])
             }
@@ -73,7 +71,7 @@ export class CrepenSystemInstallService {
         return data?.value === '1';
     }
 
-    checkDatabaseConnection = async (data: SystemInstallDatabaseRequestDto): Promise<boolean> => {
+    checkDatabaseConnection = async (data: DatabaseConnectData): Promise<boolean> => {
         const dataSource = new DataSource({
             type: 'mysql',
             host: data.host,

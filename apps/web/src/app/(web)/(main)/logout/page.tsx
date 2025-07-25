@@ -1,7 +1,7 @@
 'use client'
 
-import { useGlobalBasePath } from "@web/lib/state/global.state";
-import { redirect, useRouter } from "next/navigation";
+import { useGlobalBasePath } from "@web/modules/client/state/global.state";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import urlJoin from "url-join";
 
@@ -28,7 +28,7 @@ export const MainLogoutPageRouter = () => {
 
     useEffect(() => {
         logout();
-    },[])
+    }, [])
 
 
 }

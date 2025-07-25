@@ -77,7 +77,7 @@ export class CrepenAuthRouteController {
         // 토큰 만료는 Auth Guard에서 처리하게끔 설정
 
         return BaseResponse.ok({
-            expired: false
+            state: true
         });
     }
 

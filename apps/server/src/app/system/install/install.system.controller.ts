@@ -30,13 +30,7 @@ export class CrepenSystemInstallController {
         @Req() req: Request,
         @Body() bodyData: SystemInstallRequestDto
     ) {
-
-        
-
         await this.installService.applySystemInit(bodyData);
-
-        
-
         return BaseResponse.ok();
     }
 

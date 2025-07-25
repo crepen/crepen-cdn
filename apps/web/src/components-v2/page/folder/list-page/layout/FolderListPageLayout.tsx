@@ -1,7 +1,7 @@
 import './FolderListPageLayout.scss'
 
 import { CrepenFolder } from "@web/modules/crepen/explorer/folder/dto/CrepenFolder"
-import { PropsWithClassName } from "@web/types/common.component"
+import { PropsWithClassName } from "@web/modules/common/type/common.component"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder } from '@fortawesome/free-regular-svg-icons'
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons'

@@ -1,4 +1,4 @@
-import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError";
+import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError";
 import { NextRequest, NextResponse } from "next/server";
 
 interface RequestContext {

@@ -12,12 +12,10 @@ import '@fortawesome/fontawesome-free/css/all.min.css'
 
 import { Metadata } from 'next';
 import { PropsWithChildren } from 'react'
-import { InitClient } from '../../components/config/init-client';
 import { config } from '@fortawesome/fontawesome-svg-core'
-import { CrepenLanguageService } from '@web/services/common/language.service';
-import { cookies, headers } from 'next/headers';
-import { InitSiteConfig } from '@web/components-new/global/config/init-site/InitSiteConfig';
-import { CrepenGlobalProvider } from '@web/components-v2/page/(global)/config/global-provider/CrepenGlobalProvider';
+import { InitSiteConfig } from '../../component/config/InitSiteConfig';
+import { GlobalConfigProvider } from '../../component/config/GlobalConfigProvider';
+import { ServerI18nProvider } from '@web/modules/server/i18n/ServerI18nProvider';
 
 
 
@@ -40,26 +38,17 @@ export const metadata: Metadata = {
 
 const RootLayoutRouter = async ({ children }: PropsWithChildren) => {
 
-    const lang = await CrepenLanguageService.getSessionLocale();
-
-    const basePath = (await headers()).get('x-crepen-basepath')?.toString()
-
-
+    const lang = await ServerI18nProvider.getSystemLocale();
 
     return (
-        <html lang={lang.data}>
+        <html lang={lang}>
             <body>
-                <CrepenGlobalProvider>
+                <GlobalConfigProvider>
                     <InitSiteConfig />
-                    <InitClient
-                        basePath={basePath}
-                        language={lang.data}
-                    >
                         <div id="root">
                             {children}
                         </div>
-                    </InitClient>
-                </CrepenGlobalProvider>
+                </GlobalConfigProvider>
             </body>
         </html>
     )

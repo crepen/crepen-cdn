@@ -5,7 +5,7 @@ import './file-remove.edit-detail.file.scss'
 import { faTrash } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { CrepenDetailItem } from "../../common/detail-list/detail-item.common"
-import { FileAction } from '@web/lib/action'
+import { FileAction } from '@web/modules/server/action'
 import { useState } from 'react'
 import urlJoin from 'url-join'
 import { CrepenModal } from '../../common/base-modal.common'

@@ -1,6 +1,6 @@
-import { CrepenApiResult } from "@web/modules/common/result/CrepenApiResult"
+import { CrepenApiResult } from "@web/modules/common-1/result/CrepenApiResult"
 import { CrepenFolder } from "./dto/CrepenFolder"
-import { CrepenApiService } from "@web/modules/common/CrepenApiService"
+import { CrepenApiService } from "@web/modules/common-1/CrepenApiService"
 
 export class CrepenFolderApiService {
     static getRootFolder = (token?: string): Promise<CrepenApiResult<CrepenFolder | undefined>> => {

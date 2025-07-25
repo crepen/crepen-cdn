@@ -2,16 +2,16 @@
 
 import './FolderLinearItem.scss'
 
-import { faCheckCircle, faFile, faFileVideo, faFileZipper, faFolder, faImage } from "@fortawesome/free-regular-svg-icons"
+import { faFile, faFileVideo, faFileZipper, faFolder, faImage } from "@fortawesome/free-regular-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCheckCircle as faCheckCircleSolid, faCloudDownload, faCopy, faFileDownload, faGlobeAsia } from '@fortawesome/free-solid-svg-icons'
+import { faCheckCircle as faCheckCircleSolid, faCloudDownload, faCopy, faGlobeAsia } from '@fortawesome/free-solid-svg-icons'
 import { MimeUtil } from '@web/lib/util/mime.util'
 import { StringUtil } from '@web/lib/util/string.util'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import Link from 'next/link'
-import { useGlobalBasePath } from '@web/lib/state/global.state'
 import urlJoin from 'url-join'
+import { useGlobalBasePath } from '@web/modules/client/state/global.state'
 
 interface FolderLinearItemProp {
     type: 'folder' | 'file',

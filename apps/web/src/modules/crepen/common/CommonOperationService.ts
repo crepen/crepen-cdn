@@ -1,4 +1,4 @@
-import { CrepenServiceResult } from "@web/modules/common/result/CrepenServiceResult"
+import { CrepenServiceResult } from "@web/modules/common-1/result/CrepenServiceResult"
 
 export class CommonOperationService {
 

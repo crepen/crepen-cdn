@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { BaseServiceResult } from "../types/common.service";
 import { CrepenCookieOperationService } from "../operation/cookie.operation.service";
 
+/** @deprecated */
 export class CrepenLanguageService {
 
     private static DEFAULT_LANGUAGE = 'en';

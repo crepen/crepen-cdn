@@ -1,5 +1,5 @@
-import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError";
-import { CrepenRouteError } from "@web/modules/common/error/CrepenRouteError";
+import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError";
+import { CrepenRouteError } from "@web/modules/common-1/error/CrepenRouteError";
 import { CrepenAuthOpereationService } from "@web/modules/crepen/service/auth/CrepenAuthOpereationService";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { NextRequest, NextResponse } from "next/server";

@@ -2,26 +2,26 @@
 
 import './FolderAddChildFolderButton.scss';
 import { MouseEvent, useRef } from 'react';
-import { useGlobalLoadingState } from '@web/lib/state/global.state';
 import { useFolderData } from '../../../containers/folder-info-provider/FolderDataProvider';
-import { useCrepenGlobalModal } from '@web/components-v2/page/(global)/config/global-modal/CrepenGlobalModalProvider';
+import { useGlobalModal } from '../../../../../../../component/config/GlobalModalProvider';
 import { FolderAddChildFolderModal, FolderAddChildFolderModalRefProp } from './FolderAddChildFolderModal';
 import { CrepenFolderAddChildFolder } from '@web/modules/crepen/service/explorer/folder/action/CrepenFolderAction';
+import { useGlobalLoading } from '@web/component/config/GlobalLoadingProvider';
 
 // interface FolderAddChildFolderButtonProp {
 // }
 
 export const FolderAddChildFolderButton = () => {
 
-    const loadingHook = useGlobalLoadingState();
+    const loadingHook = useGlobalLoading();
     const folderDataHook = useFolderData();
-    const globalModalHook = useCrepenGlobalModal();
+    const globalModalHook = useGlobalModal();
 
     const modalRef = useRef<FolderAddChildFolderModalRefProp>(null);
 
 
     const addFolder = (folderTitle: string) => {
-        loadingHook.active(true)
+        loadingHook.setState(true)
 
         const formData = new FormData();
         formData.set('title', folderTitle);
@@ -36,12 +36,12 @@ export const FolderAddChildFolderButton = () => {
                     modalRef.current?.setErrorMessage(res.message ?? 'Unknown Error')
                 }
 
-                  loadingHook.active(false)
+                  loadingHook.setState(false)
             })
             .catch(e => {
                 console.log(e);
                 modalRef.current?.setErrorMessage((e as Error).message)
-                loadingHook.active(false)
+                loadingHook.setState(false)
             })
 
         

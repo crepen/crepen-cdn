@@ -1,8 +1,8 @@
 import { CrepenFolder } from "./dto/CrepenFolder";
 import { CrepenFolderApiService } from "./CrepenFolderApiService";
-import { CrepenServiceResult } from "@web/modules/common/result/CrepenServiceResult";
+import { CrepenServiceResult } from "@web/modules/common-1/result/CrepenServiceResult";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
-import { CrepenApiResult } from "@web/modules/common/result/CrepenApiResult";
+import { CrepenApiResult } from "@web/modules/common-1/result/CrepenApiResult";
 
 export class CrepenFolderOperationService {
     static getRootFolder = async (): Promise<CrepenServiceResult<CrepenFolder | undefined>> => {

@@ -2,8 +2,8 @@
 
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { CrepenFolderOperationService } from "../CrepenFolderOperationService";
-import { CrepenActionError } from "@web/modules/common/error/CrepenActionError";
-import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError";
+import { CrepenActionError } from "@web/modules/common-1/error/CrepenActionError";
+import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError";
 import { CrepenAuthOpereationService } from "../../../auth/CrepenAuthOpereationService";
 
 export const CrepenFolderAddChildFolder = async (formData: FormData) => {

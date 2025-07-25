@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react"
 import { ProfileCategoryGroup } from "./category-group"
-import * as UserAction from "@web/lib/action/user"
+import * as UserAction from "@web/modules/server/action/UserAction"
 import { StringUtil } from "@web/lib/util/string.util"
 
 

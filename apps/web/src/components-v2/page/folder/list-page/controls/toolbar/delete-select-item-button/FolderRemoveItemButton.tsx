@@ -2,21 +2,22 @@
 
 import './FolderRemoveItemButton.scss'
 import { MouseEvent } from "react"
-import { useSelectFolderItem } from "../../../containers/folder-select-item-provider/FolderSelectItemProvider"
 import { useRouter } from "next/navigation"
-import { useGlobalBasePath, useGlobalLoadingState } from "@web/lib/state/global.state"
-import { CrepenComponentError } from "@web/modules/common/error/CrepenComponentError"
-import { useCrepenGlobalModal } from "@web/components-v2/page/(global)/config/global-modal/CrepenGlobalModalProvider"
+import { CrepenComponentError } from "@web/modules/common-1/error/CrepenComponentError"
 import { FolderRemoveItemModal } from "./FolderRemoveItemModal"
+import { useGlobalBasePath } from '@web/modules/client/state/global.state'
+import { useGlobalLoading } from '@web/component/config/GlobalLoadingProvider'
+import { useGlobalModal } from '@web/component/config/GlobalModalProvider'
+import { useSelectFolderItem } from '../../../containers/folder-select-item-provider/FolderSelectItemProvider'
 
 
 export const FolderRemoveItemButton = () => {
 
     const selectFolderItemHook = useSelectFolderItem();
-    const globalLoadingHook = useGlobalLoadingState();
+    const globalLoading = useGlobalLoading();
     const basePath = useGlobalBasePath();
     const router = useRouter();
-    const globalModalHook = useCrepenGlobalModal();
+    const globalModalHook = useGlobalModal();
 
 
     const removeItem = async (itemType: 'file' | 'folder', uid: string) => {
@@ -63,7 +64,7 @@ export const FolderRemoveItemButton = () => {
     }
 
     const onSubmit = async () => {
-        globalLoadingHook.active(true);
+        globalLoading.setState(true);
         globalModalHook.close();
         const selectItems = selectFolderItemHook.value;
 
@@ -87,7 +88,7 @@ export const FolderRemoveItemButton = () => {
         selectFolderItemHook.remove(...successList);
 
         router.refresh();
-        globalLoadingHook.active(false);
+        globalLoading.setState(false);
     }
 
     const onClickEventHandler = async (e: MouseEvent<HTMLButtonElement>) => {

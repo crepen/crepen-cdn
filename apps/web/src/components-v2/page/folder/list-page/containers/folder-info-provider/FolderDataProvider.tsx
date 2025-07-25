@@ -1,6 +1,6 @@
 'use client'
 
-import { CrepenFolder } from "@web/modules/crepen/explorer/folder/dto/CrepenFolder";
+import { CrepenFolder } from "@web/modules/crepen/service/explorer/folder/dto/CrepenFolder";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 
 interface FolderDataContextProp {

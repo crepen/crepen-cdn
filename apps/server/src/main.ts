@@ -7,11 +7,12 @@ import { CrepenI18nValidationExceptionFilter } from "./config/i18n/i18n.validate
 import { ExceptionResponseFilter } from "./module/config/filter/ex.response.filter";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { CrepenSystemError } from "./lib/error/system/common.system.error";
-import { CheckConnDBInterceptor } from "./module/decorator/chk-conn-db/chk-conn-db.interceptor";
 import { CrepenSwaggerConfig } from "./module/config/swagger/swagger.config";
 import { CrepenNestExpressConfig } from "./module/config/nest-express/express.config";
 import { CrepenInitProvider } from "./module/config/provider/init-provider";
-import { CheckInitSystemInterceptor } from "./module/decorator/chk-system-init/chk-system-init.interceptor";
+import { CheckConnDBInterceptor } from "./module/extension/chk-conn-db/chk-conn-db.interceptor";
+import { CheckInitSystemInterceptor } from "./module/extension/chk-system-init/chk-system-init.interceptor";
+import { ResponseSnakeCaseConvertInterceptor } from "./module/extension/response-snake-case/snake_case.interceptor";
 
 const bootstrap = async () => {
 
@@ -44,15 +45,13 @@ const bootstrap = async () => {
     console.log("=====================================================================")
 
     const app = await NestFactory.create(applyAppModule(GlobalModule, configData));
-
-
-
     const config = app.get(ConfigService);
 
 
     app.useGlobalPipes(new CrepenI18nValidationPipe());
     app.useGlobalFilters(new CrepenI18nValidationExceptionFilter());
     app.useGlobalFilters(new ExceptionResponseFilter());
+    app.useGlobalInterceptors(new ResponseSnakeCaseConvertInterceptor());
     app.useGlobalInterceptors(new CheckConnDBInterceptor(app.get(Reflector)));
     app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
     app.useGlobalInterceptors(new CheckInitSystemInterceptor(config))

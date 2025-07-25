@@ -10,7 +10,6 @@ import { CrepenHttpService } from '@web/services/common/http.service';
 import { GroupExpandBox } from '@web/components/page/common/group-box/group-box.common';
 import Link from 'next/link';
 import Image from 'next/image';
-import { CrepenIconButton } from '@web/components/control/icon-button/icon-button.control';
 import { RemoveFileIconButton } from '@web/components/page/file/button/remove-bt/remove-bt.file';
 import { CrepenDetailItem } from '@web/components/page/common/detail-list/detail-item.common';
 import { StringUtil } from '@web/lib/util/string.util';
@@ -22,6 +21,7 @@ import { FileSharedUrlDetailItem } from '@web/components/page/file/edit-detail/f
 import { FileRemoveEditDetailItem } from '@web/components/page/file/edit-detail/file-remove.edit-detail.file';
 import urlJoin from 'url-join';
 import { CrepenFileOperationService } from '@web/modules/crepen/service/explorer/file/CrepenFileOperationService';
+import { CrepenIconButton } from '../../../../../../../component/common/icon-button/icon-button.control';
 
 interface ExplorerFileInfoRoutePageProp {
     params: Promise<{

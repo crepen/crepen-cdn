@@ -3,7 +3,8 @@ import LogoImage from '@web/assets/img/crepen-cdn-logo.png';
 import { Metadata } from 'next';
 import { LoginForm } from '@web/components/page/login/login-form';
 import Image from 'next/image';
-import BaseButton from '@web/components/controls/base-button/base-button';
+import BaseButton from '../../../../component-deprecate/base-button/base-button';
+
 
 
 

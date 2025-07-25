@@ -1,4 +1,4 @@
-import { CrepenServiceResult } from "@web/modules/common/result/CrepenServiceResult";
+import { CrepenServiceResult } from "@web/modules/common-1/result/CrepenServiceResult";
 import { CrepenCumulativeTrafficDto } from "./dto/CrepenCumulativeTrafficDto";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { CrepenMonitorApiService } from "./CrepenMonitorApiService";

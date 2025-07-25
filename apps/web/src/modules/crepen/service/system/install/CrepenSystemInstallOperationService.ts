@@ -1,8 +1,8 @@
-import { CrepenServiceResult } from "@web/modules/common/result/CrepenServiceResult";
+import { CrepenServiceResult } from "@web/modules/common-1/result/CrepenServiceResult";
 import { SystemInstallStateResultDto } from "./dto/CrepenSystemInstallStateDto";
 import { CrepenSystemInstallApiService } from "./CrepenSystemInstallApiService";
 import { CheckDBConnRequestDto, CheckDBConnResultDto } from "./dto/CheckDatabaseConnDto";
-import { CrepenApiResult } from "@web/modules/common/result/CrepenApiResult";
+import { CrepenApiResult } from "@web/modules/common-1/result/CrepenApiResult";
 import { CommonOperationService } from "@web/modules/crepen/common/CommonOperationService";
 
 export class CrepenSystemInstallOperationService extends CommonOperationService {

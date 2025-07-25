@@ -1,4 +1,4 @@
-import { CrepenServiceResult } from "@web/modules/common/result/CrepenServiceResult";
+import { CrepenServiceResult } from "@web/modules/common-1/result/CrepenServiceResult";
 import { SystemHealthResultDto } from "./dto/SystemHealthDto";
 import { CrepenSystemHealthApiService } from "./CrepenSystemHealthApiService";
 import { CommonOperationService } from "@web/modules/crepen/common/CommonOperationService";

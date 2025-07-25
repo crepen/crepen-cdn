@@ -2,10 +2,9 @@
 
 import './UploadModalIconButton.scss'
 import { faDownload } from "@fortawesome/free-solid-svg-icons"
-import { CrepenIconButton } from "@web/components/control/icon-button/icon-button.control"
-import { useFileUploadMonitorVisible } from "@web/modules/common/state/useFileUploadMonitorVisible"
-import { useFileUploadState } from '@web/modules/common/state/useFileUploadState'
-import { Fragment } from "react"
+import { useFileUploadMonitorVisible } from "@web/modules/common-1/state/useFileUploadMonitorVisible"
+import { useFileUploadState } from '@web/modules/common-1/state/useFileUploadState'
+import { CrepenIconButton } from '../../../../../component/common/icon-button/icon-button.control'
 
 export const UploadModalIconButton = () => {
 

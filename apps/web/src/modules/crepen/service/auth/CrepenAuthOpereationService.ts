@@ -3,9 +3,9 @@ import { NextRequest } from "next/server";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { CrepenAuthApiService } from "@web/services/api/auth.api.service";
 import { CrepenUserOperationService } from "@web/services/operation/user.operation.service";
-import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError";
-import { CrepenServiceResult } from "@web/modules/common/result/CrepenServiceResult";
-import { CrepenServiceError } from "@web/modules/common/error/CrepenServiceError";
+import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError";
+import { CrepenServiceResult } from "@web/modules/common-1/result/CrepenServiceResult";
+import { CrepenServiceError } from "@web/modules/common-1/error/CrepenServiceError";
 import { CommonOperationService } from "../../common/CommonOperationService";
 
 export class CrepenAuthOpereationService extends CommonOperationService{

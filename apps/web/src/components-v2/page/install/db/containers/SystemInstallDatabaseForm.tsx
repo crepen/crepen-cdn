@@ -1,7 +1,7 @@
 'use client'
 
 import { StringUtil } from "@web/lib/util/string.util"
-import { PropsWithClassName } from "@web/types/common.component"
+import { PropsWithClassName } from "@web/modules/common/type/common.component"
 import { FormEvent, RefObject, useImperativeHandle, useRef } from "react"
 
 interface SystemInstallDatabaseFormProp extends PropsWithClassName {

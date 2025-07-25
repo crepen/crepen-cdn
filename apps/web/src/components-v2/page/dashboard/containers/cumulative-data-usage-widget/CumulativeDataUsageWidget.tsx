@@ -2,14 +2,13 @@
 
 import { StringUtil } from '@web/lib/util/string.util';
 import './CumulativeDataUsageWidget.scss';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, AreaChart, LabelList, TooltipContentProps } from 'recharts';
+import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart, TooltipContentProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
-import { Fragment, useEffect, useState } from 'react';
-import { CrepenCumulativeTrafficDto } from '@web/modules/crepen/monitor/dto/CrepenCumulativeTrafficDto';
-import { ClientDateLocaleWrap } from '@web/components/page/common/date-locale.wrap.common';
-import { useGlobalLanguage } from '@web/lib/state/global.state';
+import { Fragment } from 'react';
 import * as ct from 'countries-and-timezones';
 import { DateTime } from 'luxon';
+import { useGlobalLanguage } from '@web/modules/client/state/global.state';
+import { CrepenCumulativeTrafficDto } from '@web/modules/crepen/service/monitor/dto/CrepenCumulativeTrafficDto';
 
 interface CumulativeDataUsageWidgetProp {
     data?: CrepenCumulativeTrafficDto[]

@@ -4,6 +4,7 @@
     "VALIDATION_INSTALL_DBUSER_FAILED" : "DB 사용자명이 빈 값이거나 형식이 맞지 않습니다.",
     "VALIDATION_INSTALL_DBPASSWORD_FAILED" : "DB 비밀번호가 빈 값이거나 형식이 맞지 않습니다.",
     "VALIDATION_INSTALL_DBNAME_FAILED" : "DB 데이터베이스명이 빈 값이거나 형식이 맞지 않습니다.",
+    "VALIDATION_INSTALL_DB_FAILED" : "DB 정보가 빈 값이거나 형식이 맞지 않습니다",
 
 
 

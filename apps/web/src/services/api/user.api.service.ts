@@ -1,9 +1,9 @@
-import { CrepenApiService } from "../../modules/common/CrepenApiService";
-import { CrepenApiResponse } from "@web/services/types/common.api";
+import { CrepenApiResult } from "@web/modules/common-1/result/CrepenApiResult";
+import { CrepenApiService } from "../../modules/common-1/CrepenApiService";
 import { CrepenUser } from "@web/services/types/object/user.object";
 
 export class CrepenUserApiService {
-    public static changePassword = async (token?: string, currentPassword?: string, password?: string, confirmPassword?: string): Promise<CrepenApiResponse<unknown>> => {
+    public static changePassword = async (token?: string, currentPassword?: string, password?: string, confirmPassword?: string): Promise<CrepenApiResult<unknown>> => {
         return CrepenApiService.fetch<unknown>(
             'PUT', '/user/password',
             {
@@ -17,7 +17,7 @@ export class CrepenUserApiService {
     }
 
 
-    public static getLoginUserData = async (token?: string): Promise<CrepenApiResponse<CrepenUser>> => {
+    public static getLoginUserData = async (token?: string): Promise<CrepenApiResult<CrepenUser>> => {
         return CrepenApiService.fetch<CrepenUser>(
             'GET', '/user',
             undefined,

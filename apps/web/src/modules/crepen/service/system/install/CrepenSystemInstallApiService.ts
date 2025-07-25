@@ -1,5 +1,5 @@
-import { CrepenApiService } from "@web/modules/common/CrepenApiService";
-import { CrepenApiResult } from "@web/modules/common/result/CrepenApiResult";
+import { CrepenApiService } from "@web/modules/common-1/CrepenApiService";
+import { CrepenApiResult } from "@web/modules/common-1/result/CrepenApiResult";
 import { SystemInstallStateResultDto } from "./dto/CrepenSystemInstallStateDto";
 import { CheckDBConnRequestDto, CheckDBConnResultDto } from "./dto/CheckDatabaseConnDto";
 

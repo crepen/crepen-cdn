@@ -1,10 +1,10 @@
 'use client'
 
-import { useGlobalBasePath } from "@web/lib/state/global.state"
 import { EditDetialItem } from "./edit.detail-item.setting.folder"
 import urlJoin from "url-join"
 import { useRouter } from "next/navigation"
-import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError"
+import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError"
+import { useGlobalBasePath } from "@web/modules/client/state/global.state"
 
 interface EditFolderNameDetailItemProp {
     title : string,

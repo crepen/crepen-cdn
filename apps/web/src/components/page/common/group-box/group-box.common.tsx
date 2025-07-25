@@ -5,7 +5,7 @@ import './group-box.common.scss';
 import { PropsWithChildren, useState } from "react"
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import { StringUtil } from '@web/lib/util/string.util';
-import { CrepenIconButton } from '@web/components/control/icon-button/icon-button.control';
+import { CrepenIconButton } from '../../../../component/common/icon-button/icon-button.control';
 
 interface GroupExpandBoxProp extends PropsWithChildren {
     title?: string,

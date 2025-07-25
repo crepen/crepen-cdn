@@ -1,12 +1,9 @@
 'use client'
 
-import { IconProp } from "@fortawesome/fontawesome-svg-core"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { BaseHeaderIconButton } from "./base.icon-button.header.main"
 import { faBars } from "@fortawesome/free-solid-svg-icons"
-import { useGlobalAsideExpandState } from "@web/lib/state/cloud.global.state"
-import { DOMAttributes, MouseEventHandler } from "react"
 import { StringUtil } from "@web/lib/util/string.util"
+import { useGlobalAsideExpandState } from "@web/modules/client/state/cloud.global.state"
 
 interface ExpandAsideHeaderIconButtonProp {
     className? : string

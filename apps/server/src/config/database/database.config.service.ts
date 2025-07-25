@@ -20,7 +20,6 @@ export class CrepenDatabaseService {
         const dataSource = this.activeDefault ?? DefaultDataSourceProvider.getDataSource(this.configService);
  
         if (!dataSource?.isInitialized) {
-            console.log("EE" );
             this.activeDefault = await DefaultDataSourceProvider.getDataSource(this.configService).initialize();
         }
 
@@ -31,7 +30,6 @@ export class CrepenDatabaseService {
         const dataSource = this.activeLocal ?? SQLiteDataSourceProvider.getDataSource();
 
         if (!dataSource.isInitialized) {
-            console.log("EE1" );
             this.activeLocal = await SQLiteDataSourceProvider.getDataSource().initialize();
         }
 

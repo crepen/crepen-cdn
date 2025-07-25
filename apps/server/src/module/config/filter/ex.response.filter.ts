@@ -4,6 +4,7 @@ import { StringUtil } from '@crepen-nest/lib/util/string.util';
 import { Request, Response } from 'express';
 import { I18nContext, I18nService, I18nTranslation, I18nValidationException } from 'nestjs-i18n';
 import { BaseResponse } from 'src/module/common/base.response';
+import * as humps from 'humps'
 
 @Catch(Error)
 export class ExceptionResponseFilter implements ExceptionFilter {
@@ -11,7 +12,6 @@ export class ExceptionResponseFilter implements ExceptionFilter {
 
 
     catch(exception: any, host: ArgumentsHost) {
-
 
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
@@ -22,27 +22,28 @@ export class ExceptionResponseFilter implements ExceptionFilter {
         let message = "common.INTERNAL_SERVER_ERROR";
 
         if (exception instanceof CrepenCommonHttpLocaleError) {
-            const res = exception.getResponse();
-
             message = exception.message;
 
             Logger.error(i18n.t(message, {
                 args: exception.transLocaleArgs
             }))
-            if(exception.cause !== undefined){
+            if (exception.cause !== undefined) {
                 Logger.error(exception.cause);
             }
-            
+
 
             response
                 .status(exception.getStatus())
                 .json(
-                    BaseResponse.error(
-                        exception.getStatus(),
-                        i18n.t(message, {
-                            args: exception.transLocaleArgs
-                        }),
-                        exception.transLocaleCode)
+                    humps.decamelizeKeys(
+                        BaseResponse.error(
+                            exception.getStatus(),
+                            i18n.t(message, {
+                                args: exception.transLocaleArgs
+                            }),
+                            exception.transLocaleCode)
+                    )
+
                 )
         }
         else if (exception instanceof I18nValidationException) {
@@ -57,36 +58,63 @@ export class ExceptionResponseFilter implements ExceptionFilter {
             response
                 .status(exception.getStatus())
                 .json(
-                    BaseResponse.error(exception.getStatus(), i18n.t(message), message)
+                    humps.decamelizeKeys(
+                        BaseResponse.error(exception.getStatus(), i18n.t(message), message)
+                    )
                 )
         }
         else if (exception instanceof NotFoundException) {
             response.status(404).send()
         }
+        else if (exception instanceof BadRequestException) {
+
+            message = 'common.BAD_REQUEST_PARAM';
+
+            const contextLang = request.headers['accept-language'] === 'ko' ? 'ko' : 'en';
+
+            const messageArgs = [
+                { lang: 'ko', message: '잘못된 형식의 데이터가 전달되었습니다.' },
+                { lang: 'en', message: 'Data in an incorrect format was passed.' }
+            ]
+
+            response
+                .status(exception.getStatus())
+                .json(
+                    humps.decamelizeKeys(
+                        BaseResponse.error(exception.getStatus(), messageArgs.find(x => x.lang === contextLang).message, message)
+                    )
+                )
+        }
         else if (exception instanceof HttpException) {
+            console.log('INTERNAL HTTP ERROR', exception)
+
             response
                 .status(500)
                 .json(
-                    BaseResponse.error(
-                        500,
-                        i18n.t(message),
-                        message.split('.')[1])
+                    humps.decamelizeKeys(
+                        BaseResponse.error(
+                            500,
+                            i18n.t(message),
+                            message.split('.')[1])
+                    )
                 )
         }
         else {
-            console.log('?' , exception)
+            console.log('INTERNAL ERROR', exception)
 
             response
                 .status(500)
                 .json(
-                    BaseResponse.error(
-                        500,
-                        i18n.t(message),
-                        message.split('.')[1])
+                    humps.decamelizeKeys(
+                        BaseResponse.error(
+                            500,
+                            i18n.t(message),
+                            message.split('.')[1])
+                    )
                 )
         }
 
-
+   
 
 
 

@@ -1,11 +1,11 @@
 'use client'
 
-import { useGlobalBasePath } from "@web/lib/state/global.state"
 import { CrepenDetailEditableItem } from "../../common/detail-list/detail-edit-item.common"
 import { useRouter } from "next/navigation"
 import { StringUtil } from "@web/lib/util/string.util"
-import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError"
-import { CrepenComponentError } from "@web/modules/common/error/CrepenComponentError"
+import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError"
+import { CrepenComponentError } from "@web/modules/common-1/error/CrepenComponentError"
+import { useGlobalBasePath } from "@web/modules/client/state/global.state"
 
 interface FileTitleEditDetailItemProp {
     title: string,

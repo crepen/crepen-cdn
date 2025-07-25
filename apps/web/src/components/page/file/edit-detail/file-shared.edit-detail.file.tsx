@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation"
 import { StringUtil } from "@web/lib/util/string.util"
 import { CrepenDetailItem } from "../../common/detail-list/detail-item.common"
 import { CrepenToggleButton } from "../../common/toggle-button/toggle-button.common"
-import { CrepenComponentError } from "@web/modules/common/error/CrepenComponentError"
-import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError"
+import { CrepenComponentError } from "@web/modules/common-1/error/CrepenComponentError"
+import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError"
 import urlJoin from "url-join"
 
 interface FileSharedEditDetailItemProp {

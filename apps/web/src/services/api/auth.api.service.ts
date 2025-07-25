@@ -1,6 +1,6 @@
-import { CrepenApiService } from "../../modules/common/CrepenApiService"
+import { CrepenApiService } from "../../modules/common-1/CrepenApiService"
 import { CrepenToken } from "@web/services/types/object/auth.object"
-import { CrepenApiResult } from "../../modules/common/result/CrepenApiResult"
+import { CrepenApiResult } from "../../modules/common-1/result/CrepenApiResult"
 
 export class CrepenAuthApiService {
     static checkTokenExpired = (type: 'access_token' | 'refresh_token', token?: string): Promise<CrepenApiResult<{ expired: boolean }>> => {

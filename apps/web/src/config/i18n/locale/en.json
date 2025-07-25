@@ -1,0 +1,8 @@
+{
+    "test" : "en",
+    "database" : {
+        "default" : {
+            "host" : "Host-123"
+        }
+    }
+}

@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeftLong, faHome } from '@fortawesome/free-solid-svg-icons'
 import { SystemInstallDatabaseForm, SystemInstallDatabaseFormRef } from '../containers/SystemInstallDatabaseForm'
 import { FormEvent, useActionState, useEffect, useRef, useState } from 'react'
-import { InstallAction } from '@web/lib/action'
+import { InstallAction } from '@web/modules/server/action'
 import { useRouter } from 'next/navigation'
 
 export interface SystemInstallDatabasePageLayoutProp {

@@ -1,4 +1,4 @@
-import { PropsWithClassName } from '@web/types/common.component'
+import { PropsWithClassName } from '@web/modules/common/type/common.component'
 import './ProfileDefaultPageLayout.scss'
 import { StringUtil } from '@web/lib/util/string.util'
 import { CrepenUser } from '@web/services/types/object/user.object'

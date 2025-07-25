@@ -7,7 +7,7 @@ import { CrepenFolder } from "@web/modules/crepen/explorer/folder/dto/CrepenFold
 import { Virtuoso } from 'react-virtuoso'
 import { FolderLinearItem } from "../../controls/folder-linear-item/FolderLinearItem"
 import { useDropzone } from 'react-dropzone'
-import { useFileUploadState } from '@web/modules/common/state/useFileUploadState'
+import { useFileUploadState } from '@web/modules/common-1/state/useFileUploadState'
 import { StringUtil } from '@web/lib/util/string.util'
 import { useEffect, useRef, useState } from 'react'
 import { SelectFolderItemProp, useSelectFolderItem } from '../folder-select-item-provider/FolderSelectItemProvider'

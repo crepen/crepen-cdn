@@ -5,9 +5,9 @@ import { StringUtil } from "@web/lib/util/string.util";
 import { NextRequest, NextResponse } from "next/server";
 import { ReadonlyRequestCookies, ResponseCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
-import { CrepenServiceResult } from "@web/modules/common/result/CrepenServiceResult";
-import { CrepenServiceError } from "@web/modules/common/error/CrepenServiceError";
-import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError";
+import { CrepenServiceResult } from "@web/modules/common-1/result/CrepenServiceResult";
+import { CrepenServiceError } from "@web/modules/common-1/error/CrepenServiceError";
+import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError";
 
 export class CrepenCookieOperationService {
 

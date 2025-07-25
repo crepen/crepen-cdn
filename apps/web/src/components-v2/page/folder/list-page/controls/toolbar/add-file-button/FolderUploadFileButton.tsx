@@ -2,8 +2,8 @@
 
 import { ChangeEvent, MouseEvent, useRef } from 'react'
 import './FolderUploadFileButton.scss'
-import { useFileUploadMonitorVisible } from '@web/modules/common/state/useFileUploadMonitorVisible'
-import { useFileUploadState } from '@web/modules/common/state/useFileUploadState'
+import { useFileUploadMonitorVisible } from '@web/modules/common-1/state/useFileUploadMonitorVisible'
+import { useFileUploadState } from '@web/modules/common-1/state/useFileUploadState'
 import { useFolderData } from '../../../containers/folder-info-provider/FolderDataProvider'
 
 interface AddFolderFileButtonProp {

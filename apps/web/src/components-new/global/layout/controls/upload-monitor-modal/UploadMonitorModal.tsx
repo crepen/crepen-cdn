@@ -1,19 +1,19 @@
 'use client'
 
-import { useFileUploadState } from '@web/modules/common/state/useFileUploadState';
+import { useFileUploadState } from '@web/modules/common-1/state/useFileUploadState';
 import { UploadMonitorItem } from './UploadMonitorItem'
 import './UploadMonitorModal.scss'
-import { CrepenUploadFile, CrepenUploadFileStateType } from '@web/modules/common/entity/CrepenUploadFile';
+import { CrepenUploadFile, CrepenUploadFileStateType } from '@web/modules/common-1/entity/CrepenUploadFile';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { useFileUploadMonitorVisible } from '@web/modules/common/state/useFileUploadMonitorVisible';
+import { useFileUploadMonitorVisible } from '@web/modules/common-1/state/useFileUploadMonitorVisible';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CrepenComponentError } from '@web/modules/common/error/CrepenComponentError';
-import { CrepenBaseError } from '@web/modules/common/error/CrepenBaseError';
-import { useGlobalBasePath, useGlobalLanguage } from '@web/lib/state/global.state';
+import { CrepenComponentError } from '@web/modules/common-1/error/CrepenComponentError';
+import { CrepenBaseError } from '@web/modules/common-1/error/CrepenBaseError';
 import { Virtuoso } from 'react-virtuoso';
 import urlJoin from 'url-join';
+import { useGlobalBasePath, useGlobalLanguage } from '@web/modules/client/state/global.state';
 
 export const UploadMonitorModal = () => {
 

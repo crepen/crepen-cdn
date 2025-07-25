@@ -1,6 +1,6 @@
 import { RefObject, useImperativeHandle, useRef, useState } from 'react'
 import './FolderRemoveItemModal.scss'
-import { useCrepenGlobalModal } from '@web/components-v2/page/(global)/config/global-modal/CrepenGlobalModalProvider';
+import { useGlobalModal } from '../../../../../../../component/config/GlobalModalProvider';
 import { useSelectFolderItem } from '../../../containers/folder-select-item-provider/FolderSelectItemProvider';
 
 
@@ -15,7 +15,7 @@ interface FolderRemoveItemModalProp {
 export const FolderRemoveItemModal = (prop : FolderRemoveItemModalProp) => {
    
     
-    const globalModalHook = useCrepenGlobalModal();
+    const globalModalHook = useGlobalModal();
 
     return (
         <div className='cp-remove-item-modal'>

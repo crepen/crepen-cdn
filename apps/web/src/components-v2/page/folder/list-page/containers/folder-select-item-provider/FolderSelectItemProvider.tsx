@@ -1,6 +1,6 @@
 'use client'
 
-import { CrepenComponentError } from "@web/modules/common/error/CrepenComponentError";
+import { CrepenComponentError } from "@web/modules/common-1/error/CrepenComponentError";
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
 
 interface SelectItemContextProp {

@@ -15,12 +15,19 @@ export interface TryConnDBRequest {
 
 
 export interface ApplySystemDataRequest {
-    database?: {
-        host?: string,
-        port?: number,
-        username?: string,
-        password?: string,
-        database?: string
-    }
+    dbHost?: string,
+    dbPort?: number,
+    dbUsername?: string,
+    dbPassword?: string,
+    dbDatabase?: string
+}
 
+
+
+export interface ServerHealthStateDTO {
+    install?: boolean,
+    database?: {
+        default?: boolean,
+        local?: boolean
+    }
 }

@@ -7,8 +7,8 @@ import { StringUtil } from '@web/lib/util/string.util';
 import { useGlobalBasePath, useGlobalLanguage } from '@web/lib/state/global.state';
 import { faRefresh, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { CrepenModal } from '../../common/base-modal.common';
-import { CrepenComponentError } from '@web/modules/common/error/CrepenComponentError';
-import { CrepenBaseError } from '@web/modules/common/error/CrepenBaseError';
+import { CrepenComponentError } from '@web/modules/common-1/error/CrepenComponentError';
+import { CrepenBaseError } from '@web/modules/common-1/error/CrepenBaseError';
 
 interface FastAddFileModalProp {
     folderUid: string,

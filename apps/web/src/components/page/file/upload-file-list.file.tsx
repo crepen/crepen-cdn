@@ -1,11 +1,11 @@
 import { faFolder } from "@fortawesome/free-regular-svg-icons"
 import { faRefresh, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { UploadFileItemObject, UploadStateType, useUploadFileState } from "@web/lib/state/file.state"
-import { useGlobalBasePath, useGlobalLanguage } from "@web/lib/state/global.state"
 import { StringUtil } from "@web/lib/util/string.util"
-import { CrepenBaseError } from "@web/modules/common/error/CrepenBaseError"
-import { CrepenComponentError } from "@web/modules/common/error/CrepenComponentError"
+import { UploadFileItemObject, UploadStateType, useUploadFileState } from "@web/modules/client/state/file.state"
+import { useGlobalBasePath, useGlobalLanguage } from "@web/modules/client/state/global.state"
+import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError"
+import { CrepenComponentError } from "@web/modules/common-1/error/CrepenComponentError"
 import { Ref, useEffect, useImperativeHandle, useState } from "react"
 
 interface UploadFileListProp {
