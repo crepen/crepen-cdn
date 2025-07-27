@@ -3,11 +3,7 @@ import './aside.main.scss'
 import { StringUtil } from "@web/lib/util/string.util"
 import Image from "next/image"
 import LogoImage from '@web/assets/img/crepen-cdn-logo.png';
-import Link from 'next/link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faAnglesLeft, faDashboard, faExpand, faFolder, faSignOut, faUser } from '@fortawesome/free-solid-svg-icons';
-import { MainAsideMenuItem } from './item/common.aside-item.main';
+import { faDashboard, faSignOut, faUser } from '@fortawesome/free-solid-svg-icons';
 import { MainAsideMenuLinkItem } from './item/link.aside-item.main';
 import { CollapseMainAsideMenuItem } from './item/collapse.aside-item.main';
 import { ExplorerMainAsideLinkMenuItem } from './item/explorer.aside-item.main';

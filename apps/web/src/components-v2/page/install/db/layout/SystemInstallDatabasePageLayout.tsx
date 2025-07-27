@@ -38,7 +38,7 @@ export const SystemInstallDatabasePageLayout = (prop: SystemInstallDatabasePageL
         setFormPending(true);
         setFormMessage(undefined);
         const formData = formRef.current?.getFormData();
-        InstallAction.testDatabaseConnect(formData ?? new FormData())
+        InstallAction.tryDatabaseConnect(formData ?? new FormData())
             .then(res => {
                 if (res.isSuccess) {
                     router.push('/install/success')

@@ -1,7 +1,7 @@
 import { CrepenHttpResult } from "./CrepenBaseResult";
 import { CrepenServiceResult } from "./CrepenServiceResult";
 
-export class CrepenApiResult<T = unknown>  extends CrepenHttpResult<T | undefined | null> {
+export class CrepenApiResult<T = Record<string,unknown>>  extends CrepenHttpResult<T | undefined | null> {
 
 
     static toServiceResponse = <T,>(response: CrepenApiResult<T | undefined | null>): CrepenServiceResult<T> => {

@@ -116,7 +116,7 @@ const FastAddFileItem = (prop: FastAddFileItemProp) => {
 
     const uploadFile = async () => {
 
-        console.log("UPLOAD FILE")
+    
 
         prop.onUpdateItem(prop.item.uid, {
             state: 'running',

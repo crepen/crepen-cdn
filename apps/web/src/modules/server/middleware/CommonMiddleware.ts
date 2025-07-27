@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { BaseMiddleware, BaseMiddlewareResponse } from "./BaseMiddleware";
+import { CustomEnvProvider } from "../service/CustomEnvProvider";
 
 export class CommonMiddleware implements BaseMiddleware {
 
@@ -23,8 +24,8 @@ export class CommonMiddleware implements BaseMiddleware {
 
         //#endregion Append url in header
 
-        
-        res.headers.append('x-crepen-basepath', req.nextUrl.basePath)
+        await CustomEnvProvider.setBasePath(req.nextUrl.basePath , {header : res.headers})
+        // res.headers.append('x-crepen-basepath', req.nextUrl.basePath)
 
 
         return {

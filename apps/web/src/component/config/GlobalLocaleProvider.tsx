@@ -7,7 +7,7 @@ import { createContext, PropsWithChildren, useContext } from "react"
 interface GlobalLocaleContextProp {
     locale: string,
     translateData: Record<string, unknown>,
-    getTranslation: (path: string) => string | undefined
+    getTranslation: (path: string , locale? : string) => string | undefined
 }
 
 const GlobalLocaleContext = createContext<GlobalLocaleContextProp | undefined>(undefined);
@@ -31,13 +31,14 @@ export const GlobalLocaleProvider = (prop: GlobalLocaleProviderProp) => {
         <GlobalLocaleContext.Provider value={{
             locale: prop.systemLocale ?? prop.defaultLocale,
             translateData: prop.localeTranslateData,
-            getTranslation: (path: string) => {
-                const locale = prop.systemLocale ?? prop.defaultLocale;
+            getTranslation: (path: string , inputLocale? : string) => {
+                const locale = inputLocale ?? prop.systemLocale ?? prop.defaultLocale;
 
                 const defaultTranslateData = prop.localeTranslateData[prop.defaultLocale] as Record<string,unknown>;
                 const translateData = prop.localeTranslateData[locale] as Record<string,unknown>;
 
-                const targetTranslateData = ObjectUtil.deepMerge(translateData , defaultTranslateData);
+                const targetTranslateData = ObjectUtil.deepMerge(defaultTranslateData ,translateData );
+
                 
 
                 let targetResult: string | Record<string, unknown> | undefined = targetTranslateData;

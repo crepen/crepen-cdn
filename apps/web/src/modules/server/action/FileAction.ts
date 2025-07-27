@@ -5,6 +5,12 @@ import { CrepenCookieOperationService } from "@web/services/operation/cookie.ope
 import { CrepenActionError } from "@web/modules/common-1/error/CrepenActionError";
 import { CrepenAuthOpereationService } from "@web/modules/crepen/service/auth/CrepenAuthOpereationService";
 import { CrepenFileOperationService } from "@web/modules/crepen/service/explorer/file/CrepenFileOperationService";
+import { AuthSessionProvider } from "../service/AuthSessionProvider";
+import { FileRouteError } from "@web/modules/common/error/route-error/FileRouteError";
+import { CommonActionError } from "@web/modules/common/error/action/CommonActionError";
+import { FileActionError } from "@web/modules/common/error/action/FileActionError";
+import { ServerI18nProvider } from "../i18n/ServerI18nProvider";
+import { FileDataService } from "@web/modules/api/service/FileDataService";
 
 interface AddFileActionResult {
     success?: boolean,
@@ -57,43 +63,41 @@ export const addFile = async (currentState: any, formData: FormData): Promise<Ad
 }
 
 export const removeFile = async (uid?: string) => {
-
-
+    let sessionData;
     try {
-        const renewTokenGroup = await CrepenAuthOpereationService.renewToken();
 
-        if (renewTokenGroup.success !== true) {
-            return {
-                success: false,
-                message: renewTokenGroup.message
-            };
-        }
-        else {
-            await CrepenCookieOperationService.insertTokenData(renewTokenGroup.data ?? undefined);
-        }
 
+        try {
+            sessionData = (await (await AuthSessionProvider.instance()).refresh()).sessionData;
+        }
+        catch (e) {
+            throw new FileActionError(
+                await ServerI18nProvider.getSystemTranslationText('common.system.UNAUTHORIZATION'),
+                {
+                    innerError: e as Error
+                }
+            )
+        }
 
 
         if (StringUtil.isEmpty(uid)) {
-            throw new CrepenActionError('REMOVE FILE UID NOT DEFINED' , 403);
+             throw new FileActionError(
+                await ServerI18nProvider.getSystemTranslationText('common.system.REMOVE_FILE_UID_UNDEFINED'),
+            )
         }
 
-
-        const removeRequest = await CrepenFileOperationService.removeFile(uid!);
-
-        if (removeRequest.success !== true) {
-            throw new CrepenActionError(removeRequest.message , removeRequest.statusCode , removeRequest.innerError);
-        }
+        await FileDataService.removeFile(uid , {
+            token : sessionData.token?.accessToken
+        })
 
 
 
         return {
-            success: true,
-            message: removeRequest.message
+            success: true
         }
     }
     catch (e) {
-        if (e instanceof CrepenActionError) {
+        if (e instanceof CommonActionError) {
             return {
                 success: false,
                 message: e.message
@@ -102,7 +106,7 @@ export const removeFile = async (uid?: string) => {
 
         return {
             success: false,
-            message: '알 수 없는 오류입니다.'
+            message: await ServerI18nProvider.getSystemTranslationText("common.system.UNKNOWN_ERROR")
         }
     }
 }

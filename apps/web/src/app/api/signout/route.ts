@@ -1,8 +1,7 @@
-import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
-import { cookies } from "next/headers";
+import { AuthSessionProvider } from "@web/modules/server/service/AuthSessionProvider";
 import { NextResponse } from "next/server";
 
 export const DELETE = async () => {
-    await CrepenCookieOperationService.insertTokenData();
+    await (await AuthSessionProvider.instance()).reset();
     return NextResponse.json({ success: true });
 }

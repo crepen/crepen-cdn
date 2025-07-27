@@ -48,7 +48,7 @@ export const FolderLinearItem = (prop: FolderLinearItemProp) => {
     }
 
     useEffect(() => {
-        // console.log("FILE_SIZE", prop.size)
+    
     }, [])
 
     return (
@@ -138,7 +138,7 @@ export const LinearItemActionButton = (prop: { fileUid: string }) => {
                         alert('복사 완료')
                     })
                     .catch(err => {
-                        console.log(err);
+                     
                         alert('복사할 수 없습니다.')
                     })
 

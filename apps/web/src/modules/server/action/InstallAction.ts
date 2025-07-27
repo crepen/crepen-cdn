@@ -9,7 +9,7 @@ interface SetupSystemDatabaseResult {
     message?: string
 }
 
-export const testDatabaseConnect = async (formData: FormData): Promise<SetupSystemDatabaseResult> => {
+export const tryDatabaseConnect = async (formData: FormData): Promise<SetupSystemDatabaseResult> => {
 
     const host = formData.get('host')?.toString();
     const portStr = formData.get('port')?.toString();

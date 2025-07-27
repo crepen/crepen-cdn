@@ -62,7 +62,7 @@ export const FolderSelectItemProvider = (prop: PropsWithChildren) => {
     }
 
     useEffect(() => {
-        console.log('update select item', items);
+     
     }, [items])
 
     return (

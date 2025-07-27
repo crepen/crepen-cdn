@@ -2,16 +2,18 @@
 
 
 import './FolderItemListContainer.scss'
-import { CrepenFile } from "@web/modules/crepen/explorer/file/dto/CrepenFile"
-import { CrepenFolder } from "@web/modules/crepen/explorer/folder/dto/CrepenFolder"
 import { Virtuoso } from 'react-virtuoso'
 import { FolderLinearItem } from "../../controls/folder-linear-item/FolderLinearItem"
 import { useDropzone } from 'react-dropzone'
 import { useFileUploadState } from '@web/modules/common-1/state/useFileUploadState'
 import { StringUtil } from '@web/lib/util/string.util'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { SelectFolderItemProp, useSelectFolderItem } from '../folder-select-item-provider/FolderSelectItemProvider'
 import { useFolderData } from '../folder-info-provider/FolderDataProvider'
+import { CrepenFile } from '@web/modules/crepen/service/explorer/file/dto/CrepenFile'
+import { CrepenFolder } from '@web/modules/crepen/service/explorer/folder/dto/CrepenFolder'
+import { FileEntity } from '@web/modules/api/entity/object/FileEntity'
+import { FolderEntity } from '@web/modules/api/entity/object/FolderEntity'
 
 interface FolderItemListContainerProp {
     dataList: FolderItemData[],
@@ -20,7 +22,7 @@ interface FolderItemListContainerProp {
 
 interface FolderItemData {
     type: string,
-    data: CrepenFile | CrepenFolder,
+    data: FileEntity | FolderEntity,
 
 }
 
@@ -58,7 +60,7 @@ export const FolderItemListContainer = (prop: FolderItemListContainerProp) => {
 
     const dropZoneHook = useDropzone({
         onDrop: (acceptedFiles) => {
-            uploadHook.uploadData(acceptedFiles, folderData.uid , folderData.folderTitle);
+            uploadHook.uploadData(acceptedFiles, folderData.uid!, folderData.folderTitle!);
         },
         noClick: true,
     })
@@ -66,17 +68,8 @@ export const FolderItemListContainer = (prop: FolderItemListContainerProp) => {
 
     useEffect(() => {
 
-        // if(selectItemHook.event.existEvent('all-check')){
-        //     selectItemHook.event.unSubscribe('all-check');
-
-        //     console.log("UNSUB")
-        // }
-
         selectItemHook.event.subscribe('all-check', () => {
-            console.log("HUUUD", [...prop.dataList.map(x => ({
-                type: x.type,
-                uid: x.data.uid
-            }) as SelectFolderItemProp)])
+         
 
             selectItemHook.update([
                 ...prop.dataList.map(x => ({
@@ -135,7 +128,7 @@ export const FolderItemListContainer = (prop: FolderItemListContainerProp) => {
                                     ).length > 0
                                 }
                                 onSelectChange={(isSelect) => {
-                                    console.log('SELECT ITEM :', isSelect);
+                                
                                     if (isSelect) {
                                         selectItemHook.update([
                                             { type: 'folder', uid: objData.uid }
@@ -168,7 +161,7 @@ export const FolderItemListContainer = (prop: FolderItemListContainerProp) => {
                                     ).length > 0
                                 }
                                 onSelectChange={(isSelect) => {
-                                    console.log('SELECT ITEM :', isSelect, selectItemHook);
+                                  
                                     if (isSelect) {
                                         selectItemHook.update([
                                             { type: 'file', uid: objData.uid }

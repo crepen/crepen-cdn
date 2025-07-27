@@ -25,6 +25,7 @@ export interface ApplySystemDataRequest {
 
 
 export interface ServerHealthStateDTO {
+    api? : boolean,
     install?: boolean,
     database?: {
         default?: boolean,

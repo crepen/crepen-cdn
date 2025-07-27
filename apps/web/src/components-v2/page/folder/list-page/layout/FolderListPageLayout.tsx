@@ -1,6 +1,5 @@
 import './FolderListPageLayout.scss'
 
-import { CrepenFolder } from "@web/modules/crepen/explorer/folder/dto/CrepenFolder"
 import { PropsWithClassName } from "@web/modules/common/type/common.component"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder } from '@fortawesome/free-regular-svg-icons'
@@ -10,9 +9,11 @@ import { FolderItemListContainer } from '../containers/folder-item-list/FolderIt
 import { FolderSelectItemProvider } from '../containers/folder-select-item-provider/FolderSelectItemProvider'
 import { FolderPageToolbar } from '../containers/folder-page-toopbar/FolderPageToolbar'
 import { FolderDataProvider } from '../containers/folder-info-provider/FolderDataProvider'
+import { FolderEntity } from '@web/modules/api/entity/object/FolderEntity'
+import { ObjectUtil } from '@web/lib/util/object.util'
 
 interface FolderListPageLayoutProp extends PropsWithClassName {
-    data: CrepenFolder
+    data: FolderEntity
 }
 
 export const FolderListPageLayout = (prop: FolderListPageLayoutProp) => {
@@ -40,8 +41,8 @@ export const FolderListPageLayout = (prop: FolderListPageLayoutProp) => {
                     <div className='cp-page-content'>
                         <FolderItemListContainer
                             dataList={[
-                                ...((prop.data.files ?? []).map(x => ({ type: 'file', data: x }))),
-                                ...((prop.data.childFolder ?? []).map(x => ({ type: 'folder', data: x })))
+                                ...((prop.data.files ?? []).map(x => ({ type: 'file', data: ObjectUtil.classToPlaneObject(x) }))),
+                                ...((prop.data.childFolder ?? []).map(x => ({ type: 'folder', data: ObjectUtil.classToPlaneObject(x) })))
                             ]}
                         />
 

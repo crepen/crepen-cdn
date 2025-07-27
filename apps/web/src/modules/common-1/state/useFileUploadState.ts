@@ -1,7 +1,5 @@
 import { create } from "zustand";
 import { CrepenUploadFile, CrepenUploadFileStateType } from "../entity/CrepenUploadFile";
-import uuid from 'react-uuid'
-import { CrepenFolder } from "@web/modules/crepen/explorer/folder/dto/CrepenFolder";
 
 interface FileUploadStateResult {
     value: CrepenUploadFile[],

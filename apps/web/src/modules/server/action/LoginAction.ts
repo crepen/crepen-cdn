@@ -1,10 +1,8 @@
 'use server'
 
-import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
-import { CrepenActionError } from "@web/modules/common-1/error/CrepenActionError";
-import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError";
-import { CrepenFolderOperationService } from "@web/modules/crepen/service/explorer/folder/CrepenFolderOperationService";
-import { AuthDataService } from "@web/modules/api/service/AuthDataService";
+import { CodePerformanceProvider } from "@web/modules/common/service/CodePerformanceProvider";
+import { BaseSystemError } from "@web/modules/common/error/BaseSystemError";
+import { AuthSessionProvider } from "../service/AuthSessionProvider";
 
 interface LoginUserActionResult {
     success?: boolean,
@@ -17,51 +15,26 @@ interface LoginUserActionResult {
 
 export const loginUser = async (currentState: unknown, formData: FormData): Promise<LoginUserActionResult> => {
 
+    const perfo = CodePerformanceProvider.start();
+
+    let result: LoginUserActionResult = {};
+
     const userId = formData.get('id')?.toString();
     const password = formData.get('password')?.toString();
 
+
+    const authProv = await AuthSessionProvider.instance();
+
     try {
+        await authProv.login(userId, password);
 
-        const request = await AuthDataService.login({
-            id: userId,
-            password: password
-        })
-
-        if (request.state === false) {
-            throw new CrepenActionError(request.message);
-        }
-
-
-
-        const saveCookie = await CrepenCookieOperationService.insertTokenData({
-            accessToken: request.accessToken ?? '',
-            expireTime: request.expireTime ?? 0,
-            refreshToken: request.refreshToken ?? ''
-        });
-
-        if (saveCookie.success !== true) {
-            throw new CrepenActionError(saveCookie.message, saveCookie.statusCode, saveCookie.innerError)
-        }
-
-        // const randomString = StringUtil.randomString(10)
-        // await CrepenCookieOperationService.setLoginUniqueString(randomString);
-
-
-
-        const rootMenuData = await CrepenFolderOperationService.getRootFolder();
-
-        if (rootMenuData.success === true) {
-            await CrepenCookieOperationService.setRootFolderUid(rootMenuData.data?.uid ?? '');
-        }
-
-
-        return {
+        result = {
             success: true
         }
     }
     catch (e) {
-        if (e instanceof CrepenBaseError) {
-            return {
+        if (e instanceof BaseSystemError) {
+            result = {
                 success: false,
                 message: e.message,
                 lastValue: {
@@ -70,16 +43,20 @@ export const loginUser = async (currentState: unknown, formData: FormData): Prom
                 }
             }
         }
-
-        return {
-            success: false,
-            message: '알 수 없는 오류입니다.',
-            lastValue: {
-                userId: userId,
-                password: password
+        else {
+            result = {
+                success: false,
+                message: '알 수 없는 오류입니다.',
+                lastValue: {
+                    userId: userId,
+                    password: password
+                }
             }
         }
     }
 
 
+    console.log(`[PERFORMANCE] LoginAction.loginUser : ${perfo.end()}ms`);
+
+    return result;
 }

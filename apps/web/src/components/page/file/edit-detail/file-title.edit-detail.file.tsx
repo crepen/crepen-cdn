@@ -23,7 +23,6 @@ export const FileTitleEditDetailItem = (prop: FileTitleEditDetailItemProp) => {
 
         try {
 
-            console.log('VALUE : ' , value)
 
             const fetchRequest = await fetch(`${basePath.value}/api/file/${prop.fileUid ?? 'ntf'}` , {
                 method : 'POST',
@@ -38,7 +37,6 @@ export const FileTitleEditDetailItem = (prop: FileTitleEditDetailItemProp) => {
 
             const data = await fetchRequest.json();
 
-            console.log('RESPONSE' , data);
 
             
 
@@ -58,7 +56,6 @@ export const FileTitleEditDetailItem = (prop: FileTitleEditDetailItemProp) => {
                 }
             }
 
-            console.log(message);
             alert(message);
 
             return false;

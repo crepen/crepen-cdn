@@ -1,38 +1,52 @@
-import { CheckLoginStateDTO, RefreshUserTokenDTO, UserLoginDTO, UserLoginRequest } from "../entity/AuthService";
+import { CommonApiOptions } from "../entity/CommonApi";
+import { UserTokenEntity } from "../entity/object/TokenEntity";
 import { AuthRepository } from "../repository/AuthRepository"
+import { CheckLoginStateDTO } from "../entity/data-service/AuthService";
+import { AuthDataServiceError } from "@web/modules/common/error/data-service/AuthDataServiceError";
 
 export class AuthDataService {
 
-    static login = async (prop: UserLoginRequest): Promise<UserLoginDTO> => {
+    static login = async (id?: string, password?: string, options?: CommonApiOptions): Promise<UserTokenEntity> => {
 
-        const request = await AuthRepository.login(prop);
+        const request = await AuthRepository.login({
+            id: id,
+            password: password
+        }, options);
 
-        return {
-            state: request.success,
-            message: request.message,
-            accessToken: request.data?.accessToken,
-            expireTime: request.data?.expireTime,
-            refreshToken: request.data?.refreshToken
+
+        if(!request.success){
+            throw AuthDataServiceError.errorResult(request.message);
         }
+
+
+        const instance = new UserTokenEntity();
+        instance.accessToken = request.data?.accessToken;
+        instance.refreshToken = request.data?.refreshToken;
+
+        return instance;
     }
 
 
-    static refreshUserToken = async (token?: string): Promise<RefreshUserTokenDTO> => {
-        const request = await AuthRepository.refreshUserToken(token);
+    static refreshUserToken = async (options?: CommonApiOptions): Promise<UserTokenEntity> => {
+        const request = await AuthRepository.refreshUserToken(options);
 
-        return {
-            state: request.success,
-            message: request.message,
-            accessToken: request.data?.accessToken,
-            expireTime: request.data?.expireTime,
-            refreshToken: request.data?.refreshToken
+        if(!request.success){
+            throw AuthDataServiceError.errorResult(request.message);
         }
+
+        const instance = new UserTokenEntity();
+        instance.accessToken = request.data?.accessToken;
+        instance.refreshToken = request.data?.refreshToken;
+
+
+        return instance;
     }
 
 
+    /** @deprecated */
     static isLogin = async (accessToken?: string, refreshToken?: string): Promise<CheckLoginStateDTO> => {
-        const requestAct = await AuthRepository.CheckTokenExpired(accessToken, 'access_token');
-        const requestRef = await AuthRepository.CheckTokenExpired(refreshToken, 'refresh_token');
+        const requestAct = await AuthRepository.CheckTokenExpired('access_token', { token: accessToken });
+        const requestRef = await AuthRepository.CheckTokenExpired('refresh_token', { token: refreshToken });
 
         return {
             tokenState: {

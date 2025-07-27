@@ -1,20 +1,24 @@
-import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError";
-import { CrepenRouteError } from "@web/modules/common-1/error/CrepenRouteError";
-import { CrepenAuthOpereationService } from "@web/modules/crepen/service/auth/CrepenAuthOpereationService";
-import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
+import { CommonRouteError } from "@web/modules/common/error/route-error/CommonRouteError";
+import { FileRouteError } from "@web/modules/common/error/route-error/FileRouteError";
+import { ServerI18nProvider } from "@web/modules/server/i18n/ServerI18nProvider";
+import { AuthSessionProvider } from "@web/modules/server/service/AuthSessionProvider";
 import { NextRequest, NextResponse } from "next/server";
 
-export const PUT = async (req: NextRequest , res : NextResponse) => {
+export const PUT = async (req: NextRequest, res: NextResponse) => {
+    const locale = req.headers.get('Accept-Language')?.toString() ?? ServerI18nProvider.getDefaultLanguage();
+
     try {
-        const renewToken = await CrepenAuthOpereationService.renewToken(true);
-        if (renewToken.success !== true) {
-            throw new CrepenRouteError(renewToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.', 401, renewToken.innerError);
+        let sessionData = undefined;
+
+
+        try {
+            sessionData = (await (await AuthSessionProvider.instance()).refresh()).sessionData;
         }
-        else {
-            const applyToken = await CrepenCookieOperationService.insertTokenData(renewToken.data ?? undefined);
-            if (applyToken.success !== true) {
-                throw new CrepenRouteError(applyToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.', 401, applyToken.innerError);
-            }
+        catch (e) {
+            throw new FileRouteError(
+                await ServerI18nProvider.getTranslationText(locale, 'common.system.UNAUTHORIZATION'),
+                401
+            )
         }
 
         const formData = await req.formData();
@@ -37,11 +41,11 @@ export const PUT = async (req: NextRequest , res : NextResponse) => {
             headers: {
                 "Content-Type": "application/octet-stream",
                 'Accept-Language': req.headers.get('Accept-Language')?.toString() ?? 'en',
-                'Authorization': `Bearer ${renewToken.data?.accessToken}`,
+                'Authorization': `Bearer ${sessionData.token?.accessToken}`,
                 'x-file-name': encodeURIComponent(file.name),
                 'x-file-type': encodeURIComponent(file.type),
-                'x-file-title' : encodeURIComponent(formData.get('title')?.toString() ?? ''),
-                'x-file-save-folder' : encodeURIComponent(formData.get('folderUid')?.toString() ?? '')
+                'x-file-title': encodeURIComponent(formData.get('title')?.toString() ?? ''),
+                'x-file-save-folder': encodeURIComponent(formData.get('folderUid')?.toString() ?? '')
             },
             body: stream, // TS 오류 무시
             // duplex 필요!
@@ -51,7 +55,7 @@ export const PUT = async (req: NextRequest , res : NextResponse) => {
         const data = await response.json()
 
         if (data.success !== true) {
-            throw new CrepenBaseError(data.message, data.statusCode);
+            throw new FileRouteError(data.message, data.statusCode);
         }
 
 
@@ -63,12 +67,12 @@ export const PUT = async (req: NextRequest , res : NextResponse) => {
         });
     }
     catch (e) {
-        if (e instanceof CrepenBaseError) {
-            return NextResponse.json(e.toJson(), { status: e.statusCode })
+        if (e instanceof CommonRouteError) {
+            return NextResponse.json(e.toResponseJson(), { status: e.statusCode })
         }
         else {
-            const err = new CrepenBaseError('Unknown Error', 501, e as Error);
-            return NextResponse.json(err.toJson(), { status: err.statusCode })
+            const err = new CommonRouteError(await ServerI18nProvider.getTranslationText(locale, 'common.system.UNKNOWN_ERROR'), 500, e as Error);
+            return NextResponse.json(err.toResponseJson(), { status: err.statusCode })
         }
     }
 

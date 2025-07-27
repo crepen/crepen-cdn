@@ -19,12 +19,9 @@ export const EditFolderNameDetailItem = (prop : EditFolderNameDetailItemProp) =>
 
     const edit = async (value?: string) : Promise<boolean>=> {
 
-        console.log('FOLDER UID' , prop.folderUid);
-        console.log("ORIGIN DATA" , prop.value);
-        console.log("EDIT DATA" , value);
 
         if(prop.value?.trim() === value?.trim()){
-            console.log('NOT EDIT')
+         
             return true;
         }
 
@@ -41,7 +38,7 @@ export const EditFolderNameDetailItem = (prop : EditFolderNameDetailItemProp) =>
 
             const resultData = await fetchResult.json();
 
-            console.log(resultData);
+         
 
             route.refresh();
             return true;

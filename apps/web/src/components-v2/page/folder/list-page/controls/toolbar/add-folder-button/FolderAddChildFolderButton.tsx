@@ -2,11 +2,11 @@
 
 import './FolderAddChildFolderButton.scss';
 import { MouseEvent, useRef } from 'react';
-import { useFolderData } from '../../../containers/folder-info-provider/FolderDataProvider';
-import { useGlobalModal } from '../../../../../../../component/config/GlobalModalProvider';
 import { FolderAddChildFolderModal, FolderAddChildFolderModalRefProp } from './FolderAddChildFolderModal';
-import { CrepenFolderAddChildFolder } from '@web/modules/crepen/service/explorer/folder/action/CrepenFolderAction';
+import { CrepenFolderAddChildFolder } from '@web/modules/server/action/FolderAction';
 import { useGlobalLoading } from '@web/component/config/GlobalLoadingProvider';
+import { useFolderData } from '../../../containers/folder-info-provider/FolderDataProvider';
+import { useGlobalModal } from '@web/component/config/GlobalModalProvider';
 
 // interface FolderAddChildFolderButtonProp {
 // }
@@ -25,7 +25,7 @@ export const FolderAddChildFolderButton = () => {
 
         const formData = new FormData();
         formData.set('title', folderTitle);
-        formData.set('parent-folder-uid', folderDataHook.uid);
+        formData.set('parent-folder-uid', folderDataHook.uid ?? '');
 
         CrepenFolderAddChildFolder(formData)
             .then(res => {
@@ -39,7 +39,6 @@ export const FolderAddChildFolderButton = () => {
                   loadingHook.setState(false)
             })
             .catch(e => {
-                console.log(e);
                 modalRef.current?.setErrorMessage((e as Error).message)
                 loadingHook.setState(false)
             })

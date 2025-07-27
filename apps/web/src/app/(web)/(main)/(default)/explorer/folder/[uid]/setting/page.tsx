@@ -7,9 +7,9 @@ import { DetailItem } from '@web/components/page/folder/detail-item/detail-item.
 import { EditDetialItem } from '@web/components/page/folder/detail-item/edit.detail-item.setting.folder';
 import { EditFolderNameDetailItem } from '@web/components/page/folder/detail-item/folder-name.edit.detail-item.setting.folder';
 import { StringUtil } from '@web/lib/util/string.util';
+import { CrepenFolderOperationService } from '@web/modules/crepen/service/explorer/folder/CrepenFolderOperationService';
 import { CrepenLanguageService } from '@web/services/common/language.service';
 
-import { CrepenFolderOperationService } from "../../../../../../../../modules/crepen/explorer/folder/CrepenFolderOperationService";
 import Link from 'next/link';
 import { PropsWithChildren } from 'react';
 
@@ -25,7 +25,6 @@ export const ExplorerFolderSettingRoutePage = async (prop: ExplorerFolderSetting
     const folderData = await CrepenFolderOperationService.getFolderData(targetFolderUid, true);
 
     const locale = await CrepenLanguageService.getSessionLocale();
-    console.log('LOCALE', locale);
 
 
     const getTotalFileSize = () => {

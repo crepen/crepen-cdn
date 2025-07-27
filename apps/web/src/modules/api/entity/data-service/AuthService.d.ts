@@ -6,17 +6,6 @@ export interface UserLoginDTO extends CommonStateDTO {
     expireTime?: number
 }
 
-export interface UserLoginRequest {
-    id?: string,
-    password?: string
-}
-
-export interface UserLoginResponse {
-    accessToken?: string,
-    refreshToken?: string,
-    expireTime?: number
-}
-
 
 
 

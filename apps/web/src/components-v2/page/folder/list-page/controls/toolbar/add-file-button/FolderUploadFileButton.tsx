@@ -27,9 +27,9 @@ export const FolderUploadFileButton = (prop: AddFolderFileButtonProp) => {
 
     const inputEventHandler = {
         onChange: (e: ChangeEvent<HTMLInputElement>) => {
-            // console.log(e.currentTarget.files);
+          
             const fileList = Array.from<File>(e.currentTarget.files ?? [])
-            // if (prop.onChangeFileList) prop.onChangeFileList(fileList);
+       
             e.target.value='';
 
 

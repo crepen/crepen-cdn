@@ -8,6 +8,7 @@ export interface BaseMiddlewareResponse {
 export class BaseMiddleware {
     public init = async (req : NextRequest , res : NextResponse) : Promise<BaseMiddlewareResponse> => {
         
+
         return {
             response : res,
             type : 'next'

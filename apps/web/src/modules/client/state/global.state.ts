@@ -10,6 +10,7 @@ interface GlobalBasePathResult {
     join: (pathname?: string) => string
 }
 
+/** @deprecated */
 export const useGlobalBasePath = create<GlobalBasePathResult>()(((set, get) => ({
     value: '/',
     update: (changePath?: string) => set(() => {
@@ -50,7 +51,6 @@ export const useGlobalLanguage = create<GlobalLanguageResult>()(((set, get) => (
     value: 'en',
     update: (value?: string) => set(() => {
 
-        console.log('GLOBAL LANGUAGE : ',value);
         return {
             value: value
         };

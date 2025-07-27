@@ -1,9 +1,10 @@
 import { faFolder } from "@fortawesome/free-regular-svg-icons"
 import { faRefresh, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useGlobalBasePath } from "@web/component/config/GlobalBasePathProvider"
 import { StringUtil } from "@web/lib/util/string.util"
 import { UploadFileItemObject, UploadStateType, useUploadFileState } from "@web/modules/client/state/file.state"
-import { useGlobalBasePath, useGlobalLanguage } from "@web/modules/client/state/global.state"
+import { useGlobalLanguage } from "@web/modules/client/state/global.state"
 import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError"
 import { CrepenComponentError } from "@web/modules/common-1/error/CrepenComponentError"
 import { Ref, useEffect, useImperativeHandle, useState } from "react"
@@ -137,7 +138,8 @@ export const UploadFileItem = (prop: UploadFileItemProp) => {
             const formData = new FormData();
             formData.set('file', prop.item.file);
 
-            const uploadFileRequest = await fetch(`${basePath.value}/api/file`, {
+
+            const uploadFileRequest = await fetch(basePath.join('/api/file'), {
                 method: 'PUT',
                 body: formData,
                 signal: abortController.signal,

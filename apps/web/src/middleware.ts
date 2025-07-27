@@ -4,10 +4,13 @@ import { BaseMiddleware } from './modules/server/middleware/BaseMiddleware';
 import { CommonMiddleware } from './modules/server/middleware/CommonMiddleware';
 import { InstallMiddleware } from './modules/server/middleware/InstallMiddleware';
 import { LocaleMiddleware } from './modules/server/middleware/LocaleMiddleware';
+import { ServerConnectMiddleware } from './modules/server/middleware/ServerConnectMiddleware';
 export const middleware = async (request: NextRequest) => {
 
+    
 
     const middlewareModules: BaseMiddleware[] = [
+        new ServerConnectMiddleware(),
         new InstallMiddleware(),
         new AuthMiddleware(),
         new LocaleMiddleware(),

@@ -3,13 +3,20 @@ import { BaseMiddleware, BaseMiddlewareResponse } from "./BaseMiddleware";
 import urlJoin from "url-join";
 import { SystemDataService } from "@web/modules/api/service/SystemDataService";
 import { StringUtil } from "@web/lib/util/string.util";
+import { UrlUtil } from "@web/modules/util/UrlUtil";
 
 export class InstallMiddleware implements BaseMiddleware {
+
+    ignoreUrlPatterns: string[] = [
+        '/error/*'
+    ]
+
     public init = async (req: NextRequest, res: NextResponse): Promise<BaseMiddlewareResponse> => {
 
         const basePath = StringUtil.isEmpty(req.nextUrl.basePath) ? '/' : req.nextUrl.basePath;
+        const ignoreListResult = UrlUtil.isMatchPatterns(req.url , this.ignoreUrlPatterns , {basePath : basePath});
 
-        if (req.method !== 'GET') {
+        if (req.method !== 'GET' || ignoreListResult) {
             return {
                 response: res,
                 type: 'next'
@@ -26,25 +33,31 @@ export class InstallMiddleware implements BaseMiddleware {
         if (serverHealthState.install !== true) {
             //SYSTEM INSTALL NOT YET
 
-            if (accessHost === 'localhost') {
-                if (
-                    (!this.urlMatch(req, '/install') && !this.urlMatch(req, '/install/*'))
-                    || this.urlMatch(req, '/install/success')
-                ) {
-                    return {
-                        type: 'end',
-                        response: NextResponse.redirect(new URL(urlJoin(basePath, '/install'), req.url))
+
+
+            if (!UrlUtil.isMatchPattern(req.url, '/error/*', { basePath: basePath })) {
+                if (accessHost === 'localhost') {
+                    if(
+                        !UrlUtil.isMatchPattern(req.url , '/install/*' , {basePath  : basePath}) 
+                        || UrlUtil.isMatchPattern(req.url ,'/install/success' , {basePath : basePath})
+                    ){
+                        return {
+                            type: 'end',
+                            response: NextResponse.redirect(new URL(urlJoin(basePath, '/install'), req.url))
+                        }
+                    }
+                }
+                else {
+                    if (!UrlUtil.isMatchPattern(req.url, '/install/block' , {basePath : basePath})) {
+                        return {
+                            type: 'end',
+                            response: NextResponse.redirect(new URL(urlJoin(basePath, '/install/block'), req.url))
+                        }
                     }
                 }
             }
-            else {
-                if (!this.urlMatch(req, '/install/block')) {
-                    return {
-                        type: 'end',
-                        response: NextResponse.redirect(new URL(urlJoin(basePath, '/install/block'), req.url))
-                    }
-                }
-            }
+
+
 
 
         }

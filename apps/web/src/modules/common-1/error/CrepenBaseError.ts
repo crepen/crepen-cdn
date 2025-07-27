@@ -1,6 +1,7 @@
 import { CrepenHttpResult } from "../result/CrepenBaseResult";
 
 
+/** @deprecated */
 export class CrepenBaseError extends Error {
     constructor(message?: string, status?: number, innerError?: Error) {
         super(message)

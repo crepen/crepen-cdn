@@ -9,6 +9,7 @@ import { CrepenServiceResult } from "@web/modules/common-1/result/CrepenServiceR
 import { CrepenServiceError } from "@web/modules/common-1/error/CrepenServiceError";
 import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError";
 
+/** @deprecated */
 export class CrepenCookieOperationService {
 
     private static readonly TOKEN_COOKIE_KEY = 'CPTN'

@@ -45,7 +45,7 @@ export const FolderAddChildFolderModal = (prop: FolderAddChildFolderModalProp) =
                             setErrorMessage(undefined)
                         }}
                         onKeyUp={(e) => {
-                            console.log(e.key)
+                        
                             if (e.key === 'Enter') {
                                 if (prop.onSubmit) {
                                     prop.onSubmit(inputRef.current?.value)

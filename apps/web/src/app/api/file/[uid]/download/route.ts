@@ -1,7 +1,11 @@
 import { StringUtil } from "@web/lib/util/string.util";
 import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError";
 import { CrepenRouteError } from "@web/modules/common-1/error/CrepenRouteError";
+import { CommonRouteError } from "@web/modules/common/error/route-error/CommonRouteError";
+import { FileRouteError } from "@web/modules/common/error/route-error/FileRouteError";
 import { CrepenAuthOpereationService } from "@web/modules/crepen/service/auth/CrepenAuthOpereationService";
+import { ServerI18nProvider } from "@web/modules/server/i18n/ServerI18nProvider";
+import { AuthSessionProvider } from "@web/modules/server/service/AuthSessionProvider";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -17,23 +21,25 @@ interface RequestContext {
 export const GET = async (req: NextRequest, res: NextResponse & RequestContext) => {
     const searchParams = req.nextUrl.searchParams;
     const resultFormat = searchParams.get('format') ?? 'file';
+    const locale = req.headers.get('Accept-Language')?.toString() ?? ServerI18nProvider.getDefaultLanguage();
 
     try {
         const uid = (await res.params).uid;
 
 
+        let sessionData = undefined;
 
 
-        const renewToken = await CrepenAuthOpereationService.renewToken(true);
-        if (renewToken.success !== true) {
-            throw new CrepenRouteError(renewToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.', 401, renewToken.innerError);
+        try {
+            sessionData = (await (await AuthSessionProvider.instance()).refresh()).sessionData;
         }
-        else {
-            const applyToken = await CrepenCookieOperationService.insertTokenData(renewToken.data ?? undefined);
-            if (applyToken.success !== true) {
-                throw new CrepenRouteError(applyToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.', 401, applyToken.innerError);
-            }
+        catch (e) {
+            throw new FileRouteError(
+                await ServerI18nProvider.getTranslationText(locale, 'common.system.UNAUTHORIZATION'),
+                401
+            )
         }
+
 
 
         let apiUrl = process.env.API_URL ?? '';
@@ -56,8 +62,8 @@ export const GET = async (req: NextRequest, res: NextResponse & RequestContext) 
             method: 'GET',
             headers: {
                 ...headers,
-                'Accept-Language': req.headers.get('Accept-Language')?.toString() ?? 'en',
-                'Authorization': `Bearer ${renewToken.data?.accessToken}`,
+                'Accept-Language': locale,
+                'Authorization': `Bearer ${sessionData.token?.accessToken}`,
             }
         })
 
@@ -73,10 +79,13 @@ export const GET = async (req: NextRequest, res: NextResponse & RequestContext) 
 
             if (!requestFile.ok) {
                 if (!StringUtil.isEmpty(resultData.message)) {
-                    throw new CrepenRouteError(resultData.message, resultData.statusCode);
+                    throw new CommonRouteError(resultData.message, resultData.statusCode);
                 }
 
-                throw new CrepenRouteError('Failed to fetch video stream');
+                throw new CommonRouteError(
+                    await ServerI18nProvider.getTranslationText(locale, 'common.system.UNKNOWN_ERROR'),
+                    resultData.statusCode ?? 500
+                );
             }
         }
 
@@ -92,9 +101,9 @@ export const GET = async (req: NextRequest, res: NextResponse & RequestContext) 
     catch (e) {
 
 
-        if (e instanceof CrepenBaseError) {
+        if (e instanceof CommonRouteError) {
             if (resultFormat === 'json') {
-                return NextResponse.json(e.toJson(), { status: e.statusCode })
+                return NextResponse.json(e.toResponseJson(), { status: e.statusCode })
             }
 
             return new NextResponse(null, { status: e.statusCode });
@@ -102,8 +111,8 @@ export const GET = async (req: NextRequest, res: NextResponse & RequestContext) 
         }
         else {
             if (resultFormat === 'json') {
-                const err = new CrepenBaseError('Unknown Error', 501, e as Error);
-                return NextResponse.json(err.toJson(), { status: err.statusCode })
+                const err = new CommonRouteError(await ServerI18nProvider.getTranslationText(locale, 'common.system.UNKNOWN_ERROR'), 500, e as Error);
+                return NextResponse.json(err.toResponseJson(), { status: err.statusCode })
             }
 
 

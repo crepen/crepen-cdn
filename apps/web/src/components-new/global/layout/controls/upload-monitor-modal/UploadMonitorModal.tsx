@@ -13,7 +13,8 @@ import { CrepenComponentError } from '@web/modules/common-1/error/CrepenComponen
 import { CrepenBaseError } from '@web/modules/common-1/error/CrepenBaseError';
 import { Virtuoso } from 'react-virtuoso';
 import urlJoin from 'url-join';
-import { useGlobalBasePath, useGlobalLanguage } from '@web/modules/client/state/global.state';
+import {  useGlobalLanguage } from '@web/modules/client/state/global.state';
+import { useGlobalBasePath } from '@web/component/config/GlobalBasePathProvider';
 
 export const UploadMonitorModal = () => {
 
@@ -48,9 +49,8 @@ export const UploadMonitorModal = () => {
             formData.set('title' , file.data.name);
             formData.set('folderUid' , file.targetFolderUid);
 
-            console.log(urlJoin(basePath.value , '/api/file'))
 
-            const uploadFileRequest = await fetch(urlJoin(basePath.value , '/api/file'), {
+            const uploadFileRequest = await fetch(basePath.join('/api/file'), {
                 method: 'PUT',
                 body: formData,
                 signal: file.abortControl.signal,
@@ -157,7 +157,7 @@ export const UploadMonitorModal = () => {
                     uploadHook.value.filter(x => x.uploadState === 'wait').length
                 ) === 0
             ) {
-                console.log('REFRESH ROUTE');
+            
                 route.refresh();
             }
 

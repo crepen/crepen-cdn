@@ -261,6 +261,7 @@ export class CrepenFileRouteController {
     ) {
 
 
+        
         const fileInfo = await this.fileService.getFileInfoWithPermission(uid, user.uid, FilePermissionType.READ, true);
 
         if (ObjectUtil.isNullOrUndefined(fileInfo)) {
@@ -280,6 +281,8 @@ export class CrepenFileRouteController {
 
         const fileSize = fileData.buffer.length;
         const range = res.req.headers.range;
+
+console.log(range);
 
 
         if (range) {

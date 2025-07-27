@@ -10,14 +10,30 @@ export class CrepenSystemHealthService {
     ) { }
 
     getDefaultDatabaseHealth = async () => {
-        return (await this.dbService.getDefault()).isInitialized;
+        try {
+            return (await this.dbService.getDefault()).isInitialized;
+        }
+        catch (e) {
+            return false;
+        }
+
     }
 
     getLocalDatabaseHealth = async () => {
-        return (await this.dbService.getLocal()).isInitialized;
+        try {
+            return (await this.dbService.getLocal()).isInitialized;
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     getInitState = async (): Promise<boolean> => {
-        return (await this.healthRepo.getInitState())?.value === '1';
+        try {
+            return (await this.healthRepo.getInitState())?.value === '1';
+        }
+        catch (e) {
+            return false;
+        }
     }
 }

@@ -1,17 +1,15 @@
 'use client'
 
+import { FolderEntity } from "@web/modules/api/entity/object/FolderEntity";
 import { CrepenFolder } from "@web/modules/crepen/service/explorer/folder/dto/CrepenFolder";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 
 interface FolderDataContextProp {
-    value : CrepenFolder | undefined,
-    setValue : (value : CrepenFolder) => void
+    value : FolderEntity | undefined,
+    setValue : (value : FolderEntity) => void
 }
 
-
-
-
-const FolderDataContext = createContext<CrepenFolder | undefined>(undefined);
+const FolderDataContext = createContext<FolderEntity | undefined>(undefined);
 
 
 export const useFolderData = () => {
@@ -21,9 +19,9 @@ export const useFolderData = () => {
 }
 
 
-export const FolderDataProvider = (prop : PropsWithChildren<{folderData : CrepenFolder}>) => {
+export const FolderDataProvider = (prop : PropsWithChildren<{folderData : FolderEntity}>) => {
 
-    const [folder , setFolder] = useState<CrepenFolder | undefined>(prop.folderData);
+    const [folder , setFolder] = useState<FolderEntity | undefined>(prop.folderData);
 
     return (
         <FolderDataContext.Provider value={folder}>

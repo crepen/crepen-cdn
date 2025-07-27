@@ -7,6 +7,7 @@ interface CrepenDetailItemProp extends PropsWithChildren {
     className? : string
 }
 
+
 export const CrepenDetailItem = (prop : CrepenDetailItemProp) => {
     return (
         <div className={StringUtil.joinClassName("cp-detail-item" , prop.className)}>

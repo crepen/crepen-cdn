@@ -1,14 +1,13 @@
 import { StringUtil } from "@web/lib/util/string.util";
 import { CommonApiError } from "@web/modules/crepen/error/api/CommonApiError";
-import { CrepenLanguageService } from "@web/services/common/language.service";
+import { ServerI18nProvider } from "@web/modules/server/i18n/ServerI18nProvider";
 
 
-export type FetchApiAcceptLanguageType = 'ko' | 'en';
 export type FetchApiMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export type FetchApiResultType = 'JSON' | "BLOB"
 
 export interface FetchApiServiceOptions {
-    language?: FetchApiAcceptLanguageType,
+    language?: string,
     token?: string
 }
 
@@ -94,7 +93,7 @@ export class FetchApi {
 
         //#region HEADER:ACCEPT-LANGUAGE
 
-        let language: FetchApiAcceptLanguageType = 'en';
+        let language: string = 'en';
 
         try {
             if (this.option?.language) {
@@ -102,12 +101,15 @@ export class FetchApi {
                 headers.set('Accept-Language', this.option.language);
             }
             else {
-                language = ((await CrepenLanguageService.getSessionLocale()).data ?? CrepenLanguageService.getDefaultLanguage()) as FetchApiAcceptLanguageType;
+                language = await ServerI18nProvider.getSystemLocale() ?? ServerI18nProvider.getDefaultLanguage();
 
+                if(!ServerI18nProvider.getSupportLanguages().find(x=>x === language)){
+                    language = ServerI18nProvider.getDefaultLanguage();
+                }
             }
         }
         catch (e) {
-            language = CrepenLanguageService.getDefaultLanguage() as FetchApiAcceptLanguageType;
+            language = ServerI18nProvider.getDefaultLanguage();
         }
 
         headers.set('Accept-Language', language);

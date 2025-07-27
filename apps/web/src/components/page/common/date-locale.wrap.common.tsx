@@ -9,6 +9,7 @@ interface DateLocaleWrapProp {
     date: Date
 }
 
+/** @deprecated */
 export const ClientDateLocaleWrap = (prop: DateLocaleWrapProp) => {
 
 
@@ -19,10 +20,12 @@ export const ClientDateLocaleWrap = (prop: DateLocaleWrapProp) => {
 
         const countryCode = localeTag.maximize().region;
         const country = ct.getCountry(countryCode);
+       
         return country?.timezones || ['UTC'];
     }
 
     const convertTimezone = (date: Date, originTimeZone: string, convertTimeZone: string) => {
+
 
         return DateTime.fromISO(date.toString(), { zone: originTimeZone })
             .setZone(convertTimeZone)

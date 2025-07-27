@@ -1,6 +1,5 @@
 'use client'
 
-import { useGlobalBasePath } from "@web/lib/state/global.state"
 import { useRouter } from "next/navigation"
 import { StringUtil } from "@web/lib/util/string.util"
 import { CrepenDetailItem } from "../../common/detail-list/detail-item.common"
@@ -8,6 +7,7 @@ import { CrepenToggleButton } from "../../common/toggle-button/toggle-button.com
 import { CrepenComponentError } from "@web/modules/common-1/error/CrepenComponentError"
 import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError"
 import urlJoin from "url-join"
+import { useGlobalBasePath } from "@web/component/config/GlobalBasePathProvider"
 
 interface FileSharedEditDetailItemProp {
     title: string,
@@ -17,7 +17,7 @@ interface FileSharedEditDetailItemProp {
 
 export const FileSharedEditDetailItem = (prop: FileSharedEditDetailItemProp) => {
 
-    const basePath = useGlobalBasePath();
+    const basePathHook = useGlobalBasePath();
     const route = useRouter();
 
 
@@ -26,8 +26,7 @@ export const FileSharedEditDetailItem = (prop: FileSharedEditDetailItemProp) => 
         try {
 
 
-            const apiUrl = urlJoin(basePath.value, '/api/file', prop.fileUid ?? 'ntf')
-            console.log('VALUE : ', apiUrl)
+            const apiUrl = urlJoin(basePathHook.basePath, '/api/file', prop.fileUid ?? 'ntf')
 
             const fetchRequest = await fetch(apiUrl, {
                 method: 'POST',
@@ -44,7 +43,6 @@ export const FileSharedEditDetailItem = (prop: FileSharedEditDetailItemProp) => 
 
             const data = await fetchRequest.json();
 
-            console.log('RESPONSE', data);
 
 
 
@@ -64,7 +62,6 @@ export const FileSharedEditDetailItem = (prop: FileSharedEditDetailItemProp) => 
                 }
             }
 
-            console.log(message);
             alert(message);
 
             return false;

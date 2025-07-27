@@ -27,6 +27,7 @@ export class SystemDataService {
         const request = await SystemRepository.getServerHealth();
 
         return {
+            api : request.data?.api ?? false,
             install : request.data?.install ?? false,
             database : {
                 default : request.data?.database?.default ?? false,

@@ -38,7 +38,8 @@ export class ServerI18nProvider {
 
     static getSystemTranslationText = async (path?: string): Promise<string | undefined> => {
         const systemLocale = await this.getSystemLocale();
-        return this.getTranslationText(systemLocale, path);
+        const translateText = await this.getTranslationText(systemLocale, path);
+        return StringUtil.isEmpty(translateText) ? path : translateText
     }
 
     static getSystemLocale = async (): Promise<string | undefined> => {
@@ -50,6 +51,14 @@ export class ServerI18nProvider {
         else {
             return undefined;
         }
+    }
+
+    static getDefaultLanguage = () : string => {
+        return I18nProvider.config.defaultLocale
+    }
+
+    static getSupportLanguages = () : string[] => {
+        return I18nProvider.config.locales as unknown as string[];
     }
 
     static setSystemLocale = async (locale?: string) => {

@@ -33,13 +33,11 @@ export const FileRemoveEditDetailItem = (prop: FileRemoveEditDetailItemProp) => 
                     router.push(urlJoin('/explorer/folder', prop.parentFolderUid ?? ''))
                 }
                 else {
-                    console.log(res.message);
                     alert(res.message)
                     setIsLoading(false);
                 }
             })
             .catch(err => {
-                console.log(err);
                 alert('알 수 없는 오류입니다.');
                 setIsLoading(false);
             })

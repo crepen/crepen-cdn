@@ -1,5 +1,6 @@
 import { headers } from "next/headers"
 
+/** @deprecated */
 export class CrepenHttpService {
     static getPathname = async (): Promise<string | undefined> => {
         const header = await headers();

@@ -1,15 +1,11 @@
 'use client'
 
 import './file-shared-url.detail.file.scss'
-import { useGlobalBasePath } from "@web/lib/state/global.state";
 import { CrepenDetailItem } from "../../common/detail-list/detail-item.common";
-import { CrepenToggleButton } from "../../common/toggle-button/toggle-button.common";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
-import { CrepenIconButton } from '@web/components/control/icon-button/icon-button.control';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
+import { useGlobalBasePath } from '@web/component/config/GlobalBasePathProvider';
 
 interface FileSharedUrlDetailItemProp {
     title: string,
@@ -22,7 +18,7 @@ export const FileSharedUrlDetailItem = (prop: FileSharedUrlDetailItemProp) => {
     const [fileUrl, setFileUrl] = useState<string>()
 
     useEffect(() => {
-        setFileUrl(`${window.location.origin}${basePath.value}/api/file/${prop.fileUid}/download/shared`);
+        setFileUrl(`${window.location.origin}${basePath.basePath}/api/file/${prop.fileUid}/download/shared`);
     }, [])
 
 
@@ -55,7 +51,6 @@ export const FileSharedUrlDetailItem = (prop: FileSharedUrlDetailItemProp) => {
                                     alert('복사 완료')
                                 })
                                 .catch(err => {
-                                    console.log(err);
                                     alert('복사할 수 없습니다.')
                                 })
                         }

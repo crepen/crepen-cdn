@@ -5,6 +5,7 @@ import { Request, Response } from 'express';
 import { I18nContext, I18nService, I18nTranslation, I18nValidationException } from 'nestjs-i18n';
 import { BaseResponse } from 'src/module/common/base.response';
 import * as humps from 'humps'
+import { TypeORMError } from 'typeorm';
 
 @Catch(Error)
 export class ExceptionResponseFilter implements ExceptionFilter {
@@ -100,7 +101,7 @@ export class ExceptionResponseFilter implements ExceptionFilter {
                 )
         }
         else {
-            console.log('INTERNAL ERROR', exception)
+            Logger.error((exception as Error).stack , 'INTERNAL ERROR');
 
             response
                 .status(500)
@@ -114,7 +115,7 @@ export class ExceptionResponseFilter implements ExceptionFilter {
                 )
         }
 
-   
+
 
 
 

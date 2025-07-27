@@ -3,10 +3,8 @@ import '@web/assets/style/main/page/file/file.page.main.scss'
 import { faFile, faFileAudio, faFileZipper, faImage } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MimeUtil } from "@web/lib/util/mime.util";
-import { redirect } from "next/navigation";
 import { faCloudDownload, faDownload, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { CrepenHttpService } from '@web/services/common/http.service';
 import { GroupExpandBox } from '@web/components/page/common/group-box/group-box.common';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -15,13 +13,14 @@ import { CrepenDetailItem } from '@web/components/page/common/detail-list/detail
 import { StringUtil } from '@web/lib/util/string.util';
 import { FileTitleEditDetailItem } from '@web/components/page/file/edit-detail/file-title.edit-detail.file';
 import { FileSharedEditDetailItem } from '@web/components/page/file/edit-detail/file-shared.edit-detail.file';
-import { ClientDateLocaleWrap } from '@web/components/page/common/date-locale.wrap.common';
-import { CrepenLanguageService } from '@web/services/common/language.service';
 import { FileSharedUrlDetailItem } from '@web/components/page/file/edit-detail/file-shared-url.detail.file';
 import { FileRemoveEditDetailItem } from '@web/components/page/file/edit-detail/file-remove.edit-detail.file';
 import urlJoin from 'url-join';
-import { CrepenFileOperationService } from '@web/modules/crepen/service/explorer/file/CrepenFileOperationService';
-import { CrepenIconButton } from '../../../../../../../component/common/icon-button/icon-button.control';
+import { CustomEnvProvider } from '@web/modules/server/service/CustomEnvProvider';
+import { ServerI18nProvider } from '@web/modules/server/i18n/ServerI18nProvider';
+import { FileDataService } from '@web/modules/api/service/FileDataService';
+import { DateUtil } from '@web/modules/util/DateUtil';
+import { CrepenIconButton } from '@web/component/common/icon-button/icon-button.control';
 
 interface ExplorerFileInfoRoutePageProp {
     params: Promise<{
@@ -33,14 +32,13 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
 
     const targetFileUid = (await prop.params).uid;
 
-    const fileData = await CrepenFileOperationService.getFiledata(targetFileUid ?? 'ntf');
+    // const fileData = await CrepenFileOperationService.getFiledata(targetFileUid ?? 'ntf');
+    const fileData = await FileDataService.getFileData(targetFileUid);
+    
 
-    if (fileData.success !== true) {
-        redirect('/error')
-    }   
-
-    const fileCategory = MimeUtil.getCategory(fileData.data?.fileStore?.fileType ?? '');
-    const locale = await CrepenLanguageService.getSessionLocale();
+    const fileCategory = MimeUtil.getCategory(fileData?.fileStore?.fileType ?? '');
+    // const locale = await CrepenLanguageService.getSessionLocale();
+    const locale = await ServerI18nProvider.getSystemLocale();
 
     const getFileCategoryIcon = () => {
         let icon: IconProp = faFile;
@@ -55,8 +53,8 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
         return icon;
     }
 
-    const basePath = await CrepenHttpService.getBasePath();
-    const downloadUrl = `/api/file/${fileData.data?.uid ?? 'ntf'}/download`
+    const basePath = await CustomEnvProvider.getBasePath();
+    const downloadUrl = `/api/file/${fileData?.uid ?? 'ntf'}/download`
     const fileUrl = urlJoin(basePath ?? '/' ,  downloadUrl , );
 
     return (
@@ -64,7 +62,7 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
             <div className="cp-page-header">
                 <span className='cp-page-title'>
                     <FontAwesomeIcon icon={getFileCategoryIcon()} className='cp-file-icon' />
-                    {decodeURIComponent(fileData.data?.fileTitle ?? '')}
+                    {decodeURIComponent(fileData?.fileTitle ?? '')}
                 </span>
 
             </div>
@@ -76,8 +74,8 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
                     contentBoxClassName='cp-action-content-box'
                 >
                     <RemoveFileIconButton
-                        parentFolderUid={fileData.data?.parentFolderUid}
-                        fileUid={fileData.data?.uid}
+                        parentFolderUid={fileData?.parentFolderUid}
+                        fileUid={fileData?.uid}
                     />
                     <CrepenIconButton
                         icon={faDownload}
@@ -117,13 +115,13 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
                 >
                     <FileTitleEditDetailItem
                         title='File title'
-                        value={decodeURIComponent(fileData.data?.fileTitle ?? '')}
-                        fileUid={fileData.data?.uid}
+                        value={decodeURIComponent(fileData?.fileTitle ?? '')}
+                        fileUid={fileData?.uid}
                     />
                     <CrepenDetailItem
                         title='TYPE'
                     >
-                        {fileData.data?.fileStore?.fileType}
+                        {fileData?.fileStore?.fileType}
                     </CrepenDetailItem>
                     <CrepenDetailItem
                         title='CATEGORY'
@@ -133,25 +131,28 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
                     <CrepenDetailItem
                         title='SIZE'
                     >
-                        {StringUtil.convertFormatByte(fileData.data?.fileStore?.fileSize ?? 0)}
+                        {StringUtil.convertFormatByte(fileData?.fileStore?.fileSize ?? 0)}
                     </CrepenDetailItem>
                     <CrepenDetailItem
                         title='LAST UPDATE DATE'
                     >
                         {
-                            fileData.data?.updateDate !== undefined
+                            DateUtil.convertDateTimeZoneFromUTC(fileData?.updateDate , locale ?? ServerI18nProvider.getDefaultLanguage()) ?? '-'
+                        }
+                        {/* {
+                            fileData?.updateDate !== undefined
                                 ? <ClientDateLocaleWrap
-                                    date={fileData.data?.updateDate}
-                                    locale={locale.data ?? 'en'}
+                                    date={fileData?.updateDate}
+                                    locale={locale ?? ServerI18nProvider.getDefaultLanguage()}
                                 />
                                 : '-'
-                        }
+                        } */}
 
                     </CrepenDetailItem>
                       <CrepenDetailItem
                         title='TOTAL TRAFFIC SIZE'
                     >
-                        {StringUtil.convertFormatByte(fileData.data?.trafficSize ?? 0)}
+                        {StringUtil.convertFormatByte(fileData?.trafficSize ?? 0)}
                     </CrepenDetailItem>
                 </GroupExpandBox>
                 <GroupExpandBox
@@ -169,20 +170,20 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
                     </CrepenDetailItem>
                     <FileSharedEditDetailItem
                         title='SHARED'
-                        value={fileData.data?.isPublished}
-                        fileUid={fileData.data?.uid}
+                        value={fileData?.isPublished}
+                        fileUid={fileData?.uid}
                     />
                     {
-                        fileData.data?.isPublished &&
+                        fileData?.isPublished &&
                         <FileSharedUrlDetailItem
                             title='Copy Publish URL'
-                            fileUid={fileData.data.uid}
+                            fileUid={fileData.uid}
                         />
                     }
                     <FileRemoveEditDetailItem 
                          title='Remove File'
-                         fileUid={fileData.data?.uid}
-                         parentFolderUid={fileData.data?.parentFolderUid}
+                         fileUid={fileData?.uid}
+                         parentFolderUid={fileData?.parentFolderUid}
                     />
                 </GroupExpandBox>
             </div>

@@ -4,6 +4,7 @@ import { CrepenServiceResult } from "@web/modules/common-1/result/CrepenServiceR
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { CrepenApiResult } from "@web/modules/common-1/result/CrepenApiResult";
 
+/** @deprecated */
 export class CrepenFolderOperationService {
     static getRootFolder = async (): Promise<CrepenServiceResult<CrepenFolder | undefined>> => {
         try {

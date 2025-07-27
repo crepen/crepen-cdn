@@ -1,32 +1,48 @@
 import { StringUtil } from "@web/lib/util/string.util";
 import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError";
 import { CrepenRouteError } from "@web/modules/common-1/error/CrepenRouteError";
-import { CrepenAuthOpereationService } from "@web/modules/crepen/auth/CrepenAuthOpereationService";
+import { CommonRouteError } from "@web/modules/common/error/route-error/CommonRouteError";
+import { FolderRouteError } from "@web/modules/common/error/route-error/FolderRouteError";
+import { CrepenAuthOpereationService } from "@web/modules/crepen/service/auth/CrepenAuthOpereationService";
+import { ServerI18nProvider } from "@web/modules/server/i18n/ServerI18nProvider";
+import { AuthSessionProvider } from "@web/modules/server/service/AuthSessionProvider";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { NextRequest, NextResponse } from "next/server";
 
 // export const runtime = 'node';
 
 export const POST = async (req: NextRequest) => {
-    try {
-        const { searchParams } = new URL(req.url);
+    const { searchParams } = new URL(req.url);
 
-        const uid = searchParams.get('uid');
+    const uid = searchParams.get('uid');
+    const locale = req.headers.get('Accept-Language')?.toString() ?? ServerI18nProvider.getDefaultLanguage();
+
+    try {
+
+
+
 
         if (StringUtil.isEmpty(uid)) {
-            throw new CrepenRouteError('대상 폴더를 찾을 수 없습니다.', 404)
+            throw new FolderRouteError(
+                await ServerI18nProvider.getTranslationText(locale , 'route.folder.FOLDER_DATA_NOT_FOUND'), 
+                404
+            )
         }
 
-        const renewToken = await CrepenAuthOpereationService.renewToken(true);
-        if (renewToken.success !== true) {
-            throw new CrepenRouteError(renewToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.', 401, renewToken.innerError);
+        let sessionData = undefined;
+
+
+        try {
+            sessionData = (await (await AuthSessionProvider.instance()).refresh()).sessionData;
         }
-        else {
-            const applyToken = await CrepenCookieOperationService.insertTokenData(renewToken.data);
-            if (applyToken.success !== true) {
-                throw new CrepenRouteError(applyToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.', 401, applyToken.innerError);
-            }
+        catch (e) {
+            throw new FolderRouteError(
+                await ServerI18nProvider.getTranslationText(locale , 'common.system.UNAUTHORIZATION'), 
+            )
         }
+
+
+
 
         const bodyDataStr = await req.text();
         let bodyData = {};
@@ -41,11 +57,13 @@ export const POST = async (req: NextRequest) => {
             apiUrl = apiUrl.slice(0, apiUrl.length - 1);
         }
 
+        const request = await 
+
         const response = await fetch(`${apiUrl}/explorer/folder?uid=${uid}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                'Accept-Language': req.headers.get('Accept-Language')?.toString() ?? 'en',
+                'Accept-Language': locale,
                 'Authorization': `Bearer ${renewToken.data?.accessToken}`
             },
             body: JSON.stringify(bodyData)
@@ -54,7 +72,7 @@ export const POST = async (req: NextRequest) => {
         const data = await response.json()
 
         if (data.success !== true) {
-            throw new CrepenRouteError(data.message , data.statusCode);
+            throw new CrepenRouteError(data.message, data.statusCode);
         }
 
 
@@ -65,12 +83,12 @@ export const POST = async (req: NextRequest) => {
         });
     }
     catch (e) {
-        if (e instanceof CrepenBaseError) {
-            return NextResponse.json(e.toJson(), { status: e.statusCode })
+        if (e instanceof CommonRouteError) {
+            return NextResponse.json(e.toResponseJson(), { status: e.statusCode })
         }
         else {
-            const err = new CrepenBaseError('Unknown Error', 501, e as Error);
-            return NextResponse.json(err.toJson(), { status: err.statusCode })
+            const err = new CommonRouteError(await ServerI18nProvider.getTranslationText(locale, 'common.system.UNKNOWN_ERROR'), 500, e as Error);
+            return NextResponse.json(err.toResponseJson(), { status: err.statusCode })
         }
     }
 }

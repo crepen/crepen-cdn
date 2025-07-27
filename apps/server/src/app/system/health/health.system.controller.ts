@@ -17,10 +17,18 @@ export class CrepenSystemHealthController {
     @Get()
     async getHealth() {
 
-        const initState = await this.healthService.getInitState();
+        let initState = false;
+        try{
+            initState = await this.healthService.getInitState();
+        }
+        catch(e){
+            console.log("EEEOR");
+        }
+        
 
 
         return BaseResponse.ok({
+            api : true,
             install: initState,
             database: {
                 default: await this.healthService.getDefaultDatabaseHealth(),

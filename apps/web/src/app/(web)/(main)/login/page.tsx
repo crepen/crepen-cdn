@@ -14,8 +14,7 @@ export const metadata: Metadata = {
     title: "CrepenCDN - Login",
 };
 
-const CloudLoginPageRouter = () => {
-
+const CloudLoginPageRouter = async () => {
 
     return (
         <div className='cp-page'>

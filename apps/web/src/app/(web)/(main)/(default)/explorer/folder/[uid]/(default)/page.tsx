@@ -1,6 +1,8 @@
 import { Fragment } from "react";
 import { FolderListPageLayout } from "@web/components-v2/page/folder/list-page/layout/FolderListPageLayout";
-import { CrepenFolderOperationService } from "@web/modules/crepen/service/explorer/folder/CrepenFolderOperationService";
+import { FolderDataService } from "@web/modules/api/service/FolderDataService";
+import { FolderEntity } from "@web/modules/api/entity/object/FolderEntity";
+import { ObjectUtil } from "@web/lib/util/object.util";
 
 interface ExplorerFolderRoutePageProp {
     params: Promise<{
@@ -16,27 +18,35 @@ export const ExplorerFolderRoutePage = async (prop: ExplorerFolderRoutePageProp)
 
     const targetFolderUid = (await prop.params).uid;
 
-    const folderData = await CrepenFolderOperationService.getFolderData(targetFolderUid, true);
+    // const folderData = await CrepenFolderOperationService.getFolderData(targetFolderUid, true);
+
+    let folderData: FolderEntity | undefined = undefined;
+
+    try {
+        folderData = await FolderDataService.getFolderData(targetFolderUid, {
+            includeChild: true
+        })
+    }
+    catch (e) {/** empty */ }
+
 
 
     return (
         <Fragment>
             {
-                (folderData.success === true && folderData.data) &&
-                <FolderListPageLayout
-                    data={folderData.data!}
-                />
+                folderData !== undefined
+                    ?
+                    <FolderListPageLayout
+                        data={ObjectUtil.classToPlaneObject<FolderEntity>(folderData)}
+                    />
+                    :
+                    <div
+                        className="cp-error"
+                        data-error-code={404}
+                    >
+                        {'Not Found'}
+                    </div>
             }
-            {
-                (folderData.success !== true || folderData.data === undefined || folderData.data === null) &&
-                <div
-                    className="cp-error"
-                    data-error-code={folderData.errorCode}
-                >
-                    {folderData.message}
-                </div>
-            }
-
         </Fragment>
     )
 }

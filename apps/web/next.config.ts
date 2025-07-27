@@ -12,11 +12,13 @@ const nextConfig: NextConfig = {
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
-  experimental : {
-    serverActions : {
-      bodySizeLimit : '100mb'
+  experimental: {
+    esmExternals : true,
+    serverActions: {
+      bodySizeLimit: '100mb'
     }
   }
+
 };
 
 export default nextConfig;

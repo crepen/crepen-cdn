@@ -1,3 +1,22 @@
 {
-    "walala" : "LAAL"    
+    "common" : {
+        "system" : {
+            "UNKNOWN_ERROR" : "알 수 없는 오류가 발생했습니다.",
+            "UNAUTHORIZATION" : "User session is expired."
+        }
+    },
+    "action" : {
+        "folder" : {
+            "FOLDER_TITLE_EMPTY" : "Folder title is required.",
+            "PARENT_FOLDER_EMPTY" : "Parent folder uid is not defined."
+        },
+        "file" : {
+            "REMOVE_FILE_UID_UNDEFINED" : "Remove file uid not defined."
+        }
+    },
+    "route" : {
+        "folder" : {
+            "FOLDER_DATA_NOT_FOUND" : "Not found target folder."
+        }
+    }
 }

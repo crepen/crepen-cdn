@@ -6,6 +6,7 @@ import { CrepenServiceResult } from "@web/modules/common-1/result/CrepenServiceR
 import { CrepenApiResult } from "@web/modules/common-1/result/CrepenApiResult";
 
 
+/** @deprecated */
 export class CrepenFileOperationService {
 
     static getFiledata = async (fileUid: string): Promise<CrepenServiceResult<CrepenFile | undefined>> => {

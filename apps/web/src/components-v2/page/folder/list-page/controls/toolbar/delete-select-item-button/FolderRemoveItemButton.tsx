@@ -1,64 +1,49 @@
 'use client'
 
 import './FolderRemoveItemButton.scss'
-import { MouseEvent } from "react"
 import { useRouter } from "next/navigation"
-import { CrepenComponentError } from "@web/modules/common-1/error/CrepenComponentError"
 import { FolderRemoveItemModal } from "./FolderRemoveItemModal"
-import { useGlobalBasePath } from '@web/modules/client/state/global.state'
 import { useGlobalLoading } from '@web/component/config/GlobalLoadingProvider'
 import { useGlobalModal } from '@web/component/config/GlobalModalProvider'
-import { useSelectFolderItem } from '../../../containers/folder-select-item-provider/FolderSelectItemProvider'
+import { SelectFolderItemProp, useSelectFolderItem } from '../../../containers/folder-select-item-provider/FolderSelectItemProvider'
+import { useGlobalBasePath } from '@web/component/config/GlobalBasePathProvider'
+import { FileAction } from '@web/modules/server/action'
+import { CommonComponentError } from '@web/modules/common/error/component/CommonComponentError'
+import { useGlobalLocale } from '@web/component/config/GlobalLocaleProvider'
 
 
 export const FolderRemoveItemButton = () => {
 
     const selectFolderItemHook = useSelectFolderItem();
     const globalLoading = useGlobalLoading();
-    const basePath = useGlobalBasePath();
     const router = useRouter();
     const globalModalHook = useGlobalModal();
+    const localHook = useGlobalLocale();
+
 
 
     const removeItem = async (itemType: 'file' | 'folder', uid: string) => {
         try {
 
-            const apiUrl = `${basePath.value}/api/${itemType}/${uid}`;
+            await FileAction.removeFile(uid);
 
-            const updateRequest = await fetch(apiUrl, {
-                method: 'DELETE'
-            })
-
-            try {
-                const data = await updateRequest.json();
-
-                if (data.success !== true) {
-                    throw new CrepenComponentError(data.message, data.statusCode);
-                }
-
-
-            }
-            catch (e) {
-                if (e instanceof CrepenComponentError) {
-                    throw e;
-                }
-                else {
-                    throw new CrepenComponentError('Request Failed', 500, e as Error);
-                }
-            }
 
             selectFolderItemHook.remove({
                 type: itemType,
                 uid: uid
             })
 
+
         }
         catch (e) {
-            if (e instanceof CrepenComponentError) {
+            if (e instanceof CommonComponentError) {
                 throw e;
             }
             else {
-                throw new CrepenComponentError('Request Failed', 500, e as Error);
+                throw new CommonComponentError(
+                    localHook.getTranslation('common.system.UNKNOWN_ERROR'),
+                    e as Error
+                );
             }
         }
     }
@@ -70,7 +55,7 @@ export const FolderRemoveItemButton = () => {
 
         // const promiseList: Promise<unknown>[] = [];
         let successList = [];
-        let errorList = [];
+        let errorList: { item: SelectFolderItemProp, message?: string }[] = [];
 
         for (const item of selectItems) {
             try {
@@ -79,9 +64,14 @@ export const FolderRemoveItemButton = () => {
 
             }
             catch (e) {
-                errorList.push(item);
-                console.log("REMOVE ERROR", item);
+                errorList.push({ item: item, message: (e as Error).message });
+               
             }
+        }
+
+
+        if (errorList.length > 0) {
+            alert(errorList[0]?.message);
         }
 
 
@@ -91,10 +81,10 @@ export const FolderRemoveItemButton = () => {
         globalLoading.setState(false);
     }
 
-    const onClickEventHandler = async (e: MouseEvent<HTMLButtonElement>) => {
+    const onClickEventHandler = async () => {
 
         if (selectFolderItemHook.value.length === 0) {
-            alert('Not Selected items.');
+            alert(localHook.getTranslation('page.folder.NON_SELECT_REMOVE_ITEM'));
         }
         else {
             globalModalHook.setOpen(
