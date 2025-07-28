@@ -1,4 +1,4 @@
-import { CrepenAuthJwtGuard } from "@crepen-nest/config/passport/jwt/jwt.guard";
+import { AuthJwtGuard } from "@crepen-nest/config/passport/jwt/jwt.guard";
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiHeader, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { CrepenFolderRouteService } from "./folder.service";
@@ -36,7 +36,7 @@ export class CrepenFolderRouteController {
     })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist('access_token'))
     //#endregion
     async getRootFolder(
         @Req() req: JwtUserRequest,
@@ -57,7 +57,7 @@ export class CrepenFolderRouteController {
     @ApiOperation({ summary: '사용자 폴더 조회', description: '로그인된 사용자의 특정 폴더 정보 조회' })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist('access_token'))
     //#endregion
     async getFolderData(
         @Req() req: JwtUserRequest,
@@ -95,7 +95,7 @@ export class CrepenFolderRouteController {
     @ApiOperation({ summary: '사용자 폴더 수정', description: '폴더 수정' })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist('access_token'))
     //#endregion
     async editFolder(
         @Req() req: JwtUserRequest,
@@ -126,7 +126,7 @@ export class CrepenFolderRouteController {
     @ApiOperation({ summary: '사용자 폴더 조회', description: '로그인된 사용자의 특정 폴더 정보 조회' })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist('access_token'))
     //#endregion
     async getFolderInfo(
         @Req() req: JwtUserRequest,
@@ -182,7 +182,7 @@ export class CrepenFolderRouteController {
     })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist('access_token'))
     //#endregion
     async appendFolder(
         @Req() req: JwtUserRequest,
@@ -234,7 +234,7 @@ export class CrepenFolderRouteController {
     @ApiOperation({ summary: '폴더 삭제 ', description: '폴더 삭제' })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist('access_token'))
     //#endregion
     async removeFolder(
         @Req() req: JwtUserRequest,

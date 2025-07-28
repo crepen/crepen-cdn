@@ -14,4 +14,4 @@ import { CrepenUserMonitorModule } from "./monitor/monitor.module";
         CrepenUserMonitorModule
     ]
 })
-export class CrepenCommonUserAppModule { }
+export class CommonUserAppModule { }

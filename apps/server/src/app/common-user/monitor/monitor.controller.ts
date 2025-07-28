@@ -2,7 +2,7 @@ import { Controller, Get, HttpCode, HttpStatus, Req, UseGuards } from "@nestjs/c
 import { ApiBearerAuth, ApiHeader, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { CrepenUserMonitorService } from "./monitor.service";
 import { ConfigService } from "@nestjs/config";
-import { CrepenAuthJwtGuard } from "@crepen-nest/config/passport/jwt/jwt.guard";
+import { AuthJwtGuard } from "@crepen-nest/config/passport/jwt/jwt.guard";
 import { I18n, I18nContext } from "nestjs-i18n";
 import { AuthUser } from "@crepen-nest/lib/decorator/param/auth-user.param.decorator";
 import { UserEntity } from "../user/entity/user.default.entity";
@@ -25,7 +25,7 @@ export class CrepenUserMonitorController {
     @ApiOperation({ summary: '사용자 업로드 파일 누적 트래픽 조회', description: '사용자 업로드 파일 누적 트래픽 조회' })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist('access_token'))
     //#endregion Decorator
     async getCumulativeData (
         @Req() req : Request,

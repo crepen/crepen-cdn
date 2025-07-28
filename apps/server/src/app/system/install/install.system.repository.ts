@@ -1,4 +1,4 @@
-import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
+import { DatabaseService } from "@crepen-nest/config/database/database.config.service";
 import { RepositoryOptions } from "@crepen-nest/interface/repo";
 import { CryptoUtil } from "@crepen-nest/lib/util";
 import { Injectable } from "@nestjs/common";
@@ -6,9 +6,9 @@ import { LocalConfigEntity } from "src/module/entity/local/config.local.entity";
 import { LocalStateEntity } from "src/module/entity/local/state.local.entity";
 
 @Injectable()
-export class CrepenSystemInstallRepository {
+export class SystemInstallRepository {
     constructor(
-        private readonly dbService: CrepenDatabaseService
+        private readonly dbService: DatabaseService
     ) { }
 
 

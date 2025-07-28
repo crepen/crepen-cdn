@@ -1,6 +1,6 @@
 import { I18nValidationPipe } from "nestjs-i18n";
 
-export class CrepenI18nValidationPipe extends I18nValidationPipe{
+export class PlatformI18nValidationPipe extends I18nValidationPipe{
     constructor(){
         super({
             whitelist : true,

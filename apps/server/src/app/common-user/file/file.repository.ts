@@ -7,7 +7,7 @@ import { FilePermissionEntity } from "./entity/file-permission.default.entity";
 import { randomUUID } from "crypto";
 import { SearchFileInfoOptions } from "./types/search-file-info-option";
 import { FileTrafficLoggerEntity } from "@crepen-nest/app/common/logger/entity/file-traffic-logger.default.entity";
-import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
+import { DatabaseService } from "@crepen-nest/config/database/database.config.service";
 import { RepositoryOptions } from "@crepen-nest/interface/repo";
 import { CrepenBaseRepository } from "src/module/common/base.repository";
 
@@ -20,7 +20,7 @@ export class CrepenFileRouteRepository extends CrepenBaseRepository {
 
     constructor(
         // private readonly dataSource: DataSource,
-        private readonly databaseService: CrepenDatabaseService
+        private readonly databaseService: DatabaseService
     ) {
         super(databaseService)
         // this.repo = this.dataSource.getRepository(FileEntity);

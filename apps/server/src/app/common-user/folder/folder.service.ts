@@ -6,13 +6,13 @@ import { randomUUID } from "crypto";
 import { ObjectUtil } from "@crepen-nest/lib/util/object.util";
 import { DataSource } from "typeorm";
 import { CrepenFolderError } from "./exception/folder.exception";
-import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
+import { DatabaseService } from "@crepen-nest/config/database/database.config.service";
 
 @Injectable()
 export class CrepenFolderRouteService {
     constructor(
         private readonly repo: CrepenFolderRouteRepository,
-        private readonly databaseService : CrepenDatabaseService
+        private readonly databaseService : DatabaseService
     ) { }
 
     getRootFolder = async (userUid?: string): Promise<FolderEntity | null> => {

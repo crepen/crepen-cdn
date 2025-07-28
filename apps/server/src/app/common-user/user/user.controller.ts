@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { JwtUserRequest } from "src/interface/jwt";
 import { ConfigService } from "@nestjs/config";
-import { CrepenAuthJwtGuard } from "src/config/passport/jwt/jwt.guard";
+import { AuthJwtGuard } from "src/config/passport/jwt/jwt.guard";
 import { CrepenUserRouteService } from "./user.service";
 import { ApiBearerAuth, ApiBody, ApiHeader, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { AddUserDto, UpdateUserDto, UpdateUserPasswordDto } from "./dto/user.common.dto";
@@ -30,7 +30,7 @@ export class CrepenUserRouteController {
     @ApiOperation({ summary: '사용자 데이터 조회', description: '로그인된 사용자 데이터 조회' })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist('access_token'))
     //#endregion Decorator
     async getUserData(
         @Req() req: JwtUserRequest,
@@ -45,7 +45,7 @@ export class CrepenUserRouteController {
     @ApiOperation({ summary: '사용자 데이터 수정', description: '로그인된 사용자 데이터 수정' })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist('access_token'))
     //#endregion Decorator
     async updateUserData(
         @Req() req: JwtUserRequest,
@@ -76,7 +76,7 @@ export class CrepenUserRouteController {
     @Put('password')
     //#region Decorator
     @ApiOperation({ summary: '사용자 데이터 생성', description: '로그인된 사용자 데이터 생성' })
-    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist('access_token'))
     @HttpCode(HttpStatus.OK)
     //#endregion Decorator
     async changeUserPassword(

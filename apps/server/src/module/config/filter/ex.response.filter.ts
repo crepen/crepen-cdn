@@ -22,6 +22,8 @@ export class ExceptionResponseFilter implements ExceptionFilter {
 
         let message = "common.INTERNAL_SERVER_ERROR";
 
+        
+
         if (exception instanceof CrepenCommonHttpLocaleError) {
             message = exception.message;
 
@@ -101,7 +103,10 @@ export class ExceptionResponseFilter implements ExceptionFilter {
                 )
         }
         else {
+            
             Logger.error((exception as Error).stack , 'INTERNAL ERROR');
+
+            console.log((exception as TypeORMError).name)
 
             response
                 .status(500)

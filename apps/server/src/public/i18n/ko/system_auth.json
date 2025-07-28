@@ -1,0 +1,5 @@
+{
+    "AUTHORIZATION_NOT_ALLOW_TYPE" : "허용되지 않은 토큰 타입입니다.",
+    "DENY_ROLL" : "허용되지 않은 권한입니다.",
+    "UNAUTHORIZED" : "인증이 만료되었거나 잘못된 인증입니다."
+}

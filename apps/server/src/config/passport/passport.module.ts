@@ -20,4 +20,4 @@ import { CrepenUserRouteModule } from "@crepen-nest/app/common-user/user/user.mo
     providers: [],
     exports: [JwtModule]
 })
-export class CrepenPassportConfigModule { }
+export class PassportConfigModule { }

@@ -14,14 +14,14 @@ import { CrepenFileError } from "./exception/file.exception";
 import { StringUtil } from "@crepen-nest/lib/util/string.util";
 import { FilePermissionType } from "@crepen-nest/lib/enum/file-permission-type.enum";
 import { CrepenLoggerService } from "@crepen-nest/app/common/logger/logger.service";
-import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
+import { DatabaseService } from "@crepen-nest/config/database/database.config.service";
 
 @Injectable()
 export class CrepenFileRouteService {
     constructor(
         private readonly repo: CrepenFileRouteRepository,
         private readonly folderService: CrepenFolderRouteService,
-        private readonly databaseService: CrepenDatabaseService,
+        private readonly databaseService: DatabaseService,
         private readonly cryptoService: CrepenCryptoService,
         private readonly configService: ConfigService,
         private readonly loggerService: CrepenLoggerService

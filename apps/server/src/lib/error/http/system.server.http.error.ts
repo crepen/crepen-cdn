@@ -1,5 +1,7 @@
 import { CrepenCommonHttpLocaleError, CrepenCommonHttpLocaleErrorOption } from "@crepen-nest/lib/error/http/common.http.error";
 
+
+/** @deprecated */
 export class CrepenServerSystemHttpError extends CrepenCommonHttpLocaleError{
     constructor(message : string , status : number , options? : CrepenCommonHttpLocaleErrorOption){
         super('server_system' , message ,status , options)

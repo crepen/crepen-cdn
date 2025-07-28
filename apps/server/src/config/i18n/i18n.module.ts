@@ -25,4 +25,4 @@ import * as path from 'path';
     ],
     exports: []
 })
-export class CrepenI18nConfigModule { } 
+export class PlatformI18nConfigModule { } 

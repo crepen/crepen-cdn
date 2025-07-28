@@ -2,14 +2,14 @@ import { FileTrafficLoggerEntity } from "@crepen-nest/app/common/logger/entity/f
 import { Injectable } from "@nestjs/common";
 import { DataSource } from "typeorm";
 import { CrepenCumulativeMonitorDto } from "./dto/cumulative.monitor.dto";
-import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
+import { DatabaseService } from "@crepen-nest/config/database/database.config.service";
 import { CrepenBaseRepository } from "src/module/common/base.repository";
 import { RepositoryOptions } from "@crepen-nest/interface/repo";
 
 @Injectable()
 export class CrepenUserMonitorRepository extends CrepenBaseRepository{
     constructor(
-        private readonly databaseService: CrepenDatabaseService
+        private readonly databaseService: DatabaseService
     ) {
         super(databaseService)
     }

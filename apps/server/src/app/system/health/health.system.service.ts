@@ -1,15 +1,15 @@
 import { Injectable } from "@nestjs/common";
-import { CrepenSystemHealthRepository } from "./health.system.repository";
-import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
+import { SystemHealthRepository } from "./health.system.repository";
+import { DatabaseService } from "@crepen-nest/config/database/database.config.service";
 
 @Injectable()
-export class CrepenSystemHealthService {
+export class SystemHealthService {
     constructor(
-        private readonly healthRepo: CrepenSystemHealthRepository,
-        private readonly dbService: CrepenDatabaseService,
+        private readonly healthRepo: SystemHealthRepository,
+        private readonly dbService: DatabaseService,
     ) { }
 
-    getDefaultDatabaseHealth = async () => {
+    isDefaultDatabaseConnect = async () => {
         try {
             return (await this.dbService.getDefault()).isInitialized;
         }
@@ -19,7 +19,7 @@ export class CrepenSystemHealthService {
 
     }
 
-    getLocalDatabaseHealth = async () => {
+    isLocalDatabaseConnect = async () => {
         try {
             return (await this.dbService.getLocal()).isInitialized;
         }
@@ -28,7 +28,7 @@ export class CrepenSystemHealthService {
         }
     }
 
-    getInitState = async (): Promise<boolean> => {
+    isPlatformInstalled = async (): Promise<boolean> => {
         try {
             return (await this.healthRepo.getInitState())?.value === '1';
         }

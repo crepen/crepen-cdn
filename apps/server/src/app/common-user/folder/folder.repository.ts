@@ -5,7 +5,7 @@ import { randomUUID } from "crypto";
 import { FileEntity } from "../file/entity/file.default.entity";
 import { CrepenFileRouteRepository } from "../file/file.repository";
 import { RepositoryOptions } from "@crepen-nest/interface/repo";
-import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
+import { DatabaseService } from "@crepen-nest/config/database/database.config.service";
 import { CrepenBaseRepository } from "src/module/common/base.repository";
 
 @Injectable()
@@ -13,7 +13,7 @@ export class CrepenFolderRouteRepository extends CrepenBaseRepository {
 
 
     constructor(
-        private readonly databaseService: CrepenDatabaseService,
+        private readonly databaseService: DatabaseService,
         private readonly fileRepo: CrepenFileRouteRepository
     ) {
         super(databaseService);

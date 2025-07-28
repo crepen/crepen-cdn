@@ -1,11 +1,13 @@
-import { Body, ClassSerializerInterceptor, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseInterceptors } from "@nestjs/common";
+import { Body, ClassSerializerInterceptor, Controller, Get, HttpCode, HttpStatus, Post, Req, UseInterceptors } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { ApiHeader, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { SystemInstallRequestDto, SystemInstallResponseDto } from "./dto/install.system.dto";
-import { CrepenSystemInstallService } from "./install.system.service";
+import { SystemInstallService } from "./install.system.service";
 import { BaseResponse } from "src/module/common/base.response";
 import { SystemInstallCheckDatabaseRequestDto, SystemInstallCheckDatabaseResponseDto } from "./dto/db-check.system.dto";
 import { CrepenApiSystemInstallHttpError } from "@crepen-nest/lib/error/http/install.system.api.http.error";
+import { DisableValidDBDeco } from "src/module/extension/valid-db/chk-conn-db.decorator";
+import { SystemHealthService } from "../health/health.system.service";
 
 
 @ApiTags('[SYSTEM] 시스템 컨트롤러')
@@ -14,11 +16,13 @@ import { CrepenApiSystemInstallHttpError } from "@crepen-nest/lib/error/http/ins
 })
 @Controller('system/install')
 @UseInterceptors(ClassSerializerInterceptor)
-export class CrepenSystemInstallController {
+@DisableValidDBDeco.getClassDeco()
+export class SystemInstallController {
 
     constructor(
         private readonly configService: ConfigService,
-        private readonly installService: CrepenSystemInstallService
+        private readonly installService: SystemInstallService,
+        private readonly systemHealthService : SystemHealthService
     ) { }
 
     @Post()
@@ -40,7 +44,7 @@ export class CrepenSystemInstallController {
         @Req() req: Request,
     ) {
         return BaseResponse.ok<SystemInstallResponseDto>({
-            installState : await this.installService.getInstallState()
+            installState: await this.systemHealthService.isPlatformInstalled()
         })
     }
 
@@ -48,24 +52,19 @@ export class CrepenSystemInstallController {
     @Post('chk-db')
     async checkDatabaseConn(
         @Req() req: Request,
-        @Body() bodyData : SystemInstallCheckDatabaseRequestDto
-    )
-    {
-        
-        const connCheck = await this.installService.checkDatabaseConnection({
-            host : bodyData.dbHost,
-            database : bodyData.dbDatabase,
-            password : bodyData.dbPassword,
-            port : bodyData.dbPort,
-            username : bodyData.dbUser
+        @Body() bodyData: SystemInstallCheckDatabaseRequestDto
+    ) {
+
+        const connCheck = await this.installService.tryConnectDB({
+            host: bodyData.dbHost,
+            database: bodyData.dbDatabase,
+            password: bodyData.dbPassword,
+            port: bodyData.dbPort,
+            username: bodyData.dbUser
         })
 
-        if(!connCheck){
-            throw CrepenApiSystemInstallHttpError.TEST_DB_CONN_FAILED;
-        }
-
         return BaseResponse.ok<SystemInstallCheckDatabaseResponseDto>({
-            state : connCheck
+            state: connCheck
         })
     }
 }

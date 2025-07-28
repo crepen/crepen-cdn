@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards, UseI
 import { CrepenAuthRouteService } from "./auth.service";
 import { CrepenTokenGroup, JwtUserRequest } from "src/interface/jwt";
 import { ConfigService } from "@nestjs/config";
-import { CrepenAuthJwtGuard } from "src/config/passport/jwt/jwt.guard";
+import { AuthJwtGuard } from "src/config/passport/jwt/jwt.guard";
 import { NoFilesInterceptor } from "@nestjs/platform-express";
 import { I18n, I18nContext } from "nestjs-i18n";
 import { AuthLoginRequestDto, AuthTokenResponseDto } from "./dto/auth.login.dto";
@@ -26,6 +26,7 @@ export class CrepenAuthRouteController {
     @ApiOperation({ summary: "로그인 (토큰 발급)", description: 'ID or email/Password를 사용한 토큰 발급' })
     @HttpCode(HttpStatus.OK)
     @UseInterceptors(NoFilesInterceptor())
+    
     //#endregion
     async login(
         @Req() req: Request,
@@ -48,7 +49,7 @@ export class CrepenAuthRouteController {
     @ApiOperation({ summary: "토큰 재발급", description: 'Refresh Token을 사용한 토큰 재발급' })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(CrepenAuthJwtGuard.whitelist('refresh_token'))
+    @UseGuards(AuthJwtGuard.whitelist('refresh_token'))
     //#endregion
     async tokenRefresh(
         @Req() req: JwtUserRequest,
@@ -70,7 +71,7 @@ export class CrepenAuthRouteController {
     @ApiOperation({ summary: "토큰 만료 체크", description: 'Access Token / Refresh Token 만료 체크' })
     @ApiQuery({ name: 'type', enum: ['access_token', 'refresh_token'] })
     @ApiBearerAuth('token')
-    @UseGuards(CrepenAuthJwtGuard)
+    @UseGuards(AuthJwtGuard)
     //#endregion
     async checkTokenExpire() {
 

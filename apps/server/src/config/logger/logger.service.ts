@@ -9,7 +9,7 @@ import { CrepenLogPath } from "@crepen-nest/lib/enum/os-path.enum";
 import * as os from 'os';
 
 @Injectable()
-export class CrepenLoggerConfigService {
+export class LoggerConfigService {
 
     IGNORE_LOG_CONTEXT = ['RoutesResolver', 'RouterExplorer', 'NestApplication', 'InstanceLoader']
 

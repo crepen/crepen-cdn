@@ -1,18 +1,18 @@
 import { Module } from "@nestjs/common";
-import { CrepenI18nConfigModule } from "./i18n/i18n.module";
+import { PlatformI18nConfigModule } from "./i18n/i18n.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { CrepenLoggerConfigModule } from "./logger/logger.module";
-import { CrepenDatabaseModule } from "./database/database.config.module";
+import { LoggerConfigModule } from "./logger/logger.module";
+import { DatabaseModule } from "./database/database.config.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { CrepenPassportConfigModule } from "./passport/passport.module";
+import { PassportConfigModule } from "./passport/passport.module";
 
 @Module({
     imports : [
         // ConfigService,
-        CrepenI18nConfigModule,
-        CrepenLoggerConfigModule,
-        CrepenPassportConfigModule,
-        CrepenDatabaseModule
+        PlatformI18nConfigModule,
+        LoggerConfigModule,
+        PassportConfigModule,
+        DatabaseModule
     ]
 })
-export class CrepenConfigModule {}
+export class PlatformConfigModule {}

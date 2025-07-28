@@ -2,17 +2,18 @@ import { NestFactory, Reflector } from "@nestjs/core"
 import { GlobalModule } from "./global.module"
 import { ClassSerializerInterceptor, DynamicModule, Logger, Module, Type } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { CrepenI18nValidationPipe } from "./config/i18n/i18n.validate.pipe";
-import { CrepenI18nValidationExceptionFilter } from "./config/i18n/i18n.validate.filter";
+import { PlatformI18nValidationPipe } from "./config/i18n/i18n.validate.pipe";
+import { PlayformI18nValidationExceptionFilter } from "./config/i18n/i18n.validate.filter";
 import { ExceptionResponseFilter } from "./module/config/filter/ex.response.filter";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { CrepenSystemError } from "./lib/error/system/common.system.error";
 import { CrepenSwaggerConfig } from "./module/config/swagger/swagger.config";
 import { CrepenNestExpressConfig } from "./module/config/nest-express/express.config";
 import { CrepenInitProvider } from "./module/config/provider/init-provider";
-import { CheckConnDBInterceptor } from "./module/extension/chk-conn-db/chk-conn-db.interceptor";
 import { CheckInitSystemInterceptor } from "./module/extension/chk-system-init/chk-system-init.interceptor";
 import { ResponseSnakeCaseConvertInterceptor } from "./module/extension/response-snake-case/snake_case.interceptor";
+import { CommonExceptionFilter } from "./module/config/filter/common.exception.filter";
+import { CheckConnDBInterceptor } from "./module/extension/valid-db/chk-conn-db.interceptor";
 
 const bootstrap = async () => {
 
@@ -48,11 +49,12 @@ const bootstrap = async () => {
     const config = app.get(ConfigService);
 
 
-    app.useGlobalPipes(new CrepenI18nValidationPipe());
-    app.useGlobalFilters(new CrepenI18nValidationExceptionFilter());
-    app.useGlobalFilters(new ExceptionResponseFilter());
+    app.useGlobalPipes(new PlatformI18nValidationPipe());
+    app.useGlobalFilters(new PlayformI18nValidationExceptionFilter());
+    app.useGlobalFilters(new CommonExceptionFilter());
+    // app.useGlobalFilters(new ExceptionResponseFilter());
     app.useGlobalInterceptors(new ResponseSnakeCaseConvertInterceptor());
-    app.useGlobalInterceptors(new CheckConnDBInterceptor(app.get(Reflector)));
+    app.useGlobalInterceptors(new CheckConnDBInterceptor(app.get(Reflector) , config));
     app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
     app.useGlobalInterceptors(new CheckInitSystemInterceptor(config))
 

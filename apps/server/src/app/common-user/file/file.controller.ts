@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Headers, HttpCode, HttpStatus, Param, Post, Put, Req, Res, StreamableFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { ApiTags, ApiHeader, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { CrepenFileRouteService } from "./file.service";
-import { CrepenAuthJwtGuard } from "@crepen-nest/config/passport/jwt/jwt.guard";
+import { AuthJwtGuard } from "@crepen-nest/config/passport/jwt/jwt.guard";
 import { JwtUserExpressRequest, JwtUserRequest } from "@crepen-nest/interface/jwt";
 import { I18n, I18nContext } from "nestjs-i18n";
 import { StringUtil } from "@crepen-nest/lib/util/string.util";
@@ -39,7 +39,7 @@ export class CrepenFileRouteController {
     @ApiOperation({ summary: '파일 정보 조회', description: '파일 정보 조회' })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist('access_token'))
     //#endregion
     async getFileData(
         @Req() req: JwtUserRequest,
@@ -104,7 +104,7 @@ export class CrepenFileRouteController {
     @ApiOperation({ summary: '단일 파일 등록', description: '단일 파일 등록' })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist('access_token'))
     @UseInterceptors(FileInterceptor('file'))
     //#endregion
     async addFileStream(
@@ -250,7 +250,7 @@ export class CrepenFileRouteController {
     @ApiOperation({ summary: '파일 다운로드 ', description: '파일 다운로드 (스트림 지원)' })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist('access_token'))
     //#endregion
     async downloadFileStream(
         @Req() req: Request,
@@ -388,7 +388,7 @@ console.log(range);
     @ApiOperation({ summary: '파일 삭제 ', description: '파일 삭제' })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist('access_token'))
     //#endregion
     async removeFile(
         @Req() req: JwtUserRequest,
@@ -421,7 +421,7 @@ console.log(range);
     @ApiOperation({ summary: '파일 수정 ', description: '파일 수정' })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(CrepenAuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist('access_token'))
     //#endregion
     async editFileInfo(
         @Req() req: JwtUserRequest,

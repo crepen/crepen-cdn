@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { DataSource, FindOptionsWhere, Repository } from "typeorm";
 import { UserEntity } from "./entity/user.default.entity";
-import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
+import { DatabaseService } from "@crepen-nest/config/database/database.config.service";
 import { CrepenBaseRepository } from "src/module/common/base.repository";
 
 
@@ -9,7 +9,7 @@ import { CrepenBaseRepository } from "src/module/common/base.repository";
 // @Injectable()
 export class CrepenUserRepository extends CrepenBaseRepository {
 
-    constructor(databaseService: CrepenDatabaseService) {
+    constructor(databaseService: DatabaseService) {
         super(databaseService);
     }
 

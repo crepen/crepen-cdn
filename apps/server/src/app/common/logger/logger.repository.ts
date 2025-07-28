@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { DataSource, EntityManager, Repository } from "typeorm";
 import { FileTrafficLoggerEntity } from "./entity/file-traffic-logger.default.entity";
 import { randomUUID } from "crypto";
-import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
+import { DatabaseService } from "@crepen-nest/config/database/database.config.service";
 import { RepositoryOptions } from "@crepen-nest/interface/repo";
 import { CrepenBaseRepository } from "src/module/common/base.repository";
 
@@ -19,7 +19,7 @@ export class CrepenFileTrafficLoggerRepository extends CrepenBaseRepository{
     // private repo: Repository<FileTrafficLoggerEntity>
 
     constructor(
-        private readonly databaseService: CrepenDatabaseService
+        private readonly databaseService: DatabaseService
     ) {
         super(databaseService);
         // this.repo = this.dataSource.getRepository(FileTrafficLoggerEntity);

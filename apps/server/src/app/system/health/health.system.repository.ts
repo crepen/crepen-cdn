@@ -4,16 +4,16 @@ import { ConfigService } from "@nestjs/config";
 import { DataSource } from "typeorm";
 import { RepositoryOptions } from "@crepen-nest/interface/repo";
 import { LocalStateEntity } from "src/module/entity/local/state.local.entity";
-import { CrepenDatabaseService } from "@crepen-nest/config/database/database.config.service";
+import { DatabaseService } from "@crepen-nest/config/database/database.config.service";
 import { SQLiteDataSourceProvider } from "src/module/config/database/provider/sqlite.database.provider";
 
 @Injectable()
-export class CrepenSystemHealthRepository {
+export class SystemHealthRepository {
 
 
 
     constructor(
-        private readonly dbService: CrepenDatabaseService,
+        private readonly dbService: DatabaseService,
         private readonly configService: ConfigService
     ) { }
 

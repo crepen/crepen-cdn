@@ -4,9 +4,12 @@ import { Observable } from "rxjs";
 import { I18nContext } from "nestjs-i18n";
 import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error/http/common.http.error";
 import { StringUtil } from "@crepen-nest/lib/util/string.util";
+import { NotAllowTokenTypeError } from "src/module/error/not_allow_token_type.authorize.error";
+import { DenyRollError } from "src/module/error/deny_roll.authorize.error";
+import { TokenUnauthorizeError } from "src/module/error/token_expire.authorize.error";
 
 type TokenWhiteListType = 'all' | 'access_token' | 'refresh_token';
-export class CrepenAuthJwtGuard extends AuthGuard('jwt') {
+export class AuthJwtGuard extends AuthGuard('jwt') {
     constructor(whiteListTokenType?: TokenWhiteListType, whiteListRole?: string[]) {
         super()
         if (whiteListTokenType === 'all' || whiteListTokenType === 'access_token' || whiteListTokenType === 'refresh_token') {
@@ -19,7 +22,7 @@ export class CrepenAuthJwtGuard extends AuthGuard('jwt') {
         this.whiteListRole = whiteListRole ?? [];
     }
 
-    static whitelist = (type: TokenWhiteListType, role?: string[]) => new CrepenAuthJwtGuard(type, role)
+    static whitelist = (type: TokenWhiteListType, role?: string[]) => new AuthJwtGuard(type, role)
 
 
     whiteListTokenType: TokenWhiteListType = 'all';
@@ -37,7 +40,7 @@ export class CrepenAuthJwtGuard extends AuthGuard('jwt') {
         if (typeof user === 'object') {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             if (this.whiteListTokenType !== 'all' && this.whiteListTokenType !== user?.payload?.type) {
-                throw new CrepenCommonHttpLocaleError('cloud_auth', 'AUTHORIZATION_NOT_ALLOW_TYPE', HttpStatus.UNAUTHORIZED)
+                throw new NotAllowTokenTypeError()
             }
             else if (this.whiteListRole.length > 0) {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -56,7 +59,7 @@ export class CrepenAuthJwtGuard extends AuthGuard('jwt') {
                     }
 
                     if (isPass === false) {
-                        throw new CrepenCommonHttpLocaleError('cloud_auth', 'AUTHORIZATION_ROLE_BLOCK', HttpStatus.UNAUTHORIZED)
+                        throw new DenyRollError()
                     }
                 }
 
@@ -67,7 +70,7 @@ export class CrepenAuthJwtGuard extends AuthGuard('jwt') {
 
 
         if (err || !user) {
-            throw new CrepenCommonHttpLocaleError('cloud_auth', 'AUTHORIZATION_TOKEN_EXPIRED', HttpStatus.UNAUTHORIZED)
+            throw new TokenUnauthorizeError();
         }
 
         return super.handleRequest(err, user, info, context, status);

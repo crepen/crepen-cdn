@@ -7,6 +7,7 @@ import { UserEntity } from "@crepen-nest/app/common-user/user/entity/user.defaul
 import { CrepenUserRouteService } from "@crepen-nest/app/common-user/user/user.service";
 import { CrepenTokenData, CrepenTokenType } from "@crepen-nest/interface/jwt";
 import { Request } from "express";
+import { TokenUnauthorizeError } from "src/module/error/token_expire.authorize.error";
 
 
 @Injectable()
@@ -37,7 +38,7 @@ export class CrepenAuthJwtStrategy extends PassportStrategy(Strategy) {
             validateUser = await this.userService.getMatchUserByUid(payload?.uid as string | undefined);
 
             if (validateUser === undefined) {
-                return done(new CrepenCommonHttpLocaleError('cloud_auth', "AUTHORIZATION_TOKEN_EXPIRED1", HttpStatus.UNAUTHORIZED), false);
+                return done(new TokenUnauthorizeError(), false);
             }
         }
 

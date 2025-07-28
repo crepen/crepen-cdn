@@ -1,3 +1,5 @@
+
+/** @deprecated */
 export class CrepenSystemDatabaseError extends Error{
     constructor(message : string , context : string , options? : ErrorOptions){
         super(message , options)

@@ -3,7 +3,7 @@ import { CrepenAuthRouteService } from "./auth.service";
 import { CrepenAuthRouteController } from "./auth.controller";
 import { ConfigModule } from "@nestjs/config";
 import { CrepenAuthJwtStrategy } from "src/config/passport/jwt/jwt.strategy";
-import { CrepenPassportConfigModule } from "src/config/passport/passport.module";
+import { PassportConfigModule } from "src/config/passport/passport.module";
 import { CrepenUserRouteModule } from "../user/user.module";
 import { JwtService } from "@nestjs/jwt";
 
@@ -11,7 +11,7 @@ import { JwtService } from "@nestjs/jwt";
     imports : [
         ConfigModule,
         CrepenUserRouteModule,
-        CrepenPassportConfigModule
+        PassportConfigModule
     ],
     controllers : [CrepenAuthRouteController],
     providers : [CrepenAuthRouteService , CrepenAuthJwtStrategy ],

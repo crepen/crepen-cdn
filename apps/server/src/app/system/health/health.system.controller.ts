@@ -1,38 +1,37 @@
 import { Controller, Get } from "@nestjs/common";
-import { CrepenSystemHealthService } from "./health.system.service";
+import { SystemHealthService } from "./health.system.service";
 import { BaseResponse } from "src/module/common/base.response";
 import { ApiHeader, ApiTags } from "@nestjs/swagger";
+import { DisableValidDBDeco } from "src/module/extension/valid-db/chk-conn-db.decorator";
+import { I18n, I18nContext } from "nestjs-i18n";
+import { CommonError } from "src/module/error/common.error";
 
 @ApiTags('[SYSTEM] 서버 Health 컨트롤러')
 @ApiHeader({
     name: 'Accept-Language', required: false, enum: ['en', 'ko']
 })
 @Controller('system/health')
-export class CrepenSystemHealthController {
+@DisableValidDBDeco.getClassDeco()
+export class SystemHealthController {
 
     constructor(
-        private readonly healthService: CrepenSystemHealthService
+        private readonly healthService: SystemHealthService
     ) { }
 
     @Get()
+    @DisableValidDBDeco.getMethodDeco()
     async getHealth() {
 
-        let initState = false;
-        try{
-            initState = await this.healthService.getInitState();
-        }
-        catch(e){
-            console.log("EEEOR");
-        }
-        
-
+        const initState = await this.healthService.isPlatformInstalled();
+        const defaultDBState = await this.healthService.isDefaultDatabaseConnect();
+        const localDBState = await this.healthService.isLocalDatabaseConnect();
 
         return BaseResponse.ok({
-            api : true,
+            api: true,
             install: initState,
             database: {
-                default: await this.healthService.getDefaultDatabaseHealth(),
-                local: await this.healthService.getLocalDatabaseHealth()
+                default: defaultDBState,
+                local: localDBState
             }
         });
     }

@@ -1,10 +1,11 @@
 import { forwardRef, Module } from "@nestjs/common";
-import { CrepenSystemHealthController } from "./health.system.controller";
-import { CrepenSystemHealthRepository } from "./health.system.repository";
-import { CrepenSystemHealthService } from "./health.system.service";
+import { SystemHealthController } from "./health.system.controller";
+import { SystemHealthRepository } from "./health.system.repository";
+import { SystemHealthService } from "./health.system.service";
 
 @Module({
-    controllers: [CrepenSystemHealthController],
-    providers: [CrepenSystemHealthService, CrepenSystemHealthRepository]
+    controllers: [SystemHealthController],
+    providers: [SystemHealthService, SystemHealthRepository],
+    exports : [SystemHealthService]
 })
-export class CrepenSystemHealthModule { }
+export class SystemHealthModule { }

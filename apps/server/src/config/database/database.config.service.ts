@@ -5,7 +5,7 @@ import { DefaultDataSourceProvider } from "src/module/config/database/provider/d
 import { SQLiteDataSourceProvider } from "src/module/config/database/provider/sqlite.database.provider";
 
 @Injectable()
-export class CrepenDatabaseService {
+export class DatabaseService {
     private activeDefault: DataSource = undefined;
     private activeLocal: DataSource = undefined;
 

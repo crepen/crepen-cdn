@@ -1,11 +1,13 @@
 import { HttpException } from "@nestjs/common";
 import { I18nContext } from "nestjs-i18n";
 
+/** @deprecated */
 export interface CrepenCommonHttpLocaleErrorOption {
     transLocaleArgs?: { [key: string]: string },
     innerError? : unknown
 }
 
+/** @deprecated */
 export class CrepenCommonHttpLocaleError extends HttpException {
     transLocaleArgs: { [key: string]: string };
     transLocaleCategory?: string;

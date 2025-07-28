@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Cron, CronExpression } from "@nestjs/schedule";
 
 @Injectable()
-export class CrepenFileSchedulerService {
+export class FileSchedulerService {
     constructor(
 
     ){}
