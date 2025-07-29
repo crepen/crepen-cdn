@@ -1,0 +1,14 @@
+import { CrepenCommonHttpLocaleError, CrepenCommonHttpLocaleErrorOption } from "./common.http.error";
+
+
+/** @deprecated */
+export class CrepenApiSystemInstallHttpError extends CrepenCommonHttpLocaleError {
+    constructor(message: string, status: number, options?: CrepenCommonHttpLocaleErrorOption) {
+        super('api_system', message, status, options)
+    }
+
+    static INIT_DB_ALREADY_COMPLETE = new CrepenApiSystemInstallHttpError('INIT_DB_ALREADY_COMPLETE', 403);
+    
+    
+    static TEST_DB_CONN_FAILED = new CrepenApiSystemInstallHttpError('TEST_DB_CONN_FAILED' , 403);
+}

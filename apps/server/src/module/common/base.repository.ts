@@ -1,7 +1,6 @@
-import { UserEntity } from "@crepen-nest/app/common-user/user/entity/user.default.entity";
-import { DatabaseService } from "@crepen-nest/config/database/database.config.service";
 import { Injectable } from "@nestjs/common";
 import { DataSource, EntityTarget, ObjectLiteral, Repository } from "typeorm";
+import { DatabaseService } from "../config/database/database.config.service";
 
 @Injectable()
 export class CrepenBaseRepository {
@@ -11,7 +10,7 @@ export class CrepenBaseRepository {
         private readonly dbService: DatabaseService,
     ) { }
 
-    getRepository = async <Entity extends ObjectLiteral>(dbType: 'default' | 'local', entity: EntityTarget<Entity>) => {
+    getRepository = async <Entity extends ObjectLiteral>(dbType: 'default' | 'local', entity: EntityTarget<Entity>) : Promise<Repository<Entity>> => {
                 
         let dataSource : DataSource;
 

@@ -14,11 +14,10 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "paths": {
-      "@crepen-nest/app/*" : ["./src/app/*"],
+      "@crepen-nest/module/*" : ["./src/module/*"],
       "@crepen-nest/config/*" : ["./src/config/*"],
-      "@crepen-nest/interface/*" : ["./src/interface/*"],
+      "@crepen-nest/public/*" : ["./src/public/*"],
       "@crepen-nest/lib/*" : ["./src/lib/*"],
-      
     }
   }
 }
