@@ -1,7 +1,7 @@
 import { FindOptionsWhere } from "typeorm";
 import { UserEntity } from "./entity/user.default.entity";
 import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
-import { CrepenBaseRepository } from "@crepen-nest/module/common/base.repository";
+import { CrepenBaseRepository } from "@crepen-nest/lib/common/base.repository";
 
 
 

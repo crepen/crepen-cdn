@@ -5,7 +5,7 @@ import { FileStoreEntity } from "./entity/file-store.default.entity";
 import { FilePermissionEntity } from "./entity/file-permission.default.entity";
 import { randomUUID } from "crypto";
 import { SearchFileInfoOptions } from "./types/search-file-info-option";
-import { CrepenBaseRepository } from "src/module/common/base.repository";
+import { CrepenBaseRepository } from "@crepen-nest/lib/common/base.repository";
 import { FilePermissionType } from "@crepen-nest/lib/types/enum/file-permission-type.enum";
 import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
 import { RepositoryOptions } from "src/interface/repo";

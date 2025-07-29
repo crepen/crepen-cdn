@@ -1,4 +1,4 @@
-import { CrepenBaseRepository } from "@crepen-nest/module/common/base.repository";
+import { CrepenBaseRepository } from "@crepen-nest/lib/common/base.repository";
 import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
 import { Injectable } from "@nestjs/common";
 import { RepositoryOptions } from "src/interface/repo";
