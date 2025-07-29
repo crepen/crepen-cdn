@@ -19,6 +19,7 @@ import { FilePermissionType } from "@crepen-nest/lib/types/enum/file-permission-
 import { AuthJwtGuard } from "@crepen-nest/module/config/passport/jwt/jwt.guard";
 import { JwtUserRequest, JwtUserExpressRequest } from "src/interface/jwt";
 import { CrepenLoggerService } from "../../common/logger/logger.service";
+import { FileNotFoundError } from "@crepen-nest/lib/error/api/file/not_found_file.error";
 
 @ApiTags('[COMMON_USER] 사용자 파일 관리 컨트롤러')
 @ApiHeader({
@@ -261,7 +262,7 @@ export class CrepenFileRouteController {
     ) {
 
 
-        
+
         const fileInfo = await this.fileService.getFileInfoWithPermission(uid, user?.uid, FilePermissionType.READ, true);
 
         if (ObjectUtil.isNullOrUndefined(fileInfo)) {
@@ -282,7 +283,7 @@ export class CrepenFileRouteController {
         const fileSize = fileData.buffer.length;
         const range = res.req.headers.range;
 
-console.log(range);
+        console.log(range);
 
 
         if (range) {
@@ -334,9 +335,25 @@ console.log(range);
     ) {
         // console.log(uid);
         const fileInfo = await this.fileService.getPublishedFileInfo(uid, true);
-        const fileData = this.fileService.getLocalFile(fileInfo);
 
-        const fileSize = fileData.buffer.length;
+        if (ObjectUtil.isNullOrUndefined(fileInfo)) {
+            throw new FileNotFoundError();
+        }
+
+        let fileData : Express.Multer.File | undefined = undefined;
+        try {
+            fileData = this.fileService.getLocalFile(fileInfo);
+
+            if(ObjectUtil.isNullOrUndefined(fileData)){
+                throw new FileNotFoundError();
+            }
+        }
+        catch (e) {
+            throw new FileNotFoundError();
+        }
+
+
+        const fileSize = fileData?.buffer.length;
         const range = res.req.headers.range;
 
         if (range) {
@@ -395,7 +412,7 @@ console.log(range);
         // @Res() res: Response,
         @I18n() i18n: I18nContext,
         @Param('uid') uid: string,
-        @AuthUser() user : UserEntity | undefined
+        @AuthUser() user: UserEntity | undefined
     ) {
         console.log("REMOVE FILE", uid);
 
@@ -429,7 +446,7 @@ console.log(range);
         @I18n() i18n: I18nContext,
         @Param('uid') uid: string,
         @Body() bodyData: EditFileDto,
-        @AuthUser() user : UserEntity | undefined
+        @AuthUser() user: UserEntity | undefined
     ) {
         const editEntity = new FileEntity();
         editEntity.fileTitle = bodyData.fileTitle;

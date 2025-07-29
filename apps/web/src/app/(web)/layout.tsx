@@ -43,12 +43,14 @@ const RootLayoutRouter = async ({ children }: PropsWithChildren) => {
     return (
         <html lang={lang}>
             <body>
-                <GlobalConfigProvider>
-                    <InitSiteConfig />
-                        <div id="root">
-                            {children}
-                        </div>
-                </GlobalConfigProvider>
+                <div id="root">
+                    <GlobalConfigProvider>
+                        <InitSiteConfig />
+
+                        {children}
+
+                    </GlobalConfigProvider>
+                </div>
             </body>
         </html>
     )

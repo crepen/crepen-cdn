@@ -146,7 +146,7 @@
 @media screen and (max-width : #{variable.$screen-width-mobile}) {
     .cp-cloud.cp-layout {
         .cp-aside {
-
+            z-index: 10000000000;
 
             .cp-aside-box {
 

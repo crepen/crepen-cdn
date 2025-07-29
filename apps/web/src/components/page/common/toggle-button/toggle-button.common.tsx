@@ -8,7 +8,7 @@ interface CrepenToggleButtonProp {
     onChange?: (state: boolean) => Promise<boolean>
 }
 
-export const CrepenToggleButton = (prop: CrepenToggleButtonProp) => {
+export const CommonToggleButton = (prop: CrepenToggleButtonProp) => {
 
     const [isToggle, setToggleState] = useState<boolean>(prop.defaultState ?? false);
 

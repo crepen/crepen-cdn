@@ -3,11 +3,11 @@
 import { useRouter } from "next/navigation"
 import { StringUtil } from "@web/lib/util/string.util"
 import { CrepenDetailItem } from "../../common/detail-list/detail-item.common"
-import { CrepenToggleButton } from "../../common/toggle-button/toggle-button.common"
+import { CommonToggleButton } from "../../common/toggle-button/toggle-button.common"
 import { CrepenComponentError } from "@web/modules/common-1/error/CrepenComponentError"
-import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError"
-import urlJoin from "url-join"
-import { useGlobalBasePath } from "@web/component/config/GlobalBasePathProvider"
+import { FileAction } from "@web/modules/server/action"
+import { useGlobalLoading } from "@web/component/config/GlobalLoadingProvider"
+import { useGlobalLocale } from "@web/component/config/GlobalLocaleProvider"
 
 interface FileSharedEditDetailItemProp {
     title: string,
@@ -17,46 +17,56 @@ interface FileSharedEditDetailItemProp {
 
 export const FileSharedEditDetailItem = (prop: FileSharedEditDetailItemProp) => {
 
-    const basePathHook = useGlobalBasePath();
+     const globalLoading = useGlobalLoading();
     const route = useRouter();
+    const localeTranslate = useGlobalLocale();
 
 
     const onSubmitEventHandler = async (value?: boolean) => {
 
         try {
 
-
-            const apiUrl = urlJoin(basePathHook.basePath, '/api/file', prop.fileUid ?? 'ntf')
-
-            const fetchRequest = await fetch(apiUrl, {
-                method: 'POST',
-                body: JSON.stringify({
-                    isPublished: value
-                })
+  globalLoading.setState(true);
+            const requestAction = await FileAction.editFile({
+                uid : prop.fileUid,
+                isPubished : value
             })
 
 
+            // const apiUrl = urlJoin(basePathHook.basePath, '/api/file', prop.fileUid ?? 'ntf')
 
-            // if (!fetchRequest.ok) {
-            //     throw new CrepenCommonError('Unknown Error');
-            // }
+            // const fetchRequest = await fetch(apiUrl, {
+            //     method: 'POST',
+            //     body: JSON.stringify({
+            //         isPublished: value
+            //     })
+            // })
 
-            const data = await fetchRequest.json();
+
+
+            // // if (!fetchRequest.ok) {
+            // //     throw new CrepenCommonError('Unknown Error');
+            // // }
+
+            // const data = await fetchRequest.json();
 
 
 
 
-            if (data.success !== true) {
-                throw new CrepenComponentError(data.message);
+            if (requestAction.success !== true) {
+                throw new CrepenComponentError(requestAction.message);
             }
+
+              globalLoading.setState(false);
 
             route.refresh();
 
             return true;
         }
         catch (e) {
-            let message = 'Unknown Error';
-            if (e instanceof CrepenBaseError) {
+            let message = localeTranslate.getTranslation('common.system.UNKNOWN_ERROR');
+            
+            if (e instanceof CrepenComponentError) {
                 if (!StringUtil.isEmpty(e.message)) {
                     message = e.message;
                 }
@@ -74,7 +84,7 @@ export const FileSharedEditDetailItem = (prop: FileSharedEditDetailItemProp) => 
         <CrepenDetailItem
             title={prop.title}
         >
-            <CrepenToggleButton
+            <CommonToggleButton
                 defaultState={prop.value ?? false}
                 onChange={async (value) => {
                     return await onSubmitEventHandler(value);

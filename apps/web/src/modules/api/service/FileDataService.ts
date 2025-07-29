@@ -4,6 +4,7 @@ import { FileRepository } from "../repository/FileRepository";
 import { AuthSessionProvider } from "@web/modules/server/service/AuthSessionProvider";
 import { CommonApiOptions } from "../entity/CommonApi";
 import { CommonServiceCookieOptions } from "../entity/CommonService";
+import { EditFileRequestProp } from "../entity/repository/FileRepository";
 
 export class FileDataService {
     static getFileData = async (fileUid?: string, options?: CommonApiOptions & CommonServiceCookieOptions) => {
@@ -37,5 +38,20 @@ export class FileDataService {
 
         return FileEntity.recordToEntity(request.data);
 
+    }
+
+    static editFileData = async (fileUid?: string, editData?: EditFileRequestProp, options?: CommonApiOptions & CommonServiceCookieOptions) => {
+        const tokenData = options?.token ?? (await AuthSessionProvider.getSessionData({ cookie: options?.cookie })).token?.accessToken
+
+        const request = await FileRepository.editFileData(fileUid, editData, {
+            language: options?.language,
+            token: tokenData
+        });
+
+        if (!request.success) {
+            throw FileDataServiceError.errorResult(request.message);
+        }
+
+        return true;
     }
 }

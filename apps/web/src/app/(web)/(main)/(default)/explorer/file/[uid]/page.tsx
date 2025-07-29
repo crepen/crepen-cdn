@@ -40,6 +40,8 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
     // const locale = await CrepenLanguageService.getSessionLocale();
     const locale = await ServerI18nProvider.getSystemLocale();
 
+    
+
     const getFileCategoryIcon = () => {
         let icon: IconProp = faFile;
         switch (fileCategory) {
@@ -110,26 +112,26 @@ export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageP
                 }
 
                 <GroupExpandBox
-                    title='정보'
+                    title={await ServerI18nProvider.getSystemTranslationText('page.file.FILE_INFO_GROUP_LABEL_FILE_INFO') ?? 'Info'}
                     defaultOpen
                 >
                     <FileTitleEditDetailItem
-                        title='File title'
+                        title={await ServerI18nProvider.getSystemTranslationText('page.file.FILE_INFO_LABEL_FILE_TITLE') ?? 'File title'}
                         value={decodeURIComponent(fileData?.fileTitle ?? '')}
                         fileUid={fileData?.uid}
                     />
                     <CrepenDetailItem
-                        title='TYPE'
+                        title={await ServerI18nProvider.getSystemTranslationText('page.file.FILE_INFO_LABEL_FILE_TYPE') ?? 'File Type'}
                     >
                         {fileData?.fileStore?.fileType}
                     </CrepenDetailItem>
                     <CrepenDetailItem
-                        title='CATEGORY'
+                        title={await ServerI18nProvider.getSystemTranslationText(`page.file.FILE_INFO_LABEL_FILE_CATEGORY`) ?? 'File Category'}
                     >
-                        {fileCategory}
+                        {await ServerI18nProvider.getSystemTranslationText(`common.meta.category.${fileCategory}`) ?? fileCategory}
                     </CrepenDetailItem>
                     <CrepenDetailItem
-                        title='SIZE'
+                        title={await ServerI18nProvider.getSystemTranslationText(`page.file.FILE_INFO_LABEL_FILE_SIZE`) ?? 'File Size'}
                     >
                         {StringUtil.convertFormatByte(fileData?.fileStore?.fileSize ?? 0)}
                     </CrepenDetailItem>

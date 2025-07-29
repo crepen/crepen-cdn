@@ -1,6 +1,8 @@
 import { CrepenFetchExtenstion } from "../common/api/CrepenFetchExtension";
 import { FetchApi } from "../common/api/FetchApiService";
 import { CommonApiOptions } from "../entity/CommonApi";
+import { EditFileRequestProp } from "../entity/repository/FileRepository";
+import * as humps from 'humps';
 
 export class FileRepository {
     static getFileInfo = async (fileUid?: string, options?: CommonApiOptions) => {
@@ -31,7 +33,31 @@ export class FileRepository {
                     language: options?.language
                 })
                 .setHeaders({
-                    'Content-Type' : 'application/json'
+                    'Content-Type': 'application/json'
+                })
+                .getResponse();
+
+            return CrepenFetchExtenstion.convertCrepenResult(result);
+        }
+        catch (e) {
+            return CrepenFetchExtenstion.getDefaultErrorResult(e as Error);
+        }
+    }
+
+    static editFileData = async (fileUid?: string, editData?: EditFileRequestProp, options?: CommonApiOptions) => {
+        try {
+            const snakeCaseBody = humps.decamelizeKeys(editData);
+
+            const result = await FetchApi.instance()
+                .setMethod('POST')
+                .setUrl(`/explorer/file/${fileUid ?? 'ntf'}`)
+                .setBody(snakeCaseBody)
+                .setOptions({
+                    token: options?.token,
+                    language: options?.language
+                })
+                .setHeaders({
+                    'Content-Type': 'application/json'
                 })
                 .getResponse();
 

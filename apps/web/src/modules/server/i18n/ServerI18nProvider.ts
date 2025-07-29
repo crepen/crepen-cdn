@@ -11,7 +11,7 @@ export class ServerI18nProvider {
         const defaultTranslation = await I18nProvider.instance().getTranslation('en');
         const targetTranslation = await I18nProvider.instance().getTranslation(locale);
 
-        const merged = ObjectUtil.deepMerge(targetTranslation, defaultTranslation);
+        const merged = ObjectUtil.deepMerge(defaultTranslation , targetTranslation);
         return merged;
     }
 
@@ -20,6 +20,7 @@ export class ServerI18nProvider {
         const merged = await this.getTranslationData(locale);
 
         let targetResult: string | Record<string, unknown> | undefined = merged;
+
 
         if (!StringUtil.isEmpty(path)) {
             const pathDept = path!.split('.');
@@ -38,6 +39,7 @@ export class ServerI18nProvider {
 
     static getSystemTranslationText = async (path?: string): Promise<string | undefined> => {
         const systemLocale = await this.getSystemLocale();
+        // console.log("SYSTEM LOCALE" , systemLocale);
         const translateText = await this.getTranslationText(systemLocale, path);
         return StringUtil.isEmpty(translateText) ? path : translateText
     }

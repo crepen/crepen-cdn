@@ -1,4 +1,4 @@
-import { ArgumentsHost, Catch, ExceptionFilter, Logger } from "@nestjs/common";
+import { ArgumentsHost, Catch, ExceptionFilter, Logger, NotFoundException } from "@nestjs/common";
 import { I18nContext, I18nValidationException } from "nestjs-i18n";
 import * as humps from 'humps'
 import { Response } from "express";
@@ -32,10 +32,19 @@ export class CommonExceptionFilter implements ExceptionFilter {
         else if (error instanceof CommonError) {
             this.getCommonErrorResponse();
         }
+        else if (error instanceof NotFoundException){
+            this.getNotFoundResponse();
+        }
         else {
             this.getDefaultErrorResponse();
         }
 
+    }
+
+    private getNotFoundResponse = () => {
+        this.response
+            .status(404)
+            .send();
     }
 
     private getI18nErrorResponse = () => {

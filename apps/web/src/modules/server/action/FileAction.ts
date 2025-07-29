@@ -63,7 +63,7 @@ export const addFile = async (currentState: any, formData: FormData): Promise<Ad
 }
 
 export const removeFile = async (uid?: string) => {
-    let sessionData;
+    let sessionData = undefined;
     try {
 
 
@@ -81,13 +81,13 @@ export const removeFile = async (uid?: string) => {
 
 
         if (StringUtil.isEmpty(uid)) {
-             throw new FileActionError(
-                await ServerI18nProvider.getSystemTranslationText('common.system.REMOVE_FILE_UID_UNDEFINED'),
+            throw new FileActionError(
+                await ServerI18nProvider.getSystemTranslationText('action.file.REMOVE_FILE_UID_UNDEFINED'),
             )
         }
 
-        await FileDataService.removeFile(uid , {
-            token : sessionData.token?.accessToken
+        await FileDataService.removeFile(uid, {
+            token: sessionData.token?.accessToken
         })
 
 
@@ -109,5 +109,84 @@ export const removeFile = async (uid?: string) => {
             message: await ServerI18nProvider.getSystemTranslationText("common.system.UNKNOWN_ERROR")
         }
     }
+}
+
+interface EditFileActionProp {
+    uid?: string,
+    isPubished?: boolean,
+    fileTitle?: string
+}
+
+interface EditFileActionResult {
+    success?: boolean,
+    message?: string,
+}
+
+export const editFile = async (prop: EditFileActionProp): Promise<EditFileActionResult> => {
+
+
+    let sessionData = undefined;
+
+    try {
+
+        try {
+            sessionData = (await (await AuthSessionProvider.instance()).refresh()).sessionData;
+        }
+        catch (e) {
+            throw new FileActionError(
+                await ServerI18nProvider.getSystemTranslationText('common.system.UNAUTHORIZATION'),
+                {
+                    innerError: e as Error
+                }
+            )
+        }
+
+
+        if (StringUtil.isEmpty(prop?.uid)) {
+            throw new FileActionError(
+                await ServerI18nProvider.getSystemTranslationText('action.file.EDIT_FILE_UID_UNDEFINED'),
+            )
+        }
+
+        try {
+            await FileDataService.editFileData(prop?.uid, {
+                fileTitle: prop.fileTitle,
+                isPublished: prop.isPubished
+            }, {
+                token: sessionData?.token?.accessToken
+            })
+
+        }
+        catch (e) {
+            throw new FileActionError(
+                !StringUtil.isEmpty((e as Error).message)
+                    ? (e as Error).message
+                    : await ServerI18nProvider.getSystemTranslationText('action.file.FAILED_EDIT_FILE'),
+            )
+        }
+
+
+
+
+        return {
+            success: true
+        }
+
+    }
+    catch (e) {
+        if (e instanceof CommonActionError) {
+            return {
+                success: false,
+                message: e.message
+            }
+        }
+
+        return {
+            success: false,
+            message: await ServerI18nProvider.getSystemTranslationText("common.system.UNKNOWN_ERROR")
+        }
+    }
+
+
 }
 

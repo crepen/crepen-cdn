@@ -15,6 +15,7 @@ import { FileStoreEntity } from './entity/file-store.default.entity';
 import { FileEntity } from './entity/file.default.entity';
 import { CrepenFileError } from './exception/file.exception';
 import { CrepenFileRouteRepository } from './file.repository';
+import { FileNotFoundError } from '@crepen-nest/lib/error/api/file/not_found_file.error';
 
 @Injectable()
 export class CrepenFileRouteService {
@@ -204,7 +205,7 @@ export class CrepenFileRouteService {
         const fileData = await this.getFileInfo(fileUid);
 
         if (ObjectUtil.isNullOrUndefined(fileData)) {
-            throw CrepenFileError.FILE_NOT_FOUND;
+            throw new FileNotFoundError();
         }
 
         if (fileData.ownerUid !== requestUserUid) {

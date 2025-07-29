@@ -10,7 +10,7 @@ import { faEdit } from "@fortawesome/free-solid-svg-icons"
 interface CrepenDetailEditableItemProp {
     title: string,
     value?: string,
-    onSubmit?: (value? : string) => Promise<boolean>
+    onSubmit?: (value?: string) => Promise<boolean>
 }
 
 export const CrepenDetailEditableItem = (prop: CrepenDetailEditableItemProp) => {
@@ -18,7 +18,7 @@ export const CrepenDetailEditableItem = (prop: CrepenDetailEditableItemProp) => 
     const [isEditable, setEditState] = useState<boolean>(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
- 
+
 
     return (
         <CrepenDetailItem
@@ -34,13 +34,19 @@ export const CrepenDetailEditableItem = (prop: CrepenDetailEditableItemProp) => 
                             defaultValue={prop.value}
                             className="cp-edit-input"
                             ref={inputRef}
+                            onKeyUp={async (e) => {
+                                if (e.key === 'Enter') {
+                                    if (prop.onSubmit && await prop.onSubmit(inputRef.current?.value)) {
+                                        setEditState(false);
+                                    }
+                                }
+                            }}
                         />
                         <div className='cp-edit-action'>
                             <button
                                 className='cp-edit-submit-bt'
                                 onClick={async () => {
-                                    if(prop.onSubmit && await prop.onSubmit(inputRef.current?.value))
-                                    {
+                                    if (prop.onSubmit && await prop.onSubmit(inputRef.current?.value)) {
                                         setEditState(false);
                                     }
                                 }}
