@@ -1,14 +1,15 @@
-import { ChangeEvent, Fragment, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import './fast-add-button.file.scss';
-import { UploadFileItemObject, useUploadFileState } from '@web/lib/state/file.state';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFile, faFolder } from '@fortawesome/free-regular-svg-icons';
+import { faFile } from '@fortawesome/free-regular-svg-icons';
 import { StringUtil } from '@web/lib/util/string.util';
-import { useGlobalBasePath, useGlobalLanguage } from '@web/lib/state/global.state';
 import { faRefresh, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { CrepenModal } from '../../common/base-modal.common';
 import { CrepenComponentError } from '@web/modules/common-1/error/CrepenComponentError';
 import { CrepenBaseError } from '@web/modules/common-1/error/CrepenBaseError';
+import { UploadFileItemObject, useUploadFileState } from '@web/lib/zustand-state/file.state';
+import { useGlobalBasePath } from '@web/component/config/GlobalBasePathProvider';
+import { useGlobalLanguage } from '@web/lib/zustand-state/global.state';
 
 interface FastAddFileModalProp {
     folderUid: string,
@@ -150,7 +151,7 @@ const FastAddFileItem = (prop: FastAddFileItemProp) => {
             const formData = new FormData();
             formData.set('file', prop.item.file);
 
-            const uploadFileRequest = await fetch(`${basePath.value}/api/file`, {
+            const uploadFileRequest = await fetch(`${basePath.basePath}/api/file`, {
                 method: 'PUT',
                 body: formData,
                 signal: abortController.signal,
@@ -174,7 +175,7 @@ const FastAddFileItem = (prop: FastAddFileItemProp) => {
                 fileTitle: prop.item.file.name
             }
 
-            const relFileRequest = await fetch(`${basePath.value}/api/file/rel`, {
+            const relFileRequest = await fetch(`${basePath.basePath}/api/file/rel`, {
                 method: 'POST',
                 body: JSON.stringify(bodyData),
                 signal: abortController.signal,

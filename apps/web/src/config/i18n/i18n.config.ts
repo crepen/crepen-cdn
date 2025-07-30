@@ -1,5 +1,11 @@
 import { StringUtil } from "@web/lib/util/string.util";
 
+
+
+
+
+
+
 export type Locale = (typeof I18nProvider.config)['locales'][number];
 
 export class I18nProvider {
@@ -27,7 +33,7 @@ export class I18nProvider {
     }
 
     getTranslation = (locale?: string) => {
-        return this.getLocaleFile(locale).then((module) => module.default);
+        return this.getLocaleFile(locale).then((module) => module);
     }
 
     private getLocaleFile = async (locale?: string) => {
@@ -40,7 +46,7 @@ export class I18nProvider {
 
 
             const localeFilePath = `./locale/${appendLocale}.json`;
-            return await import(localeFilePath)
+            return undefined;
         }
         catch (e) {
             return { default: {} }

@@ -1,0 +1,19 @@
+
+:root {
+    font-family: 'Pretendard Variable', 'Noto Sans KR';
+    --vh: 1vh;
+    --global-font-family : 'Pretendard Variable', 'Noto Sans KR';
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    height: calc(var(--vh) * 100);
+    max-height: calc(var(--vh) * 100);
+    overflow: hidden;
+}
+
+

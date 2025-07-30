@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import * as DateFns from 'date-fns'
-import { SystemDataService } from "@web/modules/api/service/SystemDataService";
+import { SystemDataService } from "@web/lib/modules/api-server/service/SystemDataService";
 
 interface SetupSystemDatabaseResult {
     isSuccess?: boolean,

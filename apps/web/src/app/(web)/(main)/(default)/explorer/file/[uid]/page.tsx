@@ -18,9 +18,9 @@ import { FileRemoveEditDetailItem } from '@web/components/page/file/edit-detail/
 import urlJoin from 'url-join';
 import { CustomEnvProvider } from '@web/modules/server/service/CustomEnvProvider';
 import { ServerI18nProvider } from '@web/modules/server/i18n/ServerI18nProvider';
-import { FileDataService } from '@web/modules/api/service/FileDataService';
-import { DateUtil } from '@web/modules/util/DateUtil';
+import { DateUtil } from '@web/lib/util/DateUtil';
 import { CrepenIconButton } from '@web/component/common/icon-button/icon-button.control';
+import { FileDataService } from '@web/lib/modules/api-server/service/FileDataService';
 
 interface ExplorerFileInfoRoutePageProp {
     params: Promise<{
@@ -28,7 +28,7 @@ interface ExplorerFileInfoRoutePageProp {
     }>
 }
 
-export const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageProp) => {
+const ExplorerFileInfoRoutePage = async (prop: ExplorerFileInfoRoutePageProp) => {
 
     const targetFileUid = (await prop.params).uid;
 

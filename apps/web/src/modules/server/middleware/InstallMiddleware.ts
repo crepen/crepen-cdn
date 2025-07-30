@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse, URLPattern } from "next/server";
 import { BaseMiddleware, BaseMiddlewareResponse } from "./BaseMiddleware";
 import urlJoin from "url-join";
-import { SystemDataService } from "@web/modules/api/service/SystemDataService";
 import { StringUtil } from "@web/lib/util/string.util";
-import { UrlUtil } from "@web/modules/util/UrlUtil";
+import { UrlUtil } from "@web/lib/util/UrlUtil";
+import { SystemDataService } from "@web/lib/modules/api-server/service/SystemDataService";
 
 export class InstallMiddleware implements BaseMiddleware {
 

@@ -1,20 +1,18 @@
 import { ResponseCookies } from "next/dist/compiled/@edge-runtime/cookies";
 import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 import { cookies } from "next/headers";
-import { AuthDataService } from "@web/modules/api/service/AuthDataService";
 import { AuthSessionLoadUserDataError } from "@web/modules/common/error/AuthSessionLoadUserDataError";
-import { UserDataService } from "@web/modules/api/service/UserDataService";
 import { AuthSessionRefreshError } from "@web/modules/common/error/AuthSessionRefreshError";
-import { UserTokenEntityInterface, UserTokenEntity } from "@web/modules/api/entity/object/TokenEntity";
-import { UserInfoEntityInterface, UserInfoEntity } from "@web/modules/api/entity/object/UserInfoEntity";
 import { AuthSessionLoginError } from "@web/modules/common/error/AuthSessionLoginError";
 import { AuthSessionReadError } from "@web/modules/common/error/AuthSessionReadError";
 import { AuthSessionSaveError } from "@web/modules/common/error/AuthSessionSaveError";
-import { CryptoSymmenticUtil } from "@web/modules/util/CryptoUtil";
-import { FolderDataService } from "@web/modules/api/service/FolderDataService";
-import { FolderEntity, FolderEntityInterface } from "@web/modules/api/entity/object/FolderEntity";
-import { UserInfoResultEntity } from "@web/modules/api/entity/repository/UserRepository";
-import { FolderResultEntity } from "@web/modules/api/entity/repository/FolderRepository";
+import { CryptoSymmenticUtil } from "@web/lib/util/CryptoUtil";
+import { FolderEntity } from "@web/lib/modules/api-server/entity/object/FolderEntity";
+import { UserTokenEntity, UserTokenEntityInterface } from "@web/lib/modules/api-server/entity/object/TokenEntity";
+import { UserInfoEntity } from "@web/lib/modules/api-server/entity/object/UserInfoEntity";
+import { AuthDataService } from "@web/lib/modules/api-server/service/AuthDataService";
+import { FolderDataService } from "@web/lib/modules/api-server/service/FolderDataService";
+import { UserDataService } from "@web/lib/modules/api-server/service/UserDataService";
 
 export interface AuthSessionData {
     token?: UserTokenEntity,

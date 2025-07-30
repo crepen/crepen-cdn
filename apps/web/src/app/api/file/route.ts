@@ -4,7 +4,7 @@ import { ServerI18nProvider } from "@web/modules/server/i18n/ServerI18nProvider"
 import { AuthSessionProvider } from "@web/modules/server/service/AuthSessionProvider";
 import { NextRequest, NextResponse } from "next/server";
 
-export const PUT = async (req: NextRequest, res: NextResponse) => {
+export const PUT = async (req: NextRequest) => {
     const locale = req.headers.get('Accept-Language')?.toString() ?? ServerI18nProvider.getDefaultLanguage();
 
     try {

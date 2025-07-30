@@ -12,8 +12,8 @@ import { SelectFolderItemProp, useSelectFolderItem } from '../folder-select-item
 import { useFolderData } from '../folder-info-provider/FolderDataProvider'
 import { CrepenFile } from '@web/modules/crepen/service/explorer/file/dto/CrepenFile'
 import { CrepenFolder } from '@web/modules/crepen/service/explorer/folder/dto/CrepenFolder'
-import { FileEntity } from '@web/modules/api/entity/object/FileEntity'
-import { FolderEntity } from '@web/modules/api/entity/object/FolderEntity'
+import { FolderEntity } from '@web/lib/modules/api-server/entity/object/FolderEntity'
+import { FileEntity } from '@web/lib/modules/api-server/entity/object/FileEntity'
 
 interface FolderItemListContainerProp {
     dataList: FolderItemData[],

@@ -1,7 +1,7 @@
 'use client'
 
 import { StringUtil } from "@web/lib/util/string.util"
-import { useGlobalAsideExpandState } from "@web/modules/client/state/cloud.global.state"
+import { useGlobalAsideExpandState } from "@web/lib/zustand-state/cloud.global.state"
 import { usePathname } from "next/navigation"
 import { PropsWithChildren, useEffect } from "react"
 

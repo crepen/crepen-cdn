@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { BaseMiddleware, BaseMiddlewareResponse } from "./BaseMiddleware";
-import { SystemDataService } from "@web/modules/api/service/SystemDataService";
-import { UrlUtil } from "@web/modules/util/UrlUtil";
+import { UrlUtil } from "@web/lib/util/UrlUtil";
 import { StringUtil } from "@web/lib/util/string.util";
 import urlJoin from "url-join";
+import { SystemDataService } from "@web/lib/modules/api-server/service/SystemDataService";
 
 export class ServerConnectMiddleware implements BaseMiddleware {
 

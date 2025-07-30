@@ -2,7 +2,7 @@
 
 import { Fragment, useState, useRef } from "react"
 import { UploadFileList, UploadFileListRef } from "./upload-file-list.file";
-import { UploadFileItemObject } from "@web/modules/client/state/file.state";
+import { UploadFileItemObject } from "@web/lib/zustand-state/file.state";
 
 export const AddFilePageContext = () => {
 

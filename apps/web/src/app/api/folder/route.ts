@@ -1,12 +1,9 @@
 import { StringUtil } from "@web/lib/util/string.util";
-import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError";
 import { CrepenRouteError } from "@web/modules/common-1/error/CrepenRouteError";
 import { CommonRouteError } from "@web/modules/common/error/route-error/CommonRouteError";
 import { FolderRouteError } from "@web/modules/common/error/route-error/FolderRouteError";
-import { CrepenAuthOpereationService } from "@web/modules/crepen/service/auth/CrepenAuthOpereationService";
 import { ServerI18nProvider } from "@web/modules/server/i18n/ServerI18nProvider";
 import { AuthSessionProvider } from "@web/modules/server/service/AuthSessionProvider";
-import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { NextRequest, NextResponse } from "next/server";
 
 // export const runtime = 'node';
@@ -57,14 +54,13 @@ export const POST = async (req: NextRequest) => {
             apiUrl = apiUrl.slice(0, apiUrl.length - 1);
         }
 
-        const request = await 
 
         const response = await fetch(`${apiUrl}/explorer/folder?uid=${uid}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 'Accept-Language': locale,
-                'Authorization': `Bearer ${renewToken.data?.accessToken}`
+                'Authorization': `Bearer ${sessionData.token?.accessToken}`
             },
             body: JSON.stringify(bodyData)
         });

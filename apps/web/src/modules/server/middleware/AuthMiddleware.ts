@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { BaseMiddleware, BaseMiddlewareResponse } from "./BaseMiddleware";
 import urlJoin from "url-join";
 import { StringUtil } from "@web/lib/util/string.util";
-import { UrlUtil } from "@web/modules/util/UrlUtil";
+import { UrlUtil } from "@web/lib/util/UrlUtil";
 import { AuthSessionProvider } from "../service/AuthSessionProvider";
 
 export class AuthMiddleware implements BaseMiddleware {

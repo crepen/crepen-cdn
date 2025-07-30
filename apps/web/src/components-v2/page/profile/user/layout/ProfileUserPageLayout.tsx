@@ -1,4 +1,3 @@
-import { CrepenShadowGroup } from '@web/components-v2/common/layout/shadow-group/CrepenShadowGroup'
 import './ProfileUserPageLayout.scss'
 import { CrepenUser } from '@web/services/types/object/user.object'
 import { ClientDateLocaleWrap } from '@web/components/page/common/date-locale.wrap.common'

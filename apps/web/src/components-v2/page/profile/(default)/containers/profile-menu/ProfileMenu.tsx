@@ -1,6 +1,5 @@
 import { PropsWithClassName } from '@web/modules/common/type/common.component'
 import './ProfileMenu.scss'
-import { CrepenShadowGroup } from '@web/components-v2/common/layout/shadow-group/CrepenShadowGroup'
 import Link from 'next/link'
 
 interface ProfileMenuProp extends PropsWithClassName {

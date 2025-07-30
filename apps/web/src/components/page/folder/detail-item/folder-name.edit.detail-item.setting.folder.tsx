@@ -4,7 +4,7 @@ import { EditDetialItem } from "./edit.detail-item.setting.folder"
 import urlJoin from "url-join"
 import { useRouter } from "next/navigation"
 import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError"
-import { useGlobalBasePath } from "@web/modules/client/state/global.state"
+import { useGlobalBasePath } from "@web/lib/zustand-state/global.state"
 
 interface EditFolderNameDetailItemProp {
     title : string,

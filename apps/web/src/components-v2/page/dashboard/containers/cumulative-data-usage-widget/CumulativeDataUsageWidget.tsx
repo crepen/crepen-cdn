@@ -7,7 +7,7 @@ import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipCont
 import { Fragment } from 'react';
 import * as ct from 'countries-and-timezones';
 import { DateTime } from 'luxon';
-import { useGlobalLanguage } from '@web/modules/client/state/global.state';
+import { useGlobalLanguage } from '@web/lib/zustand-state/global.state';
 import { CrepenCumulativeTrafficDto } from '@web/modules/crepen/service/monitor/dto/CrepenCumulativeTrafficDto';
 
 interface CumulativeDataUsageWidgetProp {

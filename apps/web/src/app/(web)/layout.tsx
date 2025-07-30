@@ -2,7 +2,7 @@
 import 'pretendard/dist/web/variable/pretendardvariable.css';
 // Global Style
 import '@web/assets/style/common/reset.css';
-import '@web/assets/style/common/global.scss'
+import '@web/assets/style/common/global.scss';
 
 import '@fortawesome/fontawesome-svg-core/styles.css'
 // import '@web/assets/style/common/fontawesome/css/all.min.css'

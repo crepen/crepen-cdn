@@ -19,7 +19,7 @@ interface ExplorerFolderSettingRoutePageProp {
     }>
 }
 
-export const ExplorerFolderSettingRoutePage = async (prop: ExplorerFolderSettingRoutePageProp) => {
+const ExplorerFolderSettingRoutePage = async (prop: ExplorerFolderSettingRoutePageProp) => {
 
     const targetFolderUid = (await prop.params).uid;
     const folderData = await CrepenFolderOperationService.getFolderData(targetFolderUid, true);

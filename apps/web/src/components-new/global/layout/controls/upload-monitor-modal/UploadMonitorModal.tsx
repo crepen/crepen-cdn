@@ -13,7 +13,7 @@ import { CrepenComponentError } from '@web/modules/common-1/error/CrepenComponen
 import { CrepenBaseError } from '@web/modules/common-1/error/CrepenBaseError';
 import { Virtuoso } from 'react-virtuoso';
 import urlJoin from 'url-join';
-import {  useGlobalLanguage } from '@web/modules/client/state/global.state';
+import {  useGlobalLanguage } from '@web/lib/zustand-state/global.state';
 import { useGlobalBasePath } from '@web/component/config/GlobalBasePathProvider';
 
 export const UploadMonitorModal = () => {

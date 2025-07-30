@@ -1,4 +1,4 @@
-export const ExplorerFolderAddChildFileRoutePage = () => {
+const ExplorerFolderAddChildFileRoutePage = () => {
     return (
         <div className="cp-common-page">
             <span>ADD FILE</span>

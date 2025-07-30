@@ -9,8 +9,8 @@ import { FolderItemListContainer } from '../containers/folder-item-list/FolderIt
 import { FolderSelectItemProvider } from '../containers/folder-select-item-provider/FolderSelectItemProvider'
 import { FolderPageToolbar } from '../containers/folder-page-toopbar/FolderPageToolbar'
 import { FolderDataProvider } from '../containers/folder-info-provider/FolderDataProvider'
-import { FolderEntity } from '@web/modules/api/entity/object/FolderEntity'
 import { ObjectUtil } from '@web/lib/util/object.util'
+import { FolderEntity } from '@web/lib/modules/api-server/entity/object/FolderEntity'
 
 interface FolderListPageLayoutProp extends PropsWithClassName {
     data: FolderEntity

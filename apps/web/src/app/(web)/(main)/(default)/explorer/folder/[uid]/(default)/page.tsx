@@ -1,8 +1,8 @@
 import { Fragment } from "react";
 import { FolderListPageLayout } from "@web/components-v2/page/folder/list-page/layout/FolderListPageLayout";
-import { FolderDataService } from "@web/modules/api/service/FolderDataService";
-import { FolderEntity } from "@web/modules/api/entity/object/FolderEntity";
 import { ObjectUtil } from "@web/lib/util/object.util";
+import { FolderDataService } from "@web/lib/modules/api-server/service/FolderDataService";
+import { FolderEntity } from "@web/lib/modules/api-server/entity/object/FolderEntity";
 
 interface ExplorerFolderRoutePageProp {
     params: Promise<{
@@ -14,7 +14,7 @@ export const metadata = {
     title: 'CrepenCDN | Explorer',
 };
 
-export const ExplorerFolderRoutePage = async (prop: ExplorerFolderRoutePageProp) => {
+const ExplorerFolderRoutePage = async (prop: ExplorerFolderRoutePageProp) => {
 
     const targetFolderUid = (await prop.params).uid;
 

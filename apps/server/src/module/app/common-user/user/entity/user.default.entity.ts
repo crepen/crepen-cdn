@@ -25,6 +25,9 @@ export class UserEntity {
     @Column({ type: 'varchar', name: 'email' })
     email?: string;
 
+    @Column({ type: 'varchar', name: 'language' , nullable : true })
+    language?: string;
+
 
     @Column({ name: 'create_date', type: "datetime", default: () => 'sysdate()' })
     // @Exclude()
@@ -48,7 +51,7 @@ export class UserEntity {
                     .map(x => x.trim())
             }
         },
-        default : ''
+        default: ''
     })
     roles?: string[];
 }

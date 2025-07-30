@@ -1,11 +1,11 @@
 'use server'
 
 import { AuthSessionProvider } from "../service/AuthSessionProvider";
-import { FolderDataService } from "@web/modules/api/service/FolderDataService";
 import { StringUtil } from "@web/lib/util/string.util";
 import { FolderActionError } from "@web/modules/common/error/action/FolderActionError";
 import { ServerI18nProvider } from "../i18n/ServerI18nProvider";
 import { BaseSystemError } from "@web/modules/common/error/BaseSystemError";
+import { FolderDataService } from "@web/lib/modules/api-server/service/FolderDataService";
 
 export const CrepenFolderAddChildFolder = async (formData: FormData) => {
 

@@ -33,7 +33,7 @@ export const FolderUploadFileButton = (prop: AddFolderFileButtonProp) => {
             e.target.value='';
 
 
-            uploadHook.uploadData(fileList , folderDataHook.uid , folderDataHook.folderTitle );
+            uploadHook.uploadData(fileList , folderDataHook.uid ?? '' , folderDataHook.folderTitle ?? '' );
 
             monitorHook.changeState(true)
         }

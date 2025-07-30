@@ -1,6 +1,11 @@
+import { ServerLocaleProvider } from "@web/lib/modules/common/i18n/ServerLocaleProvider";
 import Link from "next/link";
+import { LocaleConfig } from "../../../../../config/locale/locale.config";
 
-export const ServerConnectErrorRoutePage = () => {
+const ServerConnectErrorRoutePage = async () => {
+
+    const ee= await ServerLocaleProvider.current(LocaleConfig).getLocaleFileData('ko');
+
     return (
         <div className="cp-error-page">
             SERVER CONNECT ERROR

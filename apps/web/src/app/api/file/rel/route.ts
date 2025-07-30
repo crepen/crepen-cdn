@@ -1,10 +1,10 @@
 import { CrepenBaseError } from "@web/modules/common-1/error/CrepenBaseError";
 import { CrepenRouteError } from "@web/modules/common-1/error/CrepenRouteError";
-import { CrepenAuthOpereationService } from "@web/modules/crepen/auth/CrepenAuthOpereationService";
+import { CrepenAuthOpereationService } from "@web/modules/crepen/service/auth/CrepenAuthOpereationService";
 import { CrepenCookieOperationService } from "@web/services/operation/cookie.operation.service";
 import { NextRequest, NextResponse } from "next/server"
 
-export const POST = async (req: NextRequest, res: NextResponse) => {
+export const POST = async (req: NextRequest) => {
 
     try {
         const renewToken = await CrepenAuthOpereationService.renewToken(true);
@@ -12,7 +12,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
             throw new CrepenRouteError(renewToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.', 401, renewToken.innerError);
         }
         else {
-            const applyToken = await CrepenCookieOperationService.insertTokenData(renewToken.data);
+            const applyToken = await CrepenCookieOperationService.insertTokenData({accessToken : '',refreshToken : '', expireTime : 1 });
             if (applyToken.success !== true) {
                 throw new CrepenRouteError(applyToken.message ?? '사용자 인증이 만료되었습니다. 다시 로그인해주세요.', 401, applyToken.innerError);
             }

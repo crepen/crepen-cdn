@@ -2,10 +2,9 @@
 
 import { PropsWithChildren, useState } from 'react'
 import './base.category-group.folder.scss'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faChevronUp, faExpand } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
 import { StringUtil } from '@web/lib/util/string.util'
-import { CrepenIconButton } from '@web/components/control/icon-button/icon-button.control'
+import { CrepenIconButton } from '@web/component/common/icon-button/icon-button.control'
 
 interface FolderCategoryGroupProp extends PropsWithChildren {
     title: string,
@@ -27,7 +26,7 @@ export const FolderCategoryExpandGroup = (prop: FolderCategoryGroupProp) => {
                 </span>
                 <div className="cp-category-action">
                     {prop.actions}
-                    <CrepenIconButton 
+                    <CrepenIconButton
                         icon={isExpand ? faChevronUp : faChevronDown}
                         className='cp-expand-icon'
                         onClick={() => setExpandState(!isExpand)}

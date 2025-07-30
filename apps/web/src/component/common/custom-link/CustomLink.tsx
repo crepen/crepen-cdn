@@ -2,7 +2,7 @@
 
 import { useGlobalBasePath } from "@web/component/config/GlobalBasePathProvider";
 import { StringUtil } from "@web/lib/util/string.util";
-import { useGlobalAsideExpandState } from "@web/modules/client/state/cloud.global.state";
+import { useGlobalAsideExpandState } from "@web/lib/zustand-state/cloud.global.state";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { PropsWithChildren } from "react";

@@ -8,6 +8,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
     "web": "yarn workspace @crepen-cdn/web",
+    "cloud": "yarn workspace @crepen-cdn/cloud",
     "server": "yarn workspace @crepen-cdn/server",
     "core": "yarn workspace @crepen-cdn/core"
   },

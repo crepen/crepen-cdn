@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import Link from 'next/link'
 import urlJoin from 'url-join'
-import { useGlobalBasePath } from '@web/modules/client/state/global.state'
+import { useGlobalBasePath } from '@web/lib/zustand-state/global.state'
 
 interface FolderLinearItemProp {
     type: 'folder' | 'file',

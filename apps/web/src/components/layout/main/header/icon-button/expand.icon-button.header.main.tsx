@@ -3,7 +3,7 @@
 import { BaseHeaderIconButton } from "./base.icon-button.header.main"
 import { faBars } from "@fortawesome/free-solid-svg-icons"
 import { StringUtil } from "@web/lib/util/string.util"
-import { useGlobalAsideExpandState } from "@web/modules/client/state/cloud.global.state"
+import { useGlobalAsideExpandState } from "@web/lib/zustand-state/cloud.global.state"
 
 interface ExpandAsideHeaderIconButtonProp {
     className? : string

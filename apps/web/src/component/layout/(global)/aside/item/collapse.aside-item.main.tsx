@@ -2,7 +2,7 @@
 
 import { faAnglesLeft } from "@fortawesome/free-solid-svg-icons"
 import { MainAsideMenuItem } from "./common.aside-item.main"
-import { useGlobalAsideExpandState } from "@web/modules/client/state/cloud.global.state";
+import { useGlobalAsideExpandState } from "@web/lib/zustand-state/cloud.global.state";
 
 
 export const CollapseMainAsideMenuItem = () => {

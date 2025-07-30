@@ -5,9 +5,8 @@ import { Fragment, MouseEvent, useState } from "react"
 import { FastAddFileModal } from "./fast-add.file"
 import { StringUtil } from '@web/lib/util/string.util'
 import { useRouter } from 'next/navigation'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAdd } from '@fortawesome/free-solid-svg-icons'
-import { CrepenIconButton } from '@web/components/control/icon-button/icon-button.control'
+import { CrepenIconButton } from '@web/component/common/icon-button/icon-button.control'
 
 interface FastAddFileModalButtonProp {
     // value: string,
