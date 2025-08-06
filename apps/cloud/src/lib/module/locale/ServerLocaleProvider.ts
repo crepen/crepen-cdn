@@ -63,5 +63,15 @@ export class ServerLocaleProvider {
         return localeDataRecord;
     }
 
+
+    isSupportLocale = async (locale? : string) : Promise<boolean> => {
+        if(!this.config.supportLocales.find(x=>x.trim().toLowerCase() === locale?.trim().toLowerCase())){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
     
 }

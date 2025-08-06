@@ -157,6 +157,7 @@ export class FetchApi {
 
         }
         catch (e) {
+            
             throw new ConnectFailedFetchError();
         }
     }

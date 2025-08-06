@@ -36,6 +36,26 @@ export class RestAuthDataService {
         return resultData
     }
 
+    login = async (id? : string , password? : string) => {
+        const result = await FetchApi
+            .instance(process.env.API_URL)
+            .setMethod('POST')
+            .setUrl('/auth/login')
+            .setBody({
+                id : id,
+                password : password
+            })
+            .setOptions({
+                language: this.language
+            })
+            .getResponse();
 
+            
+
+        const resultData: BaseApiResultEntity<AuthRefreshResponse>
+            = humps.camelizeKeys(Object.assign(result.jsonData ?? {})) as BaseApiResultEntity<AuthRefreshResponse>;
+
+        return resultData
+    }
 
 }

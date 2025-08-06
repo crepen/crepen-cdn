@@ -1,4 +1,5 @@
 import { StringUtil } from "@web/lib/util/string.util";
+import { readFileSync } from "fs-extra";
 
 
 
@@ -46,6 +47,14 @@ export class I18nProvider {
 
 
             const localeFilePath = `./locale/${appendLocale}.json`;
+
+            try{
+                const fileJsonData = readFileSync(localeFilePath).toJSON();
+                return fileJsonData;
+            }
+            catch(e){
+                return undefined;
+            }
             return undefined;
         }
         catch (e) {

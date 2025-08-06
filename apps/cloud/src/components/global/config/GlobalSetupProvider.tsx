@@ -19,6 +19,7 @@ export const GlobalSetupProvider = async (prop: PropsWithChildren) => {
                 systemLocale={await ServerLocaleInitializer.current(LocaleConfig).get({ readCookie: await cookies() })}
                 defaultLocale={LocaleConfig.defaultLocale}
                 localeData={await ServerLocaleProvider.current(LocaleConfig).getFileData()}
+                supportLanguages={LocaleConfig.supportLocales}
             >
                 <ClientBasePathProvider
                     basePath={basePath}

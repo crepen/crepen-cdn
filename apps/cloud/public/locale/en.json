@@ -2,7 +2,12 @@
     "common" : {
         "system" : {
             "SUCCESS" : "Success.",
-            "API_CONN_FAILED" : "API Server connect failed."
+            "API_CONN_FAILED" : "API Server connect failed.",
+            "UNKNOWN_ERROR" : "Unknown error."
+        },
+        "locale" : {
+            "en" : "English",
+            "ko" : "Korean"
         }
     }
 }

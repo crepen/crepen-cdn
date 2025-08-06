@@ -12,6 +12,10 @@ import '@web/assets/styles/layout/root.layout.scss';
 import { PropsWithChildren } from "react"
 import { Metadata } from 'next';
 import { GlobalSetupProvider } from '../components/global/config/GlobalSetupProvider';
+import { ServerLocaleProvider } from '@web/lib/module/locale/ServerLocaleProvider';
+import { LocaleConfig } from '@web/lib/config/LocaleConfig';
+import { ServerLocaleInitializer } from '@web/lib/module/locale/ServerLocaleInitializer';
+import { cookies } from 'next/headers';
 
 export const metadata: Metadata = {
     title: "CrepenCDN",
@@ -24,10 +28,11 @@ export const metadata: Metadata = {
 
 const RootLayout = async (prop: PropsWithChildren) => {
 
-
+    // ServerLocaleProvider.current(LocaleConfig).getLocaleData();
+    const locale = await ServerLocaleInitializer.current(LocaleConfig).get({ readCookie: await cookies() })
 
     return (
-        <html>
+        <html lang={locale ?? LocaleConfig.defaultLocale}>
             <body>
                 <div id="root">
                     <GlobalSetupProvider>

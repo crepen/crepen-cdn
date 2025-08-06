@@ -5,6 +5,7 @@ import { Response } from "express";
 import { BaseResponse } from "@crepen-nest/lib/common/base.response";
 import { DatabaseConnectError } from "@crepen-nest/lib/error/api/common/conn.db.error";
 import { CommonError } from "@crepen-nest/lib/error/common.error";
+import { StringUtil } from "@crepen-nest/lib/util";
 
 @Catch(Error)
 export class CommonExceptionFilter implements ExceptionFilter {
@@ -22,8 +23,8 @@ export class CommonExceptionFilter implements ExceptionFilter {
         this.exception = error as Error;
         this.response = response;
 
-        
-        if(error instanceof I18nValidationException){
+
+        if (error instanceof I18nValidationException) {
             this.getI18nErrorResponse();
         }
         else if (error instanceof DatabaseConnectError) {
@@ -32,7 +33,7 @@ export class CommonExceptionFilter implements ExceptionFilter {
         else if (error instanceof CommonError) {
             this.getCommonErrorResponse();
         }
-        else if (error instanceof NotFoundException){
+        else if (error instanceof NotFoundException) {
             this.getNotFoundResponse();
         }
         else {
@@ -49,15 +50,27 @@ export class CommonExceptionFilter implements ExceptionFilter {
 
     private getI18nErrorResponse = () => {
         const error = this.exception as I18nValidationException;
-        const message = this.getTranslateMessage('common.INTERNAL_SERVER_ERROR');
-        const errorCode = error.message?.split('.').length > 2 ? error.message?.split('.')[1] : error.message
+        let message = this.getTranslateMessage('common.INTERNAL_SERVER_ERROR');
+
+        if (error.errors.length > 0) {
+            const errorObj = error.errors[0].constraints;
+            const messageObj = Object.values(errorObj)[0];
+            if (!StringUtil.isEmpty(messageObj)) {
+                message = messageObj;
+            }
+        }
+
+
+        const errorCode = message?.split('.').length >= 2
+            ? message.replace(message?.split('.')[0] + '.' , '')
+            : message
 
         this.response
             .status(503)
             .json(
                 this.getErrorResponse(
                     error.getStatus(),
-                    this.i18n.translate(error.message),
+                    this.i18n.translate(message),
                     errorCode
                 )
             )

@@ -81,6 +81,10 @@ export class AuthProvider {
 
     }
 
+    removeSession = async (options?: AuthProviderOptions) => {
+        (options?.writeCookie ?? await cookies()).delete(this.authCookieKey);
+    }
+
     refreshSession = async (options?: AuthProviderOptions): Promise<boolean> => {
         try {
             const session = await this.getSession()
@@ -111,4 +115,6 @@ export class AuthProvider {
         }
 
     }
+
+    
 }

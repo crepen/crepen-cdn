@@ -1,0 +1,4 @@
+{
+    "AUTH.FAILED_SIGNIN" : "일치하는 회원 정보가 없습니다.",
+    "AUTH.EMPTY_USER_ID_OR_EMAIL" : "사용자명 또는 이메일이 입력되지 않았습니다."
+}

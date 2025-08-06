@@ -10,15 +10,14 @@ const DefaultPage = () => {
 
 
     return (
-        <Fragment>
-            <p>{ss.translate('common.system.SUCCESS', 'ko') ?? 'UNDEFINED'}</p>
-            <p>{ss.translate('common.system.SUCCESS', 'en') ?? 'UNDEFINED'}</p>
-            <p>{ss.translate('common.system.SUCCESS') ?? 'UNDEFINED'}</p>
-            <p>{ss.translate('common.system.API_CONN_FAILED', 'ko') ?? 'UNDEFINED'}</p>
-            <p>{ss.translate('common.system.API_CONN_FAILED', 'en') ?? 'UNDEFINED'}</p>
-            <p>{ss.translate('common.system.DD', 'ko') ?? 'UNDEFINED'}</p>
-            <p>{ss.translate('common.system.DD', 'en') ?? 'UNDEFINED'}</p>
-        </Fragment>
+        <div className='cp-article-page'>
+            <header>
+                {ss.translate('common.system.UNKNOWN_ERROR')}
+            </header>
+            <article>
+
+            </article>
+        </div>
     )
 }
 

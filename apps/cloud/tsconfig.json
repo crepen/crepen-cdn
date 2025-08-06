@@ -8,7 +8,7 @@
     ],
     "paths": {
       "@web/assets/*" : ["./src/assets/*"],
-      "@web/component/*" : ["./src/component/*"],
+      "@web/component/*" : ["./src/components/*"],
       "@web/lib/*" : ["./src/lib/*"],
     }
   },

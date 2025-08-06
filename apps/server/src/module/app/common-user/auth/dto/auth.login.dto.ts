@@ -7,7 +7,7 @@ export class AuthLoginRequestDto {
         example : 'Account ID or Email'
     })
     @IsNotEmpty({
-        message: 'cloud_auth.LOGIN_FAILED_ID_EMPTY'
+        message: 'api_auth.AUTH.EMPTY_USER_ID_OR_EMAIL'
     })
     id: string | undefined;
 

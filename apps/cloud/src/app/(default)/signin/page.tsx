@@ -3,37 +3,17 @@
 import Link from "next/link";
 
 import '@web/assets/styles/page/signin/signin.page.scss'
+import { SignInForm } from "@web/component/page/signin/SignInForm";
 
 
 const SignInPage = async () => {
     return (
-        <div className="cp-page cp-signin-page">
+        <div className="cp-page cp-signin-page" data-loading-state={false}>
             <div className="cp-glass-box">
-                <div className='cp-section cp-header'>
-                    SIGN IN
-                </div>
-                <div className='cp-section cp-content'>
-                    <div className='cp-form'>
-                        <div className='cp-input-item' data-label="ID or Email" >
-
-                            <input type='text' name='id' placeholder=''></input>
-                        </div>
-                        <div className='cp-input-item' data-label="Password">
-                            <input type='password' name='password' placeholder=''></input>
-                        </div>
-                    </div>
-
-                    <div className='cp-submit'>
-                        <div className='cp-button'>
-                            <span>SIGN IN</span>
-                        </div>
-                    </div>
-                </div>
-                <div className='cp-section cp-footer'>
-                    <Link href={'/signin/password'}>Find Password</Link>
-                </div>
-
+                <SignInForm />
             </div>
+
+
         </div>
     )
 }
