@@ -9,7 +9,7 @@ import { SignInForm } from "@web/component/page/signin/SignInForm";
 const SignInPage = async () => {
     return (
         <div className="cp-page cp-signin-page" data-loading-state={false}>
-            <div className="cp-glass-box">
+            <div className="cp-page-box">
                 <SignInForm />
             </div>
 

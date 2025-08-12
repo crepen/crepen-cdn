@@ -1,3 +1,5 @@
+@use './controls.scss';
+
 
 :root {
     font-family: 'Pretendard Variable', 'Noto Sans KR';
@@ -13,7 +15,15 @@
 body {
     height: calc(var(--vh) * 100);
     max-height: calc(var(--vh) * 100);
-    overflow: hidden;
+}
+
+
+input {
+    font-family: var(--global-font-family);
+}
+
+button {
+    font-family: var(--global-font-family);
 }
 
 

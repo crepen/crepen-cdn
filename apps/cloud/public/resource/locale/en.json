@@ -1,0 +1,59 @@
+{
+  "common": {
+    "system": {
+      "SUCCESS": "Success.",
+      "API_CONN_FAILED": "API Server connect failed.",
+      "UNKNOWN_ERROR": "Unknown error."
+    },
+    "locale": {
+      "en": "English",
+      "ko": "Korean"
+    }
+  },
+  "layout": {
+    "main": {
+      "navigation": {
+        "menu": {
+          "dashboard": "Dashboard",
+          "explorer": "Explorer"
+        }
+      }
+    },
+    "signin": {}
+  },
+  "page": {
+    "main": {
+      "dashboard": {
+        "widget": {
+          "items": {
+            "totaluploadfile": "Total Upload File",
+            "publishedfile": "Published File",
+            "folder": "Folder",
+            "traffic": "Traffic",
+            "recentfile": "Recent Upload File",
+            "downloadrank": "Download Rank",
+            "downloadrequestcount" : "Download Request"
+          },
+          "unit" : {
+            "item" : "Items",
+            "request" : "Requests"
+          },
+          "common" : {
+            "showall" : "Show all"
+          }
+        }
+      }
+    },
+    "signin": {
+      "title": "SIGN IN",
+      "subtitle": "Welcome to CREPEN CDN",
+      "input": {
+        "id": "ID or Email",
+        "password": "Password"
+      },
+      "button": {
+        "submit": "Sign in"
+      }
+    }
+  }
+}

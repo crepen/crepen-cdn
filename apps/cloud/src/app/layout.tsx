@@ -12,19 +12,29 @@ import '@web/assets/styles/layout/root.layout.scss';
 import { PropsWithChildren } from "react"
 import { Metadata } from 'next';
 import { GlobalSetupProvider } from '../components/global/config/GlobalSetupProvider';
-import { ServerLocaleProvider } from '@web/lib/module/locale/ServerLocaleProvider';
 import { LocaleConfig } from '@web/lib/config/LocaleConfig';
 import { ServerLocaleInitializer } from '@web/lib/module/locale/ServerLocaleInitializer';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
+import urlJoin from 'url-join';
+import { BasePathInitializer } from '@web/lib/module/basepath/BasePathInitializer';
 
-export const metadata: Metadata = {
-    title: "CrepenCDN",
-    description: "Crepen CDN Service",
-    openGraph: {
-        type: 'website',
+
+
+export const generateMetadata = async (): Promise<Metadata> => {
+
+    const basePath = await BasePathInitializer.get({ readHeader: await headers() });
+
+    return {
         title: "CrepenCDN",
+        description: "Crepen CDN Service",
+        openGraph: {
+            type: 'website',
+            title: "CrepenCDN",
+        },
+        icons: urlJoin(basePath, '/resource/image/favicon.svg')
     }
-};
+}
+
 
 const RootLayout = async (prop: PropsWithChildren) => {
 

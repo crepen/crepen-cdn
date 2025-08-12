@@ -13,8 +13,8 @@ export class ApiStateMiddleware implements BaseMiddleware {
 
 
         try {
-            const apiService = await RestSystemDataService.current(undefined, await initializer.get({readCookie : req.cookies}));
-            const res = await apiService.getServerHealth();
+            const apiService = await RestSystemDataService.current(undefined, await initializer.get({readCookie : req.cookies}) ?? LocaleConfig.defaultLocale);
+            void await apiService.getServerHealth();
 
             if (UrlUtil.isMatchPattern(req.url, '/error/api', { basePath: req.nextUrl.basePath })) {
                 return {

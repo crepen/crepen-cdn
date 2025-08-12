@@ -9,7 +9,8 @@ import * as DotProp from 'dot-prop'
 interface ClientLocaleContextProp {
     getLocale: () => string,
     translate: (text?: string,locale?: string) => string | undefined,
-    getSupportLocale : () => string[]
+    getSupportLocale : () => string[],
+    getDefaultLocale : () => string
 }
 
 
@@ -54,6 +55,9 @@ export const ClientLocaleProvider = (prop: ClientLocaleProviderProp) => {
             },
             getSupportLocale : () => {
                 return prop.supportLanguages ?? []
+            },
+            getDefaultLocale : () => {
+                return prop.defaultLocale
             }
         }}>
             {prop.children}

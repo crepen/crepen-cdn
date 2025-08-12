@@ -24,17 +24,21 @@ export class ServerLocaleInitializer {
 
 
     set = async (locale?: string, options?: ServerLocaleInitOptions) => {
-        let targetLocale = locale ?? this.config.defaultLocale;
+        let targetLocale = locale;
 
-        if (!this.config.supportLocales.find(x => x.trim().toLowerCase() === targetLocale.trim().toLowerCase())) {
-            targetLocale = this.config.defaultLocale;
+        if (!this.config.supportLocales.find(x => x.trim().toLowerCase() === locale?.trim().toLowerCase())) {
+            targetLocale = undefined;
         }
 
-        (options?.writeCookie ?? await headers()).set(this.cookieKey, targetLocale, {
-            httpOnly: true,
-            maxAge: 60 * 60 * 24 * 365,
-            secure: process.env.NODE_ENV === 'development' ? false : true
-        });
+        if (!StringUtil.isEmpty(targetLocale)) {
+            (options?.writeCookie ?? await headers()).set(this.cookieKey, targetLocale!, {
+                httpOnly: true,
+                maxAge: 60 * 60 * 24 * 365,
+                secure: process.env.NODE_ENV === 'development' ? false : true
+            });
+        }
+
+
     }
 
     get = async (options?: ServerLocaleInitOptions) => {
@@ -43,7 +47,7 @@ export class ServerLocaleInitializer {
             StringUtil.isEmpty(cookieLocale)
             || !this.config.supportLocales.find(x => x.trim().toLowerCase() === cookieLocale)
         ) {
-            return this.config.defaultLocale.trim().toLowerCase()
+            return undefined;
         }
 
         return cookieLocale!;

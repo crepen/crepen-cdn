@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { AuthMiddleware } from './modules/server/middleware/AuthMiddleware';
 import { BaseMiddleware } from './modules/server/middleware/BaseMiddleware';
+import { AuthMiddleware } from './modules/server/middleware/AuthMiddleware';
 import { CommonMiddleware } from './modules/server/middleware/CommonMiddleware';
 import { InstallMiddleware } from './modules/server/middleware/InstallMiddleware';
 import { LocaleMiddleware } from './modules/server/middleware/LocaleMiddleware';

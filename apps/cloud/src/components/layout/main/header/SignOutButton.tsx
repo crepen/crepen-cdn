@@ -1,7 +1,5 @@
 'use client'
 
-import { faHome, faSignOut } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { SignOutAction } from "@web/lib/actions/AuthActions";
 import { useRouter } from "next/navigation"
 
@@ -11,14 +9,14 @@ export const SignOutButton = () => {
 
     return (
         <button
-            className='cp-main-header-bt cp-signout-bt'
+            className='cp-header-action-bt cp-signout-bt'
             onClick={async () => {
                 await SignOutAction();
                 router.refresh()
             }}
             type='button'
         >
-            <FontAwesomeIcon icon={faSignOut} />
+            Logout
         </button>
     )
 }

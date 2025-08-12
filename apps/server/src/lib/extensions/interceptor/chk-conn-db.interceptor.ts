@@ -25,11 +25,11 @@ export class CheckConnDBInterceptor implements NestInterceptor {
 
     intercept = async (context: ExecutionContext, next: CallHandler<any>): Promise<Observable<any>> => {
 
-        console.log(`CLASS : ${this.getDecorator(context , 'class') ? 'true' : 'false'} / METHOD : ${this.getDecorator(context , 'method') ? 'true' : 'false'}`)
+        // console.log(`CLASS : ${this.getDecorator(context , 'class') ? 'true' : 'false'} / METHOD : ${this.getDecorator(context , 'method') ? 'true' : 'false'}`)
         // console.log("ED" , (await this.databaseService.getDefault()).isInitialized);
 
         if(this.getDecorator(context , 'class') || this.getDecorator(context , 'method')) {
-            console.log("PASS");
+            // console.log("PASS");
             return next.handle();
         }
 

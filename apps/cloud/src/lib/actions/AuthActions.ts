@@ -19,10 +19,8 @@ export const SignInAction = async (id?: string, password?: string): Promise<Sign
             readCookie: await cookies()
         });
 
-        const signinResponse = await RestAuthDataService.current(undefined, locale).login(id, password);
+        const signinResponse = await RestAuthDataService.current(undefined, locale ?? LocaleConfig.defaultLocale).login(id, password);
 
-        // await CommonUtil.delay(2000)
-        console.log(signinResponse);
 
         if(signinResponse.success){
             await AuthProvider.current().setSessionToken({

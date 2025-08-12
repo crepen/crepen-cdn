@@ -1,0 +1,117 @@
+.cp-dashboard-page {
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    column-gap: 20px;
+    row-gap: 20px;
+    grid-auto-rows: min-content;
+    grid-auto-flow: row dense;
+
+    .cp-dashboard-widget {
+        padding: 20px;
+
+
+
+        &.cp-split-2 {
+            grid-column: span 2;
+        }
+
+
+
+
+        .cp-widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+
+            padding-bottom: 10px;
+
+            .cp-header-sub-title {
+                font-size: 14px;
+                color: #64748b;
+                font-weight: 500;
+            }
+
+            .cp-header-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: #1a202c;
+            }
+
+            .cp-widget-link {
+                color: #667eea;
+                text-decoration: none;
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            .cp-header-icon {
+                font-size: 25px;
+            }
+        }
+
+        .cp-widget-content {
+            .cp-widget-count {
+                font-size: 32px;
+                font-weight: 700;
+                color: #1a202c;
+                margin-bottom: 4px;
+
+                .cp-widget-unit {
+                    font-size: 12px;
+                    text-transform: uppercase;
+                    color : rgb(100, 116, 139);
+                    margin-left: 8px;
+                }
+            }
+
+
+            &.cp-widget-list {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                margin-top: 10px;
+
+                .cp-grid-item {
+                    padding: 16px;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 12px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+
+                    display: grid;
+                    grid-template-columns: min-content 1fr;
+                    grid-template-rows: min-content min-content;
+                    column-gap: 10px;
+
+
+
+                    .cp-card-icon {
+                        grid-area: 1 / 1 / 3 / 2;
+                        font-size: 30px;
+
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+
+                    .cp-card-title {
+                        grid-area: 1 / 2 / 2 / 3;
+                        font-weight: 500;
+                        color: #1a202c;
+                        margin-bottom: 4px;
+                        font-size: 14px;
+
+                    }
+
+                    .cp-card-description {
+                        grid-area: 2 / 2 / 3 / 3;
+                        font-size: 12px;
+                        color: #64748b;
+                    }
+                }
+            }
+        }
+    }
+
+}

@@ -93,7 +93,7 @@ export class AuthProvider {
                 writeCookie: options?.writeCookie
             });
 
-            const refreshResponse = await RestAuthDataService.current(session?.token, locale).renewToken();
+            const refreshResponse = await RestAuthDataService.current(session?.token, locale ?? LocaleConfig.defaultLocale).renewToken();
             if (!refreshResponse.success) {
 
                 return false;

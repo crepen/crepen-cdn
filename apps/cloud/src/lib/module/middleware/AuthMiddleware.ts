@@ -10,6 +10,7 @@ export class AuthMiddleware implements BaseMiddleware {
     private ignoreAuthUrl = [
         '/error/*',
         '/signout/*',
+        '/resource/*'
     ]
 
     private unAuthPages = [

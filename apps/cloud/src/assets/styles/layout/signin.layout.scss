@@ -6,9 +6,39 @@
     flex-direction: column;
 
 
-    background: #1c5166;
-    background: linear-gradient(147deg, #acc2cb80 0%, rgba(57, 130, 71, 0.5) 50%, rgba(179, 167, 64, 0.5) 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 
 
-   
+    .cp-change-locale-button {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+
+        backdrop-filter: blur(20px);
+        // padding: 48px;
+        border-radius: 24px;
+        // width: 100%;
+        // max-width: 420px;
+        // padding-top: 30px;
+        // padding-bottom: 30px;
+        
+        background-color: transparent;
+        border: none;
+
+        padding: 6px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, .1);
+
+        transition: 0.3s;
+
+        font-size: 14px;
+        font-weight: bold;
+
+        
+
+        &:hover {
+            box-shadow: 0 3px 39px rgb(0 0 0 / 55%);
+            cursor: pointer;
+            color: rgb(77, 77, 77);
+        }
+    }
 }
