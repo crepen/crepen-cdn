@@ -5,10 +5,21 @@ import '@web/assets/styles/page/main/dashboard/dashboard.main.page.scss';
 import { GroupBox } from '@web/component/global/control/group-box/GroupBox';
 import { LocaleConfig } from '@web/lib/config/LocaleConfig';
 import { ServerLocaleProvider } from '@web/lib/module/locale/ServerLocaleProvider';
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { FcAudioFile, FcExternal, FcFile, FcImageFile, FcInternal, FcOpenedFolder, FcShare, FcVideoFile } from 'react-icons/fc';
 
-const MainDashboardPage = () => {
+
+export const generateMetadata = async () : Promise<Metadata> => {
+     const localeProv = ServerLocaleProvider.current(LocaleConfig);
+
+    return {
+        title : await localeProv.translate('title.dashboard')
+    }
+}
+
+
+const MainDashboardPage = async () => {
 
     const localeProv = ServerLocaleProvider.current(LocaleConfig);
 

@@ -1,0 +1,210 @@
+:root {
+    --top-header-height: 60px;
+    --toolbar-header-height: 50px;
+    --header-height: calc(var(--top-header-height) + var(--toolbar-header-height))
+}
+
+.cp-explorer-page {
+
+    display: grid;
+    grid-template-areas: 
+        'header'
+        'content'
+    ;
+    grid-template-rows: min-content 1fr;
+
+    height: 100%;
+    overflow: hidden;
+
+    .cp-page-header {
+
+        grid-area: header;
+        // padding-top: 70px;
+
+        // position: fixed;
+        // top: 0;
+        // z-index: 100;
+        width: 100%;
+
+        .cp-top-header {
+
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            height: var(--top-header-height);
+
+
+            .cp-flex-left {
+                .cp-back-bt {
+                    width: 34px;
+                    aspect-ratio: 1;
+
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    background: #f1f5f9;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    transition: all 0.3s ease;
+                }
+            }
+
+            .cp-flex-right {
+
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                gap: 8px;
+
+
+
+            }
+
+
+
+
+
+        }
+
+        .cp-toolbar-header {
+
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            height: var(--toolbar-header-height);
+
+
+            .cp-flex-left {
+
+
+                .cp-search-box {
+
+                    // display: flex;
+                    // justify-content: flex-start;
+                    // align-items: center;
+                    // gap: 10px;
+
+                    position: relative;
+                    max-width: 300px;
+                    flex: 1;
+
+                    .cp-search-icon {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        position: absolute;
+                        left: 12px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        color: #64748b;
+                        font-size: 14px;
+                    }
+
+                    .cp-search-input {
+                        width: 100%;
+                        padding: 8px 12px 8px 36px;
+                        border: 1px solid #e2e8f0;
+                        border-radius: 8px;
+                        font-size: 14px;
+                        background: #f8fafc;
+                        outline: #667eea;
+
+
+                        &:active,
+                        &:focus {
+                            border: 2px solid #667eea;
+                        }
+                    }
+
+
+                }
+            }
+
+            .cp-flex-right {
+
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                gap: 8px;
+
+                .cp-sort-type-bt {
+                    padding: 8px;
+                }
+
+                .cp-sort-category-bt{
+
+                }
+
+                
+            }
+
+
+        }
+
+
+
+
+        // COMMON
+        .cp-header-bt {
+
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+
+            .cp-button-icon {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .cp-button-text {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+
+            &:hover {
+                border-color: #667eea;
+                color: #667eea;
+            }
+        }
+    }
+
+    .cp-page-content {
+        grid-area: content;
+        padding: 16px 24px;
+        overflow: auto;
+        height: 100%;
+        // padding-top: calc(var(--header-height) + 16px);
+
+
+        .cp-file-list-box{
+            padding: 24px;
+            height: 100%;
+        }
+    }
+}

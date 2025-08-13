@@ -1,11 +1,18 @@
 .cp-dashboard-page {
 
+    width: 100%;
+
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     column-gap: 20px;
     row-gap: 20px;
     grid-auto-rows: min-content;
     grid-auto-flow: row dense;
+
+    padding-inline: 30px;
+    padding-block: 20px;
+
+
 
     .cp-dashboard-widget {
         padding: 20px;
@@ -60,7 +67,7 @@
                 .cp-widget-unit {
                     font-size: 12px;
                     text-transform: uppercase;
-                    color : rgb(100, 116, 139);
+                    color: rgb(100, 116, 139);
                     margin-left: 8px;
                 }
             }
@@ -113,5 +120,59 @@
             }
         }
     }
+
+}
+
+
+/* 태블릿 (뷰포트 너비 768px 이상) */
+@media screen and (max-width: 768px) {
+
+
+    .cp-dashboard-page {
+
+        padding: 10px;
+        gap: 0px;
+        grid-template-columns: 50% 50%;
+
+
+
+        .cp-dashboard-widget{
+            margin: 10px;
+            
+
+            // .cp-widget-header {
+            //     display: grid;
+            //     grid-template-areas: 
+            //         'icon'
+            //         'text'
+            //     ;
+            //     grid-template-rows: min-content min-content;
+                
+            //     .cp-header-sub-title {
+            //         grid-area: text;
+            //     }
+
+            //     .cp-header-icon{
+            //         grid-area: icon;
+            //     }
+            // }
+
+
+            .cp-widget-content{
+                .cp-widget-count{
+
+
+                    .cp-widget-unit{
+
+                    }
+                }
+            }
+        }
+
+
+       
+        
+    }
+
 
 }

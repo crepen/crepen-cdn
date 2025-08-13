@@ -460,3 +460,13 @@
     }
 
 }
+
+
+
+@media screen and (max-width: 480px) {
+    .cp-page.cp-signin-page {
+        .cp-page-box{
+            padding-inline: 30px;
+        }
+    }
+}

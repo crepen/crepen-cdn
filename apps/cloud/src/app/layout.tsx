@@ -25,7 +25,10 @@ export const generateMetadata = async (): Promise<Metadata> => {
     const basePath = await BasePathInitializer.get({ readHeader: await headers() });
 
     return {
-        title: "CrepenCDN",
+        title: {
+            default : "CrepenCDN",
+            template : "CrepenCDN | %s"
+        },
         description: "Crepen CDN Service",
         openGraph: {
             type: 'website',

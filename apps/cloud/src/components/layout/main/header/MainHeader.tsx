@@ -3,16 +3,19 @@ import { SignOutButton } from "./SignOutButton"
 import { BasePathInitializer } from "@web/lib/module/basepath/BasePathInitializer"
 import { headers } from "next/headers"
 import urlJoin from "url-join"
-import { LocaleConfig } from "@web/lib/config/LocaleConfig"
-import { ServerLocaleProvider } from "@web/lib/module/locale/ServerLocaleProvider"
-import { FcComboChart, FcOpenedFolder } from "react-icons/fc"
-import { MainHeaderMenu } from "./MainHeaderMenu"
+import { MainHeaderLinkMenu } from "./MainHeaderMenu"
 import Link from "next/link"
+import { MainHeaderMenuType } from "../../../../app/(main)/layout"
+import { FcMenu } from "react-icons/fc"
+import { HeaderBuggerMenuButton } from "./HeaderBuggerMenuButton"
 
-export const MainHeader = async () => {
+interface MainHeaderProp {
+    menuList: MainHeaderMenuType[]
+}
+
+export const MainHeader = async (prop: MainHeaderProp) => {
 
     const basePath = await BasePathInitializer.get({ readHeader: await headers() });
-    const translateProv = ServerLocaleProvider.current(LocaleConfig);
 
     return (
         <header>
@@ -26,18 +29,18 @@ export const MainHeader = async () => {
                 />
             </Link>
             <div className="cp-header-box cp-nav-box">
-                <MainHeaderMenu
-                    title={await translateProv.translate('layout.main.navigation.menu.dashboard')}
-                    icon={<FcComboChart className='cp-nav-icon' />}
-                    className="cp-nav-dashboard"
-                    link={'/dashboard'}
-                />
-                <MainHeaderMenu
-                    title={await translateProv.translate('layout.main.navigation.menu.explorer')}
-                    icon={<FcOpenedFolder className='cp-nav-icon' />}
-                    className="cp-nav-explorer"
-                    link={'/explorer'}
-                />
+                {
+                    prop.menuList.map((x, idx) => (
+                        <MainHeaderLinkMenu
+                            key={idx}
+                            title={x.title}
+                            icon={x.icon}
+                            className={x.className}
+                            link={x.link}
+                        />
+                    ))
+                }
+                
             </div>
             <div className="cp-header-box cp-profile-box">
                 <button className="cp-profile-bt cp-header-action-bt">
@@ -45,6 +48,12 @@ export const MainHeader = async () => {
                 </button>
                 <SignOutButton />
             </div>
+
+            <div className="cp-header-box cp-bugger-box">
+                <HeaderBuggerMenuButton />
+            </div>
+
+
         </header>
     )
 }

@@ -8,6 +8,7 @@ import { ServerLocaleInitializer } from "@web/lib/module/locale/ServerLocaleInit
 import { cookies, headers } from "next/headers";
 import { ClientBasePathProvider } from "@web/lib/module/basepath/ClientBasePathProvider";
 import { BasePathInitializer } from "@web/lib/module/basepath/BasePathInitializer";
+import { GlobalScreenHeightProvider } from "./GlobalScreenHeightProvider";
 
 export const GlobalSetupProvider = async (prop: PropsWithChildren) => {
 
@@ -15,6 +16,7 @@ export const GlobalSetupProvider = async (prop: PropsWithChildren) => {
 
     return (
         <Fragment>
+            <GlobalScreenHeightProvider />
             <ClientLocaleProvider
                 systemLocale={await ServerLocaleInitializer.current(LocaleConfig).get({ readCookie: await cookies() })}
                 defaultLocale={LocaleConfig.defaultLocale}

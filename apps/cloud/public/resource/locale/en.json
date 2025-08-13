@@ -12,10 +12,16 @@
   },
   "layout": {
     "main": {
+      "common" : {
+        "signin" : "Sign In",
+        "signout" : "Sign Out",
+        "profile" : "Profile"
+      },
       "navigation": {
         "menu": {
           "dashboard": "Dashboard",
-          "explorer": "Explorer"
+          "explorer": "Explorer",
+          "statistics": "Statistics"
         }
       }
     },
@@ -32,14 +38,28 @@
             "traffic": "Traffic",
             "recentfile": "Recent Upload File",
             "downloadrank": "Download Rank",
-            "downloadrequestcount" : "Download Request"
+            "downloadrequestcount": "Download Request"
           },
-          "unit" : {
-            "item" : "Items",
-            "request" : "Requests"
+          "unit": {
+            "item": "Items",
+            "request": "Requests"
           },
-          "common" : {
-            "showall" : "Show all"
+          "common": {
+            "showall": "Show all"
+          }
+        }
+      },
+      "explorer": {
+        "header": {
+          "button" : {
+            "newfolder" : "New Folder",
+            "uploadfile" : "Upload File",
+            "sort" : "Sort"
+          },
+          "sort" : {
+            "category" : {
+              "name" : "Name"
+            }
           }
         }
       }
@@ -55,5 +75,12 @@
         "submit": "Sign in"
       }
     }
+  },
+  "title" : {
+    "dashboard" : "Dashboard",
+    "explorer" : "Explorer",
+    "statistics" : "Statistics",
+    "profile" : "Profile",
+    "signin" : "Sign In"
   }
 }
