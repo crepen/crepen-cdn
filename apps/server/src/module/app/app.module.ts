@@ -5,6 +5,7 @@ import { CrepenCommonModule } from "./common/common.module";
 import { SystemModule } from "./system/system.module";
 import { CommonUserAppModule } from "./common-user/common-user.module";
 import { CrepenAdminAppModule } from "./admin/admin.module";
+import { CrepenExplorerModule } from "./explorer/explorer.module";
 // import { CrepenSystemModule } from "./system-backup/system.module";
 
 @Module({
@@ -12,7 +13,11 @@ import { CrepenAdminAppModule } from "./admin/admin.module";
         CrepenAdminAppModule,
         CommonUserAppModule,
         CrepenCommonModule,
-        SystemModule
+        SystemModule,
+
+
+
+        CrepenExplorerModule
     ]
 })
 export class PlatformAppModule { }

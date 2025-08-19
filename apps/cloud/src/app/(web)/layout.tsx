@@ -10,8 +10,8 @@ import '@fortawesome/fontawesome-free/css/all.min.css'
 import '@web/assets/styles/layout/root.layout.scss';
 
 import { PropsWithChildren } from "react"
-import { Metadata } from 'next';
-import { GlobalSetupProvider } from '../components/global/config/GlobalSetupProvider';
+import { Metadata, Viewport } from 'next';
+import { GlobalSetupProvider } from '../../components/global/config/GlobalSetupProvider';
 import { LocaleConfig } from '@web/lib/config/LocaleConfig';
 import { ServerLocaleInitializer } from '@web/lib/module/locale/ServerLocaleInitializer';
 import { cookies, headers } from 'next/headers';
@@ -36,6 +36,10 @@ export const generateMetadata = async (): Promise<Metadata> => {
         },
         icons: urlJoin(basePath, '/resource/image/favicon.svg')
     }
+}
+
+export const viewport : Viewport = {
+    userScalable : false
 }
 
 

@@ -1,14 +1,14 @@
 'use client'
 
 import { PropsWithChildren, useEffect, useRef } from "react"
-import { MainHeaderMenuType } from "../../../../app/(main)/layout"
 import { useClientLocale } from "@web/lib/module/locale/ClientLocaleProvider"
-import { MainHeaderLinkMenu } from "../header/MainHeaderMenu"
+import { MainHeaderLinkMenu } from "../header/MainHeaderLinkMenu"
 import { FaCircleUser } from "react-icons/fa6"
 import { StringUtil } from "@web/lib/util/StringUtil"
 import { useMainAsideState } from "../provider/MainAsideStateProvider"
 import { SignOutAction } from "@web/lib/actions/AuthActions"
 import { useRouter } from "next/navigation"
+import { MainHeaderMenuType } from "../../../../app/(web)/(main)/layout"
 
 interface MainMobileMenuProp extends PropsWithChildren {
     menuList: MainHeaderMenuType[]
@@ -44,7 +44,8 @@ export const MainMobileMenu = (prop: MainMobileMenuProp) => {
             className={
                 StringUtil.joinClassName(
                     'cp-mobile-menu',
-                    asideHook.state ? 'active' : undefined)
+                    asideHook.state ? 'active' : undefined
+                )
             }
             ref={asideRef}
         >

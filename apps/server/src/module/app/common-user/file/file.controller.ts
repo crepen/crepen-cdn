@@ -25,7 +25,7 @@ import { FileNotFoundError } from "@crepen-nest/lib/error/api/file/not_found_fil
 @ApiHeader({
     name: 'Accept-Language', required: false, enum: ['en', 'ko']
 })
-@Controller('explorer/file')
+@Controller('explorer/file/legacy')
 export class CrepenFileRouteController {
     constructor(
         private readonly fileService: CrepenFileRouteService,

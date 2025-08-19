@@ -1,6 +1,7 @@
 import { StringUtil } from "./string.util";
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
+import { Readable } from "stream";
 
 export class CryptoUtil {
 
@@ -28,6 +29,47 @@ export class CryptoUtil {
             let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
             decrypted += decipher.final('utf8');
             return decrypted;
+        }
+    }
+
+    static File = {
+        encrypt: async (fileBuffer: Buffer<ArrayBufferLike>) => {
+            const iv = crypto.randomBytes(16);
+            const key = crypto.createHash('sha256').update(CryptoUtil.symmenticKey).digest();
+
+            const cipher = crypto.createCipheriv(CryptoUtil.symmenticAlgorithm, key, iv);
+
+            const sourceStream = Readable.from(fileBuffer);
+            const encryptedStream = sourceStream.pipe(cipher);
+
+
+            const chunks = [];
+            for await (const chunk of encryptedStream) {
+                chunks.push(chunk);
+            }
+
+            const encryptedBuffer = Buffer.concat(chunks);
+
+            return {
+                iv: iv.toString(),
+                buffer: encryptedBuffer
+            }
+        },
+        decrypt: async (encryptFileBuffer: Buffer<ArrayBufferLike>, iv: string) => {
+            const key = crypto.createHash('sha256').update(CryptoUtil.symmenticKey).digest();
+
+            const sourceStream = Readable.from([encryptFileBuffer]);
+            const decipher = crypto.createDecipheriv(this.symmenticAlgorithm, key, iv);
+            const decryptedStream = sourceStream.pipe(decipher);
+            const chunks = [];
+            for await (const chunk of decryptedStream) {
+                chunks.push(chunk);
+            }
+
+
+            const decryptedBuffer = Buffer.concat(chunks);
+
+            return decryptedBuffer;
         }
     }
 

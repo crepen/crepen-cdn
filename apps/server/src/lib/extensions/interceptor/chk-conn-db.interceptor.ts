@@ -1,4 +1,4 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from "@nestjs/common";
+import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Observable } from "rxjs";
 import { ConfigService } from "@nestjs/config";
@@ -42,6 +42,9 @@ export class CheckConnDBInterceptor implements NestInterceptor {
             if(!dataSource.isInitialized){
                 throw new DatabaseConnectError();
             }
+
+            
+                
 
             // await dataSource.destroy();
                 

@@ -25,9 +25,9 @@ export class SQLiteDataSourceProvider implements DataSourceProviderInterface {
         const entityDir = join(__dirname, '../../../module/**/*.local.entity{.ts,.js}')
         const moduleEntityDir = join(__dirname, '../../../lib/types/entity/**/*.local.entity{.ts,.js}')
 
-         Logger.log(`Load Local Database Entity : `);
-         Logger.log(` - ${entityDir} `);
-         Logger.log(` - ${moduleEntityDir} `);
+        //  Logger.log(`Load Local Database Entity : `);
+        //  Logger.log(` - ${entityDir} `);
+        //  Logger.log(` - ${moduleEntityDir} `);
 
         this.dataSource = new DataSource({
             type: 'sqlite',

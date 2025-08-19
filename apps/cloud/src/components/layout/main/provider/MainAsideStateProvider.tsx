@@ -1,11 +1,11 @@
 'use client'
 
-import { createContext, PropsWithChildren, useContext, useState } from "react";
+import { createContext, PropsWithChildren, RefObject, useContext, useState } from "react";
 
 interface MainAsideStateContextProp {
-    state : boolean,
-    setState : (state : boolean) => void,
-    toggle : () => void
+    state: boolean,
+    setState: (state: boolean) => void,
+    toggle: () => void,
 }
 
 const MainAsideStateContext = createContext<MainAsideStateContextProp | undefined>(undefined);
@@ -23,17 +23,17 @@ interface MainAsideStateProviderProp extends PropsWithChildren {
 }
 
 export const MainAsideStateProvider = (prop: MainAsideStateProviderProp) => {
-    
-    const [asideState , setAsideState] = useState<boolean>(false);
+
+    const [asideState, setAsideState] = useState<boolean>(false);
 
     return (
         <MainAsideStateContext.Provider
-            value={{    
-                state : asideState,
-                setState : (state : boolean) => {
+            value={{
+                state: asideState,
+                setState: (state: boolean) => {
                     setAsideState(state);
-                } ,
-                toggle : () => {
+                },
+                toggle: () => {
                     setAsideState(!asideState)
                 }
             }}

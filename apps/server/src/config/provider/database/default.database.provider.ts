@@ -19,8 +19,9 @@ export class DefaultDataSourceProvider implements DataSourceProviderInterface {
             username: config.get<string>('database.default.username'),
             password: config.get<string>('database.default.password'),
             entities: [entityDir],
-            synchronize: process.env.NODE_ENV === 'developments' ? true : false,
+            synchronize: true,
             // logging: configService.get<boolean>('db.logging'),
+            logging : true,
             timezone: '+00:00'
         })
     }

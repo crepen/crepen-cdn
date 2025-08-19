@@ -1,49 +1,40 @@
 'use client'
 
-import { useClientLocale } from "@web/lib/module/locale/ClientLocaleProvider"
-import { FcAlphabeticalSortingAz, FcAlphabeticalSortingZa, FcSearch } from "react-icons/fc";
-import { Fragment, useEffect } from "react";
-import { ArrayUtil } from "@web/lib/util/ArrayUtil";
-import { useExplorerFilter } from "../../provider/ExplorerFilterProvider";
+import { FcSearch } from "react-icons/fc";
+import { Fragment } from "react";
 import { ExplorerSortTypeButton } from "./ExplorerSortTypeButton";
 import { ExplorerSortCategoryButton } from "./ExplorerSortCategoryButton";
+import { ExplorerFilterData } from "@web/lib/types/api/dto/RestExplorerDto";
+import { ExplorerSearchKeywordInput } from "./ExplorerSearchKeywordInput";
+import { ExplorerRefreshButton } from "./ExplorerRefreshButton";
 
 interface ExplorerToolbarProp {
-    sortOptions?: {
-        defaultSortType?: string,
-        defaultSortCategory?: string
-    }
+    
+    defaultFilter? : ExplorerFilterData
 }
 
 export const ExplorerToolbar = (prop: ExplorerToolbarProp) => {
 
-    const localeHook = useClientLocale();
-    const explorerSearchHook = useExplorerFilter();
 
-
-    useEffect(() => {
-        if (prop.sortOptions) {
-            explorerSearchHook.setSort(prop.sortOptions?.defaultSortType, prop.sortOptions?.defaultSortCategory);
-        }
-    }, [])
 
 
     return (
         <div className='cp-toolbar-header'>
             <div className='cp-flex-left'>
-                <div className='cp-search-box'>
-                    <div className='cp-search-icon'>
-                        <FcSearch />
-                    </div>
-                    <input className='cp-search-input' />
-                </div>
+               <ExplorerSearchKeywordInput />
             </div>
             <div className='cp-flex-right'>
                 {
-                    explorerSearchHook.sort?.active === true &&
+                    (prop.defaultFilter?.sort.category ?? []).length > 0 &&
                     <Fragment>
-                        <ExplorerSortTypeButton />
-                        <ExplorerSortCategoryButton />
+                        <ExplorerSortTypeButton 
+                            defaultSortType={prop.defaultFilter?.sort.defaultSortType ?? 'desc'}
+                        />
+                        <ExplorerSortCategoryButton 
+                            categoryList={prop.defaultFilter?.sort.category ?? []}
+                            defaultCategory={prop.defaultFilter?.sort.defaultCategory ?? (prop.defaultFilter?.sort.category ?? [])[0]!}
+                        />
+                        <ExplorerRefreshButton />
                     </Fragment>
                 }
 

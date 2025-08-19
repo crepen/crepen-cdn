@@ -53,8 +53,6 @@ export const ClientLocaleProvider = (prop: ClientLocaleProviderProp) => {
 
                 let resultStr = targetLocaleText ?? defaultLocaleText ?? text;
 
-                console.log('{GWE}',args);
-
                 if (ObjectUtil.isObject(args)) {
                     try {
                         for (const key of Object.keys(args)) {

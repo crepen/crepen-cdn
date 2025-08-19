@@ -1,4 +1,3 @@
-import { ExplorerClientProvider } from "@web/component/page/main/explorer/provider/ExplorerClientProvider";
 import { LocaleConfig } from "@web/lib/config/LocaleConfig";
 import { ServerLocaleProvider } from "@web/lib/module/locale/ServerLocaleProvider";
 import { Metadata } from "next";
@@ -15,11 +14,7 @@ export const generateMetadata = async () : Promise<Metadata> => {
 
 
 const MainExplorerDefaultLayout = (prop : PropsWithChildren) => {
-    return (
-        <ExplorerClientProvider>
-            {prop.children}
-        </ExplorerClientProvider>
-    )
+    return prop.children;
 }
 
 export default MainExplorerDefaultLayout;

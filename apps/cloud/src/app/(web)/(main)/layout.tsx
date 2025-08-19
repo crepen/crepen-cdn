@@ -1,13 +1,13 @@
 import '@web/assets/styles/layout/main.layout.scss';
 import { MainHeader } from '@web/component/layout/main/header/MainHeader';
-import { MainHeaderLinkMenu } from '@web/component/layout/main/header/MainHeaderMenu';
 import { MainMobileMenu } from '@web/component/layout/main/mobile-menu/MainMobileMenu';
 import { MainAsideStateProvider } from '@web/component/layout/main/provider/MainAsideStateProvider';
+import { MainUploadFileModalProvider } from '@web/component/layout/main/provider/MainUploadFileModalProvider';
+import { MainUploadFileProvider } from '@web/component/layout/main/provider/MainUploadFileProvider';
 import { LocaleConfig } from '@web/lib/config/LocaleConfig';
 import { ServerLocaleProvider } from '@web/lib/module/locale/ServerLocaleProvider';
 
 import { PropsWithChildren, ReactNode, Suspense } from "react";
-import { FaCircleUser } from 'react-icons/fa6';
 import { FcComboChart, FcOpenedFolder, FcStatistics } from 'react-icons/fc';
 
 
@@ -35,7 +35,7 @@ const MainDefaultLayout = async (prop: PropsWithChildren) => {
             title: await translateProv.translate('layout.main.navigation.menu.explorer'),
             icon: <FcOpenedFolder className='cp-nav-icon' />,
             className: "cp-nav-explorer",
-            link: '/explorer'
+            link: '/explorer/root'
         },
         {
             title: await translateProv.translate('layout.main.navigation.menu.statistics'),
@@ -46,21 +46,25 @@ const MainDefaultLayout = async (prop: PropsWithChildren) => {
     ]
 
     return (
-        <MainAsideStateProvider>
-            <div className="cp-internal-layout cp-layout cp-main-layout">
-                <MainHeader
-                    menuList={mainHeaderMenuList}
-                />
-                <main>
-                    <Suspense fallback={<div>LOADING</div>}>
-                        {prop.children}
-                    </Suspense>
-                </main>
-                <MainMobileMenu menuList={mainHeaderMenuList} />
 
-            </div>
-        </MainAsideStateProvider>
+        <MainUploadFileProvider>
+            <MainUploadFileModalProvider>
+                <MainAsideStateProvider>
+                    <div className="cp-internal-layout cp-layout cp-main-layout">
+                        <MainHeader
+                            menuList={mainHeaderMenuList}
+                        />
+                        <main>
+                            <Suspense fallback={<div>LOADING</div>}>
+                                {prop.children}
+                            </Suspense>
+                        </main>
+                        <MainMobileMenu menuList={mainHeaderMenuList} />
 
+                    </div>
+                </MainAsideStateProvider>
+            </MainUploadFileModalProvider>
+        </MainUploadFileProvider>
     )
 }
 

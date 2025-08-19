@@ -23,17 +23,45 @@ export class CommonExceptionFilter implements ExceptionFilter {
         this.exception = error as Error;
         this.response = response;
 
+        ExceptionResultFactory
+            .current(response, this.i18n, this.exception)
+            .getResponse();
 
-        if (error instanceof I18nValidationException) {
+
+    }
+
+
+
+}
+
+export class ExceptionResultFactory {
+    response: Response;
+    i18n: I18nContext;
+    exception: Error;
+
+    constructor(res: Response, i18n: I18nContext, error: Error) {
+        this.response = res;
+        this.i18n = i18n;
+        this.exception = error;
+    }
+
+    static current = (res: Response, i18n: I18nContext, error: Error) => {
+        return new ExceptionResultFactory(res, i18n, error);
+    }
+
+
+
+    getResponse = () => {
+        if (this.exception instanceof I18nValidationException) {
             this.getI18nErrorResponse();
         }
-        else if (error instanceof DatabaseConnectError) {
+        else if (this.exception instanceof DatabaseConnectError) {
             this.getDatabaseErrorResponse();
         }
-        else if (error instanceof CommonError) {
+        else if (this.exception instanceof CommonError) {
             this.getCommonErrorResponse();
         }
-        else if (error instanceof NotFoundException) {
+        else if (this.exception instanceof NotFoundException) {
             this.getNotFoundResponse();
         }
         else {
@@ -41,6 +69,11 @@ export class CommonExceptionFilter implements ExceptionFilter {
         }
 
     }
+
+
+
+
+
 
     private getNotFoundResponse = () => {
         this.response
@@ -62,7 +95,7 @@ export class CommonExceptionFilter implements ExceptionFilter {
 
 
         const errorCode = message?.split('.').length >= 2
-            ? message.replace(message?.split('.')[0] + '.' , '')
+            ? message.replace(message?.split('.')[0] + '.', '')
             : message
 
         this.response
@@ -144,5 +177,4 @@ export class CommonExceptionFilter implements ExceptionFilter {
             )
         )
     }
-
 }

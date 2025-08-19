@@ -30,7 +30,7 @@ export const MainHeaderLinkMenu = (prop: HeaderMenuProp) => {
 
         // console.log(`[MATCH : ${prop.link} - ${location.href}]`, UrlUtil.isMatchPattern(location.href , prop.link ?? '' , {basePath : basePathHook.getBasePath()}))
 
-        if (UrlUtil.isMatchPattern(location.href, prop.link ?? '', { basePath: basePathHook.getBasePath() })) {
+        if (UrlUtil.isMatchPattern(location.href, `${prop.link ?? ''}/*`, { basePath: basePathHook.getBasePath() })) {
             setActiveState(true);
         }
         else {

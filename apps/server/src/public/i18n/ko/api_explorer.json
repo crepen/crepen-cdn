@@ -1,0 +1,6 @@
+{
+    "FILTER.LABEL.CREATE_DATE" : "등록일",
+    "FILTER.LABEL.TITLE" : "명칭",
+    "FILTER.LABEL.UPDATE_DATE" : "수정일",
+    "FILTER.LABEL.FILE_SIZE" : "파일 사이즈"
+}

@@ -3,7 +3,8 @@
     "system": {
       "SUCCESS": "Success.",
       "API_CONN_FAILED": "API Server connect failed.",
-      "UNKNOWN_ERROR": "Unknown error."
+      "UNKNOWN_ERROR": "Unknown error.",
+      "NO_DATA" : "NO DATA"
     },
     "locale": {
       "en": "English",
@@ -12,16 +13,23 @@
   },
   "layout": {
     "main": {
-      "common" : {
-        "signin" : "Sign In",
-        "signout" : "Sign Out",
-        "profile" : "Profile"
+      "common": {
+        "signin": "Sign In",
+        "signout": "Sign Out",
+        "profile": "Profile"
       },
       "navigation": {
         "menu": {
           "dashboard": "Dashboard",
           "explorer": "Explorer",
           "statistics": "Statistics"
+        }
+      },
+      "filemonitor" : {
+        "list" : {
+          "header" : {
+            "title" : "Upload File List"
+          }
         }
       }
     },
@@ -51,16 +59,30 @@
       },
       "explorer": {
         "header": {
-          "button" : {
-            "newfolder" : "New Folder",
-            "uploadfile" : "Upload File",
-            "sort" : "Sort"
+          "button": {
+            "newfolder": "New Folder",
+            "uploadfile": "Upload File",
+            "sort": "Sort"
           },
-          "sort" : {
-            "category" : {
-              "name" : "Name"
+          "sort": {
+            "category": {
+              "name": "Name"
             }
           }
+        },
+        "list": {
+          "header": {
+            "title": "Title",
+            "size": "File size",
+            "action": "Action"
+          },
+          "footer" : {
+            "pagesize" : "Page size"
+          }
+        },
+        "error": {
+          "message": "Error : Unable to connect to server or incorrect access.",
+          "reload" : "Reload Explorer"
         }
       }
     },
@@ -76,11 +98,11 @@
       }
     }
   },
-  "title" : {
-    "dashboard" : "Dashboard",
-    "explorer" : "Explorer",
-    "statistics" : "Statistics",
-    "profile" : "Profile",
-    "signin" : "Sign In"
+  "title": {
+    "dashboard": "Dashboard",
+    "explorer": "Explorer",
+    "statistics": "Statistics",
+    "profile": "Profile",
+    "signin": "Sign In"
   }
 }

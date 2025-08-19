@@ -1,0 +1,6 @@
+{
+    "FILTER.LABEL.CREATE_DATE" : "Create Date",
+    "FILTER.LABEL.TITLE" : "Title",
+    "FILTER.LABEL.UPDATE_DATE" : "Update date",
+    "FILTER.LABEL.FILE_SIZE" : "File size"
+}
