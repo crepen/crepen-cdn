@@ -60,6 +60,9 @@ export const ExplorerListTableFooter = (prop: ExplorerListTableFooterProp) => {
                         if ((idx + dt - 2) > (prop.totalPage ?? 0)) {
                             return undefined;
                         }
+                        else if((idx + dt - 2) <= 0){
+                             return undefined;
+                        }
                         else {
                             return (
                                 <button

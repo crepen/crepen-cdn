@@ -9,5 +9,5 @@ export interface UploadFileObject {
     parentFolderUid : string,
     errorMessage?: string,
     timestamp : number,
-    uploadFileSize : number
+    // uploadFileSize : number
 }

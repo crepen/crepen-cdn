@@ -1,14 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
 import { UploadFileObject } from '@web/lib/types/entity/ClientUploadFile';
 import axios, { AxiosError, CanceledError } from 'axios';
-import { useMainUploadFile } from '../provider/MainUploadFileProvider';
+import { UploadFileProgress, useMainUploadFile } from '../provider/MainUploadFileProvider';
 import { useClientBasePath } from '@web/lib/module/basepath/ClientBasePathProvider';
 import urlJoin from 'url-join';
+import * as http from 'http'
+import * as https from 'https'
 
 const uploadFile = async (
     basePath: string,
     fileItem: UploadFileObject,
-    updateProgress: (id: string, progress: number) => void,
+    updateProgress: (state : UploadFileProgress) => void,
     signal: AbortSignal
 ) => {
     const formData = new FormData();
@@ -23,8 +25,11 @@ const uploadFile = async (
     )
 
     try {
-        console.log('wgewgwe' , fileItem.file.name);
-        console.log('Upload File Type' ,fileItem.file.type );
+        updateProgress({
+            progress : 0,
+            total : 0,
+            uploadSize : 0
+        })
         const response = await axios.put(url, formData, {
             signal: signal,
             headers : {
@@ -34,9 +39,15 @@ const uploadFile = async (
             onUploadProgress: (progressEvent) => {
                 if (progressEvent.total) {
                     // const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                    updateProgress(fileItem.uuid, progressEvent.loaded);
+                    updateProgress({
+                        total : progressEvent.total,
+                        uploadSize : progressEvent.loaded,
+                        progress : (progressEvent.loaded * 100) / progressEvent.total
+                    });
                 }
             },
+            httpAgent : new http.Agent({keepAlive : true}),
+            httpsAgent : new https.Agent({keepAlive : true})
         });
 
         console.log(response.data);
@@ -66,7 +77,7 @@ export const useFileUploadMutation = () => {
             return await uploadFile(
                 basePathHook.getBasePath(),
                 prop.fileItem,
-                uploadFileHook.updateUploadFileSize,
+                uploadFileHook.progress.setProgress,
                 prop.signal
             );
         },

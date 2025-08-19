@@ -115,6 +115,66 @@
                             filter: brightness(2) contrast(1) invert(0);
                         }
                     }
+
+                    &:not(.active).cp-running {
+                        position: relative;
+                        overflow: hidden;
+
+                        &::before {
+                            content: ' ';
+                            position: absolute;
+                            bottom: 0;
+                            left: 0;
+
+                            width: calc(100%);
+                            height: 3px;
+
+                            box-sizing: border-box;
+                            border-radius: inherit;
+
+
+                            z-index: 1;
+
+                            animation: color-loop 0.3s infinite linear;
+                            background-size: 200% 100%;
+
+                            background: linear-gradient(135deg, #667eea, #764ba2);
+
+
+                        }
+
+                        &::after {
+                            content: ' ';
+                            position: absolute;
+                            bottom: -10px;
+                            left: 4px;
+
+
+                            width: 5px;
+                            height: 7px;
+                            background: linear-gradient(135deg, #667eea, #764ba2);
+                            /* 물방울 색상 */
+                            border-radius: 50% 50% 40% 40%;
+                            /* 물방울 모양 만들기 */
+                            // position: relative;
+                            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+                            /* 그림자 추가 */
+
+                            animation: up-loop 1s infinite linear;
+
+                            @keyframes up-loop {
+                                from {
+                                    opacity: 1;
+                                    bottom: -20%;
+                                }
+
+                                to {
+                                    opacity: 0;
+                                    bottom: 130%;
+                                }
+                            }
+                        }
+                    }
                 }
 
 
@@ -355,8 +415,6 @@
 .cp-upload-file-monitor {
     width: 100%;
     transition: 0.3s;
-    // height: 0px;
-    // height: calc(var(--full-vh) - 70px);
 
     position: absolute;
     bottom: 0px;
@@ -364,9 +422,6 @@
     background-color: #f8fafc;
 
     overflow-y: auto;
-
-    // animation: visible-monitor 0.3s;
-    // animation-fill-mode: both;
 
     display: flex;
     justify-content: flex-start;
@@ -379,16 +434,6 @@
 
 
 
-    // @keyframes visible-monitor {
-    //     from {
-    //         height: 0px;
-    //     }
-
-    //     to {
-    //         height: calc(var(--full-vh) - 70px);
-    //     }
-    // }
-
 
 
     &.active {
@@ -397,155 +442,106 @@
 
 
     .cp-monitor-box {
-        grid-template-columns: 1fr;
-        grid-auto-rows: min-content;
-        grid-auto-flow: row dense;
-        row-gap: 20px;
+        // grid-template-columns: 1fr;
+        // grid-auto-rows: min-content;
+        // grid-auto-flow: row dense;
+        // row-gap: 20px;
         width: 100%;
         padding-top: 20px;
         padding-bottom: 20px;
         padding-left: 30px;
         padding-right: 30px;
-        display: grid;
+        // display: grid;
         // overflow-y: auto;
-        height: calc(var(--full-vh) - 70px);
-
-
+        // height: calc(var(--full-vh) - 70px);
 
         max-width: 800px;
+
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        flex-direction: column;
+        row-gap: 20px;
 
 
         .cp-monitor-item {
             width: 100%;
-            // padding: 16px 24px;
             border: 1px solid #e2e8f0;
-            // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            //     border-radius: 16px;
             overflow: hidden;
 
-
-            .cp-item-header {
-                padding: 16px 20px;
-                border-bottom: 1px solid #e2e8f0;
-                background: #f8fafc;
-                font-size: 14px;
-                font-weight: 600;
-                color: #374151;
-            }
-
-            .cp-item-content {
+            // position: relative;
 
 
-                .cp-upload-file-list {
-                    .cp-file-item {
+            &.cp-upload-progress-monitor {
+                padding: 24px 24px;
+                position: sticky;
 
+                .cp-uploading-monitor-box {
 
-                        &:root {
-                            --cp-file-item-background: transparent;
-                            --cp-file-item-clip-background: transparent;
-                        }
+                    display: grid;
+                    grid-template-areas:
+                        'header progress-text'
+                        'info info '
+                        'progress progress '
+                    ;
 
+                    grid-template-columns: 100px 1fr;
+                    grid-template-rows: min-content min-content min-content;
 
-                        &:not([data-state=UPLOADING]) {
-                            .cp-item-progress {
-                                display: none;
-                            }
-                        }
+                    .cp-header {
+                        grid-area: header;
 
-                        &[data-state=ERROR] {
-                            --cp-file-item-background: #fef2f2;
-                            --cp-file-item-clip-background: #fee2e2;
-                            --cp-file-itme-clip-color: #dc2626;
+                        color: #374151;
+                        // background: #f8fafc;
+                        // border-bottom: 1px solid #e2e8f0;
+                        // padding-left: 10px;
+                        font-size: 16px;
+                        font-weight: 600;
+                        padding-bottom: 10px;
 
-                            border-left: 4px solid #cc0000;
+                    }
 
+                    .cp-item-info {
+                        grid-area: info;
 
-                        }
-
-                        &[data-state=COMPLETE] {
-
-                            --cp-file-item-background: #f0fdf4;
-                            --cp-file-item-clip-background: #dcfce7;
-                            --cp-file-itme-clip-color: #166534;
-
-
-                            .cp-item-progress {
-                                .cp-progress-bar {
-                                    &::before {
-                                        width: 100%;
-
-                                    }
-                                }
-                            }
-                        }
-
-                        &[data-state=CANCELLED] {
-
-                            --cp-file-item-background: #fef2f2;
-                            --cp-file-item-clip-background: #fee2e2;
-                            --cp-file-itme-clip-color: #dc2626;
-
-                        }
-
-                        &[data-state=WAIT] {
-                            --cp-file-item-background: transparent;
-                            --cp-file-item-clip-background: #fef3c7;
-                            --cp-file-itme-clip-color: #92400e;
-                        }
-
-                        &[data-state=UPLOADING] {
-                            --cp-file-item-background: #eff6ff;
-                            --cp-file-item-clip-background: #dbeafe;
-                            --cp-file-itme-clip-color: #1e40af;
-
-
-                        }
-
+                        background-color: #f8fafc;
+                        border-radius: 8px;
+                        padding: 8px 16px;
 
 
                         display: grid;
-                        grid-template-areas: 'icon title progress state action'
-                        'icon desc progress state action'
-                        'icon error progress state action'
+                        grid-template-areas:
+                            'icon title action'
+                            'icon desc action'
                         ;
-                        grid-template-columns: min-content 1fr 100px 100px minmax(0px, min-content);
-                        grid-template-rows: min-content min-content min-content;
 
-                        background-color: var(--cp-file-item-background);
+                        grid-template-columns: min-content 1fr;
+                        grid-template-rows: min-content min-content;
 
-                        padding: 10px 16px;
                         column-gap: 10px;
+
+                        width: 100%;
 
                         .cp-item-icon {
                             grid-area: icon;
-                            // width: 30px;
-                            height: 100%;
-
                             display: flex;
-                            justify-content: flex-start;
+                            justify-content: center;
                             align-items: center;
 
-                            svg {
-                                font-size: 24px;
-                            }
+                            width: 50px;
+                            aspect-ratio: 1;
                         }
 
                         .cp-item-title {
                             grid-area: title;
-
+                            color: #374151;
                             font-size: 14px;
-                            font-weight: 500;
-                            color: #1a202c;
-
+                            font-weight: 600;
+                            text-wrap: nowrap;
 
                             display: flex;
                             justify-content: flex-start;
                             align-items: center;
-
-                            white-space: nowrap;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                            padding-block: 4px;
                         }
 
                         .cp-item-desc {
@@ -557,119 +553,343 @@
                             display: flex;
                             justify-content: flex-start;
                             align-items: center;
-
-                            column-gap: 4px;
-                        }
-
-                        .cp-item-error-message {
-                            grid-area: error;
-
-                            display: flex;
-                            justify-content: flex-start;
-                            align-items: center;
-
-                            font-size: 12px;
-                            color: #dc2626;
-                            padding-top: 8px;
-                        }
-
-                        .cp-item-progress {
-                            grid-area: progress;
-
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            flex-direction: column;
-
-                            .cp-progress-bar {
-                                width: 100%;
-                                height: 6px;
-                                background: #e2e8f0;
-                                border-radius: 3px;
-                                overflow: hidden;
-                                margin-bottom: 4px;
-                                position: relative;
-
-                                &::before {
-                                    content: ' ';
-                                    width: calc(100% * var(--progress-value));
-                                    height: 100%;
-                                    position: absolute;
-                                    // top: calc(-100% + var(--progress-value));
-                                    top: 0px;
-                                    left: 0px;
-                                    background: linear-gradient(90deg, #3b82f6, #1d4ed8);
-
-                                    transform: translateX(calc(var(--progress-value)));
-                                }
-                            }
-
-                            .cp-progress-text {
-                                font-size: 11px;
-                                color: #64748b;
-                                width: 100%;
-                            }
-                        }
-
-                        .cp-item-state {
-                            grid-area: state;
-
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-
-
-                            .cp-item-state-clip {
-                                font-size: 12px;
-                                font-weight: 500;
-                                padding: 4px 8px;
-                                border-radius: 12px;
-                                text-align: center;
-                                min-width: 60px;
-
-
-                                display: flex;
-                                justify-content: center;
-                                align-items: center;
-
-
-                                color: var(--cp-file-itme-clip-color);
-                                background: var(--cp-file-item-clip-background);
-                            }
                         }
 
                         .cp-item-action {
                             grid-area: action;
+
                             display: flex;
-                            justify-content: flex-end;
                             align-items: center;
-                            column-gap: 4px;
+                        }
+                    }
 
-                            .cp-action-bt {
-                                border: none;
-                                background-color: transparent;
-                                width: 30px;
-                                aspect-ratio: 1;
-                                border-radius: 6px;
-                                display: flex;
-                                justify-content: center;
-                                align-items: center;
-                                cursor: pointer;
-                                transition: 0.3s;
 
-                                &:hover {
-                                    background-color: #5aa4ed47;
+                    .cp-item-progress {
+                        grid-area: progress;
+                        padding-top: 16px;
+
+                        .cp-progress-bar {
+                            width: 100%;
+                            height: 12px;
+                            border-radius: 12px;
+                            background-color: #f1f5f9;
+                            overflow: hidden;
+                            position: relative;
+
+                            &::before {
+                                content: ' ';
+                                transition: 0.5s;
+                                width: calc(100% * var(--progress-value) / 100);
+                                height: 100%;
+                                position: absolute;
+                                border-radius: 12px;
+                                // top: calc(-100% + var(--progress-value));
+                                top: 0px;
+                                left: 0px;
+                                background: linear-gradient(90deg, #667eea, #764ba2);
+
+                                transform: translateX(calc(var(--progress-value)));
+
+                                z-index: 30;
+                            }
+
+                            &::after {
+                                content: '';
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                width: 20px;
+                                height: 100%;
+                                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4));
+                                animation: shimmer 4s infinite;
+                                z-index: 31;
+                                border-radius: 12px;
+
+
+                                @keyframes shimmer {
+                                    0% {
+                                        // opacity: 0;
+                                        left: 0%
+                                    }
+
+                                    100% {
+                                        // opacity: 1;
+                                        left: 100%
+                                    }
                                 }
                             }
                         }
                     }
 
-                    .cp-no-data {
-                        padding: 20px;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
+                    .cp-item-desc {
+                        grid-area: desc;
                         color: #374151;
+                        font-size: 14px;
+                        font-weight: 600;
+                    }
+
+                    .cp-item-progress-text {
+                        grid-area: progress-text;
+
+                        font-size: 12px;
+                        color: #374151;
+                        font-weight: 600;
+
+                        display: flex;
+                        justify-content: flex-end;
+                        align-items: flex-start;
+
+
+
+                        .cp-progress-percent {}
+
+                        .cp-progress-unit {}
+
+                        span {
+                            padding-inline: 2px;
+                        }
+                    }
+                }
+            }
+
+            &.cp-upload-list {
+                .cp-item-content {
+
+
+                    .cp-item-list {
+                        .cp-file-item {
+
+
+                            &:root {
+                                --cp-file-item-background: transparent;
+                                --cp-file-item-clip-background: transparent;
+                            }
+
+
+                            &:not([data-state=UPLOADING]) {
+                                .cp-item-progress {
+                                    display: none;
+                                }
+                            }
+
+                            &[data-state=ERROR] {
+                                --cp-file-item-background: #fef2f2;
+                                --cp-file-item-clip-background: #fee2e2;
+                                --cp-file-itme-clip-color: #dc2626;
+
+                                border-left: 4px solid #cc0000;
+
+
+                            }
+
+                            &[data-state=COMPLETE] {
+
+                                --cp-file-item-background: #f0fdf4;
+                                --cp-file-item-clip-background: #dcfce7;
+                                --cp-file-itme-clip-color: #166534;
+
+
+                                .cp-item-progress {
+                                    .cp-progress-bar {
+                                        &::before {
+                                            width: 100%;
+
+                                        }
+                                    }
+                                }
+                            }
+
+                            &[data-state=CANCELLED] {
+
+                                --cp-file-item-background: #fef2f2;
+                                --cp-file-item-clip-background: #fee2e2;
+                                --cp-file-itme-clip-color: #dc2626;
+
+                            }
+
+                            &[data-state=WAIT] {
+                                --cp-file-item-background: transparent;
+                                --cp-file-item-clip-background: #fef3c7;
+                                --cp-file-itme-clip-color: #92400e;
+                            }
+
+                            &[data-state=UPLOADING] {
+                                --cp-file-item-background: #eff6ff;
+                                --cp-file-item-clip-background: #dbeafe;
+                                --cp-file-itme-clip-color: #1e40af;
+
+
+                            }
+
+
+
+                            display: grid;
+                            grid-template-areas: 'icon title state action'
+                            'icon desc state action'
+                            'icon error state action'
+                            ;
+                            grid-template-columns: min-content 1fr 100px minmax(0px, min-content);
+                            grid-template-rows: min-content min-content min-content;
+
+                            background-color: var(--cp-file-item-background);
+
+                            padding: 10px 16px;
+                            column-gap: 10px;
+
+                            .cp-item-icon {
+                                grid-area: icon;
+                                // width: 30px;
+                                height: 100%;
+
+                                display: flex;
+                                justify-content: flex-start;
+                                align-items: center;
+
+                                svg {
+                                    font-size: 24px;
+                                }
+                            }
+
+                            .cp-item-title {
+                                grid-area: title;
+
+                                font-size: 14px;
+                                font-weight: 500;
+                                color: #1a202c;
+
+
+                                display: flex;
+                                justify-content: flex-start;
+                                align-items: center;
+
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                padding-block: 4px;
+                            }
+
+                            .cp-item-desc {
+                                grid-area: desc;
+
+                                font-size: 12px;
+                                color: #64748b;
+
+                                display: flex;
+                                justify-content: flex-start;
+                                align-items: center;
+
+                                column-gap: 4px;
+                            }
+
+                            .cp-item-error-message {
+                                grid-area: error;
+
+                                display: flex;
+                                justify-content: flex-start;
+                                align-items: center;
+
+                                font-size: 12px;
+                                color: #dc2626;
+                                padding-top: 8px;
+                            }
+
+
+
+                            .cp-item-state {
+                                grid-area: state;
+
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+
+
+                                .cp-item-state-clip {
+                                    font-size: 12px;
+                                    font-weight: 500;
+                                    padding: 4px 8px;
+                                    border-radius: 12px;
+                                    text-align: center;
+                                    min-width: 60px;
+
+
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+
+
+                                    color: var(--cp-file-itme-clip-color);
+                                    background: var(--cp-file-item-clip-background);
+                                }
+                            }
+
+                            .cp-item-action {
+                                grid-area: action;
+                                display: flex;
+                                justify-content: flex-end;
+                                align-items: center;
+                                column-gap: 4px;
+
+                                .cp-action-bt {
+                                    border: none;
+                                    background-color: transparent;
+                                    width: 30px;
+                                    aspect-ratio: 1;
+                                    border-radius: 6px;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    cursor: pointer;
+                                    transition: 0.3s;
+
+                                    &:hover {
+                                        background-color: #5aa4ed47;
+                                    }
+                                }
+                            }
+                        }
+
+                        .cp-no-data {
+                            padding: 20px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            color: #374151;
+                        }
+                    }
+                }
+
+            }
+
+            &.cp-monitor-header-group {
+                .cp-item-header {
+                    padding: 16px 20px;
+                    border-bottom: 1px solid #e2e8f0;
+                    background: #f8fafc;
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: #374151;
+                }
+
+                .cp-item-content {}
+
+            }
+
+            // COMMON CONTROL
+            .cp-monitor-item-control {
+                &.cp-action-icon-bt {
+                    aspect-ratio: 1;
+                    cursor: pointer;
+                    background-color: rgba(0, 0, 0, 0);
+                    border: none;
+                    border-radius: 6px;
+                    justify-content: center;
+                    align-items: center;
+                    width: 30px;
+                    transition: all .3s;
+                    display: flex;
+
+                    &:hover {
+                        background-color: rgba(90, 164, 237, .28);
                     }
                 }
             }

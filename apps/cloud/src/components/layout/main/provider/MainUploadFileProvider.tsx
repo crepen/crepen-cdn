@@ -10,9 +10,12 @@ import { createContext, PropsWithChildren, useContext, useEffect, useState } fro
 interface MainUploadFileContextProp {
     addQueue: (...files: UploadFileObject[]) => void,
     updateState: (uuid: string, state: UploadFileState, message?: string) => void,
-    updateUploadFileSize: (uuid: string, progressValue: number) => void,
     removeQueue : (uuid : string) => void,
     files: UploadFileObject[],
+    progress : {
+        data : UploadFileProgress,
+        setProgress : (state : UploadFileProgress) => void
+    }
 }
 
 const MainUploadFileContext = createContext<MainUploadFileContextProp | undefined>(undefined);
@@ -27,6 +30,13 @@ export const useMainUploadFile = () => {
 
 
 
+export interface UploadFileProgress {
+    total : number,
+    uploadSize : number,
+    progress : number
+}
+
+
 
 interface MainUploadFileProviderProp extends PropsWithChildren {
 
@@ -36,6 +46,7 @@ const queryClient = new QueryClient();
 
 export const MainUploadFileProvider = (prop: MainUploadFileProviderProp) => {
 
+    const [uploadProgress , setUploadProgress] = useState<UploadFileProgress>({progress : 0 , total : 0 , uploadSize : 0})
     const [uploadFileQueue, setFileQueue] = useState<UploadFileObject[]>([]);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [isClient, setIsClient] = useState(false);
@@ -88,6 +99,7 @@ export const MainUploadFileProvider = (prop: MainUploadFileProviderProp) => {
             <MainUploadFileContext.Provider
                 value={{
                     addQueue: (...files: UploadFileObject[]) => {
+                        console.log("GEIOJGOWEJGIOEWGEW");
                         setFileQueue([
                             ...uploadFileQueue,
                             ...files
@@ -99,7 +111,6 @@ export const MainUploadFileProvider = (prop: MainUploadFileProviderProp) => {
 
                             targetData.errorMessage = message;
                             targetData.uploadState = state;
-                            targetData.uploadFileSize = 0;
 
                             setFileQueue([
                                 ...uploadFileQueue.filter(x => x.uuid !== uuid),
@@ -107,24 +118,30 @@ export const MainUploadFileProvider = (prop: MainUploadFileProviderProp) => {
                             ])
                         }
                     },
-                    updateUploadFileSize: (uuid: string, fileSize: number) => {
-                        const targetData = uploadFileQueue.find(x => x.uuid === uuid);
-                        if (targetData) {
+                    // updateUploadFileSize: (uuid: string, fileSize: number) => {
+                    //     const targetData = uploadFileQueue.find(x => x.uuid === uuid);
+                    //     if (targetData) {
 
-                            targetData.uploadFileSize = fileSize;
+                    //         targetData.uploadFileSize = fileSize;
 
-                            setFileQueue([
-                                ...uploadFileQueue.filter(x => x.uuid !== uuid),
-                                targetData
-                            ])
-                        }
-                    },
+                    //         setFileQueue([
+                    //             ...uploadFileQueue.filter(x => x.uuid !== uuid),
+                    //             targetData
+                    //         ])
+                    //     }
+                    // },
                     removeQueue : (uuid :string )=> {
                         setFileQueue([
                             ...uploadFileQueue.filter(x=>x.uuid !== uuid)
                         ])
                     },
-                    files: uploadFileQueue
+                    files: uploadFileQueue,
+                    progress : {
+                        data : uploadProgress,
+                        setProgress : (state : UploadFileProgress) => {
+                            setUploadProgress(state);
+                        }
+                    }
                 }}
             >
                 {prop.children}

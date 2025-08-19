@@ -38,8 +38,7 @@ export const ExplorerFileUploadButton = (prop: ExplorerFileUploadButtonProp) => 
                         timestamp : new Date().getTime(),
                         uploadState : 'WAIT',
                         uuid : uuid(),
-                        errorMessage : undefined,
-                        uploadFileSize : 0
+                        errorMessage : undefined
                     }
 
                     uploadItems.push(fileObj);
@@ -47,6 +46,8 @@ export const ExplorerFileUploadButton = (prop: ExplorerFileUploadButtonProp) => 
 
 
                 uploadFileHook.addQueue(...uploadItems);
+
+                e.currentTarget.value = '';
             }
         }
 

@@ -136,7 +136,8 @@ export class FetchApi {
         const fetchOption: RequestInit = {
             headers: await this.getHeader(),
             method: this.requestMethod,
-            body: this.requestBody
+            body: this.requestBody,
+            keepalive : true
         }
 
         try {

@@ -27,8 +27,14 @@
       },
       "filemonitor" : {
         "list" : {
-          "header" : {
-            "title" : "Upload File List"
+          "failed-list" : {
+            "header-title" : "Failed List"  
+          },
+          "wait-list" : {
+            "header-title" : "Wait List"  
+          },
+           "complete-list" : {
+            "header-title" : "Complete List"  
           }
         }
       }

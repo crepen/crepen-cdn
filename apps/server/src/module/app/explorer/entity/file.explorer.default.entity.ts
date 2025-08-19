@@ -11,7 +11,7 @@ export class ExplorerFileEntity {
     @Column({ name: 'title', type: 'varchar', length: 100, nullable: false })
     title: string;
 
-    @Column({name :"file_size" , type : 'int' , nullable : false , default : 0 })
+    @Column({name :"file_size" , type : 'bigint' , nullable : false , default : 0 })
     fileSize : number;
 
     @Column({name : 'file_name' , type : 'varchar' , length : 100 , nullable : false})
@@ -34,7 +34,7 @@ export class ExplorerFileEntity {
 
 
     @Column({ name: 'create_date', type: "datetime", default: () => 'sysdate()' })
-    createDate?: Date;
+    createDate?: Date;   
 
     @Column({ name: 'update_date', type: 'datetime', default: () => 'sysdate()' })
     updateDate?: Date;
