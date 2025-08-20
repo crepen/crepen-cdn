@@ -1,9 +1,8 @@
+import { CommonPage } from "@web/component/global/CommonPage";
+import { redirect } from "next/navigation";
+
 const MainProfileDefaultPage = () => {
-    return (
-        <div>
-            PROFILE
-        </div>
-    )
+    redirect('/profile/account')
 }
 
 export default MainProfileDefaultPage;

@@ -27,7 +27,7 @@ export class AuthMiddleware implements BaseMiddleware {
             const isRefresh = await AuthProvider.current().refreshSession({ readCookie : req.cookies , writeCookie : res.cookies});
 
             if (!UrlUtil.isMatchPatterns(req.url, [...this.ignoreAuthUrl, ...this.unAuthPages], { basePath: req.nextUrl.basePath })) {
-                if (!isRefresh) {
+                if (!isRefresh.state) {
                     return {
                         type: 'end',
                         response: NextResponse.redirect(new URL(urlJoin(req.nextUrl.basePath, '/signin', `?callback=${req.nextUrl.pathname}`), req.url))
@@ -35,7 +35,7 @@ export class AuthMiddleware implements BaseMiddleware {
                 }
             }
             else if (UrlUtil.isMatchPatterns(req.url, this.unAuthPages, { basePath: req.nextUrl.basePath })) {
-                if (isRefresh) {
+                if (isRefresh.state) {
                     return {
                         type: 'end',
                         response: NextResponse.redirect(new URL(urlJoin(req.nextUrl.basePath, callbackUrl ?? '/'), req.url))

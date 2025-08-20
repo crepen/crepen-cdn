@@ -25,29 +25,20 @@ export const PUT = async (req: NextRequest, { params }: { params: { uid: string 
 
         // const formData = await req.formData();
 
-        await AuthProvider.current().refreshSession({
+        const session = await AuthProvider.current().refreshSession({
             writeCookie: req.cookies,
             readCookie: req.cookies
         })
 
-        const session = await AuthProvider.current().getSession({
-            readCookie: req.cookies
-        });
 
-
+        if (!session.state) throw new CustomRouteError(await localeProv.translate('common.system.UNAUTHORIZED'));
 
 
         const uid = (await params).uid;
         const apiUrl = urlJoin(NESTJS_API_URL, `/explorer/folder/${uid}/file/upload`)
 
-        // console.log('gwegewg' , req.headers.get('Content-Disposition'));
-        // const fileData = formData.get('file') as File;
-        // console.log(`attachment; filename="${fileData.name}"`);
-
         const headers = new Headers(req.headers);
-        // headers.append('Content-Disposition', `attachment; filename="${encodeURIComponent(fileData.name)}"`)
         headers.append('Authorization', `Bearer ${session?.token?.accessToken}`);
-        // console.log('ES',(formData.get('file') as File).name)
 
 
         const response = await fetch(apiUrl, {
@@ -69,10 +60,12 @@ export const PUT = async (req: NextRequest, { params }: { params: { uid: string 
         const data = await response.json();
         const res = NextResponse.json(data);
 
-        await AuthProvider.current().refreshSession({
-            writeCookie: res.cookies,
-            readCookie: req.cookies
-        })
+        if (session.token) {
+            await AuthProvider.current().setSessionToken(session.token, {
+                writeCookie: res.cookies,
+                readCookie: req.cookies
+            });
+        }
 
         return res;
 

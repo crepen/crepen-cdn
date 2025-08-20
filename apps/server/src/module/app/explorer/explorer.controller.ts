@@ -69,7 +69,7 @@ export class CrepenExplorerDefaultController {
         Logger.log(`page : ${page} / pageSize : ${pageSize}` , '/explorer/[uid]')
         Logger.log(`keyword : ${keyword}` , '/explorer/[uid]')
 
-        const folderData = await this.folderService.getFolderData(uid);
+        const folderData = await this.folderService.getFolderDataByUid(uid);
 
         if(ObjectUtil.isNullOrUndefined(folderData) && uid.toLowerCase() !== 'root'){
             throw new FolderNotFoundError();

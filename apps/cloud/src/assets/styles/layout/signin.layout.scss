@@ -1,13 +1,9 @@
-.cp-layout.cp-external-layout.cp-signin-layout {
+.cp-signin-layout {
 
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-
-
-    
-
 
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 
@@ -17,39 +13,198 @@
         top: 20px;
         right: 20px;
 
-        backdrop-filter: blur(20px);
-        // padding: 48px;
-        border-radius: 24px;
-        // width: 100%;
-        // max-width: 420px;
-        // padding-top: 30px;
-        // padding-bottom: 30px;
-        
-        background-color: transparent;
+        background: rgba(255, 255, 255, 0.2);
         border: none;
+        padding: 8px 16px;
+        border-radius: 20px;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
 
-        padding: 6px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, .1);
 
-        transition: 0.3s;
-
-        font-size: 14px;
-        font-weight: bold;
-
-        
 
         &:hover {
-            box-shadow: 0 3px 39px rgb(0 0 0 / 55%);
-            cursor: pointer;
-            color: rgb(77, 77, 77);
+            background: rgba(255, 255, 255, 0.3);
         }
     }
+
+
+    .cp-content-box {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 48px;
+        padding-block: 30px;
+        width: min-content;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+
+    //#region CONTROL
+    & {
+        .cp-sign-common-form {
+            .cp-sign-common-input {
+
+                position: relative;
+                overflow: hidden;
+                width: 100%;
+                border: 2px solid #e5e7eb;
+                border-radius: 12px;
+                font-size: 16px;
+                background: #f9fafb;
+                transition: all 0.3s ease;
+
+
+
+
+
+
+                input {
+                    padding-top: 15px;
+                    height: 50px;
+                    width: 100%;
+                    border: none;
+                    outline: none;
+                    padding-inline: 14px;
+                    font-weight: bold;
+                    background-color: transparent;
+                    transition: background-color 9999999999s;
+
+                    font-family: var(--global-font-family);
+                }
+
+                &::before {
+                    content: attr(data-label);
+                    font-size: 14px;
+                    font-weight: bold;
+                    color: #615656;
+
+                    position: absolute;
+                    top: 50%;
+                    left: 14px;
+                    transform: translateY(-50%);
+                    user-select: none;
+                    pointer-events: none;
+                    transition: 0.3s;
+                }
+
+
+                &:has(input:focus, input:not(:placeholder-shown)) {
+                    &::before {
+                        content: attr(data-label);
+                        font-size: 12px;
+
+
+                        top: 5px;
+                        left: 14px;
+                        user-select: none;
+                        pointer-events: none;
+                        transform: translateY(0%);
+                    }
+                }
+            }
+
+            .cp-sign-common-submit {
+                cursor: pointer;
+                text-align: center;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                border: none;
+                border-radius: 12px;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 40px;
+                transition: all .3s;
+                display: flex;
+
+                color: #fff;
+                font-size: 16px;
+                font-weight: 600;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+
+                .cp-loader {
+                    display: none;
+
+                    width: 15px;
+                    aspect-ratio: 1;
+                    --_g: no-repeat radial-gradient(circle closest-side, white 90%, #0000);
+                    background:
+                        var(--_g) 0 0,
+                        var(--_g) 0 100%,
+                        var(--_g) 100% 100%;
+                    background-size: 40% 40%;
+                    animation: spinner-animation 1s infinite linear;
+
+
+                    @keyframes spinner-animation {
+                        25% {
+                            background-position: 100% 0, 0 100%, 100% 100%
+                        }
+
+                        50% {
+                            background-position: 100% 0, 0 0, 100% 100%
+                        }
+
+                        75% {
+                            background-position: 100% 0, 0 0, 0 100%
+                        }
+
+                        100% {
+                            background-position: 100% 100%, 0 0, 0 100%
+                        }
+                    }
+                }
+
+                &:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 10px 25px rgba(102, 126, 234, .3);
+                    letter-spacing: 4px;
+                }
+
+
+
+                &.cp-loading {
+                    .cp-context {
+                        display: none;
+                    }
+
+                    .cp-loader {
+                        display: block;
+                    }
+                }
+            }
+
+            .cp-sign-common-error {
+                &:has(:not(span:empty)) {
+                    // padding-block: 10px;
+                }
+
+                span {
+                    color: rgb(165, 33, 33);
+                    font-weight: bold;
+                    font-size: 12px;
+                    padding-inline: 2px;
+                }
+            }
+        }
+    }
+
+    //#endregion CONTROL
 }
 
 
 
 @media screen and (max-width: 480px) {
-    .cp-layout.cp-external-layout.cp-signin-layout {
+    .cp-signin-layout {
         padding-inline: 20px;
+
+        .cp-content-box {
+            padding-inline: 20px;
+            width: 100%;
+        }
     }
 }

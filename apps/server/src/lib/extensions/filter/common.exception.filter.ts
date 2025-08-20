@@ -114,7 +114,7 @@ export class ExceptionResultFactory {
         const message = this.getTranslateMessage('common.INTERNAL_SERVER_ERROR');
 
         this.response
-            .status(503)
+            .status(error.getStatus() ?? 503)
             .json(
                 this.getErrorResponse(
                     error.getStatus(),

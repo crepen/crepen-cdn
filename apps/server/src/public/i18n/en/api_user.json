@@ -1,0 +1,6 @@
+{
+    "PARAM_NOT_DEFINED_USER_ID" : "User id is required.",
+    "PARAM_NOT_DEFINED_USER_PASSWORD" : "User password is required.",
+    "PARAM_NOT_DEFINED_USER_EMAIL" : "User email is required.",
+    "PARAM_NOT_DEFINED_USER_NAME" : "User name is required."
+}

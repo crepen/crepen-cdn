@@ -2,7 +2,7 @@ import { TokenGroup } from "@web/lib/types/TokenGroup";
 import { LocaleType } from "../locale/Locale";
 import { FetchApi } from "../fetch/FetchApi";
 import { BaseApiResultEntity } from "@web/lib/types/api/BaseApiResultEntity";
-import { ExplorerFileUploadResult, ExplorerFilterData, ExplorerTreeEntity } from "@web/lib/types/api/dto/RestExplorerDto";
+import { ExplorerAddFolderResult, ExplorerFileUploadResult, ExplorerFilterData, ExplorerTreeEntity } from "@web/lib/types/api/dto/RestExplorerDto";
 import * as humps from 'humps';
 import { RestListResult, RestSearchFilterOptions } from "@web/lib/types/api/dto/RestCommonDto";
 import urlJoin from "url-join";
@@ -65,7 +65,10 @@ export class RestExplorerDataService {
     }
 
 
+    /** @deprecated */
     uploadFile = async (file: File, parentFolderUid: string) => {
+
+        throw new Error();
 
         const formData = new FormData();
         formData.set('file', file);
@@ -82,6 +85,27 @@ export class RestExplorerDataService {
 
         const resultData: BaseApiResultEntity<ExplorerFileUploadResult>
             = humps.camelizeKeys(Object.assign(result.jsonData ?? {})) as BaseApiResultEntity<ExplorerFileUploadResult>;
+
+        return resultData
+    }
+
+
+    addFolder = async (parentFolderUid : string , folderName: string) => {
+         const result = await FetchApi
+            .instance(process.env.API_URL)
+            .setMethod('POST')
+            .setUrl(`/explorer/folder/${parentFolderUid}/folder/add`)
+            .setBody({
+                folderName : folderName
+            })
+            .setOptions({
+                language: this.language,
+                token: this.token?.accessToken
+            })
+            .getResponse();
+
+        const resultData: BaseApiResultEntity<ExplorerAddFolderResult>
+            = humps.camelizeKeys(Object.assign(result.jsonData ?? {})) as BaseApiResultEntity<ExplorerAddFolderResult>;
 
         return resultData
     }

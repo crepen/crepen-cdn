@@ -1,3 +1,5 @@
 {
-    "FOLDER_NOT_FOUND" : "Folder cannot be found."
+    "FOLDER_NOT_FOUND" : "Folder cannot be found.",
+    "PARAM_NOT_DEFINED_FOLDER_NAME" : "Folder name is requred.",
+    "DUPLICATE_FOLDER" : "There are duplicate folder names."
 }

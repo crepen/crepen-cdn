@@ -79,11 +79,15 @@
                     &:hover {
                         background: #f1f5f9;
                         color: #1a202c;
+                        transform: translateY(-1px);
+                        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
                     }
 
                     &.active {
                         background: linear-gradient(135deg, #667eea, #764ba2);
                         color: white;
+                        transform: translateY(-1px);
+                        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
                     }
 
 
@@ -193,7 +197,10 @@
                     height: 35px;
                     margin-left: 10px;
 
-                    .cp-button-icon {}
+                    .cp-button-icon {
+                        display: flex;
+                        align-items: center;
+                    }
 
                     .cp-button-text {}
 

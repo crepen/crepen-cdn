@@ -6,14 +6,15 @@ import { SignInLocaleChangeButton } from "@web/component/layout/signin/SignInLoc
 import { LocaleConfig } from "@web/lib/config/LocaleConfig";
 import { ServerLocaleProvider } from "@web/lib/module/locale/ServerLocaleProvider";
 import { Metadata } from "next";
+import { CommonLayout } from "@web/component/global/CommonLayout";
 
 
 
-export const generateMetadata = async () : Promise<Metadata> => {
-     const localeProv = ServerLocaleProvider.current(LocaleConfig);
+export const generateMetadata = async (): Promise<Metadata> => {
+    const localeProv = ServerLocaleProvider.current(LocaleConfig);
 
     return {
-        title : await localeProv.translate('title.signin')
+        title: await localeProv.translate('title.signin')
     }
 }
 
@@ -21,13 +22,12 @@ export const generateMetadata = async () : Promise<Metadata> => {
 
 const SignInLayout = (prop: PropsWithChildren) => {
     return (
-        <div className="cp-external-layout cp-layout cp-signin-layout">
-            {prop.children}
-
-
-
+        <CommonLayout className="cp-signin-layout">
+            <div className="cp-content-box">
+                {prop.children}
+            </div>
             <SignInLocaleChangeButton />
-        </div>
+        </CommonLayout>
     )
 }
 

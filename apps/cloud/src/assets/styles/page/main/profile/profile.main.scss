@@ -1,0 +1,43 @@
+.cp-profile-layout {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+
+    .cp-profile-box {
+        width: 1000px;
+        height: 100%;
+
+        display: grid;
+        grid-template-areas: 'side content';
+        grid-template-columns: min-content 1fr;
+        grid-template-rows: 1fr;
+
+        padding: 24px;
+
+        column-gap: 24px;
+
+        .cp-side {
+            grid-area: side;
+            width: 300px;
+
+            .cp-side-card {
+                padding: 24px;
+
+
+                
+            }
+        }
+
+        .cp-content {
+            grid-area: content;
+
+
+            .cp-nav {
+                padding: 8px;
+            }
+        }
+    }
+
+    .cp-profile-page {}
+}

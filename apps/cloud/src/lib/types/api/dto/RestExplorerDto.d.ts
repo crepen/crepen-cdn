@@ -25,3 +25,7 @@ export interface ExplorerFilterData {
 export interface ExplorerFileUploadResult {
     uploadFileUid : string
 }
+
+export interface ExplorerAddFolderResult {
+    folderUid : string
+}

@@ -3,11 +3,10 @@ import 'pretendard/dist/web/variable/pretendardvariable.css';
 // Global Style
 import '@web/assets/styles/global/reset.css';
 import '@web/assets/styles/global/global.scss';
+import '@web/assets/styles/global/controls.scss'
 // FontAwesome
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import '@fortawesome/fontawesome-free/css/all.min.css'
-
-import '@web/assets/styles/layout/root.layout.scss';
 
 import { PropsWithChildren } from "react"
 import { Metadata, Viewport } from 'next';

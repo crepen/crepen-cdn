@@ -9,6 +9,7 @@ import { StringUtil } from "@crepen-nest/lib/util";
 import { UserEntity } from "../common-user/user/entity/user.default.entity";
 import { RepositoryOptions } from "@crepen-nest/interface/repo";
 import { randomUUID } from "crypto";
+import { ExplorerItemType } from "./enum/item-type.explorer.enum";
 
 @Injectable()
 export class CrepenExplorerDefaultService {
@@ -100,5 +101,21 @@ export class CrepenExplorerDefaultService {
             const addCatalog = await this.explorerRepo.addCatalogLink(randomUUID(), userUid, options);
             return addCatalog.catalogUid;
         }
+    }
+
+
+    linkObject = async (ownerUid: string, targetUid: string, childUid: string, type: ExplorerItemType, options?: RepositoryOptions) => {
+       
+
+        return this.explorerRepo.linkTree(ownerUid , targetUid , childUid , type , options);
+    }
+
+
+    linkFolder = async (ownerUid: string, targetFolderUid: string, childFolderUid: string, options?: RepositoryOptions) => {
+        return this.linkObject(ownerUid, targetFolderUid, childFolderUid, ExplorerItemType.FOLDER, options)
+    }
+
+    linkFile = async (ownerUid: string, targetFolderUid: string, childFileUid: string, options?: RepositoryOptions) => {
+        return this.linkObject(ownerUid, targetFolderUid, childFileUid, ExplorerItemType.FILE, options);
     }
 }

@@ -13,7 +13,8 @@ import { RestListResult } from "@web/lib/types/api/dto/RestCommonDto";
 interface ExplorerListTableProp {
     uid: string,
     treeData : RestListResult<ExplorerTreeEntity>,
-    defaultFilterData? : ExplorerFilterData
+    defaultFilterData? : ExplorerFilterData,
+    searchParam? : string
 }
 
 export const ExplorerListTable = async (prop: ExplorerListTableProp) => {
@@ -56,7 +57,7 @@ export const ExplorerListTable = async (prop: ExplorerListTableProp) => {
                                     <Link
                                         href={
                                             item.childType === 'folder'
-                                                ? `/explorer/${item.childLinkUid}`
+                                                ? `/explorer/${item.childLinkUid}${prop.searchParam}`
                                                 : `/explorer/file/${item.childLinkUid}`
                                         }
                                         className="cp-item-link"

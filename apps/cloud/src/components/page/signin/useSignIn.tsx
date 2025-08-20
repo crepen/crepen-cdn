@@ -20,15 +20,9 @@ export const useSignIn = () => {
         try {
             const requestResult = await SignInAction(id, password);
 
-
-
             if (requestResult.state === false) {
-                // setResultState(requestResult.state);
                 setMessage(translateHook.translate(requestResult.message) );
             }
-
-            // console.log(requestResult);
-
             setResultState(requestResult.state);
 
         }

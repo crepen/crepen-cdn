@@ -4,7 +4,8 @@
       "SUCCESS": "Success.",
       "API_CONN_FAILED": "API Server connect failed.",
       "UNKNOWN_ERROR": "Unknown error.",
-      "NO_DATA" : "NO DATA"
+      "NO_DATA" : "NO DATA",
+      "UNAUTHORIZED" : "The authentication has expired or the connection to the server cannot be established.."
     },
     "locale": {
       "en": "English",
@@ -89,6 +90,13 @@
         "error": {
           "message": "Error : Unable to connect to server or incorrect access.",
           "reload" : "Reload Explorer"
+        },
+        "modal" : {
+          "new-folder" : {
+            "header" : "New folder",
+            "empty-warning" : "Folder name is required.",
+            "close" : "Close"
+          }
         }
       }
     },

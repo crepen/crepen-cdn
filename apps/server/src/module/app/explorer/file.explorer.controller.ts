@@ -44,7 +44,7 @@ export class CrepenExplorerFileController {
         @UploadedFile() file: Express.Multer.File,
         @Param('uid') uid: string
     ) {
-        const folderData = await this.folderService.getFolderData(uid);
+        const folderData = await this.folderService.getFolderDataByUid(uid);
 
         if (ObjectUtil.isNullOrUndefined(folderData) && uid.toLowerCase() !== 'root') {
             throw new FolderNotFoundError();

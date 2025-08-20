@@ -29,7 +29,7 @@ export class ExplorerFileEntity {
     @Column({name : 'file_enc' , type : 'varchar' , length : 20 , nullable : true})
     fileEncIv : string;
 
-    @Column({name : 'file_state' , type : 'enum' , enum : ExplorerFileStateEnum , nullable : false})
+    @Column({name : 'file_state' , type : 'enum' , enum : ExplorerFileStateEnum , nullable : false })
     fileState : ExplorerFileStateEnum;
 
 

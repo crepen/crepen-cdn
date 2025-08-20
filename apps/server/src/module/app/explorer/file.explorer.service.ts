@@ -127,10 +127,10 @@ export class CrepenExplorerFileService {
             console.log(fileObj);
 
             const createLinkTreeEntity = await this.explorerRepo.linkTree(
+                user.uid,
                 parentFolderUid,
                 saveFileEntity.uid,
                 ExplorerItemType.FILE,
-                user.uid,
                 { manager: manager }
             )
 

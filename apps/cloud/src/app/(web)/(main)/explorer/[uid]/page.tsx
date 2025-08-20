@@ -1,7 +1,9 @@
 import '@web/assets/styles/page/main/explorer/explorer.page.scss'
+import { CommonPage } from '@web/component/global/CommonPage';
 import { GroupBox } from '@web/component/global/control/group-box/GroupBox';
 import { ExplorerFileUploadButton } from '@web/component/page/main/explorer/ExplorerFileUploadButton';
 import { ExplorerListLoading, ExplorerListTable } from '@web/component/page/main/explorer/ExplorerListTable';
+import { ExplorerNewFolderButton } from '@web/component/page/main/explorer/header/toolbar/ExplorerNewFolderButton';
 import { ExplorerToolbar } from '@web/component/page/main/explorer/header/toolbar/ExplorerToolbar';
 import { HistoryBackButton } from '@web/component/page/main/explorer/header/top/HistoryBackButton';
 import { ExplorerListValidateProvider } from '@web/component/page/main/explorer/provider/ExplorerListValidateProvider';
@@ -35,9 +37,17 @@ interface MainExplorerDefaultPageProp {
 
 const MainExplorerListPage = async (prop: MainExplorerDefaultPageProp) => {
 
+    // #region PROCESS
     const localeProv = ServerLocaleProvider.current(LocaleConfig);
     const searchParam = await prop.searchParams;
     const params = await prop.params;
+
+    const searchParamArray = Object.keys(searchParam ?? {})
+        .map(key => (`${key}=${encodeURIComponent((searchParam as Record<string, string>)![key!] ?? '')}`));
+
+
+    const searchParamStr = searchParamArray.length > 0 ? `?${searchParamArray.join('&')}` : '';
+
 
 
     let isError = false;
@@ -87,12 +97,12 @@ const MainExplorerListPage = async (prop: MainExplorerDefaultPageProp) => {
         defaultFilterData.sort.defaultSortType = filterData.data?.sort.defaultSortType ?? 'desc';
 
 
-        const paramFilter : RestSearchFilterOptions = {
+        const paramFilter: RestSearchFilterOptions = {
             sortType: StringUtil.isEmpty(searchParam?.sortType) ? defaultFilterData.sort.defaultSortType : searchParam?.sortType,
             sortCategory: StringUtil.isEmpty(searchParam?.sortCategory) ? defaultFilterData.sort.defaultCategory.key : searchParam?.sortCategory,
             page: isNaN(Number(searchParam?.page)) ? defaultFilterData.pagination.defaultPage : Number(searchParam?.page),
             pageSize: isNaN(Number(searchParam?.pageSize)) ? defaultFilterData.pagination.defaultPageSize : Number(searchParam?.pageSize),
-            keyword : StringUtil.isEmpty(searchParam?.keyword) ? undefined : searchParam?.keyword
+            keyword: StringUtil.isEmpty(searchParam?.keyword) ? undefined : searchParam?.keyword
         }
 
         const restResult = await RestExplorerDataService.current(session?.token, locale ?? LocaleConfig.defaultLocale)
@@ -110,7 +120,7 @@ const MainExplorerListPage = async (prop: MainExplorerDefaultPageProp) => {
         treeData.row = restResult.data?.row ?? []
         treeData.totalPage = restResult.data?.totalPage ?? 0
 
-      
+
     }
     catch (e) {
         if (e instanceof CustomProcessError) {
@@ -119,30 +129,28 @@ const MainExplorerListPage = async (prop: MainExplorerDefaultPageProp) => {
         isError = true;
     }
 
-
+    // #endregion PROCESS
 
 
     return (
-        <div className='cp-explorer-page cp-page cp-fixed-page'>
-            <ExplorerListValidateProvider 
+        <CommonPage
+            className='cp-explorer-page'
+            fixed
+        >
+            <ExplorerListValidateProvider
                 defaultFilterData={defaultFilterData}
                 treeData={treeData}
             />
-            <div className='cp-page-header'>
+            <CommonPage.Header>
                 <div className='cp-top-header'>
                     <div className='cp-flex-left'>
                         <HistoryBackButton className='cp-back-bt' />
                     </div>
                     <div className='cp-flex-right'>
-                        <button className='cp-header-bt cp-new-folder-bt'>
-                            <div className='cp-button-icon'>
-                                <FcOpenedFolder />
-                            </div>
-                            <div className='cp-button-text'>
-                                {localeProv.translate('page.main.explorer.header.button.newfolder')}
-                            </div>
-                        </button>
-                        <ExplorerFileUploadButton 
+                        <ExplorerNewFolderButton
+                            folderUid={params?.uid}
+                        />
+                        <ExplorerFileUploadButton
                             folderUid={params?.uid}
                         />
                     </div>
@@ -151,8 +159,8 @@ const MainExplorerListPage = async (prop: MainExplorerDefaultPageProp) => {
                 <ExplorerToolbar
                     defaultFilter={defaultFilterData}
                 />
-            </div>
-            <div className='cp-page-content'>
+            </CommonPage.Header>
+            <CommonPage.Content>
                 <GroupBox className='cp-file-list-box'>
                     <Suspense fallback={<ExplorerListLoading />}>
                         {
@@ -174,13 +182,14 @@ const MainExplorerListPage = async (prop: MainExplorerDefaultPageProp) => {
                                     uid={params?.uid ?? 'ROOT'}
                                     treeData={treeData}
                                     defaultFilterData={defaultFilterData}
+                                    searchParam={searchParamStr}
                                 />
                         }
 
                     </Suspense>
                 </GroupBox>
-            </div>
-        </div>
+            </CommonPage.Content>
+        </CommonPage>
     )
 }
 

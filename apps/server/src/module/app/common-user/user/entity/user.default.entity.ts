@@ -2,7 +2,8 @@ import { StringUtil } from "@crepen-nest/lib/util/string.util";
 import { Exclude } from "class-transformer";
 import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity('user')
+/** @deprecated */
+@Entity('user-dev')
 export class UserEntity {
     @PrimaryGeneratedColumn()
     @Exclude()

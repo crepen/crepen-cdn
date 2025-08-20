@@ -7,12 +7,14 @@ import { ExplorerTreeEntity } from "./entity/tree.explorer.default.entity";
 import { CrepenBaseRepository } from "@crepen-nest/lib/common/base.repository";
 import { SearchFilterParamOptions } from "@crepen-nest/interface/request-param";
 import { ExplorerFolderEntity } from "./entity/folder.explorer.default.entity";
-import { Brackets } from "typeorm";
+import { Brackets, FindOptionsWhere } from "typeorm";
 import { ExplorerFileEntity } from "./entity/file.explorer.default.entity";
 import { ExplorerItemType } from "./enum/item-type.explorer.enum";
 import { ExplorerLogEntity } from "./entity/log.explorer.default.entity";
 import { ExplorerLogTypeEnum } from "./enum/log-type.explorer.enum";
 import { ExplorerCatalogEntity } from "./entity/catalog.explorer.default.entity";
+import { randomUUID } from "crypto";
+import { UserEntity } from "../common-user/user/entity/user.default.entity";
 
 @Injectable()
 export class CrepenExplorerRepository extends CrepenBaseRepository {
@@ -101,16 +103,28 @@ export class CrepenExplorerRepository extends CrepenBaseRepository {
         query.andWhere(
             new Brackets(qb => {
                 qb
-                    .where(`(tree.child_type = :itemType AND folder.title is not null AND folder.title <> '')`, {
-                        itemType: ExplorerItemType.FOLDER
-                    })
-                    .orWhere(`(tree.child_type = :itemType AND file.title is not null AND file.title <> '' AND file.file_state <> 'delete')`, {
-                        itemType: ExplorerItemType.FILE
-                    })
+                    .where(
+                        new Brackets(inqb => {
+                            inqb    
+                                .where(`tree.child_type = 'folder'`)
+                                .andWhere('folder.title is not null')
+                                .andWhere(`folder.title <> ''`)
+                                .andWhere(`folder.folder_state <> 'delete'`)
+                        })
+                    )
+                    .orWhere(
+                        new Brackets(inqb => {
+                              inqb    
+                                .where(`tree.child_type = 'file'`)
+                                .andWhere('file.title is not null')
+                                .andWhere(`file.title <> ''`)
+                                .andWhere(`file.file_state <> 'delete'`)
+                        })
+                    )
             })
         );
 
-        query.addOrderBy('FIELD(tree.child_type , \'folder\')', 'DESC')
+        query.addOrderBy(`FIELD(tree.child_type , 'folder' , 'file')`, 'ASC')
 
         query.addOrderBy(`tree_${options.sortCategory}`, options.sortType === 'asc' ? 'ASC' : 'DESC')
 
@@ -140,16 +154,16 @@ export class CrepenExplorerRepository extends CrepenBaseRepository {
         };
     }
 
-    linkTree = async (targetuid: string, childUid, type: ExplorerItemType, onwerUid: string, options?: RepositoryOptions) => {
+    linkTree = async (ownerUid: string, targetUid: string, childUid: string, type: ExplorerItemType, options?: RepositoryOptions) => {
 
         const dataSource = options?.manager?.getRepository(ExplorerTreeEntity) ?? await this.getRepository('default', ExplorerTreeEntity);
 
 
         const treeEntity = new ExplorerTreeEntity();
-        treeEntity.targetUid = targetuid;
         treeEntity.childLinkUid = childUid;
         treeEntity.childType = type;
-        treeEntity.ownerUid = onwerUid;
+        treeEntity.targetUid = targetUid;
+        treeEntity.ownerUid = ownerUid;
 
         return dataSource.save(treeEntity, { data: false });
     }
@@ -160,14 +174,42 @@ export class CrepenExplorerRepository extends CrepenBaseRepository {
 
     //#region FOLDER
 
-    getFolderData = async (folderUid: string, options?: RepositoryOptions): Promise<ExplorerFolderEntity | undefined> => {
+    getFolderData = async (fildOption: FindOptionsWhere<ExplorerFolderEntity> | FindOptionsWhere<ExplorerFolderEntity>[], options?: RepositoryOptions): Promise<ExplorerFolderEntity | undefined> => {
         const dataSource = options?.manager?.getRepository(ExplorerFolderEntity) ?? await this.getRepository('default', ExplorerFolderEntity);
 
         return await dataSource.findOne({
-            where: {
-                uid: folderUid
-            }
+            where: fildOption,
         })
+    }
+
+    addFolder = async (ownerUid: string, folderName: string, options?: RepositoryOptions) => {
+
+        const dataSource = options?.manager?.getRepository(ExplorerFolderEntity) ?? await this.getRepository('default', ExplorerFolderEntity);
+
+        const folderEntity = new ExplorerFolderEntity();
+        folderEntity.uid = randomUUID();
+        folderEntity.title = folderName;
+        folderEntity.folderOwnerUid = ownerUid;
+
+
+        return await dataSource.save(folderEntity, {
+            data: false
+        })
+
+    }
+
+    getDuplicateFolder = async (parentFolderUid: string, folderName: string, options?: RepositoryOptions) => {
+
+        const dataSource = options?.manager?.getRepository(ExplorerFolderEntity) ?? await this.getRepository('default', ExplorerFolderEntity);
+
+        const query = dataSource
+            .createQueryBuilder("ef")
+            .leftJoinAndSelect(ExplorerTreeEntity, "et", "et.child_link_uid = ef.uid")
+            .where("et.target_uid IS NOT NULL")
+            .andWhere("ef.title = :folderName", { folderName })
+            .andWhere("et.target_uid = :parentFolderUid", { parentFolderUid });
+
+        return (await query.getRawAndEntities()).entities;
     }
 
     //#endregion FOLDER

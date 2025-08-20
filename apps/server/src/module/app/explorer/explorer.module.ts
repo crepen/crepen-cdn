@@ -14,7 +14,7 @@ import { MulterModule } from "@nestjs/platform-express";
 @Module({
     imports : [
         forwardRef(() => CrepenLoggerModule),
-        CrepenCryptoModule,
+        // CrepenCryptoModule,
     ],
     controllers : [
         CrepenExplorerDefaultController,

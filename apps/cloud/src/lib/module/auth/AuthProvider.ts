@@ -85,7 +85,7 @@ export class AuthProvider {
         (options?.writeCookie ?? await cookies()).delete(this.authCookieKey);
     }
 
-    refreshSession = async (options?: AuthProviderOptions): Promise<boolean> => {
+    refreshSession = async (options?: AuthProviderOptions): Promise<{state : boolean , token? : TokenGroup}> => {
         try {
             const session = await this.getSession()
             const locale = await (await ServerLocaleInitializer.current(LocaleConfig)).get({
@@ -96,7 +96,9 @@ export class AuthProvider {
             const refreshResponse = await RestAuthDataService.current(session?.token, locale ?? LocaleConfig.defaultLocale).renewToken();
             if (!refreshResponse.success) {
 
-                return false;
+                return {
+                    state : false
+                };
             }
             else {
 
@@ -105,13 +107,18 @@ export class AuthProvider {
                     refreshToken: refreshResponse.data?.refreshToken
                 }, options)
 
-                return true;
+                return {
+                    state : true,
+                    token : refreshResponse.data
+                };
             }
 
 
         }
         catch (e) {
-            return false;
+            return {
+                state : false
+            };
         }
 
     }
