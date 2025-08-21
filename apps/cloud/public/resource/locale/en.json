@@ -110,6 +110,9 @@
       "button": {
         "submit": "Sign in"
       }
+    },
+    "signup" : {
+      "success" : "Your membership registration has been completed. You can use the service normally after administrator approval."
     }
   },
   "title": {

@@ -32,11 +32,14 @@ export const SignInForm = () => {
             <SignCommonForm.Input
                 labelText={localeHook.translate('page.signin.input.id')}
                 inputRef={inputIdRef}
+                inputId="id"
 
             />
             <SignCommonForm.Input
                 labelText={localeHook.translate('page.signin.input.password')}
                 inputRef={inputPasswordRef}
+                inputType="password"
+                inputId="password"
             />
 
             <SignCommonForm.Submit

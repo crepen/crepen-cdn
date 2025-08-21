@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Post } from "@nestjs/common";
 import { CrepenLoggerService } from "../common/logger/logger.service";
 import { ApiHeader, ApiTags } from "@nestjs/swagger";
 import { BaseResponse } from "@crepen-nest/lib/common/base.response";
@@ -21,6 +21,18 @@ export class CrepenAuthController {
 
     @Get('user')
     async getSessionUserData(
+        @I18n() i18n: I18nContext,
+    ) {
+        return BaseResponse.ok(
+            undefined,
+            HttpStatus.OK,
+            i18n.t('common.SUCCESS')
+        )
+    }
+
+
+    @Post()
+    async getSessionToken(
         @I18n() i18n: I18nContext,
     ) {
         return BaseResponse.ok(

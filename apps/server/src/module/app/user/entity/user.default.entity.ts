@@ -1,5 +1,6 @@
 import { Exclude } from "class-transformer";
 import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { UserStateEnum } from "../enum/user-state.enum";
 
 @Entity('user')
 export class UserEntity {
@@ -17,6 +18,9 @@ export class UserEntity {
 
     @Column({ name: 'name', type: 'varchar', length: 20 })
     name: string;
+
+    @Column({name : 'account_state' , type : 'enum' , enum : UserStateEnum})
+    accountState : UserStateEnum;
 
     @Column({ name: 'account_lock', type: 'boolean', default: () => false })
     isLock? : boolean;

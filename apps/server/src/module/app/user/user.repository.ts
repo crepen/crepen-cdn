@@ -1,6 +1,11 @@
 import { CrepenBaseRepository } from "@crepen-nest/lib/common/base.repository";
 import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
 import { Injectable } from "@nestjs/common";
+import { UserEntity } from "./entity/user.default.entity";
+import { RepositoryOptions } from "@crepen-nest/interface/repo";
+import { FindOptionsWhere } from "typeorm";
+import { UserRoleEnum } from "./enum/user-role.enum";
+import { UserRoleEntity } from "./entity/user-role.default.entity";
 
 @Injectable()
 export class CrepenUserRepository extends CrepenBaseRepository {
@@ -9,5 +14,44 @@ export class CrepenUserRepository extends CrepenBaseRepository {
     ) { super(databaseService) }
 
 
-    
+    addUser = async (userEntity: UserEntity, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(UserEntity) ?? await this.getRepository('default', UserEntity);
+
+        return dataSource.save(userEntity, { data: false })
+    }
+
+    addUserRole = async (userUid: string, role: UserRoleEnum, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(UserRoleEntity) ?? await this.getRepository('default', UserRoleEntity);
+
+        const entity = new UserRoleEntity();
+        entity.userRole = role;
+        entity.userUid = userUid;
+
+        return dataSource.save(entity, { data: false });
+    }
+
+    removeUserRole = async (userUid: string, role: UserRoleEnum, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(UserRoleEntity) ?? await this.getRepository('default', UserRoleEntity);
+
+        return dataSource.remove({
+            userRole: role,
+            userUid: userUid
+        });
+    }
+
+    getUserList = async (findOption: FindOptionsWhere<UserEntity> | FindOptionsWhere<UserEntity>[], options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(UserEntity) ?? await this.getRepository('default', UserEntity);
+
+        return dataSource.find({
+            where: findOption
+        })
+    }
+
+    getOneUser = async (findOption: FindOptionsWhere<UserEntity> | FindOptionsWhere<UserEntity>[], options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(UserEntity) ?? await this.getRepository('default', UserEntity);
+
+        return dataSource.findOne({
+            where: findOption
+        })
+    }
 }

@@ -48,4 +48,32 @@ export class StringUtil {
         }
         return result;
     }
+
+    static getByteLength = (str: string) => {
+        const charByteSize = (charValue : string) => {
+            if (charValue == null || charValue.length == 0) {
+                return 0
+            }
+
+            const charCode = charValue.charCodeAt(0)
+            if (charCode <= 0x00007f) {
+                return 1
+            } else if (charCode <= 0x0007ff) {
+                return 2
+            } else if (charCode <= 0x00ffff) {
+                return 3
+            } else {
+                return 4
+            }
+        }
+
+        if (str == null || str.length === 0) {
+            return 0
+        }
+        let size = 0
+        for (let i = 0; i < str.length; i++) {
+            size += charByteSize(str.charAt(i))
+        }
+        return size
+    }
 }

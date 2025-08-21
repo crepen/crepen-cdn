@@ -19,7 +19,8 @@ interface SignInputBoxProp {
     labelText?: string,
     inputRef?: RefObject<HTMLInputElement | null>,
     inputType?: HTMLInputTypeAttribute,
-    onChange?: (event: ChangeEvent<HTMLInputElement>) => void
+    onChange?: (event: ChangeEvent<HTMLInputElement>) => void,
+    inputId?: string
 }
 
 const SignInputBox = (prop: SignInputBoxProp) => {
@@ -33,6 +34,7 @@ const SignInputBox = (prop: SignInputBoxProp) => {
                 type={prop.inputType ?? 'text'}
                 ref={prop.inputRef}
                 onChange={prop.onChange}
+                id={prop.inputId}
             />
         </div>
     )
