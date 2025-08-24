@@ -1,6 +1,8 @@
 import { TokenUnauthorizeError } from "@crepen-nest/lib/error/api/common/token_expire.authorize.error";
-import { UserEntity } from "@crepen-nest/module/app/common-user/user/entity/user.default.entity";
+import { StringUtil } from "@crepen-nest/lib/util";
 import { CrepenUserRouteService } from "@crepen-nest/module/app/common-user/user/user.service";
+import { UserEntity } from "@crepen-nest/module/app/user/entity/user.default.entity";
+import { CrepenUserService } from "@crepen-nest/module/app/user/user.service";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
@@ -12,7 +14,7 @@ import { CrepenTokenData, CrepenTokenType } from "src/interface/jwt";
 export class CrepenAuthJwtStrategy extends PassportStrategy(Strategy) {
 
     constructor(
-        private userService: CrepenUserRouteService,
+        private readonly userService: CrepenUserService,
         private readonly configService: ConfigService
     ) {
         super({
@@ -31,9 +33,12 @@ export class CrepenAuthJwtStrategy extends PassportStrategy(Strategy) {
 
         let validateUser: UserEntity | undefined = undefined;
 
-        if (token) {
+       
 
-            validateUser = await this.userService.getMatchUserByUid(payload?.uid as string | undefined);
+        if (token) {
+            if (!StringUtil.isEmpty(payload?.uid as string)) {
+                validateUser = await this.userService.getUserByUid(payload.uid as string | undefined);
+            }
 
             if (validateUser === undefined) {
                 return done(new TokenUnauthorizeError(), false);

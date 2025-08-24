@@ -190,6 +190,52 @@
                     padding-inline: 2px;
                 }
             }
+
+            .cp-sign-common-toggle-button {
+                display: flex;
+                background: #eff0f1;
+                border-radius: 16px;
+                padding: 4px;
+                gap: 10px;
+
+
+                .cp-sign-common-toggle-item-button {
+
+                    flex: 1;
+                    padding-block: 12px;
+                    text-align: center;
+                    border-radius: 12px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: #6b7280;
+
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    gap: 4px;
+
+
+                    .cp-button-icon {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+
+                    .cp-button-title {
+                        font-size: 14px;
+                    }
+
+
+                    &.active {
+                        background: white;
+                        color: #667eea;
+                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    }
+                }
+            }
         }
     }
 

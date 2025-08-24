@@ -12,8 +12,8 @@ export class RestAuthDataService {
         this.language = locale
     }
 
-    token?: TokenGroup;
-    language?: LocaleType;
+    private token?: TokenGroup;
+    private language?: LocaleType;
 
     static current = (token: TokenGroup | undefined, locale: LocaleType) => {
         return new RestAuthDataService(token, locale);
@@ -24,6 +24,12 @@ export class RestAuthDataService {
             .instance(process.env.API_URL)
             .setMethod('POST')
             .setUrl('/auth/token')
+            .setHeaders({
+                'Content-Type': 'application/json'
+            })
+            .setBody({
+                'grant_type': "refresh_token"
+            })
             .setOptions({
                 language: this.language,
                 token: this.token?.refreshToken
@@ -36,21 +42,25 @@ export class RestAuthDataService {
         return resultData
     }
 
-    login = async (id? : string , password? : string) => {
+    login = async (id?: string, password?: string) => {
         const result = await FetchApi
             .instance(process.env.API_URL)
             .setMethod('POST')
-            .setUrl('/auth/login')
+            .setUrl('/auth/token')
+            .setHeaders({
+                'Content-Type': 'application/json'
+            })
             .setBody({
-                id : id,
-                password : password
+                id: id,
+                password: password,
+                'grant_type': "password"
             })
             .setOptions({
                 language: this.language
             })
             .getResponse();
 
-            
+
 
         const resultData: BaseApiResultEntity<AuthRefreshResponse>
             = humps.camelizeKeys(Object.assign(result.jsonData ?? {})) as BaseApiResultEntity<AuthRefreshResponse>;

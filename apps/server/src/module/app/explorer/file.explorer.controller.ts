@@ -7,12 +7,13 @@ import { AuthJwtGuard } from "@crepen-nest/module/config/passport/jwt/jwt.guard"
 import { FileInterceptor } from "@nestjs/platform-express";
 import { Request as ExpressRequest } from "express";
 import { AuthUser } from "@crepen-nest/lib/extensions/decorator/param/auth-user.param.decorator";
-import { UserEntity } from "../common-user/user/entity/user.default.entity";
 import { I18n, I18nContext } from "nestjs-i18n";
 import { memoryStorage } from "multer";
 import { BaseResponse } from "@crepen-nest/lib/common/base.response";
 import { FolderNotFoundError } from "@crepen-nest/lib/error/api/explorer/not_found.folder.error";
 import { ObjectUtil } from "@crepen-nest/lib/util";
+import { TokenTypeEnum } from "../auth/enum/token-type.auth.request";
+import { UserEntity } from "../user/entity/user.default.entity";
 
 @ApiTags('[EXPLORER] 탐색기 - 파일')
 @ApiHeader({
@@ -33,7 +34,7 @@ export class CrepenExplorerFileController {
     @ApiOperation({ summary: '단일 파일 등록', description: '단일 파일 등록' })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(AuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist(TokenTypeEnum.ACCESS_TOKEN))
     @UseInterceptors(FileInterceptor('file', {
         storage: memoryStorage()
     }))

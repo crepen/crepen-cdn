@@ -2,15 +2,16 @@ import { DenyRollError } from "@crepen-nest/lib/error/api/common/deny_roll.autho
 import { NotAllowTokenTypeError } from "@crepen-nest/lib/error/api/common/not_allow_token_type.authorize.error";
 import { TokenUnauthorizeError } from "@crepen-nest/lib/error/api/common/token_expire.authorize.error";
 import { StringUtil } from "@crepen-nest/lib/util";
+import { TokenTypeEnum } from "@crepen-nest/module/app/auth/enum/token-type.auth.request";
 import { ExecutionContext } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Observable } from "rxjs";
 
-type TokenWhiteListType = 'all' | 'access_token' | 'refresh_token';
+type TokenWhiteListType = 'all' | TokenTypeEnum.ACCESS_TOKEN | TokenTypeEnum.REFRESH_TOKEN | 'access_token' | 'refresh_token';
 export class AuthJwtGuard extends AuthGuard('jwt') {
     constructor(whiteListTokenType?: TokenWhiteListType, whiteListRole?: string[]) {
         super()
-        if (whiteListTokenType === 'all' || whiteListTokenType === 'access_token' || whiteListTokenType === 'refresh_token') {
+        if (whiteListTokenType === 'all' || whiteListTokenType === TokenTypeEnum.ACCESS_TOKEN || whiteListTokenType === TokenTypeEnum.REFRESH_TOKEN) {
             this.whiteListTokenType = whiteListTokenType;
         }
         else {

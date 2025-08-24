@@ -6,11 +6,13 @@ import { CrepenLoggerModule } from "../common/logger/logger.module";
 import { CrepenLoggerService } from "../common/logger/logger.service";
 import { CrepenUserRouteModule } from "../common-user/user/user.module";
 import { CrepenUserModule } from "../user/user.module";
+import { PassportConfigModule } from "@crepen-nest/module/config/passport/passport.module";
 
 @Module({
     imports: [
         forwardRef(() => CrepenLoggerModule),
-        forwardRef(() => CrepenUserModule)
+        forwardRef(() => CrepenUserModule),
+        forwardRef(() => PassportConfigModule)
     ],
     controllers: [CrepenAuthController],
     providers: [

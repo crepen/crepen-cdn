@@ -21,7 +21,7 @@ import { UserEntity } from "../user/entity/user.default.entity";
 @ApiHeader({
     name: 'Accept-Language', required: false, enum: ['en', 'ko']
 })
-@Controller('explorer/folder')
+@Controller('explorer/folder/bak')
 export class CrepenFolderRouteController {
     constructor(
         private readonly folderService: CrepenFolderRouteService,

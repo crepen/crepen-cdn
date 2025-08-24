@@ -2,7 +2,7 @@ import { TokenGroup } from "@web/lib/types/TokenGroup";
 import { LocaleType } from "../locale/Locale";
 import { FetchApi } from "../fetch/FetchApi";
 import { BaseApiResultEntity } from "@web/lib/types/api/BaseApiResultEntity";
-import { ExplorerAddFolderResult, ExplorerFileUploadResult, ExplorerFilterData, ExplorerTreeEntity } from "@web/lib/types/api/dto/RestExplorerDto";
+import { ExplorerAddFolderResult, ExplorerFileUploadResult, ExplorerFilterData, ExplorerFolderDataResult, ExplorerTreeEntity } from "@web/lib/types/api/dto/RestExplorerDto";
 import * as humps from 'humps';
 import { RestListResult, RestSearchFilterOptions } from "@web/lib/types/api/dto/RestCommonDto";
 import urlJoin from "url-join";
@@ -90,13 +90,13 @@ export class RestExplorerDataService {
     }
 
 
-    addFolder = async (parentFolderUid : string , folderName: string) => {
-         const result = await FetchApi
+    addFolder = async (parentFolderUid: string, folderName: string) => {
+        const result = await FetchApi
             .instance(process.env.API_URL)
             .setMethod('POST')
             .setUrl(`/explorer/folder/${parentFolderUid}/folder/add`)
             .setBody({
-                folderName : folderName
+                folderName: folderName
             })
             .setOptions({
                 language: this.language,
@@ -106,6 +106,24 @@ export class RestExplorerDataService {
 
         const resultData: BaseApiResultEntity<ExplorerAddFolderResult>
             = humps.camelizeKeys(Object.assign(result.jsonData ?? {})) as BaseApiResultEntity<ExplorerAddFolderResult>;
+
+        return resultData
+    }
+
+
+    getFolderData = async (folderUid: string) => {
+        const result = await FetchApi
+            .instance(process.env.API_URL)
+            .setMethod('GET')
+            .setUrl(`/explorer/folder/${folderUid}`)
+            .setOptions({
+                language: this.language,
+                token: this.token?.accessToken
+            })
+            .getResponse();
+
+        const resultData: BaseApiResultEntity<ExplorerFolderDataResult>
+            = humps.camelizeKeys(Object.assign(result.jsonData ?? {})) as BaseApiResultEntity<ExplorerFolderDataResult>;
 
         return resultData
     }

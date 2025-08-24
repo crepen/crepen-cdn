@@ -76,4 +76,22 @@ export class StringUtil {
         }
         return size
     }
+
+    static isMatch = (text1?: string | null, text2?: string | null) => {
+        try {
+            const targetText1 = (text1 ?? undefined)?.toString().trim();
+            const targetText2 = (text2 ?? undefined)?.toString().trim();
+
+            if (targetText1 === targetText2) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        catch (e) {
+            return false;
+        }
+
+    }
 }

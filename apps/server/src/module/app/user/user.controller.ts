@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Req } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Query, Req } from "@nestjs/common";
 import { CrepenLoggerService } from "../common/logger/logger.service";
 import { ApiHeader, ApiTags } from "@nestjs/swagger";
 import { BaseResponse } from "@crepen-nest/lib/common/base.response";
@@ -6,6 +6,7 @@ import { I18n, I18nContext } from "nestjs-i18n";
 import { AddUserRequest } from "./dto/add-user.user.request";
 import { CrepenUserService } from "./user.service";
 import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
+import { UserNotFoundError } from "@crepen-nest/lib/error/api/user/not_found.user.error";
 
 
 @ApiTags('[USER] 사용자 관리')
@@ -24,8 +25,40 @@ export class CrepenUserController {
     ) { }
 
 
+    @Get('/find/:type')
+    @HttpCode(HttpStatus.OK)
+    async findAccountId(
+        @Req() req: Request,
+        @I18n() i18n: I18nContext,
+        @Param('type') type: string,
+        @Query('key') emailOrId: string,
+        @Query('reset') resetUrl: string
+    ) {
+
+        return (await this.databaseService.getDefault()).transaction(async (manager) => {
+
+            if (type !== 'id' && type !== 'password') {
+                throw new NotFoundException();
+            }
+            else {
+                await this.userService.findIdOrPassword(type, emailOrId, resetUrl, { manager: manager })
+            }
+
+            return BaseResponse.ok(
+                undefined,
+                HttpStatus.OK,
+                i18n.t('common.SUCCESS')
+            )
+
+
+        });
+
+
+    }
+
 
     @Post('/add')
+    @HttpCode(HttpStatus.OK)
     async addUser(
         @Req() req: Request,
         @I18n() i18n: I18nContext,
@@ -50,4 +83,9 @@ export class CrepenUserController {
         })
 
     }
+
+
+
+
+
 }

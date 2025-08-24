@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - CloudDrive</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 0;
+        }
+        
+        .signup-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 48px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 20px 0;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 24px;
+        }
+        
+        .logo h1 {
+            color: #1a1a1a;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .logo p {
+            color: #6b7280;
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            color: #374151;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #f9fafb;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-input.error {
+            border-color: #ef4444;
+        }
+        
+        .password-container {
+            position: relative;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .checkbox-group {
+            margin-bottom: 24px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+        
+        .checkbox-item.required {
+            font-weight: 600;
+        }
+        
+        .checkbox-item a {
+            color: #667eea;
+            text-decoration: none;
+            margin-left: 4px;
+        }
+        
+        .checkbox-item a:hover {
+            text-decoration: underline;
+        }
+        
+        .signup-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 24px;
+        }
+        
+        .signup-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .signup-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .divider {
+            text-align: center;
+            margin: 32px 0;
+            position: relative;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e5e7eb;
+            z-index: 1;
+        }
+        
+        .divider span {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0 16px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .login-link {
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        
+        .success-message {
+            color: #10b981;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="logo">
+            <div class="logo-icon">☁️</div>
+            <h1>CloudDrive</h1>
+            <p>새로운 계정을 만들어보세요</p>
+        </div>
+        
+        <form id="signupForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">성</label>
+                    <input type="text" class="form-input" placeholder="성을 입력하세요" id="lastName">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">이름</label>
+                    <input type="text" class="form-input" placeholder="이름을 입력하세요" id="firstName">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">이메일</label>
+                <input type="email" class="form-input" placeholder="example@domain.com" id="email">
+                <div class="error-message" id="emailError" style="display: none;">올바른 이메일 형식을 입력하세요</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">비밀번호</label>
+                <div class="password-container">
+                    <input type="password" class="form-input" placeholder="8자 이상 입력하세요" id="password">
+                    <button type="button" class="password-toggle" onclick="togglePassword('password')">👁️</button>
+                </div>
+                <div class="error-message" id="passwordError" style="display: none;">비밀번호는 8자 이상이어야 합니다</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">비밀번호 확인</label>
+                <div class="password-container">
+                    <input type="password" class="form-input" placeholder="비밀번호를 다시 입력하세요" id="confirmPassword">
+                    <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">👁️</button>
+                </div>
+                <div class="error-message" id="confirmPasswordError" style="display: none;">비밀번호가 일치하지 않습니다</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">전화번호 (선택)</label>
+                <input type="tel" class="form-input" placeholder="010-0000-0000" id="phone">
+            </div>
+            
+            <div class="checkbox-group">
+                <div class="checkbox-item required">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">서비스 이용약관에 동의합니다<a href="#">(보기)</a></label>
+                </div>
+                <div class="checkbox-item required">
+                    <input type="checkbox" id="privacy" required>
+                    <label for="privacy">개인정보 처리방침에 동의합니다<a href="#">(보기)</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="marketing">
+                    <label for="marketing">마케팅 정보 수신에 동의합니다 (선택)</label>
+                </div>
+            </div>
+            
+            <button type="submit" class="signup-btn" id="signupBtn">
+                🚀 회원가입
+            </button>
+        </form>
+        
+        <div class="divider">
+            <span>또는</span>
+        </div>
+        
+        <div class="login-link">
+            이미 계정이 있으신가요? <a href="#" onclick="showLogin()">로그인</a>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                button.textContent = '👁️';
+            }
+        }
+        
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        function validateForm() {
+            let isValid = true;
+            
+            // Email validation
+            const email = document.getElementById('email').value;
+            const emailError = document.getElementById('emailError');
+            if (!validateEmail(email)) {
+                emailError.style.display = 'block';
+                document.getElementById('email').classList.add('error');
+                isValid = false;
+            } else {
+                emailError.style.display = 'none';
+                document.getElementById('email').classList.remove('error');
+            }
+            
+            // Password validation
+            const password = document.getElementById('password').value;
+            const passwordError = document.getElementById('passwordError');
+            if (password.length < 8) {
+                passwordError.style.display = 'block';
+                document.getElementById('password').classList.add('error');
+                isValid = false;
+            } else {
+                passwordError.style.display = 'none';
+                document.getElementById('password').classList.remove('error');
+            }
+            
+            // Confirm password validation
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const confirmPasswordError = document.getElementById('confirmPasswordError');
+            if (password !== confirmPassword) {
+                confirmPasswordError.style.display = 'block';
+                document.getElementById('confirmPassword').classList.add('error');
+                isValid = false;
+            } else {
+                confirmPasswordError.style.display = 'none';
+                document.getElementById('confirmPassword').classList.remove('error');
+            }
+            
+            return isValid;
+        }
+        
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (validateForm()) {
+                // 실제로는 서버로 데이터를 전송
+                alert('회원가입이 완료되었습니다!');
+            }
+        });
+        
+        // Real-time validation
+        document.getElementById('email').addEventListener('blur', validateForm);
+        document.getElementById('password').addEventListener('input', validateForm);
+        document.getElementById('confirmPassword').addEventListener('input', validateForm);
+        
+        function showLogin() {
+            alert('로그인 페이지로 이동합니다.');
+        }
+    </script>
+</body>
+</html>

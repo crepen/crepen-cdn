@@ -1,12 +1,12 @@
-import { CrepenUserRouteModule } from "@crepen-nest/module/app/common-user/user/user.module";
-import { Module } from "@nestjs/common";
+import { CrepenUserModule } from "@crepen-nest/module/app/user/user.module";
+import { forwardRef, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
 
 @Module({
     imports: [
-        CrepenUserRouteModule,
+        forwardRef(() => CrepenUserModule),
         PassportModule.register({ defaultStrategy: 'jwt'}),
         JwtModule.registerAsync({
             imports: [ConfigModule],

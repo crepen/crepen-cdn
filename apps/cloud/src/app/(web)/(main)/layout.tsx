@@ -15,7 +15,8 @@ export type MainHeaderMenuType = {
     title?: string,
     icon?: ReactNode,
     className?: string,
-    link?: string
+    link?: string,
+    matchUrl?: string
 }
 
 
@@ -35,7 +36,8 @@ const MainDefaultLayout = async (prop: PropsWithChildren) => {
             title: await translateProv.translate('layout.main.navigation.menu.explorer'),
             icon: <FcOpenedFolder className='cp-nav-icon' />,
             className: "cp-nav-explorer",
-            link: '/explorer/root'
+            link: '/explorer/root',
+            matchUrl : '/explorer'
         },
         {
             title: await translateProv.translate('layout.main.navigation.menu.statistics'),

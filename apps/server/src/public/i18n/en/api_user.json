@@ -12,5 +12,8 @@
 
 
     "NOT_FOUND.USER" : "User not found.",
-    "UNAPPROVAL.ACCOUNT" : "Your membership has not been approved."
+    "UNAPPROVAL.ACCOUNT" : "Your membership has not been approved.",
+
+
+    "SEND_MAIL.RESET.PASSWORD" : "Password reset email failed to be sent."
 }

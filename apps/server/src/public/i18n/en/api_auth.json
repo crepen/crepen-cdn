@@ -1,3 +1,11 @@
 {
-    
+  "PARAM.NOT_DEFINED.ID": "Id or Email not defined.",
+  "PARAM.NOT_DEFINED.PASSWORD": "Password not defined.",
+  "PARAM.NOT_DEFINED.GRANT_TYPE": "Grant type not defined.",
+  "PARAM.UNVALIDEATE.GRANT_TYPE" : "Grant type is only 'password' and 'refresh_token'",
+
+
+
+  "UNAUTHORIZED.TOKEN_EXPIRED" : "Session expired.",
+  "UNAUTHORIZED.TOKEN_UNDEFINED" : "Token is not defined."
 }

@@ -25,8 +25,12 @@
 
 
             .cp-flex-left {
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+
                 .cp-back-bt {
-                    width: 34px;
+                    width: 26px;
                     aspect-ratio: 1;
 
                     display: flex;
@@ -39,6 +43,46 @@
                     cursor: pointer;
                     font-size: 16px;
                     transition: all 0.3s ease;
+
+                    color: #3F51B5;
+                }
+
+                .cp-explorer-folder-nav {
+
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+
+                    margin-left: 10px;
+
+                    column-gap: 4px;
+
+
+
+                    .cp-explorer-folder-item {
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: center;
+
+                        color: #667eea;
+                        text-decoration: none;
+                        font-weight: 500;
+
+
+
+
+                        &.cp-disable {
+                            pointer-events: none;
+                            color: #64748b;
+                        }
+                    }
+
+                    .cp-explorer-folder-spliter {
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: center;
+                        color: #cbd5e0;
+                    }
                 }
             }
 
@@ -895,6 +939,7 @@
     .cp-global-modal {
         &.cp-explorer-new-folder-modal {
             width: 100vw;
+
             .cp-modal-box {
                 width: 100%;
             }

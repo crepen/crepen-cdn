@@ -5,27 +5,41 @@ export interface ExplorerTreeEntity {
     ownerUid: string,
     createDate: string,
     title: string,
-    updateDate : string,
-    fileSize : number
+    updateDate: string,
+    fileSize: number
 }
 
-export interface ExplorerFilterData { 
-    sort : {
-        category : {key : string , text : string}[],
-        defaultCategory : {key : string , text : string},
-        defaultSortType : 'asc' | 'desc'
+export interface ExplorerFolderDataResult {
+    dir?: ExplorerFolderData,
+    path: { uid: string, title: string, depth: number }[]
+}
+
+export interface ExplorerFolderData {
+    uid: string,
+    title: string,
+    folder_owner_uid: string,
+    folder_state: string,
+    create_date: string,
+    update_date: string,
+}
+
+export interface ExplorerFilterData {
+    sort: {
+        category: { key: string, text: string }[],
+        defaultCategory: { key: string, text: string },
+        defaultSortType: 'asc' | 'desc'
     },
-    pagination : {
-        defaultPage : number,
-        defaultPageSize : number
+    pagination: {
+        defaultPage: number,
+        defaultPageSize: number
     }
 }
 
 
 export interface ExplorerFileUploadResult {
-    uploadFileUid : string
+    uploadFileUid: string
 }
 
 export interface ExplorerAddFolderResult {
-    folderUid : string
+    folderUid: string
 }

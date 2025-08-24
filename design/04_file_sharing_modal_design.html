@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Sharing Modal - Cloud Drive Design</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #1a202c;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        
+        /* Modal Backdrop */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        /* Modal Container */
+        .modal {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 540px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transform: scale(1);
+            transition: all 0.3s ease;
+        }
+        
+        /* Modal Header */
+        .modal-header {
+            padding: 24px 24px 0 24px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+        
+        .modal-title-section {
+            flex: 1;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .modal-subtitle {
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.3s ease;
+            font-size: 18px;
+        }
+        
+        .close-btn:hover {
+            background: #f1f5f9;
+            color: #1a202c;
+        }
+        
+        /* Modal Body */
+        .modal-body {
+            padding: 24px;
+        }
+        
+        /* File Info Section */
+        .file-info {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .file-icon {
+            font-size: 28px;
+        }
+        
+        .file-details h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 4px;
+        }
+        
+        .file-meta {
+            font-size: 13px;
+            color: #64748b;
+        }
+        
+        /* Share Form */
+        .form-section {
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .input-group {
+            margin-bottom: 16px;
+        }
+        
+        .input-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .input-field::placeholder {
+            color: #9ca3af;
+        }
+        
+        /* Permission Options */
+        .permissions {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+        
+        .permission-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .permission-option:hover {
+            border-color: #667eea;
+            background: #f8fafc;
+        }
+        
+        .permission-option.selected {
+            border-color: #667eea;
+            background: #eff6ff;
+        }
+        
+        .permission-radio {
+            margin-right: 12px;
+        }
+        
+        .permission-content {
+            flex: 1;
+        }
+        
+        .permission-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a202c;
+            margin-bottom: 2px;
+        }
+        
+        .permission-desc {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        .permission-icon {
+            font-size: 18px;
+            margin-left: 8px;
+        }
+        
+        /* Expiry Date */
+        .date-input {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .date-field {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .date-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #64748b;
+        }
+        
+        /* Advanced Options */
+        .advanced-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #667eea;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .advanced-content {
+            margin-top: 16px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        
+        .checkbox-option:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Existing Shares */
+        .shares-list {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .share-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .share-item:last-child {
+            border-bottom: none;
+        }
+        
+        .share-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a202c;
+        }
+        
+        .user-email {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        .share-permission {
+            font-size: 12px;
+            color: #64748b;
+            padding: 4px 8px;
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        
+        .share-actions {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .action-btn-small {
+            padding: 4px 6px;
+            border: none;
+            background: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #64748b;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn-small:hover {
+            background: #f1f5f9;
+            color: #1a202c;
+        }
+        
+        /* Modal Footer */
+        .modal-footer {
+            padding: 0 24px 24px 24px;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+        
+        .btn-secondary:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Loading State */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Empty State */
+        .empty-shares {
+            text-align: center;
+            padding: 32px 16px;
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .empty-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+            opacity: 0.5;
+        }
+        
+        @media (max-width: 640px) {
+            .modal {
+                margin: 16px;
+                max-width: none;
+            }
+            
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+            
+            .date-input {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="modal-backdrop">
+        <div class="modal">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <div class="modal-title-section">
+                    <h2 class="modal-title">
+                        🤝 파일 공유
+                    </h2>
+                    <p class="modal-subtitle">다른 사용자와 파일을 안전하게 공유하세요</p>
+                </div>
+                <button class="close-btn">✕</button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <!-- File Info -->
+                <div class="file-info">
+                    <div class="file-icon">📄</div>
+                    <div class="file-details">
+                        <h3>프레젠테이션_최종.pptx</h3>
+                        <div class="file-meta">2.3MB • PowerPoint 파일 • 1시간 전 수정</div>
+                    </div>
+                </div>
+                
+                <!-- Share Form -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        👥 사용자 초대
+                    </h3>
+                    
+                    <div class="input-group">
+                        <label class="input-label">이메일 주소</label>
+                        <input 
+                            type="email" 
+                            class="input-field" 
+                            placeholder="공유할 사용자의 이메일을 입력하세요"
+                        >
+                    </div>
+                </div>
+                
+                <!-- Permissions -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        🔐 권한 설정
+                    </h3>
+                    
+                    <div class="permissions">
+                        <div class="permission-option selected">
+                            <input type="radio" name="permission" class="permission-radio" checked>
+                            <div class="permission-content">
+                                <div class="permission-title">보기 전용</div>
+                                <div class="permission-desc">파일을 확인하고 다운로드할 수 있습니다</div>
+                            </div>
+                            <div class="permission-icon">👀</div>
+                        </div>
+                        
+                        <div class="permission-option">
+                            <input type="radio" name="permission" class="permission-radio">
+                            <div class="permission-content">
+                                <div class="permission-title">편집 가능</div>
+                                <div class="permission-desc">파일을 수정하고 재업로드할 수 있습니다</div>
+                            </div>
+                            <div class="permission-icon">✏️</div>
+                        </div>
+                        
+                        <div class="permission-option">
+                            <input type="radio" name="permission" class="permission-radio">
+                            <div class="permission-content">
+                                <div class="permission-title">전체 권한</div>
+                                <div class="permission-desc">파일을 삭제하고 다른 사용자와 공유할 수 있습니다</div>
+                            </div>
+                            <div class="permission-icon">👑</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Expiry Date -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        📅 만료일 설정
+                    </h3>
+                    
+                    <div class="date-input">
+                        <input type="date" class="date-field" value="2024-12-31">
+                        <label class="date-toggle">
+                            <input type="checkbox" checked>
+                            만료일 설정
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Advanced Options -->
+                <div class="advanced-toggle">
+                    <span>⚙️ 고급 옵션</span>
+                    <span>▼</span>
+                </div>
+                
+                <div class="advanced-content">
+                    <label class="checkbox-option">
+                        <input type="checkbox">
+                        공유 알림 이메일 발송
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" checked>
+                        다운로드 허용
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox">
+                        워터마크 추가
+                    </label>
+                </div>
+                
+                <!-- Existing Shares -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        👥 공유된 사용자 (2명)
+                    </h3>
+                    
+                    <div class="shares-list">
+                        <div class="share-item">
+                            <div class="share-user">
+                                <div class="user-avatar">박</div>
+                                <div class="user-info">
+                                    <div class="user-name">박민수</div>
+                                    <div class="user-email">minsoo@example.com</div>
+                                </div>
+                            </div>
+                            <div class="share-permission">편집 가능</div>
+                            <div class="share-actions">
+                                <button class="action-btn-small">⚙️</button>
+                                <button class="action-btn-small">🗑️</button>
+                            </div>
+                        </div>
+                        
+                        <div class="share-item">
+                            <div class="share-user">
+                                <div class="user-avatar">이</div>
+                                <div class="user-info">
+                                    <div class="user-name">이영희</div>
+                                    <div class="user-email">younghee@example.com</div>
+                                </div>
+                            </div>
+                            <div class="share-permission">보기 전용</div>
+                            <div class="share-actions">
+                                <button class="action-btn-small">⚙️</button>
+                                <button class="action-btn-small">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button class="btn btn-secondary">
+                    취소
+                </button>
+                <button class="btn btn-primary">
+                    📤 공유하기
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

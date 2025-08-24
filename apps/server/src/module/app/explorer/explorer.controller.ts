@@ -15,6 +15,7 @@ import { ExplorerTreeEntity } from "./entity/tree.explorer.default.entity";
 import * as humps from 'humps'
 import { ExplorerSearchFilterData } from "./interface/explorer.object";
 import { FolderNotFoundError } from "@crepen-nest/lib/error/api/explorer/not_found.folder.error";
+import { TokenTypeEnum } from "../auth/enum/token-type.auth.request";
 
 @ApiTags('[EXPLORER] 탐색기 - 공통')
 @ApiHeader({
@@ -46,13 +47,14 @@ export class CrepenExplorerDefaultController {
         )
     }
 
+   
 
     @Get(':uid')
     //#region Decorator
     @ApiOperation({ summary: 'TEST', description: 'TEST' })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(AuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist(TokenTypeEnum.ACCESS_TOKEN))
     //#endregion
     async getChildItems(
         @I18n() i18n: I18nContext,
@@ -97,5 +99,6 @@ export class CrepenExplorerDefaultController {
     }
 
 
+   
 
 }

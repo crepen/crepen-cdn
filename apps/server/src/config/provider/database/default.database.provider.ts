@@ -21,7 +21,7 @@ export class DefaultDataSourceProvider implements DataSourceProviderInterface {
             entities: [entityDir],
             synchronize: true,
             // logging: configService.get<boolean>('db.logging'),
-            logging : true,
+            // logging : true,
             timezone: '+00:00'
         })
     }

@@ -1,12 +1,12 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { I18nService } from "nestjs-i18n";
 import { CrepenExplorerRepository } from "./explorer.repository";
 import { ExplorerFolderEntity } from "./entity/folder.explorer.default.entity";
 import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
 import { CrepenExplorerDefaultService } from "./explorer.service";
-import { FolderNotFoundError } from "@crepen-nest/lib/error/api/explorer/not_found.folder.error";
 import { DuplicateFolderError } from "@crepen-nest/lib/error/api/explorer/folder_duplicate.folder.error";
-import { UserEntity } from "../common-user/user/entity/user.default.entity";
+import { RepositoryOptions } from "@crepen-nest/interface/repo";
+import { UserEntity } from "../user/entity/user.default.entity";
 
 @Injectable()
 export class CrepenExplorerFolderService {
@@ -19,7 +19,6 @@ export class CrepenExplorerFolderService {
 
     getFolderDataByUid = async (folderUid: string): Promise<ExplorerFolderEntity | undefined> => {
         const data = await this.explorerRepo.getFolderData({ uid: folderUid ?? 'NFD' });
-
         return data ?? undefined;
     }
 
@@ -39,5 +38,9 @@ export class CrepenExplorerFolderService {
 
             return addFolderRepo;
         })
+    }
+
+    getFolderHierarchy = async (targetFolderUid: string, options?: RepositoryOptions) => {
+        return this.explorerRepo.getFolderHierarchy(targetFolderUid, options)
     }
 }

@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Manager - Cloud Drive Design</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #1a202c;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+        }
+        
+        .back-btn {
+            padding: 8px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: #e2e8f0;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            font-size: 14px;
+            color: #64748b;
+        }
+        
+        .breadcrumb-item {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .breadcrumb-item:hover {
+            text-decoration: underline;
+        }
+        
+        .breadcrumb-separator {
+            color: #cbd5e0;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        .action-btn.primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .action-btn.primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* Toolbar */
+        .toolbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+        }
+        
+        .search-box {
+            position: relative;
+            max-width: 400px;
+            flex: 1;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 8px 12px 8px 36px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #f8fafc;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .filter-btn {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .view-toggle {
+            display: flex;
+            background: #f1f5f9;
+            border-radius: 6px;
+            padding: 2px;
+        }
+        
+        .view-btn {
+            padding: 6px 8px;
+            border: none;
+            background: transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .view-btn.active {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 24px;
+        }
+        
+        /* File Grid */
+        .files-container {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+        
+        .files-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            display: grid;
+            grid-template-columns: 40px 1fr 100px 120px 100px 120px;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        .files-grid {
+            display: block;
+        }
+        
+        .file-card {
+            background: white;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border-bottom: 1px solid #f8fafc;
+            display: grid;
+            grid-template-columns: 40px 1fr 100px 120px 100px 120px;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        .file-card:hover {
+            background: #f8fafc;
+        }
+        
+        .file-card:last-child {
+            border-bottom: none;
+        }
+        
+        .file-card.selected {
+            background: #eff6ff;
+            border-left: 3px solid #667eea;
+        }
+        
+        .file-icon {
+            font-size: 20px;
+            text-align: center;
+        }
+        
+        .file-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a202c;
+            line-height: 1.4;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .file-size {
+            font-size: 13px;
+            color: #64748b;
+            text-align: right;
+        }
+        
+        .file-modified {
+            font-size: 13px;
+            color: #64748b;
+        }
+        
+        .file-owner {
+            font-size: 13px;
+            color: #64748b;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .file-card:hover .file-actions {
+            opacity: 1;
+        }
+        
+        .file-action-btn {
+            padding: 6px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .file-action-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        /* List View */
+        .files-list {
+            display: none;
+        }
+        
+        .files-list.active {
+            display: block;
+        }
+        
+        .list-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto auto auto;
+            gap: 16px;
+            align-items: center;
+            padding: 12px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .list-item:hover {
+            background: #f8fafc;
+        }
+        
+        .list-item:last-child {
+            border-bottom: none;
+        }
+        
+        .list-icon {
+            font-size: 20px;
+        }
+        
+        .list-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a202c;
+        }
+        
+        .list-size,
+        .list-modified,
+        .list-owner {
+            font-size: 13px;
+            color: #64748b;
+        }
+        
+        .list-actions {
+            display: flex;
+            gap: 4px;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 64px 20px;
+        }
+        
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .empty-message {
+            color: #64748b;
+            margin-bottom: 24px;
+        }
+        
+        .empty-action {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .empty-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .header-actions {
+                display: none;
+            }
+            
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            
+            .toolbar-left,
+            .toolbar-right {
+                justify-content: space-between;
+            }
+            
+            .files-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="back-btn">←</button>
+            <nav class="breadcrumb">
+                <a href="#" class="breadcrumb-item">홈</a>
+                <span class="breadcrumb-separator">›</span>
+                <a href="#" class="breadcrumb-item">문서</a>
+                <span class="breadcrumb-separator">›</span>
+                <span>프로젝트</span>
+            </nav>
+        </div>
+        
+        <div class="header-actions">
+            <button class="action-btn">
+                📁 새 폴더
+            </button>
+            <button class="action-btn primary">
+                ⬆️ 업로드
+            </button>
+        </div>
+    </header>
+    
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <div class="search-box">
+                <div class="search-icon">🔍</div>
+                <input type="text" class="search-input" placeholder="파일 및 폴더 검색">
+            </div>
+            <button class="filter-btn">
+                🎛️ 필터
+            </button>
+        </div>
+        
+        <div class="toolbar-right">
+            <button class="filter-btn">
+                ⚡ 정렬: 이름
+            </button>
+            <div class="view-toggle">
+                <button class="view-btn active">🔳</button>
+                <button class="view-btn">📄</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="files-container">
+            <div class="files-header">
+                <span></span>
+                <span>이름</span>
+                <span>크기</span>
+                <span>수정일</span>
+                <span>소유자</span>
+                <span>작업</span>
+            </div>
+            
+            <!-- Row View (Default) -->
+            <div class="files-grid active">
+                <div class="file-card">
+                    <div class="file-icon">📁</div>
+                    <div class="file-name">디자인 자료</div>
+                    <div class="file-size">—</div>
+                    <div class="file-modified">1시간 전</div>
+                    <div class="file-owner">김철수</div>
+                    <div class="file-actions">
+                        <button class="file-action-btn">열기</button>
+                        <button class="file-action-btn">📤</button>
+                    </div>
+                </div>
+                
+                <div class="file-card">
+                    <div class="file-icon">📄</div>
+                    <div class="file-name">프레젠테이션_최종.pptx</div>
+                    <div class="file-size">2.3MB</div>
+                    <div class="file-modified">1시간 전</div>
+                    <div class="file-owner">김철수</div>
+                    <div class="file-actions">
+                        <button class="file-action-btn">⬇️</button>
+                        <button class="file-action-btn">📤</button>
+                        <button class="file-action-btn">🗑️</button>
+                    </div>
+                </div>
+                
+                <div class="file-card">
+                    <div class="file-icon">📊</div>
+                    <div class="file-name">데이터_분석_결과.xlsx</div>
+                    <div class="file-size">1.8MB</div>
+                    <div class="file-modified">3시간 전</div>
+                    <div class="file-owner">김철수</div>
+                    <div class="file-actions">
+                        <button class="file-action-btn">⬇️</button>
+                        <button class="file-action-btn">📤</button>
+                        <button class="file-action-btn">🗑️</button>
+                    </div>
+                </div>
+                
+                <div class="file-card">
+                    <div class="file-icon">🖼️</div>
+                    <div class="file-name">스크린샷_2024_01_15.png</div>
+                    <div class="file-size">652KB</div>
+                    <div class="file-modified">5시간 전</div>
+                    <div class="file-owner">김철수</div>
+                    <div class="file-actions">
+                        <button class="file-action-btn">⬇️</button>
+                        <button class="file-action-btn">📤</button>
+                        <button class="file-action-btn">🗑️</button>
+                    </div>
+                </div>
+                
+                <div class="file-card">
+                    <div class="file-icon">🎵</div>
+                    <div class="file-name">배경음악.mp3</div>
+                    <div class="file-size">4.2MB</div>
+                    <div class="file-modified">1일 전</div>
+                    <div class="file-owner">김철수</div>
+                    <div class="file-actions">
+                        <button class="file-action-btn">⬇️</button>
+                        <button class="file-action-btn">📤</button>
+                        <button class="file-action-btn">🗑️</button>
+                    </div>
+                </div>
+                
+                <div class="file-card">
+                    <div class="file-icon">🎥</div>
+                    <div class="file-name">제품소개_동영상.mp4</div>
+                    <div class="file-size">15.7MB</div>
+                    <div class="file-modified">2일 전</div>
+                    <div class="file-owner">김철수</div>
+                    <div class="file-actions">
+                        <button class="file-action-btn">⬇️</button>
+                        <button class="file-action-btn">📤</button>
+                        <button class="file-action-btn">🗑️</button>
+                    </div>
+                </div>
+                
+                <div class="file-card">
+                    <div class="file-icon">📝</div>
+                    <div class="file-name">회의록_2024_01_12.docx</div>
+                    <div class="file-size">435KB</div>
+                    <div class="file-modified">3일 전</div>
+                    <div class="file-owner">김철수</div>
+                    <div class="file-actions">
+                        <button class="file-action-btn">⬇️</button>
+                        <button class="file-action-btn">📤</button>
+                        <button class="file-action-btn">🗑️</button>
+                    </div>
+                </div>
+                
+                <div class="file-card">
+                    <div class="file-icon">📦</div>
+                    <div class="file-name">아카이브.zip</div>
+                    <div class="file-size">8.9MB</div>
+                    <div class="file-modified">1주일 전</div>
+                    <div class="file-owner">김철수</div>
+                    <div class="file-actions">
+                        <button class="file-action-btn">⬇️</button>
+                        <button class="file-action-btn">📤</button>
+                        <button class="file-action-btn">🗑️</button>
+                    </div>
+                </div>
+                
+                <div class="file-card">
+                    <div class="file-icon">📋</div>
+                    <div class="file-name">업무_체크리스트.txt</div>
+                    <div class="file-size">12KB</div>
+                    <div class="file-modified">1주일 전</div>
+                    <div class="file-owner">이영희</div>
+                    <div class="file-actions">
+                        <button class="file-action-btn">⬇️</button>
+                        <button class="file-action-btn">📤</button>
+                        <button class="file-action-btn">🗑️</button>
+                    </div>
+                </div>
+                
+                <div class="file-card">
+                    <div class="file-icon">🖼️</div>
+                    <div class="file-name">로고_최종버전.svg</div>
+                    <div class="file-size">89KB</div>
+                    <div class="file-modified">2주일 전</div>
+                    <div class="file-owner">박민수</div>
+                    <div class="file-actions">
+                        <button class="file-action-btn">⬇️</button>
+                        <button class="file-action-btn">📤</button>
+                        <button class="file-action-btn">🗑️</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- List View -->
+            <div class="files-list">
+                <div class="list-item">
+                    <div class="list-icon">📁</div>
+                    <div class="list-name">디자인 자료</div>
+                    <div class="list-size">—</div>
+                    <div class="list-modified">1시간 전</div>
+                    <div class="list-owner">김철수</div>
+                    <div class="list-actions">
+                        <button class="file-action-btn">열기</button>
+                        <button class="file-action-btn">📤</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

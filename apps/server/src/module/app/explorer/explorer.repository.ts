@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { RepositoryPaginationResult, RepositoryOptions, RepositorySortOptions } from "@crepen-nest/interface/repo";
@@ -7,7 +9,7 @@ import { ExplorerTreeEntity } from "./entity/tree.explorer.default.entity";
 import { CrepenBaseRepository } from "@crepen-nest/lib/common/base.repository";
 import { SearchFilterParamOptions } from "@crepen-nest/interface/request-param";
 import { ExplorerFolderEntity } from "./entity/folder.explorer.default.entity";
-import { Brackets, FindOptionsWhere } from "typeorm";
+import { Brackets, FindOptionsWhere, QueryBuilder } from "typeorm";
 import { ExplorerFileEntity } from "./entity/file.explorer.default.entity";
 import { ExplorerItemType } from "./enum/item-type.explorer.enum";
 import { ExplorerLogEntity } from "./entity/log.explorer.default.entity";
@@ -15,6 +17,12 @@ import { ExplorerLogTypeEnum } from "./enum/log-type.explorer.enum";
 import { ExplorerCatalogEntity } from "./entity/catalog.explorer.default.entity";
 import { randomUUID } from "crypto";
 import { UserEntity } from "../common-user/user/entity/user.default.entity";
+
+export interface FolderHierarchy {
+    uid: string;
+    title: string;
+    depth: number;
+}
 
 @Injectable()
 export class CrepenExplorerRepository extends CrepenBaseRepository {
@@ -105,7 +113,7 @@ export class CrepenExplorerRepository extends CrepenBaseRepository {
                 qb
                     .where(
                         new Brackets(inqb => {
-                            inqb    
+                            inqb
                                 .where(`tree.child_type = 'folder'`)
                                 .andWhere('folder.title is not null')
                                 .andWhere(`folder.title <> ''`)
@@ -114,7 +122,7 @@ export class CrepenExplorerRepository extends CrepenBaseRepository {
                     )
                     .orWhere(
                         new Brackets(inqb => {
-                              inqb    
+                            inqb
                                 .where(`tree.child_type = 'file'`)
                                 .andWhere('file.title is not null')
                                 .andWhere(`file.title <> ''`)
@@ -168,6 +176,53 @@ export class CrepenExplorerRepository extends CrepenBaseRepository {
         return dataSource.save(treeEntity, { data: false });
     }
 
+
+    getFolderHierarchy = async (targetUid: string, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(ExplorerFolderEntity) ?? await this.getRepository('default', ExplorerFolderEntity);
+
+        const rawSQL = `
+            WITH RECURSIVE folder_hierarchy AS (
+            SELECT f.uid, f.title, t.target_uid AS parent_uid, 1 AS depth
+            FROM \`explorer-folder\` f
+            LEFT JOIN \`explorer-tree\` t
+                ON t.child_link_uid = f.uid AND t.child_type = 'folder'
+            WHERE f.uid = ?
+
+            UNION ALL
+
+            SELECT pf.uid, pf.title, pt.target_uid AS parent_uid, fh.depth + 1
+            FROM folder_hierarchy fh
+            INNER JOIN \`explorer-folder\` pf ON pf.uid = fh.parent_uid
+            LEFT JOIN \`explorer-tree\` pt
+                ON pt.child_link_uid = pf.uid AND pt.child_type = 'folder'
+            )
+            SELECT uid, title, depth
+            FROM folder_hierarchy
+            ORDER BY depth DESC
+        `;
+
+        return await dataSource.query(rawSQL, [targetUid]) as FolderHierarchy[];
+
+
+
+        const result: { uid: string; title: string; depth: number; }[] = [];
+        let currentUid: string | null = targetUid;
+
+        while (currentUid) {
+            const folder = await dataSource
+                .createQueryBuilder("f")
+                .leftJoin(ExplorerTreeEntity, "t", "t.child_link_uid = f.uid AND t.child_type = 'folder'")
+                .select(["f.uid", "f.title", "t.target_uid"])
+                .where("f.uid = :uid", { uid: currentUid })
+                .getRawAndEntities<{ uid: string; title: string; target_uid: string | null }>();
+
+            if (folder.entities.length === 0) break;
+            result.push({ uid: folder.entities[0].uid, title: folder.entities[0].title, depth: result.length + 1 });
+            currentUid = folder.raw[0].target_uid;
+        }
+
+        return result.reverse();
+    }
 
     //#endregion TREE
 

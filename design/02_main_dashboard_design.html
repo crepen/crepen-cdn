@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Cloud Drive Design</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #1a202c;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+        
+        .search-container {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 32px;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: #64748b;
+        }
+        
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .user-info:hover {
+            background: #e2e8f0;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .logout-btn {
+            padding: 8px 16px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+            background: white;
+            padding: 8px;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-tab {
+            padding: 12px 24px;
+            border: none;
+            background: transparent;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .nav-tab:not(.active) {
+            color: #64748b;
+        }
+        
+        .nav-tab:not(.active):hover {
+            background: #f1f5f9;
+            color: #1a202c;
+        }
+        
+        /* Upload Area */
+        .upload-area {
+            background: linear-gradient(135deg, #667eea10, #764ba220);
+            border: 2px dashed #667eea;
+            border-radius: 16px;
+            padding: 48px;
+            text-align: center;
+            margin-bottom: 32px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            background: linear-gradient(135deg, #667eea20, #764ba230);
+            border-color: #764ba2;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .upload-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+        
+        .upload-subtext {
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .stat-title {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 500;
+        }
+        
+        .stat-icon {
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .stat-icon.files { background: #fef3c7; }
+        .stat-icon.shared { background: #dcfce7; }
+        .stat-icon.folders { background: #dbeafe; }
+        .stat-icon.links { background: #ede9fe; }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 4px;
+        }
+        
+        .stat-change {
+            font-size: 12px;
+            color: #10b981;
+            font-weight: 500;
+        }
+        
+        /* Recent Files */
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a202c;
+        }
+        
+        .see-all {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .see-all:hover {
+            text-decoration: underline;
+        }
+        
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        
+        .file-card {
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .file-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            color: #1a202c;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+        
+        .file-info {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .search-container {
+                margin: 0 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-section">
+            <div class="logo-icon">☁️</div>
+            <span class="logo-text">CloudDrive</span>
+        </div>
+        
+        <div class="search-container">
+            <div class="search-icon">🔍</div>
+            <input type="text" class="search-input" placeholder="파일 검색...">
+        </div>
+        
+        <div class="user-section">
+            <div class="user-info">
+                <div class="user-avatar">김</div>
+                <span>김철수</span>
+            </div>
+            <button class="logout-btn">로그아웃</button>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active">
+                <span>📊</span>
+                대시보드
+            </button>
+            <button class="nav-tab">
+                <span>📁</span>
+                내 파일
+            </button>
+            <button class="nav-tab">
+                <span>🤝</span>
+                공유받음
+            </button>
+            <button class="nav-tab">
+                <span>🗑️</span>
+                휴지통
+            </button>
+        </nav>
+        
+        <!-- Upload Area -->
+        <div class="upload-area">
+            <div class="upload-icon">📤</div>
+            <div class="upload-text">파일을 여기로 드래그하세요</div>
+            <div class="upload-subtext">또는 클릭하여 파일을 선택하세요</div>
+        </div>
+        
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">총 파일</span>
+                    <div class="stat-icon files">📄</div>
+                </div>
+                <div class="stat-value">127</div>
+                <div class="stat-change">+12 이번 주</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">공유한 파일</span>
+                    <div class="stat-icon shared">🤝</div>
+                </div>
+                <div class="stat-value">23</div>
+                <div class="stat-change">+3 이번 주</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">폴더</span>
+                    <div class="stat-icon folders">📁</div>
+                </div>
+                <div class="stat-value">8</div>
+                <div class="stat-change">+1 이번 주</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">공유 링크</span>
+                    <div class="stat-icon links">🔗</div>
+                </div>
+                <div class="stat-value">15</div>
+                <div class="stat-change">+2 이번 주</div>
+            </div>
+        </div>
+        
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Recent Files -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">최근 파일</h2>
+                    <a href="#" class="see-all">모두 보기</a>
+                </div>
+                
+                <div class="files-grid">
+                    <div class="file-card">
+                        <div class="file-icon">📄</div>
+                        <div class="file-name">프레젠테이션.pptx</div>
+                        <div class="file-info">2.3MB • 1시간 전</div>
+                    </div>
+                    
+                    <div class="file-card">
+                        <div class="file-icon">📊</div>
+                        <div class="file-name">데이터분석.xlsx</div>
+                        <div class="file-info">1.8MB • 3시간 전</div>
+                    </div>
+                    
+                    <div class="file-card">
+                        <div class="file-icon">🖼️</div>
+                        <div class="file-name">스크린샷.png</div>
+                        <div class="file-info">652KB • 5시간 전</div>
+                    </div>
+                    
+                    <div class="file-card">
+                        <div class="file-icon">📝</div>
+                        <div class="file-name">회의록.docx</div>
+                        <div class="file-info">435KB • 1일 전</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Popular Files -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">인기 파일</h2>
+                    <a href="#" class="see-all">모두 보기</a>
+                </div>
+                
+                <div class="files-grid">
+                    <div class="file-card">
+                        <div class="file-icon">🎵</div>
+                        <div class="file-name">음악파일.mp3</div>
+                        <div class="file-info">4.2MB • 다운로드 45회</div>
+                    </div>
+                    
+                    <div class="file-card">
+                        <div class="file-icon">🎥</div>
+                        <div class="file-name">동영상.mp4</div>
+                        <div class="file-info">15.7MB • 다운로드 32회</div>
+                    </div>
+                    
+                    <div class="file-card">
+                        <div class="file-icon">📄</div>
+                        <div class="file-name">매뉴얼.pdf</div>
+                        <div class="file-info">2.1MB • 다운로드 28회</div>
+                    </div>
+                    
+                    <div class="file-card">
+                        <div class="file-icon">🖼️</div>
+                        <div class="file-name">로고.svg</div>
+                        <div class="file-info">89KB • 다운로드 24회</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

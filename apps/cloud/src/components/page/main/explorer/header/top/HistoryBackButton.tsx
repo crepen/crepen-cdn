@@ -2,22 +2,33 @@
 
 import { StringUtil } from "@web/lib/util/StringUtil"
 import { useRouter } from "next/navigation"
-import { FcLeft } from "react-icons/fc"
+import { FcHome, FcLeft } from "react-icons/fc"
+import { IoHomeSharp } from "react-icons/io5"
 
 interface HistoryBackButtonProp {
-    className?: string
+    className?: string,
+    moveFolderUid?: string
 }
 
-export const HistoryBackButton = (prop : HistoryBackButtonProp) => {
+export const HistoryBackButton = (prop: HistoryBackButtonProp) => {
 
     const router = useRouter();
 
     return (
-        <button 
+        <button
             className={StringUtil.joinClassName(prop.className)}
-            onClick={() => router.back()}
+            onClick={() => {
+                if (prop.moveFolderUid !== 'root') {
+                    router.push(`/explorer/${prop.moveFolderUid ?? 'root'}`)
+                }
+            }}
         >
-            <FcLeft />
+            {
+                prop.moveFolderUid === 'root'
+                    ? <IoHomeSharp />
+                    : <FcLeft />
+            }
+
         </button>
     )
 }

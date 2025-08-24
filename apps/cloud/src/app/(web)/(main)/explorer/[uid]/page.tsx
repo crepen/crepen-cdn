@@ -3,6 +3,7 @@ import { CommonPage } from '@web/component/global/CommonPage';
 import { GroupBox } from '@web/component/global/control/group-box/GroupBox';
 import { ExplorerFileUploadButton } from '@web/component/page/main/explorer/ExplorerFileUploadButton';
 import { ExplorerListLoading, ExplorerListTable } from '@web/component/page/main/explorer/ExplorerListTable';
+import { ExplorerFolderNav } from '@web/component/page/main/explorer/header/toolbar/ExplorerFolderNav';
 import { ExplorerNewFolderButton } from '@web/component/page/main/explorer/header/toolbar/ExplorerNewFolderButton';
 import { ExplorerToolbar } from '@web/component/page/main/explorer/header/toolbar/ExplorerToolbar';
 import { HistoryBackButton } from '@web/component/page/main/explorer/header/top/HistoryBackButton';
@@ -14,11 +15,12 @@ import { AuthProvider } from '@web/lib/module/auth/AuthProvider';
 import { ServerLocaleInitializer } from '@web/lib/module/locale/ServerLocaleInitializer';
 import { ServerLocaleProvider } from '@web/lib/module/locale/ServerLocaleProvider';
 import { RestListResult, RestSearchFilterOptions } from '@web/lib/types/api/dto/RestCommonDto';
-import { ExplorerFilterData, ExplorerTreeEntity } from '@web/lib/types/api/dto/RestExplorerDto';
+import { ExplorerFilterData, ExplorerFolderDataResult, ExplorerTreeEntity } from '@web/lib/types/api/dto/RestExplorerDto';
+import { ArrayUtil } from '@web/lib/util/ArrayUtil';
 import { StringUtil } from '@web/lib/util/StringUtil';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
-import { Suspense } from 'react';
+import { Fragment, Suspense } from 'react';
 import { FcHighPriority, FcOpenedFolder } from 'react-icons/fc';
 
 interface MainExplorerDefaultPageProp {
@@ -77,10 +79,51 @@ const MainExplorerListPage = async (prop: MainExplorerDefaultPageProp) => {
         }
     };
 
+    const folderData: ExplorerFolderDataResult = {
+        dir: undefined,
+        path: []
+    }
+
 
     try {
         const session = await AuthProvider.current().getSession();
         const locale = await ServerLocaleInitializer.current(LocaleConfig).get({ readCookie: await cookies() });
+
+        const folderRes = await RestExplorerDataService
+            .current(session?.token, locale ?? LocaleConfig.defaultLocale)
+            .getFolderData(params?.uid ?? 'NTF');
+
+        console.log('UID', params?.uid);
+        console.log('FOLDE RES', folderRes);
+
+        folderData.dir = folderRes.data?.dir;
+        folderData.path = folderRes.data?.path ?? [];
+
+        folderData.path.push({
+            depth : 9999999999999,
+            title : 'Root',
+            uid : 'root'
+        })
+
+        if (params?.uid === 'root') {
+            folderData.dir = {
+                title: 'Root',
+                uid: 'root',
+                folder_owner_uid: '',
+                folder_state: '',
+                create_date: '',
+                update_date: ''
+            }
+        }
+        else {
+            if (!folderData.dir) {
+                throw new CustomProcessError(
+                    await localeProv.translate('page.main.explorer.message.folder-not-found')
+                );
+            }
+        }
+
+
 
         const filterData = await RestExplorerDataService
             .current(session?.token, locale ?? LocaleConfig.defaultLocale)
@@ -144,7 +187,30 @@ const MainExplorerListPage = async (prop: MainExplorerDefaultPageProp) => {
             <CommonPage.Header>
                 <div className='cp-top-header'>
                     <div className='cp-flex-left'>
-                        <HistoryBackButton className='cp-back-bt' />
+                        <HistoryBackButton className='cp-back-bt' 
+                            moveFolderUid={folderData.path.sort((x, y) => x.depth - y.depth).map(x=>x.uid)[0]}
+                        />
+                        <ExplorerFolderNav>
+                            {
+                                folderData.path.sort((x, y) => y.depth - x.depth).map((item, idx, arr) => {
+                                    return (
+                                        <Fragment key={idx}>
+                                           
+                                            <ExplorerFolderNav.Item
+                                                title={item.title}
+                                                link={`/explorer/${item.uid}`}
+                                                disabled={idx === arr.length - 1}
+                                            />
+                                             {
+                                                ( idx !== arr.length-1) &&
+                                                <ExplorerFolderNav.Spliter />
+                                            }
+                                        </Fragment>
+                                    )
+                                })
+                            }
+
+                        </ExplorerFolderNav>
                     </div>
                     <div className='cp-flex-right'>
                         <ExplorerNewFolderButton

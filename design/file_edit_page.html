@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>파일 속성 - CloudDrive</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #1a202c;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .back-btn {
+            padding: 8px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: #e2e8f0;
+        }
+        
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a202c;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .action-btn {
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .action-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        .action-btn.primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .action-btn.primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .action-btn.danger {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        
+        .action-btn.danger:hover {
+            background: #fef2f2;
+        }
+        
+        /* Main Content */
+        .main-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .content-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 24px;
+        }
+        
+        /* File Info Card */
+        .file-info-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            text-align: center;
+            height: fit-content;
+        }
+        
+        .file-icon-large {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            margin: 0 auto 16px;
+        }
+        
+        .file-name-display {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 8px;
+            word-break: break-all;
+        }
+        
+        .file-type {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        
+        .file-size {
+            background: #f8fafc;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 16px;
+        }
+        
+        .preview-btn {
+            width: 100%;
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #667eea;
+        }
+        
+        .preview-btn:hover {
+            background: #eff6ff;
+            border-color: #667eea;
+        }
+        
+        /* Properties Form */
+        .properties-form {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .form-section {
+            padding: 24px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .form-hint {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+        
+        /* Tags Input */
+        .tags-container {
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 8px;
+            background: white;
+            min-height: 44px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .tags-container:focus-within {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .tag-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .tag-remove {
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 10px;
+            padding: 2px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .tag-remove:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .tag-input {
+            border: none;
+            outline: none;
+            flex: 1;
+            min-width: 100px;
+            font-size: 14px;
+            padding: 4px;
+        }
+        
+        /* Permission Settings */
+        .permission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        
+        .permission-option {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .permission-option:hover {
+            border-color: #667eea;
+            background: #f8fafc;
+        }
+        
+        .permission-option.selected {
+            border-color: #667eea;
+            background: #eff6ff;
+        }
+        
+        .permission-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .permission-icon {
+            font-size: 18px;
+        }
+        
+        .permission-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a202c;
+        }
+        
+        .permission-desc {
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.4;
+        }
+        
+        /* Toggle Switch */
+        .toggle-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: #f8fafc;
+            border: 1px solid #f1f5f9;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .toggle-info {
+            flex: 1;
+        }
+        
+        .toggle-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a202c;
+            margin-bottom: 2px;
+        }
+        
+        .toggle-desc {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            background: #cbd5e0;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .toggle-switch.active {
+            background: #667eea;
+        }
+        
+        .toggle-knob {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 10px;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .toggle-switch.active .toggle-knob {
+            transform: translateX(20px);
+        }
+        
+        /* Date Picker */
+        .date-input-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .date-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .date-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        /* Custom File Type */
+        .file-type-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 8px;
+        }
+        
+        .type-option {
+            padding: 12px 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            font-size: 12px;
+        }
+        
+        .type-option:hover {
+            border-color: #667eea;
+            background: #f8fafc;
+        }
+        
+        .type-option.selected {
+            border-color: #667eea;
+            background: #eff6ff;
+            color: #667eea;
+        }
+        
+        .type-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        /* Advanced Settings */
+        .advanced-settings {
+            background: #fffbeb;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .advanced-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .advanced-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #92400e;
+        }
+        
+        .advanced-desc {
+            font-size: 12px;
+            color: #92400e;
+            margin-bottom: 12px;
+        }
+        
+        /* Location Breadcrumb */
+        .location-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .breadcrumb-item {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .breadcrumb-item:hover {
+            text-decoration: underline;
+        }
+        
+        .breadcrumb-separator {
+            color: #cbd5e0;
+        }
+        
+        .change-location-btn {
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            color: #667eea;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .change-location-btn:hover {
+            background: #f8fafc;
+            border-color: #667eea;
+        }
+        
+        /* History Table */
+        .history-table {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .history-header {
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            display: grid;
+            grid-template-columns: 80px 1fr 100px 80px;
+            gap: 16px;
+        }
+        
+        .history-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f8fafc;
+            display: grid;
+            grid-template-columns: 80px 1fr 100px 80px;
+            gap: 16px;
+            align-items: center;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+        
+        .history-item:hover {
+            background: #f8fafc;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-action {
+            padding: 4px 8px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #374151;
+            text-align: center;
+        }
+        
+        .history-action.created {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .history-action.modified {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .history-action.shared {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .history-user {
+            font-weight: 500;
+            color: #1a202c;
+        }
+        
+        .history-time {
+            color: #64748b;
+        }
+        
+        .history-revert {
+            padding: 4px 8px;
+            background: none;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            color: #667eea;
+            transition: all 0.3s ease;
+        }
+        
+        .history-revert:hover {
+            background: #f8fafc;
+            border-color: #667eea;
+        }
+        
+        /* Share List */
+        .share-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .share-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid #f1f5f9;
+            border-radius: 8px;
+        }
+        
+        .share-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a202c;
+        }
+        
+        .user-email {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        .permission-select {
+            padding: 6px 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 12px;
+            background: white;
+            cursor: pointer;
+            margin-right: 8px;
+        }
+        
+        .remove-share {
+            padding: 4px 6px;
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .remove-share:hover {
+            background: #fee2e2;
+        }
+        
+        .add-share-btn {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .add-share-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            background: #f8fafc;
+        }
+        
+        /* Danger Zone */
+        .danger-zone {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        
+        .danger-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #dc2626;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .danger-desc {
+            font-size: 12px;
+            color: #dc2626;
+            margin-bottom: 12px;
+        }
+        
+        .danger-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .danger-btn {
+            padding: 8px 16px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .danger-btn:hover {
+            background: #b91c1c;
+        }
+        
+        .danger-btn.secondary {
+            background: white;
+            color: #dc2626;
+            border: 1px solid #dc2626;
+        }
+        
+        .danger-btn.secondary:hover {
+            background: #fef2f2;
+        }
+        
+        /* Success Message */
+        .success-message {
+            position: fixed;
+            top: 80px;
+            right: 24px;
+            background: #f0fdf4;
+            border: 1px solid #22c55e;
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #15803d;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 200;
+        }
+        
+        .success-message.show {
+            transform: translateX(0);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 32px 16px;
+            color: #64748b;
+        }
+        
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+        
+        .empty-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .empty-desc {
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .content-layout {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .header {
+                padding: 12px 16px;
+            }
+            
+            .header-actions {
+                gap: 8px;
+            }
+            
+            .action-btn {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+            
+            .main-content {
+                padding: 16px;
+            }
+            
+            .form-section {
+                padding: 16px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .permission-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .history-header,
+            .history-item {
+                grid-template-columns: 1fr 80px;
+                gap: 8px;
+            }
+            
+            .history-header span:nth-child(2),
+            .history-header span:nth-child(3),
+            .history-item > *:nth-child(2),
+            .history-item > *:nth-child(3) {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .file-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .file-name {
+                font-size: 14px;
+            }
+            
+            .header-actions {
+                flex-direction: column;
+                gap: 4px;
+            }
+            
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="goBack()">←</button>
+            <div class="file-info">
+                <div class="file-icon">📄</div>
+                <div class="file-details">
+                    <div class="file-name">프레젠테이션_최종.pptx</div>
+                    <div class="file-status">
+                        <div class="status-indicator" id="statusIndicator"></div>
+                        <span id="statusText">저장됨</span>
+                        <span>• 1분 전</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header-actions">
+            <button class="action-btn" onclick="resetChanges()">
+                🔄 초기화
+            </button>
+            <button class="action-btn primary" onclick="saveProperties()">
+                💾 변경사항 저장
+            </button>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-layout">
+            <!-- File Info Sidebar -->
+            <div class="file-info-card">
+                <div class="file-icon-large">📄</div>
+                <div class="file-name-display">프레젠테이션_최종.pptx</div>
+                <div class="file-type">PowerPoint 프레젠테이션</div>
+                <div class="file-size">💾 2.3MB</div>
+                <button class="preview-btn" onclick="previewFile()">
+                    👁️ 미리보기
+                </button>
+            </div>
+            
+            <!-- Properties Form -->
+            <div class="properties-form">
+                <!-- Basic Information -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        📋 기본 정보
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">파일명</label>
+                        <input type="text" class="form-input" value="프레젠테이션_최종.pptx" id="fileName">
+                        <div class="form-hint">파일 확장자는 자동으로 유지됩니다</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">설명</label>
+                        <textarea class="form-input form-textarea" placeholder="파일에 대한 설명을 입력하세요..." id="fileDescription">2024년 Q3 분기 프레젠테이션 최종본입니다. 주요 성과와 향후 계획이 포함되어 있습니다.</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">태그</label>
+                        <div class="tags-container" onclick="focusTagInput()">
+                            <div class="tag-item">
+                                비즈니스
+                                <button class="tag-remove" onclick="removeTag(this)">✕</button>
+                            </div>
+                            <div class="tag-item">
+                                프레젠테이션
+                                <button class="tag-remove" onclick="removeTag(this)">✕</button>
+                            </div>
+                            <div class="tag-item">
+                                최종
+                                <button class="tag-remove" onclick="removeTag(this)">✕</button>
+                            </div>
+                            <input type="text" class="tag-input" placeholder="태그 추가..." onkeypress="addTag(event)">
+                        </div>
+                        <div class="form-hint">Enter 키를 눌러 태그를 추가하세요</div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">카테고리</label>
+                            <select class="form-select" id="fileCategory">
+                                <option>문서</option>
+                                <option>프레젠테이션</option>
+                                <option>이미지</option>
+                                <option>동영상</option>
+                                <option>기타</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            

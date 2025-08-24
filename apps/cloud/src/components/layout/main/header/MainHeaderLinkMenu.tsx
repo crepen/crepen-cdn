@@ -15,7 +15,8 @@ interface HeaderMenuProp {
     className?: string,
     title?: string,
     icon?: ReactNode,
-    link?: string
+    link?: string,
+    matchUrl? : string
 }
 
 export const MainHeaderLinkMenu = (prop: HeaderMenuProp) => {
@@ -28,9 +29,7 @@ export const MainHeaderLinkMenu = (prop: HeaderMenuProp) => {
 
     useEffect(() => {
 
-        // console.log(`[MATCH : ${prop.link} - ${location.href}]`, UrlUtil.isMatchPattern(location.href , prop.link ?? '' , {basePath : basePathHook.getBasePath()}))
-
-        if (UrlUtil.isMatchPattern(location.href, `${prop.link ?? ''}/*`, { basePath: basePathHook.getBasePath() })) {
+        if (UrlUtil.isMatchPattern(location.href, `${prop.matchUrl ?? prop.link ?? ''}/*`, { basePath: basePathHook.getBasePath() })) {
             setActiveState(true);
         }
         else {

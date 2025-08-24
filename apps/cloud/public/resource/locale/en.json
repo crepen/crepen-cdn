@@ -4,8 +4,8 @@
       "SUCCESS": "Success.",
       "API_CONN_FAILED": "API Server connect failed.",
       "UNKNOWN_ERROR": "Unknown error.",
-      "NO_DATA" : "NO DATA",
-      "UNAUTHORIZED" : "The authentication has expired or the connection to the server cannot be established.."
+      "NO_DATA": "NO DATA",
+      "UNAUTHORIZED": "The authentication has expired or the connection to the server cannot be established.."
     },
     "locale": {
       "en": "English",
@@ -26,16 +26,16 @@
           "statistics": "Statistics"
         }
       },
-      "filemonitor" : {
-        "list" : {
-          "failed-list" : {
-            "header-title" : "Failed List"  
+      "filemonitor": {
+        "list": {
+          "failed-list": {
+            "header-title": "Failed List"
           },
-          "wait-list" : {
-            "header-title" : "Wait List"  
+          "wait-list": {
+            "header-title": "Wait List"
           },
-           "complete-list" : {
-            "header-title" : "Complete List"  
+          "complete-list": {
+            "header-title": "Complete List"
           }
         }
       }
@@ -83,20 +83,26 @@
             "size": "File size",
             "action": "Action"
           },
-          "footer" : {
-            "pagesize" : "Page size"
+          "footer": {
+            "pagesize": "Page size"
           }
         },
         "error": {
           "message": "Error : Unable to connect to server or incorrect access.",
-          "reload" : "Reload Explorer"
+          "reload": "Reload Explorer"
         },
-        "modal" : {
-          "new-folder" : {
-            "header" : "New folder",
-            "empty-warning" : "Folder name is required.",
-            "close" : "Close"
+        "modal": {
+          "new-folder": {
+            "header": "New folder",
+            "empty-warning": "Folder name is required.",
+            "close": "Close"
           }
+        },
+        "component" : {
+
+        },
+        "message" : {
+          "folder-not-found" : "Folder not found."
         }
       }
     },
@@ -111,8 +117,41 @@
         "submit": "Sign in"
       }
     },
-    "signup" : {
-      "success" : "Your membership registration has been completed. You can use the service normally after administrator approval."
+    "signup": {
+      "message": {
+        "success": "Your membership registration has been completed. You can use the service normally after administrator approval.",
+        "error": {
+          "password-not-match" : "Password verification does not match."
+        }
+      }
+    },
+    "find" : {
+      "submit" : {
+        "id" : "Find ID",
+        "password" : "Find Password"
+      },
+      "result-message" : {
+        "success" : {
+          "id" : "We've sent your ID to the email address you entered. Please check your email. (If your email address is not registered, the email will not be sent.)",
+          "password" : "We've sent a password reset link to the email address you entered. Please check your email. (If your email address is not registered, the email will not be sent.)"
+        },
+        "error" : {
+
+        }
+      }
+      ,
+      "id" : {
+
+      },
+      "password" : {
+
+      },
+      "common" : {
+        "toggle" : {
+          "find-id" : "Find ID",
+          "find-password" : "Find Password"
+        }
+      }
     }
   },
   "title": {

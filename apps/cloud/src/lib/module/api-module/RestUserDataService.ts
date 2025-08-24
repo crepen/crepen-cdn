@@ -11,8 +11,8 @@ export class RestUserDataService {
         this.language = locale
     }
 
-    token?: TokenGroup;
-    language?: LocaleType;
+    private token?: TokenGroup;
+    private language?: LocaleType;
 
     static current = (token: TokenGroup | undefined, locale: LocaleType) => {
         return new RestUserDataService(token, locale);
@@ -39,6 +39,42 @@ export class RestUserDataService {
 
         const resultData: BaseApiResultEntity<RestAddUserResponse>
             = humps.camelizeKeys(Object.assign(result.jsonData ?? {})) as BaseApiResultEntity<RestAddUserResponse>;
+
+        return resultData
+    }
+
+    findId = async (email : string) => {
+         const result = await FetchApi
+            .instance(process.env.API_URL)
+            .setMethod('GET')
+            .setUrl(`/user/find/id?key=${encodeURIComponent(email)}`)
+            .setOptions({
+                language: this.language,
+                token: this.token?.accessToken
+            })
+            .getResponse();
+
+
+        const resultData: BaseApiResultEntity
+            = humps.camelizeKeys(Object.assign(result.jsonData ?? {})) as BaseApiResultEntity;
+
+        return resultData
+    }
+
+    findPassword = async (emailOrId : string , resetPasswordRedirectUrl : string) => {
+         const result = await FetchApi
+            .instance(process.env.API_URL)
+            .setMethod('GET')
+            .setUrl(`/user/find/password?key=${encodeURIComponent(emailOrId)}&reset=${resetPasswordRedirectUrl}`)
+            .setOptions({
+                language: this.language,
+                token: this.token?.accessToken
+            })
+            .getResponse();
+
+
+        const resultData: BaseApiResultEntity
+            = humps.camelizeKeys(Object.assign(result.jsonData ?? {})) as BaseApiResultEntity;
 
         return resultData
     }

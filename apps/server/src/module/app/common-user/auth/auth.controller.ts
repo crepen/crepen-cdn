@@ -13,7 +13,7 @@ import { AuthJwtGuard } from "@crepen-nest/module/config/passport/jwt/jwt.guard"
 @ApiHeader({
     name: 'Accept-Language', required: false, enum: ['en', 'ko']
 })
-@Controller('auth')
+@Controller('auth-bak')
 export class CrepenAuthRouteController {
     constructor(
         private readonly authService: CrepenAuthRouteService,

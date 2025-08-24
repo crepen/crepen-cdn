@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { Body, Controller, Headers, HttpCode, HttpStatus, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Headers, HttpCode, HttpStatus, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiHeader, ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
 import { CrepenLoggerService } from "../common/logger/logger.service";
 import { CrepenExplorerFileService } from "./file.explorer.service";
@@ -10,7 +10,6 @@ import { BaseResponse } from "@crepen-nest/lib/common/base.response";
 import { AuthUser } from "@crepen-nest/lib/extensions/decorator/param/auth-user.param.decorator";
 import { AuthJwtGuard } from "@crepen-nest/module/config/passport/jwt/jwt.guard";
 import { I18n, I18nContext } from "nestjs-i18n";
-import { UserEntity } from "../common-user/user/entity/user.default.entity";
 import { Request as ExpressRequest, Response as ExpressResponse } from "express";
 import { FileNotUploadedError } from "@crepen-nest/lib/error/api/explorer/file_not_uploaded.file.error";
 import * as path from "path";
@@ -22,6 +21,10 @@ import { CommonError } from "@crepen-nest/lib/error/common.error";
 import { ExceptionResultFactory } from "@crepen-nest/lib/extensions/filter/common.exception.filter";
 import { FolderNotFoundError } from "@crepen-nest/lib/error/api/explorer/not_found.folder.error";
 import { ExplorerAddFolderRequest } from "./dto/add-folder.explorer.request";
+import { TokenTypeEnum } from "../auth/enum/token-type.auth.request";
+import { UserEntity } from "../user/entity/user.default.entity";
+import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
+import { CrepenExplorerDefaultService } from "./explorer.service";
 
 @ApiTags('[EXPLORER] 탐색기 - 폴더')
 @ApiHeader({
@@ -34,16 +37,48 @@ export class CrepenExplorerFolderController {
     constructor(
         private readonly fileService: CrepenExplorerFileService,
         private readonly folderService: CrepenExplorerFolderService,
+        private readonly explorerService: CrepenExplorerDefaultService,
         private readonly configService: ConfigService,
+        private readonly databaseService: DatabaseService,
         private readonly logService: CrepenLoggerService
     ) { }
+
+    @Get(':uid')
+    @ApiBearerAuth('token')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(AuthJwtGuard.whitelist(TokenTypeEnum.ACCESS_TOKEN))
+    async getFolderData(
+        @Req() req: Request,
+        @AuthUser() user: UserEntity,
+        @I18n() i18n: I18nContext,
+        @Param('uid') folderUid: string,
+    ) {
+
+        return (await this.databaseService.getDefault()).transaction(async (manager) => {
+
+
+            const folderData = await this.folderService.getFolderDataByUid(folderUid);
+            const folderPath = await this.folderService.getFolderHierarchy(folderUid, { manager: manager });
+
+
+
+            return BaseResponse.ok(
+                {
+                    dir: folderData,
+                    path: folderPath
+                },
+                HttpStatus.OK,
+                i18n.t('common.SUCCESS')
+            )
+        })
+    }
 
 
     @Put(':uid/file/upload')
     @ApiOperation({ summary: '폴더 내 파일 업로드', description: '폴더 내 파일 업로드' })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(AuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist(TokenTypeEnum.ACCESS_TOKEN))
     // @UseInterceptors(FileInterceptor('file'))
     async uploadFile(
         @Req() req: ExpressRequest,
@@ -162,26 +197,26 @@ export class CrepenExplorerFolderController {
     @ApiOperation({ summary: '폴더 내 새로운 폴더 생성', description: '폴더 내 새로운 폴더 생성' })
     @ApiBearerAuth('token')
     @HttpCode(HttpStatus.OK)
-    @UseGuards(AuthJwtGuard.whitelist('access_token'))
+    @UseGuards(AuthJwtGuard.whitelist(TokenTypeEnum.ACCESS_TOKEN))
     async addFolder(
         @Req() req: Request,
         @AuthUser() user: UserEntity,
         @I18n() i18n: I18nContext,
         @Param('uid') parentFolderUid: string,
-        @Body() reqBody : ExplorerAddFolderRequest
+        @Body() reqBody: ExplorerAddFolderRequest
     ) {
-        if(parentFolderUid !== 'root'){
+        if (parentFolderUid !== 'root') {
             const parentFolderData = await this.folderService.getFolderDataByUid(parentFolderUid);
 
-            console.log("PARENT " , parentFolderData);
+            console.log("PARENT ", parentFolderData);
 
-            if(!parentFolderData){
+            if (!parentFolderData) {
                 throw new FolderNotFoundError();
             }
         }
-        
 
-        const addFolder = await this.folderService.addFolder(user,parentFolderUid, reqBody.folderName);
+
+        const addFolder = await this.folderService.addFolder(user, parentFolderUid, reqBody.folderName);
 
         return BaseResponse.ok(
             {
@@ -191,4 +226,7 @@ export class CrepenExplorerFolderController {
             i18n.t('common.SUCCESS')
         )
     }
+
+
+
 }
