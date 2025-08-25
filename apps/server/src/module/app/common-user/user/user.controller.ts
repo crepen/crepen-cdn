@@ -1,9 +1,9 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, HttpCode, HttpStatus, Put, Req, UseGuards } from "@nestjs/common";
 import { JwtUserRequest } from "src/interface/jwt";
 import { ConfigService } from "@nestjs/config";
 import { CrepenUserRouteService } from "./user.service";
-import { ApiBearerAuth, ApiBody, ApiHeader, ApiOperation, ApiTags } from "@nestjs/swagger";
-import { AddUserDto, UpdateUserDto, UpdateUserPasswordDto } from "./dto/user.common.dto";
+import { ApiBearerAuth, ApiHeader, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { UpdateUserDto, UpdateUserPasswordDto } from "./dto/user.common.dto";
 import { CrepenAuthRouteService } from "../auth/auth.service";
 import { I18n, I18nContext } from "nestjs-i18n";
 import { CryptoUtil } from "@crepen-nest/lib/util/crypto.util";
@@ -27,19 +27,7 @@ export class CrepenUserRouteController {
     ) { }
 
 
-    @Get()
-    //#region Decorator
-    @ApiOperation({ summary: '사용자 데이터 조회', description: '로그인된 사용자 데이터 조회' })
-    @ApiBearerAuth('token')
-    @HttpCode(HttpStatus.OK)
-    @UseGuards(AuthJwtGuard.whitelist('access_token'))
-    //#endregion Decorator
-    async getUserData(
-        @Req() req: JwtUserRequest,
-        @I18n() i18n: I18nContext
-    ) {
-        return BaseResponse.ok(req.user.entity);
-    }
+ 
 
 
     @Put()
@@ -59,20 +47,6 @@ export class CrepenUserRouteController {
         return BaseResponse.ok();
     }
 
-
-    @Post()
-    //#region Decorator
-    @ApiOperation({ summary: '사용자 데이터 생성', description: '로그인된 사용자 데이터 생성' })
-    @HttpCode(HttpStatus.OK)
-    //#endregion Decorator
-    async addUserData(
-        @Req() req: Request,
-        @Body() bodyData: AddUserDto,
-        @I18n() i18n: I18nContext
-    ) {
-        await this.userService.addUser(bodyData);
-        return BaseResponse.ok();
-    }
 
 
 

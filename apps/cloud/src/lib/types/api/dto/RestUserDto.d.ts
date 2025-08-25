@@ -10,3 +10,14 @@ export interface RestAddUserProp {
 export interface RestAddUserResponse {
     uid : string
 }
+
+
+
+export type RestUserDataValidateCheckCategory = 'password' | 'id' | 'email' | 'name' | 'check-password';
+
+export interface RestUserDataValidateResponse {
+    id? : string,
+    password?: string,
+    email? :string,
+    name? : string
+}

@@ -14,7 +14,7 @@ interface AddUserActionResult {
     message?: string
 }
 
-export const AddUserAction = async (userId?: string, userPassword?: string, userName?: string, userEmail?: string, checkPassword?: string): Promise<AddUserActionResult> => {
+export const AddUserAction = async (userId?: string, userPassword?: string, userName?: string, userEmail?: string): Promise<AddUserActionResult> => {
 
     const localeProv = ServerLocaleProvider.current(LocaleConfig);
 
@@ -26,9 +26,9 @@ export const AddUserAction = async (userId?: string, userPassword?: string, user
             readCookie: cookie
         });
 
-        if (!StringUtil.isMatch(userPassword, checkPassword)) {
-            throw new CustomActionError(await localeProv.translate('page.signup.message.error.password-not-match'))
-        }
+        // if (!StringUtil.isMatch(userPassword, checkPassword)) {
+        //     throw new CustomActionError(await localeProv.translate('page.signup.message.error.password-not-match'))
+        // }
 
 
         const res = await RestUserDataService.current(undefined, locale ?? LocaleConfig.defaultLocale)

@@ -1,22 +1,22 @@
 
 
 import { StringUtil } from "@web/lib/util/StringUtil"
-import { ChangeEvent, HTMLInputTypeAttribute, MouseEvent, PropsWithChildren, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react"
+import { ChangeEvent, Fragment, HTMLInputTypeAttribute, KeyboardEvent, MouseEvent, PropsWithChildren, ReactNode, RefObject, useEffect, useMemo, useRef, useState } from "react"
 
 interface SignCommonFormProp {
     className?: string,
-    disableSubmit? : boolean
+    disableSubmit?: boolean
 }
 
 export const SignCommonForm = (prop: PropsWithChildren<SignCommonFormProp>) => {
     return (
         <form
-             className={StringUtil.joinClassName("cp-sign-common-form", prop.className)}
-             onSubmit={(evt) => {
-                if(prop.disableSubmit){
+            className={StringUtil.joinClassName("cp-sign-common-form", prop.className)}
+            onSubmit={(evt) => {
+                if (prop.disableSubmit) {
                     evt.preventDefault()
                 }
-             }}
+            }}
         >
             {prop.children}
         </form>
@@ -30,22 +30,38 @@ interface SignInputBoxProp {
     inputRef?: RefObject<HTMLInputElement | null>,
     inputType?: HTMLInputTypeAttribute,
     onChange?: (event: ChangeEvent<HTMLInputElement>) => void,
-    inputId?: string
+    inputId?: string,
+    onKeyDown?: (evt: KeyboardEvent<HTMLInputElement>) => void,
+    errorMessage?: string
 }
 
 const SignInputBox = (prop: SignInputBoxProp) => {
     return (
-        <div
-            className={StringUtil.joinClassName("cp-sign-common-input", prop.className)}
-            data-label={prop.labelText}
-        >
-            <input
-                placeholder=""
-                type={prop.inputType ?? 'text'}
-                ref={prop.inputRef}
-                onChange={prop.onChange}
-                id={prop.inputId}
-            />
+        <div className="cp-sign-common-input">
+            <div
+                className={StringUtil.joinClassName("cp-sign-common-input-box", prop.className)}
+                data-label={prop.labelText}
+            >
+                <input
+                    placeholder=""
+                    type={prop.inputType ?? 'text'}
+                    ref={prop.inputRef}
+                    onChange={prop.onChange}
+                    id={prop.inputId}
+                    onKeyDown={(e) => {
+                        if(e.key.toLowerCase() === 'enter'){
+                            e.preventDefault();
+                        }
+                        if(prop.onKeyDown) prop.onKeyDown(e);
+                    }}
+                />
+            </div>
+            {
+                prop.errorMessage &&
+                <div className="cp-sign-common-input-error">
+                    {prop.errorMessage}
+                </div>
+            }
         </div>
     )
 }
@@ -124,7 +140,7 @@ const SignToggleButton = (prop: SignToggleButtonProp) => {
 
     useEffect(() => {
         if (prop.onChangeToggle && selectItem) prop.onChangeToggle(selectItem);
-    },[selectItem])
+    }, [selectItem])
 
 
     return (

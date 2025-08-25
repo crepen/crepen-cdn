@@ -11,7 +11,7 @@ import { JsonWebTokenError, JwtService } from "@nestjs/jwt";
 import { TokenTypeEnum } from "./enum/token-type.auth.request";
 import { TokenData, TokenGroup } from "./types/token.type";
 import { AuthUserTokenExpiredError } from "@crepen-nest/lib/error/api/auth/expire_token.auth.error";
-import { StringUtil } from "@crepen-nest/lib/util";
+import { CryptoUtil, StringUtil } from "@crepen-nest/lib/util";
 import { AuthUserTokenUndefinedError } from "@crepen-nest/lib/error/api/auth/undefined_token.auth.error copy";
 
 @Injectable()
@@ -26,7 +26,7 @@ export class CrepenAuthService {
     signIn = async (userId: string, userPassword?: string, options?: RepositoryOptions): Promise<TokenGroup> => {
         const userData = await this.userService.getUserByIdOrEmail(userId);
 
-        if (!userData || userData.accountState === UserStateEnum.DELETE || !StringUtil.isMatch(userPassword, userData.accountPassword)) {
+        if (!userData || userData.accountState === UserStateEnum.DELETE || !(await CryptoUtil.Hash.compare(userPassword, userData.accountPassword))) {
             throw new UserNotFoundError()
         }
         else if (userData.accountState === UserStateEnum.UNAPPROVED) {

@@ -10,15 +10,6 @@ import { CommonLayout } from "@web/component/global/CommonLayout";
 
 
 
-export const generateMetadata = async (): Promise<Metadata> => {
-    const localeProv = ServerLocaleProvider.current(LocaleConfig);
-
-    return {
-        title: await localeProv.translate('title.signin')
-    }
-}
-
-
 
 const SignInLayout = (prop: PropsWithChildren) => {
     return (

@@ -13,6 +13,18 @@ import { SignInFindIdButton } from '@web/component/page/signin/SignInFindIdButto
 import { SignInResetPasswordButton } from '@web/component/page/signin/SignInResetPasswordButton';
 import { SignInSignUpButton } from '@web/component/page/signin/SignInSignUpButton';
 import { CommonPage } from '@web/component/global/CommonPage';
+import { Metadata } from 'next';
+
+
+
+
+export const generateMetadata = async (): Promise<Metadata> => {
+    const localeProv = ServerLocaleProvider.current(LocaleConfig);
+
+    return {
+        title: await localeProv.translate('title.signin')
+    }
+}
 
 
 const SignInPage = async () => {

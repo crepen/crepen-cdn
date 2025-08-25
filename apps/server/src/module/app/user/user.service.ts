@@ -2,9 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { CrepenUserRepository } from "./user.repository";
 import { UserDuplicateIdError } from "@crepen-nest/lib/error/api/user/duplicate_id.user.error";
 import { UserDuplicateEmailError } from "@crepen-nest/lib/error/api/user/duplicate_email.user.error";
-import { StringUtil } from "@crepen-nest/lib/util";
-import { UserUnvalidatePasswordError } from "@crepen-nest/lib/error/api/user/validate_password.user.error";
-import { UserUnvalidateIdError } from "@crepen-nest/lib/error/api/user/validate_id.user.error";
+import { CryptoUtil, StringUtil } from "@crepen-nest/lib/util";
+import { UserInvalidatePasswordError } from "@crepen-nest/lib/error/api/user/validate_password.user.error";
+import { UserInvalidateIdError } from "@crepen-nest/lib/error/api/user/validate_id.user.error";
 import { randomUUID } from "crypto";
 import { UserStateEnum } from "./enum/user-state.enum";
 import { UserRoleEnum } from "./enum/user-role.enum";
@@ -13,12 +13,99 @@ import { UserEntity } from "./entity/user.default.entity";
 import * as nodeMailer from 'nodemailer'
 import urlJoin from "url-join";
 import { SendResetPasswordMailFailed } from "@crepen-nest/lib/error/api/user/send_email.user.error";
+import { CheckUserValueValidateCategory } from "./types/validate-add-value.user";
+import { CommonError } from "@crepen-nest/lib/error/common.error";
+import { I18nContext } from "nestjs-i18n";
+import { isEmail } from "class-validator";
+import { UserInvalidateEmailError } from "@crepen-nest/lib/error/api/user/validate_email.user.error";
 
 @Injectable()
 export class CrepenUserService {
     constructor(
         private readonly userRepo: CrepenUserRepository
     ) { }
+
+    validateAddUserInfo = async (checkOptions: CheckUserValueValidateCategory[], i18n : I18nContext , userId?: string, userPassword?: string, userName?: string, userEmail?: string, options?: RepositoryOptions) => {
+
+        console.log(checkOptions)
+
+        const validateResult = {
+            id: undefined,
+            password: undefined,
+            name: undefined,
+            email: undefined
+        }
+
+        // Check ID
+        if (checkOptions.find(x => x === 'id')) {
+            try {
+                if (!/^(?=.*[A-Za-z])[A-Za-z\d]{6,}$/.test(userId)) {
+                    throw new UserInvalidateIdError();
+                }
+                else {
+                    const duplicateUser = await this.userRepo.getUserList([{ accountId: userId.trim() }], options);
+                    if (duplicateUser.length > 0) {
+                        throw new UserDuplicateEmailError();
+                    }
+                }
+            }
+            catch (e) {
+                if(e instanceof CommonError){
+                    validateResult.id = e.getLocaleMessage();
+                }
+                else{
+                    validateResult.id = i18n.t('common.INTERNAL_SERVER_ERROR');
+                }
+                
+            }
+        }
+
+        // Check Password
+        if (checkOptions.find(x => x === 'password')) {
+            try {
+                if (!/^(?=.*[a-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+={}\\[\]:;"'<>,.?/|\\-]{8,}$/.test(userPassword?.trim())) {
+                    throw new UserInvalidatePasswordError();
+                }
+            }
+            catch (e) {
+                
+                if(e instanceof CommonError){
+                    validateResult.password = e.getLocaleMessage();
+                }
+                else{
+                    validateResult.password = i18n.t('common.INTERNAL_SERVER_ERROR');
+                }
+                
+            }
+        }
+        
+        // Check Email
+        if(checkOptions.find(x=>x === 'email')){
+            try{
+                if(!isEmail(userEmail)){
+                    throw new UserInvalidateEmailError();
+                }
+                else{
+                    const duplicateUser = await this.userRepo.getUserList([{ email: userEmail.trim() }], options);
+
+                    if(duplicateUser.length > 0){
+                        throw new UserDuplicateEmailError();
+                    }
+                }
+            }
+            catch(e){
+                if(e instanceof CommonError){
+                    validateResult.email = e.getLocaleMessage();
+                }
+                else{
+                    validateResult.email = i18n.t('common.INTERNAL_SERVER_ERROR');
+                }
+            }
+        }
+
+        return validateResult;
+    }
+
 
     addUser = async (userId: string, userPassword: string, userName: string, userEmail: string, options?: RepositoryOptions) => {
 
@@ -31,15 +118,17 @@ export class CrepenUserService {
             throw new UserDuplicateEmailError();
         }
         else if (!/^(?=.*[A-Za-z])[A-Za-z\d]{6,}$/.test(userId)) {
-            throw new UserUnvalidateIdError();
+            throw new UserInvalidateIdError();
         }
         else if (!/^(?=.*[a-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+={}\\[\]:;"'<>,.?/|\\-]{8,}$/.test(userPassword.trim())) {
-            throw new UserUnvalidatePasswordError();
+            throw new UserInvalidatePasswordError();
         }
+
+        const cryptPassword = await CryptoUtil.Hash.encrypt(userPassword);
 
         const addUser = await this.userRepo.addUser({
             accountId: userId,
-            accountPassword: userPassword,
+            accountPassword: cryptPassword,
             email: userEmail,
             name: userName,
             uid: randomUUID(),
@@ -122,7 +211,7 @@ export class CrepenUserService {
 
 
                 if (findCategory === 'id') {
-                     sendHtml = `
+                    sendHtml = `
                         <!DOCTYPE html>
                         <html lang="ko">
                         <head>

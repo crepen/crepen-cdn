@@ -7,6 +7,8 @@ import { AddUserRequest } from "./dto/add-user.user.request";
 import { CrepenUserService } from "./user.service";
 import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
 import { UserNotFoundError } from "@crepen-nest/lib/error/api/user/not_found.user.error";
+import { AddUserValidateCheckRequest } from "./dto/validate-check.user.request";
+import { CheckUserValueValidateCategory } from "./types/validate-add-value.user";
 
 
 @ApiTags('[USER] 사용자 관리')
@@ -82,6 +84,31 @@ export class CrepenUserController {
             )
         })
 
+    }
+
+    @Post('/add/validate')
+    @HttpCode(HttpStatus.OK)
+    async addUserValidateCheck(
+        @Req() req: Request,
+        @I18n() i18n: I18nContext,
+        @Body() reqBody: AddUserValidateCheckRequest,
+        @Query('category') category : string
+    ) {
+
+        const validateData = await this.userService.validateAddUserInfo(
+            (category.split(',')) as CheckUserValueValidateCategory[],
+            i18n,
+            reqBody.id,
+            reqBody.password,
+            reqBody.name,
+            reqBody.email
+        )
+
+        return BaseResponse.ok(
+            validateData,
+            HttpStatus.OK,
+            i18n.t('common.SUCCESS')
+        )
     }
 
 

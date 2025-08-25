@@ -1,0 +1,74 @@
+.cp-custom-input {
+
+    margin-bottom: 10px;
+
+    &:nth-last-of-type(1){
+        margin-bottom: 0px;  
+    }
+
+    .cp-input-wrapper {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 16px;
+        background: #f9fafb;
+        transition: all 0.3s ease;
+
+        &:has(input:read-only){
+            background-color: #fff;
+            border: none;
+        }
+
+        input {
+            padding-top: 15px;
+            height: 50px;
+            width: 100%;
+            border: none;
+            outline: none;
+            padding-inline: 14px;
+            font-weight: bold;
+            background-color: transparent;
+            transition: background-color 9999999999s;
+
+            font-family: var(--global-font-family);
+        }
+
+        &::before {
+            content: attr(data-label);
+            font-size: 14px;
+            font-weight: bold;
+            color: #615656;
+
+            position: absolute;
+            top: 50%;
+            left: 14px;
+            transform: translateY(-50%);
+            user-select: none;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        &:has(input:focus, input:not(:placeholder-shown)) {
+            &::before {
+                content: attr(data-label);
+                font-size: 12px;
+
+
+                top: 5px;
+                left: 14px;
+                user-select: none;
+                pointer-events: none;
+                transform: translateY(0%);
+            }
+        }
+    }
+
+    .cp-input-error {
+        padding-inline: 8px;
+        padding-block: 2px;
+        font-size: 14px;
+        color: #d34141;
+    }
+}

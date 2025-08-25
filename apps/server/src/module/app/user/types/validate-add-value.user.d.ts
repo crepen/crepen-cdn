@@ -1,0 +1,1 @@
+export type CheckUserValueValidateCategory = 'password' | 'id' | 'email' | 'name';

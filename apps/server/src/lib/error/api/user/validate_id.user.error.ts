@@ -1,11 +1,11 @@
 import { CommonError } from "../../common.error";
 
-export class UserUnvalidateIdError extends CommonError{
+export class UserInvalidateIdError extends CommonError{
      constructor() {
         super(
-            'api_user.PARAM.UNVALIDATE.ID',
+            'api_user.PARAM.INVALIDATE.ID',
             403,
-            'PARAM.UNVALIDATE.ID'
+            'PARAM.INVALIDATE.ID'
         )
     }
 }

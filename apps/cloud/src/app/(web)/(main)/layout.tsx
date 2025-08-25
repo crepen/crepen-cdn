@@ -8,7 +8,8 @@ import { LocaleConfig } from '@web/lib/config/LocaleConfig';
 import { ServerLocaleProvider } from '@web/lib/module/locale/ServerLocaleProvider';
 
 import { PropsWithChildren, ReactNode, Suspense } from "react";
-import { FcComboChart, FcOpenedFolder, FcStatistics } from 'react-icons/fc';
+import { FaCircleUser } from 'react-icons/fa6';
+import { FcComboChart, FcOpenedFolder, FcPodiumWithSpeaker, FcStatistics } from 'react-icons/fc';
 
 
 export type MainHeaderMenuType = {
@@ -37,13 +38,19 @@ const MainDefaultLayout = async (prop: PropsWithChildren) => {
             icon: <FcOpenedFolder className='cp-nav-icon' />,
             className: "cp-nav-explorer",
             link: '/explorer/root',
-            matchUrl : '/explorer'
+            matchUrl: '/explorer'
         },
         {
             title: await translateProv.translate('layout.main.navigation.menu.statistics'),
             icon: <FcStatistics className='cp-nav-icon' />,
             className: "cp-nav-explorer",
             link: '/statistics'
+        },
+        {
+            title: await translateProv.translate('layout.main.navigation.menu.profile'),
+            icon: <FcPodiumWithSpeaker className='cp-nav-icon' />,
+            className: "cp-nav-explorer",
+            link: '/profile'
         }
     ]
 

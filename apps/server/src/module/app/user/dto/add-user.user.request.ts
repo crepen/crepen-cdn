@@ -11,7 +11,7 @@ export class AddUserRequest {
     password : string;
 
     @ApiProperty({name : 'email'})
-    @IsEmail({},{message : "api_user.PARAM.UNVALIDATE.EMAIL"})
+    @IsEmail({},{message : "api_user.PARAM.INVALIDATE.EMAIL"})
     @IsNotEmpty({message : 'api_user.PARAM_NOT_DEFINED_USER_EMAIL'})
     email : string;
 

@@ -1,6 +1,6 @@
 import { TokenGroup } from "@web/lib/types/TokenGroup";
 import { LocaleType } from "../locale/Locale";
-import { RestAddUserProp, RestAddUserResponse } from "@web/lib/types/api/dto/RestUserDto";
+import { RestAddUserProp, RestAddUserResponse, RestUserDataValidateCheckCategory, RestUserDataValidateResponse } from "@web/lib/types/api/dto/RestUserDto";
 import { FetchApi } from "../fetch/FetchApi";
 import { BaseApiResultEntity } from "@web/lib/types/api/BaseApiResultEntity";
 import * as humps from 'humps';
@@ -43,8 +43,8 @@ export class RestUserDataService {
         return resultData
     }
 
-    findId = async (email : string) => {
-         const result = await FetchApi
+    findId = async (email: string) => {
+        const result = await FetchApi
             .instance(process.env.API_URL)
             .setMethod('GET')
             .setUrl(`/user/find/id?key=${encodeURIComponent(email)}`)
@@ -61,8 +61,8 @@ export class RestUserDataService {
         return resultData
     }
 
-    findPassword = async (emailOrId : string , resetPasswordRedirectUrl : string) => {
-         const result = await FetchApi
+    findPassword = async (emailOrId: string, resetPasswordRedirectUrl: string) => {
+        const result = await FetchApi
             .instance(process.env.API_URL)
             .setMethod('GET')
             .setUrl(`/user/find/password?key=${encodeURIComponent(emailOrId)}&reset=${resetPasswordRedirectUrl}`)
@@ -75,6 +75,30 @@ export class RestUserDataService {
 
         const resultData: BaseApiResultEntity
             = humps.camelizeKeys(Object.assign(result.jsonData ?? {})) as BaseApiResultEntity;
+
+        return resultData
+    }
+
+    validateUserData = async (categories: RestUserDataValidateCheckCategory[], prop: RestAddUserProp) => {
+        const result = await FetchApi
+            .instance(process.env.API_URL)
+            .setMethod('POST')
+            .setUrl(`/user/add/validate?category=${categories.join(',')}`)
+            .setBody({
+                id : prop.userId,
+                password : prop.userPassword,
+                email : prop.userEmail,
+                name : prop.userName
+            })
+            .setOptions({
+                language: this.language,
+                token: this.token?.accessToken
+            })
+            .getResponse();
+
+
+        const resultData: BaseApiResultEntity<RestUserDataValidateResponse>
+            = humps.camelizeKeys(Object.assign(result.jsonData ?? {})) as BaseApiResultEntity<RestUserDataValidateResponse>;
 
         return resultData
     }

@@ -93,8 +93,6 @@ const MainExplorerListPage = async (prop: MainExplorerDefaultPageProp) => {
             .current(session?.token, locale ?? LocaleConfig.defaultLocale)
             .getFolderData(params?.uid ?? 'NTF');
 
-        console.log('UID', params?.uid);
-        console.log('FOLDE RES', folderRes);
 
         folderData.dir = folderRes.data?.dir;
         folderData.path = folderRes.data?.path ?? [];

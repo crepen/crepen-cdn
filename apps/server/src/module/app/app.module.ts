@@ -4,7 +4,6 @@ import { Module } from "@nestjs/common";
 import { CrepenCommonModule } from "./common/common.module";
 import { SystemModule } from "./system/system.module";
 import { CommonUserAppModule } from "./common-user/common-user.module";
-import { CrepenAdminAppModule } from "./admin/admin.module";
 import { CrepenExplorerModule } from "./explorer/explorer.module";
 import { CrepenAuthModule } from "./auth/auth.module";
 import { CrepenUserModule } from "./user/user.module";
@@ -12,7 +11,6 @@ import { CrepenUserModule } from "./user/user.module";
 
 @Module({
     imports: [
-        CrepenAdminAppModule,
         CommonUserAppModule,
         CrepenCommonModule,
         SystemModule,

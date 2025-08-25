@@ -3,9 +3,9 @@
     "PARAM_NOT_DEFINED_USER_PASSWORD" : "User password is required.",
     "PARAM_NOT_DEFINED_USER_EMAIL" : "User email is required.",
     "PARAM_NOT_DEFINED_USER_NAME" : "User name is required.",
-    "PARAM.UNVALIDATE.EMAIL" : "Email format is incorrect.",
-    "PARAM.UNVALIDATE.PASSWORD" : "Password format is incorrect. (8 characters or more, including numbers)",
-    "PARAM.UNVALIDATE.ID" : "Id format is incorrect. (6 or more characters, must be English characters, and must not include symbols)",
+    "PARAM.INVALIDATE.EMAIL" : "Email format is incorrect.",
+    "PARAM.INVALIDATE.PASSWORD" : "Password format is incorrect. (8 characters or more, including numbers)",
+    "PARAM.INVALIDATE.ID" : "Id format is incorrect. (6 or more characters, must be English characters, and must not include symbols)",
     "PARAM.DUPLICATE.ID" : "Duplicate ID exists.",
     "PARAM.DUPLICATE.EMAIL" : "Duplicate Email exists.",
 

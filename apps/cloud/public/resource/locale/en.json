@@ -23,7 +23,8 @@
         "menu": {
           "dashboard": "Dashboard",
           "explorer": "Explorer",
-          "statistics": "Statistics"
+          "statistics": "Statistics",
+          "profile": "Profile"
         }
       },
       "filemonitor": {
@@ -98,11 +99,16 @@
             "close": "Close"
           }
         },
-        "component" : {
-
-        },
-        "message" : {
-          "folder-not-found" : "Folder not found."
+        "component": {},
+        "message": {
+          "folder-not-found": "Folder not found."
+        }
+      },
+      "profile" : {
+        "common" : {
+          "error" : {
+            "data-not-found" : "User data load failed."
+          }
         }
       }
     },
@@ -121,35 +127,29 @@
       "message": {
         "success": "Your membership registration has been completed. You can use the service normally after administrator approval.",
         "error": {
-          "password-not-match" : "Password verification does not match."
+          "password-not-match": "Password verification does not match.",
+          "name-empty": "Name cannot be empty."
         }
       }
     },
-    "find" : {
-      "submit" : {
-        "id" : "Find ID",
-        "password" : "Find Password"
+    "find": {
+      "submit": {
+        "id": "Find ID",
+        "password": "Find Password"
       },
-      "result-message" : {
-        "success" : {
-          "id" : "We've sent your ID to the email address you entered. Please check your email. (If your email address is not registered, the email will not be sent.)",
-          "password" : "We've sent a password reset link to the email address you entered. Please check your email. (If your email address is not registered, the email will not be sent.)"
+      "result-message": {
+        "success": {
+          "id": "We've sent your ID to the email address you entered. Please check your email. (If your email address is not registered, the email will not be sent.)",
+          "password": "We've sent a password reset link to the email address you entered. Please check your email. (If your email address is not registered, the email will not be sent.)"
         },
-        "error" : {
-
-        }
-      }
-      ,
-      "id" : {
-
+        "error": {}
       },
-      "password" : {
-
-      },
-      "common" : {
-        "toggle" : {
-          "find-id" : "Find ID",
-          "find-password" : "Find Password"
+      "id": {},
+      "password": {},
+      "common": {
+        "toggle": {
+          "find-id": "Find ID",
+          "find-password": "Find Password"
         }
       }
     }
@@ -159,6 +159,7 @@
     "explorer": "Explorer",
     "statistics": "Statistics",
     "profile": "Profile",
-    "signin": "Sign In"
+    "signin": "Sign In",
+    "signup": "Sign Up"
   }
 }

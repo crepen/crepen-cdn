@@ -3,7 +3,7 @@ import { LocaleType } from "../locale/Locale";
 import { FetchApi } from "../fetch/FetchApi";
 import * as humps from 'humps';
 import { BaseApiResultEntity } from "@web/lib/types/api/BaseApiResultEntity";
-import { AuthRefreshResponse } from "@web/lib/types/api/dto/RestAuthDto";
+import { AuthRefreshResponse, AuthSessionUserDataResponse } from "@web/lib/types/api/dto/RestAuthDto";
 
 export class RestAuthDataService {
 
@@ -68,4 +68,23 @@ export class RestAuthDataService {
         return resultData
     }
 
+    getSignInUserData = async () => {
+         const result = await FetchApi
+            .instance(process.env.API_URL)
+            .setMethod('GET')
+            .setUrl('/auth/user')
+            .setHeaders({
+                'Content-Type': 'application/json'
+            })
+            .setOptions({
+                language: this.language,
+                token: this.token?.accessToken
+            })
+            .getResponse();
+
+        const resultData: BaseApiResultEntity<AuthSessionUserDataResponse>
+            = humps.camelizeKeys(Object.assign(result.jsonData ?? {})) as BaseApiResultEntity<AuthSessionUserDataResponse>;
+
+        return resultData
+    }
 }
