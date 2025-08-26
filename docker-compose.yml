@@ -1,51 +1,54 @@
 services:
-  web:
-    container_name: crepen-cdn-web
-    hostname: crepen-cdn-web
+  cloud:
+    container_name: crepen-cdn-cloud
+    hostname: crepen-cdn-cloud
     build:
       context: .
+      no_cache: true
+
+      args:
+        - BASE_PATH=/cloud
       dockerfile: dockerfile-cloud
     environment:
       - API_URL=http://crepen-cdn-server:3332
+      - PORT=3000
     ports:
       - "2500:3000"
+    # depends_on:
+      # - db
+      # - server
     networks:
       - crepen-network
-  server:
-    container_name: crepen-cdn-server
-    hostname: crepen-cdn-server
-    build: 
-      context: .
-      dockerfile: dockerfile-server
-    ports:
-      - "3331:3332"
-    depends_on:
-      - web
-      - db
-    environment:
-      - CREPEN_CDN_NEST_PORT=1111
-    volumes: 
-      - F:\2025\CrepenCDN\docker-volume\server\config:/etc/crepen/cdn/config
-    networks:
-      - crepen-network
-  db:
-    image: mariadb:latest
-    container_name: crepen-cdn-db
-    hostname: crepen-cdn-db
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: qwer1234
-      MARIADB_DATABASE : crepencdn
-      MARIADB_USER : crepen
-      MARIADB_PASSWORD : qwer1234
-    depends_on:
-      - web
-    ports:
-      - "13305:13305"
-    volumes:
-      - F:\2025\CrepenCDN\docker-volume\db\data:/var/lib/mysql
-    networks:
-      - crepen-network
+  # server:
+  #   container_name: crepen-cdn-server
+  #   hostname: crepen-cdn-server
+  #   build: 
+  #     context: .
+  #     dockerfile: dockerfile-server
+  #   ports:
+  #     - "3331:3332"
+  #   depends_on:
+  #     - db
+  #   environment:
+  #     - CREPEN_CDN_NEST_PORT=1111
+  #   networks:
+  #     - crepen-network
+  # db:
+  #   image: mariadb:latest
+  #   container_name: crepen-cdn-db
+  #   hostname: crepen-cdn-db
+  #   restart: always
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: qwer1234
+  #     MARIADB_DATABASE : crepencdn
+  #     MARIADB_USER : crepen
+  #     MARIADB_PASSWORD : qwer1234
+  #   ports:
+  #     - "13305:13305"
+  #   volumes:
+  #     - F:\2025\CrepenCDN\docker-volume\db\data:/var/lib/mysql
+  #   networks:
+  #     - crepen-network
 
 networks:
   crepen-network:

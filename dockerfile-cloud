@@ -1,58 +1,89 @@
-# ========== Builder ========== #
-FROM node:22-alpine AS builder
-RUN apk add --no-cache libc6-compat && apk update
+
+FROM node:22-alpine AS builder 
+
+ENV BASE_PATH=/cloud
+
+RUN echo BASEPATH: $BASE_PATH
 
 WORKDIR /app
 
-# Turbo globally
-RUN yarn global add turbo
-
-# 전체 코드 복사
 COPY . .
 
-# Turborepo prune
-RUN turbo prune --scope=@crepen-cdn/cloud --docker
 
-# ========== Installer ========== #
-FROM node:22-alpine AS installer
-RUN apk add --no-cache libc6-compat && apk update
+RUN yarn
 
-WORKDIR /app
+RUN yarn cloud build
 
-# 필요한 파일만 복사
-COPY .gitignore .gitignore
-COPY --from=builder /app/out/json/ ./
-COPY --from=builder /app/out/yarn.lock ./yarn.lock
 
-# 의존성 설치
-RUN yarn install --frozen-lockfile
-
-# 전체 소스 복사 (의존성 기준으로 빌드)
-COPY --from=builder /app/out/full/ ./
-COPY turbo.json turbo.json
-
-# 빌드 실행
-RUN yarn turbo run build --filter=@crepen-cdn/cloud...
-
-# ========== Runner ========== #
 FROM node:22-alpine AS runner
+
 WORKDIR /app
 
-ENV API_URL=''
+COPY --from=builder /app/apps/cloud/next.config.ts ./
+COPY --from=builder /app/apps/cloud/package.json ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/cloud/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/cloud/.next/static ./apps/cloud/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/cloud/public ./apps/cloud/public
 
-
-# 보안용 non-root 유저 추가
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-USER nextjs
-
-# 앱 실행에 필요한 파일만 복사
-COPY --from=installer /app/apps/cloud/next.config.ts ./
-COPY --from=installer /app/apps/cloud/package.json ./
-
-COPY --from=installer --chown=nextjs:nodejs /app/apps/cloud/.next/standalone ./
-COPY --from=installer --chown=nextjs:nodejs /app/apps/cloud/.next/static ./apps/cloud/.next/static
-COPY --from=installer --chown=nextjs:nodejs /app/apps/cloud/public ./apps/cloud/public
-
-# 앱 실행
 CMD ["node", "apps/cloud/server.js"]
+
+
+
+# # ========== Builder ========== #
+# FROM node:22-alpine AS builder
+# RUN apk add --no-cache libc6-compat && apk update
+
+# WORKDIR /app
+
+# # Turbo globally
+# RUN yarn global add turbo
+
+# # 전체 코드 복사
+# COPY . .
+
+# # Turborepo prune
+# RUN turbo prune --scope=@crepen-cdn/cloud --docker
+
+# # ========== Installer ========== #
+# FROM node:22-alpine AS installer
+# RUN apk add --no-cache libc6-compat && apk update
+
+# WORKDIR /app
+
+# # 필요한 파일만 복사
+# COPY .gitignore .gitignore
+# COPY --from=builder /app/out/json/ ./
+# COPY --from=builder /app/out/yarn.lock ./yarn.lock
+
+# # 의존성 설치
+# RUN yarn install --frozen-lockfile
+
+# # 전체 소스 복사 (의존성 기준으로 빌드)
+# COPY --from=builder /app/out/full/ ./
+# COPY turbo.json turbo.json
+
+# # 빌드 실행
+# RUN yarn turbo run build --filter=@crepen-cdn/cloud...
+
+# # ========== Runner ========== #
+# FROM node:22-alpine AS runner
+# WORKDIR /app
+
+# ENV API_URL=''
+
+
+# # 보안용 non-root 유저 추가
+# RUN addgroup --system --gid 1001 nodejs
+# RUN adduser --system --uid 1001 nextjs
+# USER nextjs
+
+# # 앱 실행에 필요한 파일만 복사
+# COPY --from=installer /app/apps/cloud/next.config.ts ./
+# COPY --from=installer /app/apps/cloud/package.json ./
+
+# COPY --from=installer --chown=nextjs:nodejs /app/apps/cloud/.next/standalone ./
+# COPY --from=installer --chown=nextjs:nodejs /app/apps/cloud/.next/static ./apps/cloud/.next/static
+# COPY --from=installer --chown=nextjs:nodejs /app/apps/cloud/public ./apps/cloud/public
+
+# # 앱 실행
+# CMD ["node", "apps/cloud/server.js"]
