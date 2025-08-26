@@ -8,6 +8,7 @@ stages:
 docker-login:
   stage: login
   script : 
+    - docker logout
     - echo "$NEXUS_PASSWORD"
     - echo "$NEXUS_REGISTRY"
     - echo "$NEXUS_USERNAME"
@@ -15,6 +16,8 @@ docker-login:
 
 build-cloud:      
   stage: build
+  needs:
+    - docker-login
   script:
     - echo "Build Cloud"
     - echo $CI_COMMIT_SHA
@@ -24,6 +27,8 @@ build-cloud:
 
 build-server:
   stage : build
+  needs:
+    - docker-login
   script : 
     - echo "Build Server"
     - echo $CI_COMMIT_SHA
