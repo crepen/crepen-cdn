@@ -21,6 +21,7 @@ run-cloud :
     - build-cloud
   script : 
     - echo "Run Cloud"
+    - docker ps
 
 
 run-server : 
@@ -29,3 +30,4 @@ run-server :
     - build-server
   script : 
     - echo "Run Server"
+    - docker ps
