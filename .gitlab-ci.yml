@@ -7,7 +7,7 @@ build-cloud:
   script:
     - echo "Build Cloud"
     - echo $CI_COMMIT_SHA
-    - docker build --build-arg BASE_PATH=/cloud -f dockerfile-cloud -t crepen-cdn-cloud@$CI_COMMIT_SHA .
+    - docker build --build-arg BASE_PATH=/cloud -f dockerfile-cloud -t crepen-cdn-cloud:$CI_COMMIT_SHA .
 
 
 
