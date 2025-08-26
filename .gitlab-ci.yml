@@ -10,6 +10,7 @@ nexus-login:
   stage: login
   script : 
     - docker logout
+    - echo $NEXUS_REGISTRY
     - echo "$NEXUS_PASSWORD" | docker login $NEXUS_REGISTRY --username "$NEXUS_USERNAME" --password-stdin
 
 
