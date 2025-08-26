@@ -6,7 +6,7 @@ build-cloud:
   stage: build
   script:
     - echo "Build Cloud"
-    - echo $CI_COMMIT_SHORT_SHA
+    - echo $CI_COMMIT_SHA
     - ls
 
 
@@ -15,7 +15,7 @@ build-server:
   stage : build
   script : 
     - echo "Build Server"
-    - echo $CI_COMMIT_SHORT_SHA
+    - echo $CI_COMMIT_SHA
     - ls
 
 run-cloud : 
@@ -24,7 +24,7 @@ run-cloud :
     - build-cloud
   script : 
     - echo "Run Cloud"
-    - echo $CI_COMMIT_SHORT_SHA
+    - echo $CI_COMMIT_SHA
     - docker ps
 
 
@@ -34,5 +34,10 @@ run-server :
     - build-server
   script : 
     - echo "Run Server"
-    - echo $CI_COMMIT_SHORT_SHA
+    - echo $CI_COMMIT_SHA
     - docker ps
+
+
+
+
+    
