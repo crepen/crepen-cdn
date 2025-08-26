@@ -20,7 +20,8 @@ build-cloud:
   script:
     - echo "Build Cloud"
     - echo $CI_COMMIT_SHA
-    - docker build --build-arg BASE_PATH=/cloud --no-cache -f dockerfile-cloud -t crepen-cdn-cloud:$CI_COMMIT_SHA .
+    - docker build --build-arg BASE_PATH=/cloud --no-cache -f dockerfile-cloud -t $NEXUS_REGISTRY/crepen-cdn-cloud:$CI_COMMIT_SHA .
+    - docker tag $NEXUS_REGISTRY/crepen-cdn-cloud:$CI_COMMIT_SHA $NEXUS_REGISTRY/crepen-cdn-cloud:latest
 
 
 
@@ -39,7 +40,8 @@ publish-cloud:
   needs:
     - build-cloud
   script: 
-    - cat ~/.docker/config.json
+    - docker push $NEXUS_REGISTRY/crepen-cdn-cloud:$CI_COMMIT_SHA
+    - docker push $NEXUS_REGISTRY/crepen-cdn-cloud:latest
 
 
 publish-server:
