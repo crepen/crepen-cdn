@@ -1,7 +1,17 @@
-stages:     
+stages:
+  - login     
   - build
   - publish
   - runner
+
+
+docker-login:
+  stage: login
+  script : 
+    - echo "$NEXUS_PASSWORD"
+    - echo "$NEXUS_REGISTRY"
+    - echo "$NEXUS_USERNAME"
+
 
 build-cloud:      
   stage: build
