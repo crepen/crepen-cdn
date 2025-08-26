@@ -1,5 +1,6 @@
 stages:     
   - build
+  - publish
   - runner
 
 build-cloud:      
@@ -18,10 +19,27 @@ build-server:
     - echo $CI_COMMIT_SHA
     - ls
 
+
+publish-cloud:
+  stage: publish
+  needs:
+    - build-cloud
+  script: 
+    - cat ~/.docker/config.json
+
+
+publish-server:
+  stage: publish
+  needs:
+    - build-server
+  script: 
+    - cat ~/.docker/config.json
+
+
 run-cloud : 
   stage: runner
   needs:
-    - build-cloud
+    - publish-cloud
   script : 
     - echo "Run Cloud"
     - echo $CI_COMMIT_SHA
@@ -31,7 +49,7 @@ run-cloud :
 run-server : 
   stage: runner
   needs:
-    - build-server
+    - publish-server
   script : 
     - echo "Run Server"
     - echo $CI_COMMIT_SHA
