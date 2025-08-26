@@ -18,16 +18,19 @@ import { CommonError } from "@crepen-nest/lib/error/common.error";
 import { I18nContext } from "nestjs-i18n";
 import { isEmail } from "class-validator";
 import { UserInvalidateEmailError } from "@crepen-nest/lib/error/api/user/validate_email.user.error";
+import { CrepenUserValidateService } from "./validate.user.service";
+import { UserInvalidateNameError } from "@crepen-nest/lib/error/api/user/validate_name.user.error";
+import { UserEditCategory } from "./dto/edit-data.user.request";
+import { UserSupportLanguageEnum } from "./enum/user-language.enum";
 
 @Injectable()
 export class CrepenUserService {
     constructor(
-        private readonly userRepo: CrepenUserRepository
+        private readonly userRepo: CrepenUserRepository,
+        private readonly userValidService: CrepenUserValidateService
     ) { }
 
-    validateAddUserInfo = async (checkOptions: CheckUserValueValidateCategory[], i18n : I18nContext , userId?: string, userPassword?: string, userName?: string, userEmail?: string, options?: RepositoryOptions) => {
-
-        console.log(checkOptions)
+    validateAddUserInfo = async (checkOptions: CheckUserValueValidateCategory[], i18n: I18nContext, originUserData: UserEntity | undefined, userId?: string, userPassword?: string, userName?: string, userEmail?: string, options?: RepositoryOptions) => {
 
         const validateResult = {
             id: undefined,
@@ -39,66 +42,77 @@ export class CrepenUserService {
         // Check ID
         if (checkOptions.find(x => x === 'id')) {
             try {
-                if (!/^(?=.*[A-Za-z])[A-Za-z\d]{6,}$/.test(userId)) {
+
+
+                if (!this.userValidService.isValidateUserId(userId)) {
                     throw new UserInvalidateIdError();
                 }
-                else {
-                    const duplicateUser = await this.userRepo.getUserList([{ accountId: userId.trim() }], options);
-                    if (duplicateUser.length > 0) {
-                        throw new UserDuplicateEmailError();
-                    }
+                else if (originUserData?.accountId?.trim() !== userId?.trim() && await this.userValidService.isDuplicateUserId(userId)) {
+                    throw new UserDuplicateEmailError();
                 }
             }
             catch (e) {
-                if(e instanceof CommonError){
+                if (e instanceof CommonError) {
                     validateResult.id = e.getLocaleMessage();
                 }
-                else{
+                else {
                     validateResult.id = i18n.t('common.INTERNAL_SERVER_ERROR');
                 }
-                
+
             }
         }
 
         // Check Password
         if (checkOptions.find(x => x === 'password')) {
             try {
-                if (!/^(?=.*[a-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+={}\\[\]:;"'<>,.?/|\\-]{8,}$/.test(userPassword?.trim())) {
+                if (!this.userValidService.isValidateUserPassword(userPassword)) {
                     throw new UserInvalidatePasswordError();
                 }
             }
             catch (e) {
-                
-                if(e instanceof CommonError){
+
+                if (e instanceof CommonError) {
                     validateResult.password = e.getLocaleMessage();
                 }
-                else{
+                else {
                     validateResult.password = i18n.t('common.INTERNAL_SERVER_ERROR');
                 }
-                
+
             }
         }
-        
+
         // Check Email
-        if(checkOptions.find(x=>x === 'email')){
-            try{
-                if(!isEmail(userEmail)){
+        if (checkOptions.find(x => x === 'email')) {
+            try {
+                if (!this.userValidService.isValidateUserEmail(userEmail)) {
                     throw new UserInvalidateEmailError();
                 }
-                else{
-                    const duplicateUser = await this.userRepo.getUserList([{ email: userEmail.trim() }], options);
-
-                    if(duplicateUser.length > 0){
-                        throw new UserDuplicateEmailError();
-                    }
+                else if (originUserData?.email?.trim() !== userEmail?.trim() && await this.userValidService.isDuplicateUserEmail(userEmail)) {
+                    throw new UserDuplicateEmailError();
                 }
             }
-            catch(e){
-                if(e instanceof CommonError){
+            catch (e) {
+                if (e instanceof CommonError) {
                     validateResult.email = e.getLocaleMessage();
                 }
-                else{
+                else {
                     validateResult.email = i18n.t('common.INTERNAL_SERVER_ERROR');
+                }
+            }
+        }
+
+        if (checkOptions.find(x => x === 'name')) {
+            try {
+                if (!this.userValidService.isValidateUserName(userName)) {
+                    throw new UserInvalidateNameError();
+                }
+            }
+            catch (e) {
+                if (e instanceof CommonError) {
+                    validateResult.name = e.getLocaleMessage();
+                }
+                else {
+                    validateResult.name = i18n.t('common.INTERNAL_SERVER_ERROR');
                 }
             }
         }
@@ -109,21 +123,25 @@ export class CrepenUserService {
 
     addUser = async (userId: string, userPassword: string, userName: string, userEmail: string, options?: RepositoryOptions) => {
 
-        const duplicateUser = await this.userRepo.getUserList([{ accountId: userId.trim() }, { email: userEmail.trim() }], options);
-
-        if (duplicateUser.find(x => x.accountId === userId.trim())) {
-            throw new UserDuplicateIdError();
-        }
-        else if (duplicateUser.find(x => x.email === userEmail.trim())) {
-            throw new UserDuplicateEmailError();
-        }
-        else if (!/^(?=.*[A-Za-z])[A-Za-z\d]{6,}$/.test(userId)) {
+        if (!this.userValidService.isValidateUserId(userId)) {
             throw new UserInvalidateIdError();
         }
-        else if (!/^(?=.*[a-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+={}\\[\]:;"'<>,.?/|\\-]{8,}$/.test(userPassword.trim())) {
+        else if (!this.userValidService.isValidateUserPassword(userPassword)) {
             throw new UserInvalidatePasswordError();
         }
-
+        else if (!this.userValidService.isValidateUserName(userName)) {
+            throw new UserInvalidateNameError();
+        }
+        else if (!this.userValidService.isValidateUserEmail(userEmail)) {
+            throw new UserInvalidateEmailError();
+        }
+        else if (await this.userValidService.isDuplicateUserId(userId)) {
+            throw new UserDuplicateIdError();
+        }
+        else if (await this.userValidService.isDuplicateUserEmail(userEmail)) {
+            throw new UserDuplicateEmailError();
+        }
+   
         const cryptPassword = await CryptoUtil.Hash.encrypt(userPassword);
 
         const addUser = await this.userRepo.addUser({
@@ -962,5 +980,59 @@ export class CrepenUserService {
 
     getResetPasswordExpireState = async (uid: string, options?: RepositoryOptions) => {
         return this.userRepo.getResetPasswordHistory(uid, options);
+    }
+
+    editUserData = async (checkOptions: UserEditCategory[], editUserUid: string, editName?: string, editEmail?: string, editLanguage?: string, options?: RepositoryOptions) => {
+
+        const userData = await this.getUserByUid(editUserUid);
+
+
+        if (checkOptions.find(x => x === 'name')) {
+            if (userData.name.trim() !== editName?.trim()) {
+
+                if (!this.userValidService.isValidateUserName(editName)) {
+                    throw new UserInvalidateNameError();
+                }
+
+                userData.name = editName?.trim()
+            }
+        }
+        
+        if (checkOptions.find(x => x === 'email')) {
+           
+
+            if (userData.email.trim() !== editEmail?.trim()) {
+
+                if (!this.userValidService.isValidateUserEmail(editEmail)) {
+                    throw new UserDuplicateEmailError();
+                }
+                else if (await this.userValidService.isDuplicateUserEmail(editEmail)) {
+                    throw new UserDuplicateEmailError();
+                }
+
+
+
+                userData.email = editEmail?.trim()
+            }
+        }
+        
+        if (checkOptions.find(x => x === 'language')) {
+            if (userData.accountLanguage.trim() !== editLanguage?.trim()) {
+
+                if (editLanguage === 'en' || editLanguage === 'ko') {
+                    userData.accountLanguage = editLanguage?.trim() === 'ko'
+                        ? UserSupportLanguageEnum.KO
+                        : UserSupportLanguageEnum.EN;
+                }
+
+
+            }
+        }
+
+        if (checkOptions.length > 0) {
+            userData.updateDate = new Date();
+        }
+
+        await this.userRepo.editUser(userData, options);
     }
 }

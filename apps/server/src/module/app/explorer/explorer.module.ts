@@ -6,14 +6,18 @@ import { CrepenExplorerFileService } from "./file.explorer.service";
 import { CrepenExplorerFolderService } from "./folder.explorer.service";
 import { CrepenExplorerRepository } from "./explorer.repository";
 import { CrepenLoggerModule } from "../common/logger/logger.module";
-import { CrepenCryptoModule } from "../common/crypto/crypto.module";
 import { CrepenLoggerService } from "../common/logger/logger.service";
 import { CrepenExplorerDefaultService } from "./explorer.service";
-import { MulterModule } from "@nestjs/platform-express";
+import { PassportConfigModule } from "@crepen-nest/module/config/passport/passport.module";
+import { JwtService } from "@nestjs/jwt";
+import { CrepenAuthJwtStrategy } from "@crepen-nest/module/config/passport/jwt/jwt.strategy";
+import { CrepenUserModule } from "../user/user.module";
 
 @Module({
     imports : [
         forwardRef(() => CrepenLoggerModule),
+        forwardRef(() => PassportConfigModule),
+        forwardRef(() => CrepenUserModule)
         // CrepenCryptoModule,
     ],
     controllers : [
@@ -29,7 +33,9 @@ import { MulterModule } from "@nestjs/platform-express";
         
 
         // Import Modules
-        CrepenLoggerService
+        CrepenLoggerService,
+        JwtService,
+        CrepenAuthJwtStrategy,
     ]
 })
 export class CrepenExplorerModule {}

@@ -9,13 +9,13 @@ import * as path from "path";
 import * as fs from 'fs';
 import { ExplorerFileEntity } from "./entity/file.explorer.default.entity";
 import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
-import { UserEntity } from "../common-user/user/entity/user.default.entity";
 import { ExplorerLogEntity } from "./entity/log.explorer.default.entity";
 import { ExplorerLogTypeEnum } from "./enum/log-type.explorer.enum";
 import { ExplorerItemType } from "./enum/item-type.explorer.enum";
 import { ConfigService } from "@nestjs/config";
 import { CrepenExplorerDefaultService } from "./explorer.service";
 import { ExplorerFileStateEnum } from "./enum/file-state.explorer.enum";
+import { UserEntity } from "../user/entity/user.default.entity";
 
 @Injectable()
 export class CrepenExplorerFileService {

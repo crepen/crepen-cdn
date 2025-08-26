@@ -4,7 +4,6 @@ import { CrepenAuthRepository } from "./auth.repository";
 import { CrepenAuthService } from "./auth.service";
 import { CrepenLoggerModule } from "../common/logger/logger.module";
 import { CrepenLoggerService } from "../common/logger/logger.service";
-import { CrepenUserRouteModule } from "../common-user/user/user.module";
 import { CrepenUserModule } from "../user/user.module";
 import { PassportConfigModule } from "@crepen-nest/module/config/passport/passport.module";
 
@@ -21,6 +20,9 @@ import { PassportConfigModule } from "@crepen-nest/module/config/passport/passpo
 
 
         CrepenLoggerService
+    ],
+    exports : [
+        CrepenAuthService
     ]
 })
 export class CrepenAuthModule { }

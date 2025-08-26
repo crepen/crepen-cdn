@@ -4,6 +4,7 @@
     "PARAM_NOT_DEFINED_USER_EMAIL" : "User email is required.",
     "PARAM_NOT_DEFINED_USER_NAME" : "User name is required.",
     "PARAM.INVALIDATE.EMAIL" : "Email format is incorrect.",
+    "PARAM.INVALIDATE.NAME" : "The name format is invalid. (2 to 10 characters, cannot include symbols, must be in English, Korean, or Japanese, and must contain numbers.)",
     "PARAM.INVALIDATE.PASSWORD" : "Password format is incorrect. (8 characters or more, including numbers)",
     "PARAM.INVALIDATE.ID" : "Id format is incorrect. (6 or more characters, must be English characters, and must not include symbols)",
     "PARAM.DUPLICATE.ID" : "Duplicate ID exists.",

@@ -8,7 +8,6 @@ import { CrepenExplorerDefaultService } from "./explorer.service";
 import { I18n, I18nContext } from "nestjs-i18n";
 import { AuthJwtGuard } from "@crepen-nest/module/config/passport/jwt/jwt.guard";
 import { AuthUser } from "@crepen-nest/lib/extensions/decorator/param/auth-user.param.decorator";
-import { UserEntity } from "../common-user/user/entity/user.default.entity";
 import { ObjectUtil, StringUtil } from "@crepen-nest/lib/util";
 import { RepositoryPaginationResult } from "@crepen-nest/interface/repo";
 import { ExplorerTreeEntity } from "./entity/tree.explorer.default.entity";
@@ -16,6 +15,7 @@ import * as humps from 'humps'
 import { ExplorerSearchFilterData } from "./interface/explorer.object";
 import { FolderNotFoundError } from "@crepen-nest/lib/error/api/explorer/not_found.folder.error";
 import { TokenTypeEnum } from "../auth/enum/token-type.auth.request";
+import { UserEntity } from "../user/entity/user.default.entity";
 
 @ApiTags('[EXPLORER] 탐색기 - 공통')
 @ApiHeader({

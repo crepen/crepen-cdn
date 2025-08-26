@@ -194,6 +194,61 @@
                     }
                 }
 
+                .cp-profile-account-page {
+                    .cp-account-edit-data {
+                        .cp-widget-header {
+                            .cp-widget-action {
+                                display: flex;
+                                justify-content: flex-end;
+                                align-items: center;
+                                column-gap: 4px;
+
+                                .cp-edit-common-button {
+                                    border: none;
+                                    background-color: transparent;
+                                    cursor: pointer;
+                                    aspect-ratio: 1;
+                                    transition: 0.3s all;
+                                    border-radius: 50%;
+
+                                    &:has(.cp-button-icon.cp-loading) {
+                                        pointer-events: none;
+                                    }
+
+                                    .cp-button-icon {
+                                        color: #64748b;
+
+                                        &.cp-loading {
+                                            svg {
+                                                animation: loading-rotate 0.3s infinite both ease-in;
+
+                                                @keyframes loading-rotate {
+                                                    0% {
+                                                        transform: rotate(0deg);
+                                                    }
+
+                                                    100% {
+                                                        transform: rotate(360deg);
+                                                    }
+                                                }
+                                            }
+
+                                        }
+                                    }
+
+
+                                    &:hover {
+                                        box-shadow: 0px 0px 10px -3px #667eea;
+
+                                        .cp-button-icon {
+                                            color: #764ba2;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
 
                 .cp-widget {
@@ -229,6 +284,7 @@
 
                         .cp-error-box {
                             padding: 20px 24px;
+
                             .cp-error-icon {
                                 display: flex;
                                 justify-content: center;

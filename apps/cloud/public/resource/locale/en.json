@@ -106,6 +106,9 @@
       },
       "profile" : {
         "common" : {
+          "success" : {
+            "save" : "Success"
+          },
           "error" : {
             "data-not-found" : "User data load failed."
           }

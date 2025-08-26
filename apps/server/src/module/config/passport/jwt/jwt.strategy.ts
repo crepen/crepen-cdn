@@ -1,6 +1,5 @@
 import { TokenUnauthorizeError } from "@crepen-nest/lib/error/api/common/token_expire.authorize.error";
 import { StringUtil } from "@crepen-nest/lib/util";
-import { CrepenUserRouteService } from "@crepen-nest/module/app/common-user/user/user.service";
 import { UserEntity } from "@crepen-nest/module/app/user/entity/user.default.entity";
 import { CrepenUserService } from "@crepen-nest/module/app/user/user.service";
 import { Injectable } from "@nestjs/common";
@@ -30,6 +29,8 @@ export class CrepenAuthJwtStrategy extends PassportStrategy(Strategy) {
 
     async validate(req: Request, payload: Record<string, any>, done: VerifiedCallback): Promise<CrepenTokenData | void> {
         const token: string | undefined = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
+
+        // console.log(token);
 
         let validateUser: UserEntity | undefined = undefined;
 

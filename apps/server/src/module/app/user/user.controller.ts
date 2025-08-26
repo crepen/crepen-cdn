@@ -1,6 +1,6 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Query, Req } from "@nestjs/common";
+import { Body, Controller, Get, Headers, HttpCode, HttpStatus, NotFoundException, Param, ParseArrayPipe, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { CrepenLoggerService } from "../common/logger/logger.service";
-import { ApiHeader, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiHeader, ApiTags } from "@nestjs/swagger";
 import { BaseResponse } from "@crepen-nest/lib/common/base.response";
 import { I18n, I18nContext } from "nestjs-i18n";
 import { AddUserRequest } from "./dto/add-user.user.request";
@@ -9,6 +9,13 @@ import { DatabaseService } from "@crepen-nest/module/config/database/database.co
 import { UserNotFoundError } from "@crepen-nest/lib/error/api/user/not_found.user.error";
 import { AddUserValidateCheckRequest } from "./dto/validate-check.user.request";
 import { CheckUserValueValidateCategory } from "./types/validate-add-value.user";
+import { UserEditCategory, UserEditDataRequest } from "./dto/edit-data.user.request";
+import { AuthUser } from "@crepen-nest/lib/extensions/decorator/param/auth-user.param.decorator";
+import { UserEntity } from "./entity/user.default.entity";
+import { AuthJwtGuard } from "@crepen-nest/module/config/passport/jwt/jwt.guard";
+import { TokenTypeEnum } from "../auth/enum/token-type.auth.request";
+import { CrepenAuthService } from "../auth/auth.service";
+import { CustomParseStringToArrayPipe } from "@crepen-nest/lib/extensions/pipe/custom-parse-array.pipe";
 
 
 @ApiTags('[USER] 사용자 관리')
@@ -24,6 +31,7 @@ export class CrepenUserController {
         private readonly logService: CrepenLoggerService,
         private readonly userService: CrepenUserService,
         private readonly databaseService: DatabaseService,
+        private readonly authService: CrepenAuthService,
     ) { }
 
 
@@ -67,6 +75,9 @@ export class CrepenUserController {
         @Body() reqBody: AddUserRequest
     ) {
         return (await this.databaseService.getDefault()).transaction(async (manager) => {
+
+            console.log(reqBody);
+
             const addUser = await this.userService.addUser(
                 reqBody.id,
                 reqBody.password,
@@ -88,16 +99,27 @@ export class CrepenUserController {
 
     @Post('/add/validate')
     @HttpCode(HttpStatus.OK)
+    // @UseGuards(AuthJwtGuard.whitelist(TokenTypeEnum.ACCESS_TOKEN))
     async addUserValidateCheck(
         @Req() req: Request,
         @I18n() i18n: I18nContext,
         @Body() reqBody: AddUserValidateCheckRequest,
-        @Query('category') category : string
+        @AuthUser() user: UserEntity,
+        @Headers('authorization') token: string | undefined,
+        @Query('category', CustomParseStringToArrayPipe) category: CheckUserValueValidateCategory[]
     ) {
+        let userData: UserEntity = undefined;
+        try {
+            userData = await this.authService.getUserDataFromToken(token);
+        }
+        catch (e) {
+
+        }
 
         const validateData = await this.userService.validateAddUserInfo(
-            (category.split(',')) as CheckUserValueValidateCategory[],
+            category,
             i18n,
+            userData,
             reqBody.id,
             reqBody.password,
             reqBody.name,
@@ -109,6 +131,41 @@ export class CrepenUserController {
             HttpStatus.OK,
             i18n.t('common.SUCCESS')
         )
+    }
+
+
+    @Put()
+    @ApiBearerAuth('token')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(AuthJwtGuard.whitelist(TokenTypeEnum.ACCESS_TOKEN))
+    async editUserData(
+        @Req() req: Request,
+        @I18n() i18n: I18nContext,
+        @Body() reqBody: UserEditDataRequest,
+        @AuthUser() user: UserEntity,
+        @Query('edit', CustomParseStringToArrayPipe) editCategory?: UserEditCategory[],
+    ) {
+        return (await this.databaseService.getDefault()).transaction(async (manager) => {
+
+            console.log(reqBody , editCategory);
+            
+            void await this.userService.editUserData(
+                editCategory,
+                user.uid,
+                reqBody.name,
+                reqBody.email,
+                reqBody.language,
+                {manager : manager}
+            )
+
+            return BaseResponse.ok(
+                {
+                    edit: editCategory
+                },
+                HttpStatus.OK,
+                i18n.t('common.SUCCESS')
+            )
+        })
     }
 
 

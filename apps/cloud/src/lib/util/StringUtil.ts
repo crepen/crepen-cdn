@@ -61,7 +61,8 @@ export class StringUtil {
                 return false;
             }
         }
-        catch (e) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        catch (_) {
             return false;
         }
 
@@ -97,7 +98,7 @@ export class StringUtil {
                 return 0
             }
 
-            let charCode = charValue.charCodeAt(0)
+            const charCode = charValue.charCodeAt(0)
             if (charCode <= 0x00007f) {
                 return 1
             } else if (charCode <= 0x0007ff) {

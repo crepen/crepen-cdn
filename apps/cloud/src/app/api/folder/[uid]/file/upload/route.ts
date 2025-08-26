@@ -2,8 +2,6 @@ import { LocaleConfig } from "@web/lib/config/LocaleConfig";
 import { CustomRouteError } from "@web/lib/error/CustomRouteError";
 import { AuthProvider } from "@web/lib/module/auth/AuthProvider";
 import { ServerLocaleProvider } from "@web/lib/module/locale/ServerLocaleProvider";
-import multer from "multer";
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import urlJoin from "url-join";
 
@@ -11,7 +9,7 @@ const NESTJS_API_URL = process.env.API_URL || 'http://localhost:13332';
 
 
 
-export const PUT = async (req: NextRequest, { params }: { params: { uid: string } }) => {
+export const PUT = async (req: NextRequest, { params }: { params: Promise<{ uid: string }> }) => {
 
     const ss = NextResponse.json({});
 

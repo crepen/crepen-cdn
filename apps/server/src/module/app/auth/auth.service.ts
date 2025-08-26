@@ -91,12 +91,14 @@ export class CrepenAuthService {
     }
 
 
-    getUserDataFromToken = async (token: string, options?: RepositoryOptions): Promise<UserEntity> => {
+    getUserDataFromToken = async (tokenStr: string, options?: RepositoryOptions): Promise<UserEntity> => {
+        const token = tokenStr.replace('Bearer' , '').trim();
         let tokenData: TokenData = undefined;
         try {
             tokenData = await this.jwtService.verifyAsync<TokenData>(token);
         }
         catch (e) {
+            console.log('🛑 EXPIRE' , token)
             throw new AuthUserTokenExpiredError();
         }
 
@@ -105,6 +107,7 @@ export class CrepenAuthService {
 
 
         if (!matchUser) {
+            console.log('🛑 NOT MATCH')
             throw new UserNotFoundError();
         }
 

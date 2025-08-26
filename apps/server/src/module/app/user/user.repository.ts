@@ -85,4 +85,11 @@ export class CrepenUserRepository extends CrepenBaseRepository {
             }
         })
     }
+
+    editUser = async (editUserEntity : UserEntity, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(UserEntity) ?? await this.getRepository('default', UserEntity);
+
+        console.log("SV DATA" , editUserEntity);
+        return dataSource.save(editUserEntity);
+    }
 }

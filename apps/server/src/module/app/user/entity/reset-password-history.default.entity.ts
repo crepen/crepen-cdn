@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
 import { UserResetPasswordStateEnum } from "../enum/reset-password-state.enum";
 
-@Entity('reset-password')
+@Entity('log-reset-password')
 export class UserResetPasswordHistoryEntity {
 
     @PrimaryColumn({ name: 'uid', type: 'varchar', length: 50 })

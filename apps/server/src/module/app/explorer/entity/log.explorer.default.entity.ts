@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { ExplorerItemType } from "../enum/item-type.explorer.enum";
 import { ExplorerLogTypeEnum } from "../enum/log-type.explorer.enum";
 
-@Entity('explorer-log')
+@Entity('log-explorer')
 export class ExplorerLogEntity {
     @PrimaryGeneratedColumn({ name: 'idx', type: 'int', unsigned: true })
     idx: number;

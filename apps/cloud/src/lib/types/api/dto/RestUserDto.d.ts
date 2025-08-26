@@ -5,6 +5,10 @@ export interface RestAddUserProp {
     userEmail?: string
 }
 
+interface RestEditUserProp{
+    userName? : string
+    userEmail? : string
+}
 
 
 export interface RestAddUserResponse {
@@ -20,4 +24,9 @@ export interface RestUserDataValidateResponse {
     password?: string,
     email? :string,
     name? : string
+}
+
+
+export interface RestUserEditDataResponse {
+    edit : RestUserDataValidateCheckCategory[]
 }

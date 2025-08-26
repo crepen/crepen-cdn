@@ -8,6 +8,9 @@ import { CustomActionError } from "../error/CustomActionError";
 import { cookies } from "next/headers";
 import { StringUtil } from "../util/StringUtil";
 import { BaseApiResultEntity } from "../types/api/BaseApiResultEntity";
+import { RestUserDataValidateCheckCategory } from "../types/api/dto/RestUserDto";
+import { AuthProvider } from "../module/auth/AuthProvider";
+import { RestAuthDataService } from "../module/api-module/RestAuthDataService";
 
 interface AddUserActionResult {
     success: boolean,
@@ -90,7 +93,7 @@ export const FindIdAndPasswordAction = async (type: 'id' | 'password', emailOrId
         }
 
 
-        if(!res.success){
+        if (!res.success) {
             throw new CustomActionError(res.message);
         }
 
@@ -100,6 +103,106 @@ export const FindIdAndPasswordAction = async (type: 'id' | 'password', emailOrId
         }
     }
     catch (e) {
+        let message = await localeProv.translate('common.system.UNKNOWN_ERROR');
+
+        if (e instanceof CustomActionError) {
+            message = e.message;
+        }
+
+        return {
+            success: false,
+            message: message
+        }
+    }
+}
+
+
+export const EditUserAction = async (categories: RestUserDataValidateCheckCategory[], userName: string | undefined, userEmail: string | undefined) => {
+    const localeProv = ServerLocaleProvider.current(LocaleConfig);
+
+    try {
+
+
+        const cookie = await cookies();
+
+
+        const refreshTokenResult = await AuthProvider.current().refreshSession({ readCookie: cookie, writeCookie: cookie });
+
+        if (!refreshTokenResult.state) {
+            throw new CustomActionError(await localeProv.translate('common.system.UNAUTHORIZED'))
+        }
+
+
+        const locale = await (await ServerLocaleInitializer.current(LocaleConfig)).get({
+            readCookie: cookie
+        });
+
+        const res = await RestUserDataService.current(refreshTokenResult.token, locale ?? LocaleConfig.defaultLocale)
+            .editUserData(categories, {
+                userEmail: userEmail,
+                userName: userName,
+            });
+
+        if (!res.success) {
+            throw new CustomActionError(res.message);
+        }
+
+
+        return {
+            success: true,
+            message: await localeProv.translate('page.main.profile.common.success.save')
+        }
+    }
+    catch (e) {
+
+        let message = await localeProv.translate('common.system.UNKNOWN_ERROR');
+
+        if (e instanceof CustomActionError) {
+            message = e.message;
+        }
+
+        return {
+            success: false,
+            message: message
+        }
+    }
+}
+
+
+export const GetSessionUserDataAction = async () => {
+    const localeProv = ServerLocaleProvider.current(LocaleConfig);
+
+
+    try {
+        const cookie = await cookies();
+
+
+        const refreshTokenResult = await AuthProvider.current().refreshSession({ readCookie: cookie, writeCookie: cookie });
+
+        if (!refreshTokenResult.state) {
+            throw new CustomActionError(await localeProv.translate('common.system.UNAUTHORIZED'))
+        }
+
+
+        const locale = await (await ServerLocaleInitializer.current(LocaleConfig)).get({
+            readCookie: cookie
+        });
+
+        const res = await RestAuthDataService.current(refreshTokenResult.token, locale ?? LocaleConfig.defaultLocale)
+            .getSignInUserData();
+
+        if (!res.success) {
+            throw new CustomActionError(res.message);
+        }
+
+
+        return {
+            success: true,
+            data: res.data
+        }
+    }
+    catch (e) {
+
         let message = await localeProv.translate('common.system.UNKNOWN_ERROR');
 
         if (e instanceof CustomActionError) {

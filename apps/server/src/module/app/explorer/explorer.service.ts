@@ -6,7 +6,6 @@ import { SearchFilterParamOptions } from "@crepen-nest/interface/request-param";
 import { I18nService } from "nestjs-i18n";
 import { ExplorerSearchFilterData } from "./interface/explorer.object";
 import { StringUtil } from "@crepen-nest/lib/util";
-import { UserEntity } from "../common-user/user/entity/user.default.entity";
 import { RepositoryOptions } from "@crepen-nest/interface/repo";
 import { randomUUID } from "crypto";
 import { ExplorerItemType } from "./enum/item-type.explorer.enum";

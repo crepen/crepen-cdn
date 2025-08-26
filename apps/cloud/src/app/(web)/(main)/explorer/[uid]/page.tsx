@@ -16,15 +16,13 @@ import { ServerLocaleInitializer } from '@web/lib/module/locale/ServerLocaleInit
 import { ServerLocaleProvider } from '@web/lib/module/locale/ServerLocaleProvider';
 import { RestListResult, RestSearchFilterOptions } from '@web/lib/types/api/dto/RestCommonDto';
 import { ExplorerFilterData, ExplorerFolderDataResult, ExplorerTreeEntity } from '@web/lib/types/api/dto/RestExplorerDto';
-import { ArrayUtil } from '@web/lib/util/ArrayUtil';
 import { StringUtil } from '@web/lib/util/StringUtil';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { Fragment, Suspense } from 'react';
-import { FcHighPriority, FcOpenedFolder } from 'react-icons/fc';
+import { FcHighPriority } from 'react-icons/fc';
 
 interface MainExplorerDefaultPageProp {
-    uid?: string,
     searchParams?: Promise<{
         sortType?: string,
         sortCategory?: string,
@@ -42,7 +40,8 @@ const MainExplorerListPage = async (prop: MainExplorerDefaultPageProp) => {
     // #region PROCESS
     const localeProv = ServerLocaleProvider.current(LocaleConfig);
     const searchParam = await prop.searchParams;
-    const params = await prop.params;
+    const paramObj = await prop.params;
+    const uid = paramObj?.uid ?? 'NFD';
 
     const searchParamArray = Object.keys(searchParam ?? {})
         .map(key => (`${key}=${encodeURIComponent((searchParam as Record<string, string>)![key!] ?? '')}`));
@@ -91,19 +90,19 @@ const MainExplorerListPage = async (prop: MainExplorerDefaultPageProp) => {
 
         const folderRes = await RestExplorerDataService
             .current(session?.token, locale ?? LocaleConfig.defaultLocale)
-            .getFolderData(params?.uid ?? 'NTF');
+            .getFolderData(uid);
 
 
         folderData.dir = folderRes.data?.dir;
         folderData.path = folderRes.data?.path ?? [];
 
         folderData.path.push({
-            depth : 9999999999999,
-            title : 'Root',
-            uid : 'root'
+            depth: 9999999999999,
+            title: 'Root',
+            uid: 'root'
         })
 
-        if (params?.uid === 'root') {
+        if ( uid === 'root') {
             folderData.dir = {
                 title: 'Root',
                 uid: 'root',
@@ -147,7 +146,7 @@ const MainExplorerListPage = async (prop: MainExplorerDefaultPageProp) => {
         }
 
         const restResult = await RestExplorerDataService.current(session?.token, locale ?? LocaleConfig.defaultLocale)
-            .getChild(params?.uid ?? 'NTF', paramFilter)
+            .getChild(uid, paramFilter)
 
 
 
@@ -185,22 +184,22 @@ const MainExplorerListPage = async (prop: MainExplorerDefaultPageProp) => {
             <CommonPage.Header>
                 <div className='cp-top-header'>
                     <div className='cp-flex-left'>
-                        <HistoryBackButton className='cp-back-bt' 
-                            moveFolderUid={folderData.path.sort((x, y) => x.depth - y.depth).map(x=>x.uid)[0]}
+                        <HistoryBackButton className='cp-back-bt'
+                            moveFolderUid={folderData.path.sort((x, y) => x.depth - y.depth).map(x => x.uid)[0]}
                         />
                         <ExplorerFolderNav>
                             {
                                 folderData.path.sort((x, y) => y.depth - x.depth).map((item, idx, arr) => {
                                     return (
                                         <Fragment key={idx}>
-                                           
+
                                             <ExplorerFolderNav.Item
                                                 title={item.title}
                                                 link={`/explorer/${item.uid}`}
                                                 disabled={idx === arr.length - 1}
                                             />
-                                             {
-                                                ( idx !== arr.length-1) &&
+                                            {
+                                                (idx !== arr.length - 1) &&
                                                 <ExplorerFolderNav.Spliter />
                                             }
                                         </Fragment>
@@ -212,10 +211,10 @@ const MainExplorerListPage = async (prop: MainExplorerDefaultPageProp) => {
                     </div>
                     <div className='cp-flex-right'>
                         <ExplorerNewFolderButton
-                            folderUid={params?.uid}
+                            folderUid={uid}
                         />
                         <ExplorerFileUploadButton
-                            folderUid={params?.uid}
+                            folderUid={uid}
                         />
                     </div>
 
@@ -243,7 +242,7 @@ const MainExplorerListPage = async (prop: MainExplorerDefaultPageProp) => {
                                     </div>
                                 </div>
                                 : <ExplorerListTable
-                                    uid={params?.uid ?? 'ROOT'}
+                                    uid={uid ?? 'ROOT'}
                                     treeData={treeData}
                                     defaultFilterData={defaultFilterData}
                                     searchParam={searchParamStr}

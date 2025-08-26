@@ -54,7 +54,7 @@ export const SignUpForm = () => {
             `?category=${categories.join(',')}`
         );
 
-        const applyData : SignUpData = {};
+        const applyData: SignUpData = {};
 
 
 
@@ -72,7 +72,13 @@ export const SignUpForm = () => {
             }
         })
 
+
+
         try {
+            if (res.status === 500) {
+                throw new Error();
+            }
+
             const resData = await res.json();
 
             if (categories.find(x => x === 'id')) {
@@ -127,7 +133,7 @@ export const SignUpForm = () => {
                 setCheckPasswordError(localeHook.translate('page.signup.message.error.password-not-match'))
             }
 
-            if(applyData){
+            if (applyData) {
                 signUpHook.setData(applyData);
             }
 
@@ -135,6 +141,8 @@ export const SignUpForm = () => {
             return isError;
         }
         catch (e) {
+            console.log("EFR", e);
+
             const message = localeHook.translate('common.system.UNKNOWN_ERROR');
 
             if (categories.find(x => x === 'id')) {
@@ -153,7 +161,7 @@ export const SignUpForm = () => {
 
 
 
-            return false;
+            return true;
         }
 
 
@@ -190,7 +198,7 @@ export const SignUpForm = () => {
         <SignCommonForm
             className="cp-signup-form"
         >
-           
+
             <SignUpStepper
                 submit={() => applyUser()}
                 onChangeStep={() => {
@@ -204,21 +212,13 @@ export const SignUpForm = () => {
                 <SignUpStepper.Item
                     stepCount={1}
                     key={1}
-                    validate={() => {
+                    validate={async () => {
 
-                        let isError = false;
+                        const result = await validateCheck(
+                            ["name"]
+                        );
 
-                        if (StringUtil.isEmpty(userNameRef.current?.value)) {
-                            isError = true;
-                            setNameError(localeHook.translate('page.signup.message.error.name-empty'))
-                        }
-                        else {
-                            signUpHook.setData({
-                                name : userNameRef.current?.value
-                            });
-                        }
-
-                        return isError;
+                        return result;
                     }}
                 >
                     <SignCommonForm.Input
@@ -279,7 +279,7 @@ export const SignUpForm = () => {
                         errorMessage={passwordError}
                         onChange={(evt) => {
                             signUpHook.setData({
-                                password : evt.currentTarget.value
+                                password: evt.currentTarget.value
                             })
                         }}
                     />

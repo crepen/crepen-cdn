@@ -4,7 +4,7 @@ services:
     hostname: crepen-cdn-web
     build:
       context: .
-      dockerfile: dockerfile-web
+      dockerfile: dockerfile-cloud
     environment:
       - API_URL=http://crepen-cdn-server:3332
     ports:
@@ -22,6 +22,8 @@ services:
     depends_on:
       - web
       - db
+    environment:
+      - CREPEN_CDN_NEST_PORT=1111
     volumes: 
       - F:\2025\CrepenCDN\docker-volume\server\config:/etc/crepen/cdn/config
     networks:
@@ -39,7 +41,7 @@ services:
     depends_on:
       - web
     ports:
-      - "13306:13306"
+      - "13305:13305"
     volumes:
       - F:\2025\CrepenCDN\docker-volume\db\data:/var/lib/mysql
     networks:
