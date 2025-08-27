@@ -75,7 +75,7 @@ export class CrepenFileRouteService {
                 const addFileData = await this.repo.addFileStore(fileStoreEntity, { manager: manager });
 
                 const savePath = join(
-                    this.configService.get('path.fileStore'),
+                    this.configService.get('path.file'),
                     encryptFile.file.originalname
                 );
 
@@ -157,7 +157,7 @@ export class CrepenFileRouteService {
         }
 
         const savePath = join(
-            this.configService.get('path.fileStore'),
+            this.configService.get('path.file'),
             fileInfo.fileStore.fileName
         );
 
@@ -270,7 +270,7 @@ export class CrepenFileRouteService {
 
                 // SAVE FILE
                 const savePath = join(
-                    this.configService.get('path.fileStore'),
+                    this.configService.get('path.file'),
                     encryptFile.file.originalname
                 );
 

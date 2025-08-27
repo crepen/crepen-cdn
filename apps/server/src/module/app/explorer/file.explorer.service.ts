@@ -34,7 +34,7 @@ export class CrepenExplorerFileService {
         return (await this.databaseService.getDefault()).transaction(async (manager) => {
 
             const saveTempStreamDir = path.join(
-                this.configService.get('path.fileStore'),
+                this.configService.get('path.file'),
                 'temp'
             )
 
@@ -79,7 +79,7 @@ export class CrepenExplorerFileService {
 
 
             const saveDirPath = path.join(
-                this.configService.get('path.fileStore'),
+                this.configService.get('path.file'),
                 catalog,
                 user.uid
             );

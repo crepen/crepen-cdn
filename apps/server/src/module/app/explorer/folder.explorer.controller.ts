@@ -110,7 +110,7 @@ export class CrepenExplorerFolderController {
             const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
 
             const saveTempStreamDir = path.join(
-                this.configService.get('path.fileStore'),
+                this.configService.get('path.file'),
                 'temp'
             )
 

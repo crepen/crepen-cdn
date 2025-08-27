@@ -231,7 +231,7 @@ export class PreInitializer {
     }
 
 
-    ////path.fileStore
+    ////path.file
     loadPathConfig = async () => {
         let dataSource: DataSource;
 

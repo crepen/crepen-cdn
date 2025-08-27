@@ -5,32 +5,18 @@ import { join } from "path";
 import * as os from 'os';
 import { GlobalDataPath } from "@crepen-nest/lib/types/enum/global-path.enum";
 import { Logger } from "@nestjs/common";
+import { StringUtil } from "@crepen-nest/lib/util";
 
 export class SQLiteDataSourceProvider implements DataSourceProviderInterface {
     constructor() {
-        let databasePath = '/';
+        let databasePath = process.env.CREPEN_CDN_CONFIG_DIR;
 
-        if(process.env.CREPEN_CDN_DATA_DIR){
-            databasePath = process.env.CREPEN_CDN_DATA_DIR;
+        if(StringUtil.isEmpty(databasePath)){
+            databasePath = './run-obj/config'
         }
-        else if (os.type() === 'Linux') {
-            databasePath = GlobalDataPath.DATA_DIR_PATH_LINUX;
-        }
-        else if (os.type() === 'Windows_NT') {
-            databasePath = GlobalDataPath.DATA_DIR_PATH_WIN;
-        }
-        else if (os.type() === 'Darwin') {
-            databasePath = GlobalDataPath.DATA_DIR_PATH_MAC;
-        }
-
-       
 
         const entityDir = join(__dirname, '../../../module/**/*.local.entity{.ts,.js}')
         const moduleEntityDir = join(__dirname, '../../../lib/types/entity/**/*.local.entity{.ts,.js}')
-
-        //  Logger.log(`Load Local Database Entity : `);
-        //  Logger.log(` - ${entityDir} `);
-        //  Logger.log(` - ${moduleEntityDir} `);
 
         this.dataSource = new DataSource({
             type: 'sqlite',
