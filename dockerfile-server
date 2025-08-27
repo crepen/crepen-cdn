@@ -24,10 +24,10 @@ RUN chown -R 1001:1001 /var/log/crepen/cdn
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nestjs
 
-COPY --from=installer --chown=nestjs:nodejs /app/apps/server/package.json ./
-COPY --from=installer --chown=nestjs:nodejs /app/apps/server/node_modules ./node_modules
-COPY --from=installer --chown=nestjs:nodejs /app/node_modules ./node_modules
-COPY --from=installer --chown=nestjs:nodejs /app/apps/server/dist ./dist
+COPY --from=builder --chown=nestjs:nodejs /app/apps/server/package.json ./
+COPY --from=builder --chown=nestjs:nodejs /app/apps/server/node_modules ./node_modules
+COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nestjs:nodejs /app/apps/server/dist ./dist
 
 USER nestjs
 
