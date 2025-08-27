@@ -11,12 +11,10 @@ import { UserRoleEnum } from "./enum/user-role.enum";
 import { RepositoryOptions } from "@crepen-nest/interface/repo";
 import { UserEntity } from "./entity/user.default.entity";
 import * as nodeMailer from 'nodemailer'
-import urlJoin from "url-join";
 import { SendResetPasswordMailFailed } from "@crepen-nest/lib/error/api/user/send_email.user.error";
 import { CheckUserValueValidateCategory } from "./types/validate-add-value.user";
 import { CommonError } from "@crepen-nest/lib/error/common.error";
 import { I18nContext } from "nestjs-i18n";
-import { isEmail } from "class-validator";
 import { UserInvalidateEmailError } from "@crepen-nest/lib/error/api/user/validate_email.user.error";
 import { CrepenUserValidateService } from "./validate.user.service";
 import { UserInvalidateNameError } from "@crepen-nest/lib/error/api/user/validate_name.user.error";
@@ -192,6 +190,8 @@ export class CrepenUserService {
 
     findIdOrPassword = async (findCategory: 'id' | 'password', matchIdOrEmail?: string, resetUrl?: string, options?: RepositoryOptions) => {
 
+        const urlJoin = await import('url-join').then(mod => mod.default);
+
         let matchUser: UserEntity = undefined;
 
         if (findCategory === 'id') {
@@ -201,8 +201,6 @@ export class CrepenUserService {
             matchUser = await this.getUserByIdOrEmail(matchIdOrEmail);
         }
 
-
-        console.log(matchUser)
 
         if (matchUser) {
 

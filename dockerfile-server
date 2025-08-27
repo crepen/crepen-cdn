@@ -35,6 +35,7 @@ USER nestjs
 
 ENV HOSTNAME=0.0.0.0
 ENV PORT=13332
+ENV CREPEN_CDN_NEST_PORT=test   
 
 ENV CREPEN_CDN_DATA_DIR=/var/opt/crepen/cdn
 ENV CREPEN_CDN_LOG_DIR=/var/log/crepen/cdn

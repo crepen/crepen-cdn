@@ -4,7 +4,6 @@ import * as Winston from 'winston';
 import * as path from "path";
 import { ConfigService } from "@nestjs/config";
 import 'winston-daily-rotate-file';
-import chalk from "chalk";
 import * as os from 'os';
 import { GlobalLogPath } from "@crepen-nest/lib/types/enum/global-path.enum";
 
@@ -19,9 +18,11 @@ export class LoggerConfigService {
     ) { }
 
 
-    getWinstonLogger = () => WinstonModule.createLogger(this.getWinstonOptions())
+    getWinstonLogger = async () => WinstonModule.createLogger(await this.getWinstonOptions())
 
-    private getWinstonOptions = (): Winston.LoggerOptions => {
+    private getWinstonOptions = async (): Promise<Winston.LoggerOptions> => {
+
+        const chalk = await import('chalk').then(mod => mod.default);
 
         let logPath : string = GlobalLogPath.LOG_DIR_PATH_LINUX
 
