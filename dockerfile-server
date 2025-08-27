@@ -23,6 +23,12 @@ RUN chown -R 1001:1001 /var/log/crepen/cdn
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nestjs
+
+COPY --from=installer --chown=nestjs:nodejs /app/apps/server/package.json ./
+COPY --from=installer --chown=nestjs:nodejs /app/apps/server/node_modules ./node_modules
+COPY --from=installer --chown=nestjs:nodejs /app/node_modules ./node_modules
+COPY --from=installer --chown=nestjs:nodejs /app/apps/server/dist ./dist
+
 USER nestjs
 
 ENV HOSTNAME=0.0.0.0
@@ -32,11 +38,6 @@ ENV CREPEN_CDN_DATA_DIR=/var/opt/crepen/cdn
 ENV CREPEN_CDN_LOG_DIR=/var/log/crepen/cdn
 ENV CREPEN_CDN_PORT=13332
 
-
-COPY --from=installer --chown=nestjs:nodejs /app/apps/server/package.json ./
-COPY --from=installer --chown=nestjs:nodejs /app/apps/server/node_modules ./node_modules
-COPY --from=installer --chown=nestjs:nodejs /app/node_modules ./node_modules
-COPY --from=installer --chown=nestjs:nodejs /app/apps/server/dist ./dist
 
 CMD ["node", "dist/main.js"]
 
