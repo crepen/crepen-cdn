@@ -25,6 +25,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/cloud/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/cloud/.next/static ./apps/cloud/.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/apps/cloud/public ./apps/cloud/public
 
+ENV HOST=0.0.0.0
+ENV PORT=3000
+
 CMD ["node", "apps/cloud/server.js"]
 
 
