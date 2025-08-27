@@ -2,6 +2,7 @@ stages:
   - login     
   - build
   - publish
+  - clear
   - runner
   - logout
 
@@ -51,6 +52,18 @@ publish-server:
     - build-server
   script: 
     - cat ~/.docker/config.json
+
+
+
+
+clear-image:
+  stage: clear
+  needs:
+    - publish-cloud
+    - publish-server
+  script:
+    - docker image prune -a
+
 
 
 run-cloud : 
