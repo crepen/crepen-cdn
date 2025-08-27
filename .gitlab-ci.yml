@@ -70,6 +70,7 @@ run-cloud :
   stage: runner
   needs:
     - publish-cloud
+    - clear-image
   script : 
     - echo "Run Cloud"
     - echo $CI_COMMIT_SHA
@@ -80,6 +81,7 @@ run-server :
   stage: runner
   needs:
     - publish-server
+    - clear-image
   script : 
     - echo "Run Server"
     - echo $CI_COMMIT_SHA
