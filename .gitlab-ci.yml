@@ -48,7 +48,8 @@ publish-server:
   needs:
     - build-server
   script: 
-    - echo "1"
+    - docker push $NEXUS_IMAGE_REPO/crepen-cdn-server:$CI_COMMIT_SHA
+    - docker push $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
 
 
 
@@ -111,9 +112,9 @@ run-server :
     - check-nginx-network
     - check-crepen-cdn-network
   script : 
-    - echo "Run Server"
-    - echo $CI_COMMIT_SHA
-    - docker ps
+    - docker rm -f crepen-cdn-server
+    - docker run -d --name crepen-cdn-server --hostname crepen-cdn-server  $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
+    - docker network connect crepen-cdn-network crepen-cdn-server
 
 
 
