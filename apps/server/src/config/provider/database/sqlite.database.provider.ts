@@ -10,7 +10,10 @@ export class SQLiteDataSourceProvider implements DataSourceProviderInterface {
     constructor() {
         let databasePath = '/';
 
-        if (os.type() === 'Linux') {
+        if(process.env.CREPEN_CDN_DATA_DIR){
+            databasePath = process.env.CREPEN_CDN_DATA_DIR;
+        }
+        else if (os.type() === 'Linux') {
             databasePath = GlobalDataPath.DATA_DIR_PATH_LINUX;
         }
         else if (os.type() === 'Windows_NT') {

@@ -23,9 +23,12 @@ export class LoggerConfigService {
 
     private getWinstonOptions = (): Winston.LoggerOptions => {
 
-        let logPath = GlobalLogPath.LOG_DIR_PATH_LINUX
+        let logPath : string = GlobalLogPath.LOG_DIR_PATH_LINUX
 
-        if (os.type() === 'Linux') {
+        if (process.env.CREPEN_CDN_LOG_DIR){
+            logPath = process.env.CREPEN_CDN_LOG_DIR;
+        }
+        else if (os.type() === 'Linux') {
             logPath = GlobalLogPath.LOG_DIR_PATH_LINUX;
         }
         else if (os.type() === 'Windows_NT') {

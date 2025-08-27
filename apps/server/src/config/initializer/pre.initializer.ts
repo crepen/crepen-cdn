@@ -256,7 +256,10 @@ export class PreInitializer {
 
             if (pathData === null) {
                 let dataPath: string;
-                if (os.type() === 'Linux') {
+                if(process.env.CREPEN_CDN_DATA_DIR){
+                    dataPath = process.env.CREPEN_CDN_DATA_DIR;
+                }
+                else if (os.type() === 'Linux') {
                     dataPath = GlobalDataPath.DATA_DIR_PATH_LINUX;
                 }
                 else if (os.type() === 'Windows_NT') {

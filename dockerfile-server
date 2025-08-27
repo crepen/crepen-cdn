@@ -29,6 +29,8 @@ COPY --from=builder --chown=nestjs:nodejs /app/apps/server/node_modules ./node_m
 COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nestjs:nodejs /app/apps/server/dist ./dist
 
+RUN chown -R 1001:1001 /app
+
 USER nestjs
 
 ENV HOSTNAME=0.0.0.0
