@@ -3,6 +3,7 @@ stages:
   - build
   - publish
   - clear
+  - check-network
   - runner
   - logout
 
@@ -62,16 +63,47 @@ clear-image:
     - publish-cloud
     - publish-server
   script:
-    - docker image prune -a
+    - docker image prune -a -f
 
+
+check-nginx-network:
+  stage: check-network
+  needs:
+    - clear-image
+  script:
+    - echo "Docker 네트워크 존재 여부 확인..."
+    - |
+      if ! docker network ls --format '{{.Name}}' | grep -q '^nginx-network$'; then
+        echo "네트워크가 존재하지 않습니다. 생성 중..."
+        docker network create nginx-network
+      else
+        echo "네트워크가 이미 존재합니다."
+      fi
+
+check-crepen-cdn-network:
+  stage: check-network
+  needs:
+    - clear-image
+  script:
+    - echo "Docker 네트워크 존재 여부 확인..."
+    - |
+      if ! docker network ls --format '{{.Name}}' | grep -q '^crepen-cdn-network$'; then
+        echo "네트워크가 존재하지 않습니다. 생성 중..."
+        docker network create crepen-cdn-network
+      else
+        echo "네트워크가 이미 존재합니다."
+      fi
 
 
 run-cloud : 
   stage: runner
   needs:
     - publish-cloud
-    - clear-image
+    - check-nginx-network
+    - check-crepen-cdn-network
   script : 
+    - docker rm -f crepen-cdn-cloud
+    - docker run -d --name crepen-cdn-cloud -p 2500:3000 -e API_URL= $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
     - echo "Run Cloud"
     - echo $CI_COMMIT_SHA
     - docker ps
@@ -81,7 +113,8 @@ run-server :
   stage: runner
   needs:
     - publish-server
-    - clear-image
+    - check-nginx-network
+    - check-crepen-cdn-network
   script : 
     - echo "Run Server"
     - echo $CI_COMMIT_SHA
