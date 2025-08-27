@@ -21,8 +21,6 @@ build-cloud:
   needs:
     - nexus-login
   script:
-    - echo "Build Cloud"
-    - echo $CI_COMMIT_SHA
     - docker build --build-arg BASE_PATH=/cloud --no-cache -f dockerfile-cloud -t $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA .
     - docker tag $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
 
@@ -33,10 +31,8 @@ build-server:
   needs:
     - nexus-login
   script : 
-    - echo "Build Server"
-    - echo $CI_COMMIT_SHA
-    - ls
-
+    - docker build --build-arg --no-cache -f dockerfile-server -t $NEXUS_IMAGE_REPO/crepen-cdn-server:$CI_COMMIT_SHA .
+    - docker tag $NEXUS_IMAGE_REPO/crepen-cdn-server:$CI_COMMIT_SHA $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
 
 publish-cloud:
   stage: publish
@@ -103,7 +99,7 @@ run-cloud :
     - check-crepen-cdn-network
   script : 
     - docker rm -f crepen-cdn-cloud
-    - docker run -d --name crepen-cdn-cloud -e API_URL=http://crepen-cdn-server:13332 -e HOST=0.0.0.0 --hostname crepen-cdn-cloud  $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
+    - docker run -d --name crepen-cdn-cloud -e API_URL=http://crepen-cdn-server:13332 --hostname crepen-cdn-cloud  $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
     - docker network connect nginx-network crepen-cdn-cloud
     - docker network connect crepen-cdn-network crepen-cdn-cloud
 

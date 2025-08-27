@@ -38,10 +38,24 @@ RUN yarn turbo run build --filter=@crepen-cdn/server...
 FROM node:22-alpine AS runner
 WORKDIR /app
 
+RUN mkdir /var/opt/crepen/cdn -p
+RUN chown -R 1001:1001 /var/opt/crepen/cdn
+
+RUN mkdir /var/log/crepen/cdn -p
+RUN chown -R 1001:1001 /var/log/crepen/cdn
+
+
+
 # 보안용 non-root 유저 추가
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nestjs
 USER nestjs
+
+
+ENV CREPEN_CDN_DATA_DIR=/var/opt/crepen/cdn
+ENV CREPEN_CDN_LOG_DIR=/var/log/crepen/cdn
+ENV CREPEN_CDN_PORT=13332
+
 
 # 앱 실행에 필요한 파일만 복사
 # COPY --from=installer /app/apps/server/.env ./

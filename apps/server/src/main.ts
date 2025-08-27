@@ -11,7 +11,9 @@ import { CommonInitializer } from "./config/initializer/common.initializer";
 const bootstrap = async () => {
 
     console.log("=====================================================================")
-    console.log("CREPEN_CDN_NEST_PORT : ",  process.env.CREPEN_CDN_NEST_PORT);
+    console.log("CREPEN_CDN_NEST_PORT : ",  process.env.CREPEN_CDN_PORT);
+    console.log("DIR PATH : " , process.env.CREPEN_CDN_DATA_DIR);
+    console.log("LOG PATH : " , process.env.CREPEN_CDN_LOG_DIR);
     console.log("=====================================================================")
 
     // throw new Error(process.env.CREPEN_CDN_NEST_PORT);
