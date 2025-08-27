@@ -103,10 +103,9 @@ run-cloud :
     - check-crepen-cdn-network
   script : 
     - docker rm -f crepen-cdn-cloud
-    - docker run -d --name crepen-cdn-cloud -p 2500:3000 -e API_URL= $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
-    - echo "Run Cloud"
-    - echo $CI_COMMIT_SHA
-    - docker ps
+    - docker run -d --name crepen-cdn-cloud -e API_URL= $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
+    - docker network connect nginx-network crepen-cdn-cloud
+    - docker network connect crepen-cdn-network crepen-cdn-cloud
 
 
 run-server : 
