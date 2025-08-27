@@ -19,7 +19,7 @@ export const HistoryBackButton = (prop: HistoryBackButtonProp) => {
             className={StringUtil.joinClassName(prop.className)}
             onClick={() => {
                 if (prop.moveFolderUid !== 'root') {
-                    router.push(`/explorer/${prop.moveFolderUid ?? 'root'}`)
+                    router.push(`/explorer/folder/${prop.moveFolderUid ?? 'root'}`)
                 }
             }}
         >

@@ -1,16 +1,20 @@
 .cp-dashboard-page {
 
     width: 100%;
+    background: #f8fafc;
 
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    column-gap: 20px;
-    row-gap: 20px;
-    grid-auto-rows: min-content;
-    grid-auto-flow: row dense;
 
-    padding-inline: 30px;
-    padding-block: 20px;
+
+    .cp-page-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        column-gap: 20px;
+        row-gap: 20px;
+        grid-auto-rows: min-content;
+        grid-auto-flow: row dense;
+
+
+    }
 
 
 
@@ -130,15 +134,18 @@
 
     .cp-dashboard-page {
 
-        padding: 10px;
-        gap: 0px;
-        grid-template-columns: 50% 50%;
+       
+
+        .cp-page-wrapper {
+            padding: 10px;
+            gap: 0px;
+            grid-template-columns: 50% 50%;
+        }
 
 
-
-        .cp-dashboard-widget{
+        .cp-dashboard-widget {
             margin: 10px;
-            
+
 
             // .cp-widget-header {
             //     display: grid;
@@ -147,7 +154,7 @@
             //         'text'
             //     ;
             //     grid-template-rows: min-content min-content;
-                
+
             //     .cp-header-sub-title {
             //         grid-area: text;
             //     }
@@ -158,20 +165,18 @@
             // }
 
 
-            .cp-widget-content{
-                .cp-widget-count{
+            .cp-widget-content {
+                .cp-widget-count {
 
 
-                    .cp-widget-unit{
-
-                    }
+                    .cp-widget-unit {}
                 }
             }
         }
 
 
-       
-        
+
+
     }
 
 

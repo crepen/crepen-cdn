@@ -33,14 +33,10 @@ export class CrepenExplorerFileService {
 
         return (await this.databaseService.getDefault()).transaction(async (manager) => {
 
-
-            console.log("ADD FILE")
-
             const saveTempStreamDir = path.join(
                 this.configService.get('path.fileStore'),
                 'temp'
             )
-            console.log(path.join(saveTempStreamDir , uuid + '.CPCDN'));
 
             if(!fs.existsSync(path.join(saveTempStreamDir , uuid + '.CPCDN'))){   
                 throw new FileNotUploadedError();
@@ -65,7 +61,7 @@ export class CrepenExplorerFileService {
             const fileObj = new ExplorerFileEntity();
             fileObj.uid = uuid;
             fileObj.title = originFileName;
-            fileObj.fileName = path.format({
+            fileObj.storeFileName = path.format({
                 name: uuid,
                 ext: 'CPCDN'
             });
@@ -75,6 +71,10 @@ export class CrepenExplorerFileService {
             fileObj.fileOwnerUid = user.uid;
             fileObj.fileEncIv = iv;
             fileObj.fileState = ExplorerFileStateEnum.STABLE;
+            fileObj.fileName = path.format({
+                name : uuid,
+                ext : fileExt
+            })
 
 
 
@@ -94,7 +94,7 @@ export class CrepenExplorerFileService {
 
             const saveFilePath = path.join(saveDirPath, path.format({
                 ext: 'CPCDN',
-                name: fileObj.fileName.replace(path.extname(fileObj.fileName), '')
+                name: fileObj.storeFileName.replace(path.extname(fileObj.storeFileName), '')
             }));
 
             try {
@@ -124,9 +124,9 @@ export class CrepenExplorerFileService {
             const saveFileEntity = await this.explorerRepo.addFile(fileObj, { manager: manager });
 
 
-            console.log(fileObj);
 
-            const createLinkTreeEntity = await this.explorerRepo.linkTree(
+            // Link Tree
+            void await this.explorerRepo.linkTree(
                 user.uid,
                 parentFolderUid,
                 saveFileEntity.uid,
@@ -146,7 +146,9 @@ export class CrepenExplorerFileService {
             logObj.type = ExplorerItemType.FILE;
             logObj.itemUid = saveFileEntity.uid;
 
-            const saveLogEntity = await this.explorerRepo.addLog(logObj, { manager: manager });
+
+            // Add File Log
+            void await this.explorerRepo.addLog(logObj, { manager: manager });
 
 
 
@@ -157,9 +159,5 @@ export class CrepenExplorerFileService {
 
     }
 
-    encryptFile = async (file: Express.Multer.File) => {
-        const encryptFile = await CryptoUtil.File.encrypt(file.buffer);
-
-
-    }
+    
 }

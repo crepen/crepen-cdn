@@ -34,30 +34,37 @@ const SignInPage = async () => {
 
     return (
         <CommonPage className='cp-signin-page'>
-            <CommonPage.Header>
-                <div className="cp-logo">
-                    <SignInLogo />
-                </div>
-                <div className="cp-title">
-                    {localeProv.translate('page.signin.title')}
-                </div>
-                <div className="cp-sub-title">
-                    {localeProv.translate('page.signin.subtitle')}
-                </div>
-            </CommonPage.Header>
-            <CommonPage.Content>
-                <SignInForm />
-            </CommonPage.Content>
-            <CommonPage.Footer>
-                <TextHr text="OR" />
+            <CommonPage.Wrapper
+                size='full'
+                template
+                noPadding
+            >
+                <CommonPage.Header>
+                    <div className="cp-logo">
+                        <SignInLogo />
+                    </div>
+                    <div className="cp-title">
+                        {localeProv.translate('page.signin.title')}
+                    </div>
+                    <div className="cp-sub-title">
+                        {localeProv.translate('page.signin.subtitle')}
+                    </div>
+                </CommonPage.Header>
+                <CommonPage.Content>
+                    <SignInForm />
+                </CommonPage.Content>
+                <CommonPage.Footer>
+                    <TextHr text="OR" />
 
-                <SignInSignUpButton />
+                    <SignInSignUpButton />
 
-                <div className="cp-footer-action">
-                    <SignInFindIdButton />
-                    <SignInResetPasswordButton />
-                </div>
-            </CommonPage.Footer>
+                    <div className="cp-footer-action">
+                        <SignInFindIdButton />
+                        <SignInResetPasswordButton />
+                    </div>
+                </CommonPage.Footer>
+            </CommonPage.Wrapper>
+
 
         </CommonPage>
     )

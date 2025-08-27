@@ -127,4 +127,9 @@ export class RestExplorerDataService {
 
         return resultData
     }
+
+
+    setFilePublished = async (fileUid : string , isPublish : boolean) => {
+        
+    }
 }

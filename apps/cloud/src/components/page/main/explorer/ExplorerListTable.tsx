@@ -57,7 +57,7 @@ export const ExplorerListTable = async (prop: ExplorerListTableProp) => {
                                     <Link
                                         href={
                                             item.childType === 'folder'
-                                                ? `/explorer/${item.childLinkUid}${prop.searchParam}`
+                                                ? `/explorer/folder/${item.childLinkUid}${prop.searchParam}`
                                                 : `/explorer/file/${item.childLinkUid}`
                                         }
                                         className="cp-item-link"

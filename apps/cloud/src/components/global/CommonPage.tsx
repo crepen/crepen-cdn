@@ -20,8 +20,32 @@ export const CommonPage = (prop: PropsWithChildren<CommonPageProp>) => {
     )
 }
 
+interface CommonPageWrapperProp {
+    size?: 'full' | 'xl' | 'l' | 'm' | 's' | 'xs' | 'min',
+    template? : boolean,
+    noPadding? : boolean
+}
 
-const CommonPageHeader = (prop : PropsWithChildren) => {
+
+const CommonPageWrapper = (prop: PropsWithChildren<CommonPageWrapperProp>) => {
+    return (
+        <div
+            className={
+                StringUtil.joinClassName(
+                    'cp-page-wrapper',
+                    `cp-size-${prop.size ?? 'full'}`,
+                    prop.template ? 'cp-fix-container' : '',
+                    prop.noPadding ? 'cp-no-padding' : ''
+                )
+            }
+        >
+            {prop.children}
+        </div>
+    )
+}
+
+
+const CommonPageHeader = (prop: PropsWithChildren) => {
     return (
         <div className="cp-page-header">
             {prop.children}
@@ -29,7 +53,7 @@ const CommonPageHeader = (prop : PropsWithChildren) => {
     )
 }
 
-const CommonPageContent = (prop : PropsWithChildren) => {
+const CommonPageContent = (prop: PropsWithChildren) => {
     return (
         <div className="cp-page-content">
             {prop.children}
@@ -38,7 +62,7 @@ const CommonPageContent = (prop : PropsWithChildren) => {
 }
 
 
-const CommonPageFooter = (prop : PropsWithChildren) => {
+const CommonPageFooter = (prop: PropsWithChildren) => {
     return (
         <div className="cp-page-footer">
             {prop.children}
@@ -51,3 +75,4 @@ const CommonPageFooter = (prop : PropsWithChildren) => {
 CommonPage.Header = CommonPageHeader;
 CommonPage.Content = CommonPageContent;
 CommonPage.Footer = CommonPageFooter;
+CommonPage.Wrapper = CommonPageWrapper;

@@ -1,0 +1,297 @@
+.cp-explorer-file-page {
+
+    .cp-page-wrapper {
+
+        .cp-page-content {
+
+            display: grid;
+            grid-template-areas:
+                'preview info'
+                'preview action'
+                'preview monitor'
+            ;
+            grid-template-rows: 1fr min-content min-content;
+            grid-template-columns: 1fr 350px;
+
+            gap: 24px;
+
+
+            .cp-group-box {
+                border: 1px solid #e2e8f0;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+
+                &.cp-file-preview {
+
+                    grid-area: preview;
+
+                    .cp-preview-header {
+
+
+                        display: grid;
+                        grid-template-areas:
+                            'icon file-name'
+                            'icon file-desc'
+                        ;
+                        grid-template-columns: min-content 1fr;
+                        grid-template-rows: 1fr 1fr;
+
+                        column-gap: 18px;
+
+
+                        .cp-preview-icon {
+
+                            grid-area: icon;
+
+                            .cp-file-icon-box {
+                                width: 64px;
+                                height: 64px;
+                                background: linear-gradient(135deg, #667eea, #764ba2);
+                                border-radius: 16px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 28px;
+                                color: white;
+                            }
+                        }
+
+                        .cp-preview-file-name {
+                            grid-area: file-name;
+
+                            display: flex;
+                            justify-content: flex-start;
+                            align-items: center;
+
+                            font-size: 20px;
+                            font-weight: 600;
+                            color: #1a202c;
+                        }
+
+                        .cp-preview-file-desc {
+                            grid-area: file-desc;
+
+                            display: flex;
+                            justify-content: flex-start;
+                            align-items: center;
+
+                            color: #64748b;
+                            font-size: 14px;
+                        }
+                    }
+                }
+
+
+                &.cp-file-info {
+                    grid-area: info;
+
+                    .cp-group-header {
+                        .cp-box-title {
+                            font-size: 16px;
+                            font-weight: 600;
+                            color: #1a202c;
+                            display: flex;
+                            align-items: center;
+                        }
+                    }
+
+                    .cp-group-content {
+                        .cp-info-list {
+
+                            .cp-info-item {
+
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                padding: 8px 0;
+                                border-bottom: 1px solid #f8fafc;
+                                font-size: 14px;
+
+                                &:nth-last-of-type(1) {
+                                    border: none;
+                                }
+
+                                .cp-info-title {
+                                    color: #64748b;
+                                    font-weight: 500;
+                                }
+
+                                .cp-info-value {
+                                    color: #1a202c;
+                                    font-weight: 500;
+                                    text-align: right;
+                                    word-break: break-all;
+                                }
+
+                            }
+                        }
+
+                    }
+
+
+                }
+
+                &.cp-file-action {
+                    .cp-group-header {
+                        .cp-box-title {
+                            font-size: 16px;
+                            font-weight: 600;
+                            color: #1a202c;
+                            display: flex;
+                            align-items: center;
+                        }
+                    }
+
+                    .cp-group-content {
+
+                        display: grid;
+                        grid-template-rows: min-content min-content;
+                        row-gap: 10px;
+
+                        .cp-group-action {
+                            display: grid;
+                            grid-template-columns: 1fr 1fr;
+                            grid-template-rows: 1fr 1fr;
+                            gap: 10px;
+
+                            .cp-action-button {
+                                padding: 12px;
+                                border: 1px solid #e2e8f0;
+                                background: white;
+                                border-radius: 8px;
+                                text-align: center;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                                font-size: 13px;
+                                font-weight: 500;
+                                color: #64748b;
+
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                flex-direction: column;
+                                gap: 4px;
+
+                                text-transform: uppercase;
+
+
+
+                                &:hover {
+                                    border-color: #667eea;
+                                    color: #667eea;
+                                    background: #f8fafc;
+
+                                    .cp-button-icon {
+                                        svg {
+                                            transform: scale(1.2);
+                                        }
+                                    }
+                                }
+
+                                .cp-button-icon {
+                                    svg {
+                                        transition: 0.3s;
+                                    }
+                                }
+
+                                .cp-button-text {}
+                            }
+                        }
+
+                        .cp-file-shared {
+                            background: #f0f9ff;
+                            border: 1px solid #0ea5e9;
+                            border-radius: 12px;
+                            padding: 16px;
+
+                            display: grid;
+
+                            row-gap: 10px;
+
+
+                            .cp-section-header {
+
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+
+                                .cp-title {
+                                    font-size: 14px;
+                                    font-weight: 600;
+                                    color: #0c4a6e;
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 8px;
+                                }
+
+                                .cp-action {
+                                    display: flex;
+                                    align-items: center;
+
+
+
+                                    .cp-action-loading-icon {
+                                        color: #0c4a6e;
+
+                                        animation: spin-loop infinite 0.5s;
+
+                                        &[aria-hidden=true] {
+                                            display: none;
+                                        }
+
+                                        @keyframes spin-loop {
+                                            0% {
+                                                transform: rotate(0deg);
+                                            }
+
+                                            100% {
+                                                transform: rotate(360deg);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            .cp-section-content {
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+                                gap: 10px;
+
+                                &.cp-hidden {
+                                    display: none;
+                                }
+
+                                .cp-share-link-input {
+                                    flex: 1;
+                                    padding: 8px 12px;
+                                    border: 1px solid #0ea5e9;
+                                    border-radius: 6px;
+                                    font-size: 12px;
+                                    background: white;
+                                    color: #0c4a6e;
+                                    outline: none;
+                                }
+
+                                .cp-link-copy-button {
+                                    padding: 8px 12px;
+                                    background: #0ea5e9;
+                                    color: white;
+                                    border: none;
+                                    border-radius: 6px;
+                                    font-size: 12px;
+                                    font-weight: 500;
+                                    cursor: pointer;
+                                    transition: all 0.3s ease;
+
+                                    user-select: none;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+}

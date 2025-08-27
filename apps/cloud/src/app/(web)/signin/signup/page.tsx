@@ -24,24 +24,30 @@ const SignUpPage = () => {
     return (
         <SignUpDataProvider>
             <CommonPage className="cp-signup-page">
-                <CommonPage.Header>
-                    <SignInLogo />
-                    {/* <div className='cp-page-title'>
+                <CommonPage.Wrapper
+                    noPadding
+                    size='full'
+                    template
+                >
+                    <CommonPage.Header>
+                        <SignInLogo />
+                        {/* <div className='cp-page-title'>
                     Sign Up
                 </div> */}
-                </CommonPage.Header>
-                <CommonPage.Content>
+                    </CommonPage.Header>
+                    <CommonPage.Content>
 
-                    <SignUpForm />
-                </CommonPage.Content>
-                <CommonPage.Footer>
-                    <TextHr
-                        text='OR'
-                    />
-                    <Link href={'/signin'} className='cp-move-signin-button'>
-                        Return Sign In
-                    </Link>
-                </CommonPage.Footer>
+                        <SignUpForm />
+                    </CommonPage.Content>
+                    <CommonPage.Footer>
+                        <TextHr
+                            text='OR'
+                        />
+                        <Link href={'/signin'} className='cp-move-signin-button'>
+                            Return Sign In
+                        </Link>
+                    </CommonPage.Footer>
+                </CommonPage.Wrapper>
             </CommonPage>
         </SignUpDataProvider>
     )

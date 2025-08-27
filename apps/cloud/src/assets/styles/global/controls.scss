@@ -45,6 +45,39 @@
         display: none;
     }
 
+
+    &.cp-group-templete {
+        display: grid;
+        grid-template-areas:
+            'header'
+            'content'
+            'footer'
+        ;
+        grid-template-rows: min-content 1fr min-content;
+        grid-template-columns: 1fr;
+
+        .cp-group-header {
+            grid-area: header;
+            padding: 20px 24px;
+
+            &:not(.cp-no-bottom-line) {
+                border-bottom: 1px solid #f1f5f9;
+            }
+
+
+        }
+
+        .cp-group-content {
+            grid-area: content;
+            padding: 20px 24px;
+        }
+
+        .cp-group-footer {
+            grid-area: footer;
+            padding: 20px 24px;
+        }
+    }
+
 }
 
 
@@ -56,7 +89,7 @@
     left: 0px;
 
     display: grid;
-    grid-template-areas: 
+    grid-template-areas:
         'header'
         'content'
         'footer'
@@ -76,9 +109,9 @@
 
     .cp-modal-footer {
         grid-area: footer;
-    }   
+    }
 
-    
+
 }
 
 //#endregion Global Modal
@@ -91,14 +124,73 @@
 
 .cp-page {
     height: 100%;
-    display: grid;
-    grid-template-areas: 
-        'header'
-        'content'
-        'footer'
-    ;
-    grid-template-rows: min-content 1fr min-content;
-    grid-template-columns: 1fr;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+
+    .cp-page-wrapper {
+
+        &:not(.cp-no-padding) {
+            padding: 24px;
+        }
+
+
+        &.cp-fix-container {
+            height: 100%;
+            display: grid;
+            grid-template-areas:
+                'header'
+                'content'
+                'footer'
+            ;
+            grid-template-rows: min-content 1fr min-content;
+            grid-template-columns: 1fr;
+        }
+
+
+        // SIZE
+        & {
+            &.cp-size-full {
+                max-width: 100%;
+                width: 100%;
+            }
+
+            &.cp-size-xl {
+                max-width: 1920px;
+                width: 100%;
+            }
+
+            &.cp-size-l {
+                max-width: 1600px;
+                width: 100%;
+            }
+
+            &.cp-size-m {
+                max-width: 1200px;
+                width: 100%;
+            }
+
+            &.cp-size-s {
+                max-width: 800px;
+                width: 100%;
+            }
+
+            &.cp-size-xs {
+                max-width: 400px;
+                width: 100%;
+            }
+
+            &.cp-size-min {
+                width: min-content;
+            }
+        }
+
+
+    }
+
+
 
     .cp-page-header {
         grid-area: header;
@@ -110,9 +202,9 @@
 
     .cp-page-footer {
         grid-area: footer;
-    }   
+    }
 
-    
+
 }
 
 //#endregion Common Page
@@ -126,6 +218,3 @@
 }
 
 //#endregion Common Layout
-
-
-

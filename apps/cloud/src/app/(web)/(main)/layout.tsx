@@ -37,7 +37,7 @@ const MainDefaultLayout = async (prop: PropsWithChildren) => {
             title: await translateProv.translate('layout.main.navigation.menu.explorer'),
             icon: <FcOpenedFolder className='cp-nav-icon' />,
             className: "cp-nav-explorer",
-            link: '/explorer/root',
+            link: '/explorer/folder/root',
             matchUrl: '/explorer'
         },
         {

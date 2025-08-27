@@ -10,15 +10,16 @@ import { CommonInitializer } from "./config/initializer/common.initializer";
 
 const bootstrap = async () => {
 
+    console.log("=====================================================================")
     console.log("CREPEN_CDN_NEST_PORT : ",  process.env.CREPEN_CDN_NEST_PORT);
     console.log("=====================================================================")
 
-    throw new Error(process.env.CREPEN_CDN_NEST_PORT);
+    // throw new Error(process.env.CREPEN_CDN_NEST_PORT);
 
     const preInitAppContext = (await (await PreInitializer.current()).active());
-
+   
     const preConfigData = preInitAppContext.getPreConfig();
-
+      
     await preInitAppContext.destroy();
 
 

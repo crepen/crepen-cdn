@@ -1,0 +1,41 @@
+.cp-control.cp-toggle-button {
+    position: relative;
+    width: 35px;
+    background: #cbd5e0;
+    border-radius: 10000px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    aspect-ratio: 1.8/1;
+
+    &[aria-hidden=true]{
+        display: none;
+    }
+
+    &.cp-active {
+
+        background-color: #667eea;
+
+        .cp-move-box {
+            transform: translateX(80%);
+        }
+    }
+
+    .cp-move-box {
+        height: 100%;
+        aspect-ratio: 1;
+        position: absolute;
+        transition: all 0.3s ease;
+
+        padding: 3px; 
+
+        &::before { 
+            content: '  ';
+            display: block;
+            height: 100%;
+            aspect-ratio: 1;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
+            background: white; 
+            border-radius: 100000px; 
+        }
+    }
+}

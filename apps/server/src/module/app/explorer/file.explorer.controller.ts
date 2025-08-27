@@ -1,4 +1,4 @@
-import { Controller, HttpCode, HttpStatus, Param, Post, Put, Req, Res, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Controller, Get, HttpCode, HttpStatus, Param, Post, Put, Req, Res, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from "@nestjs/common";
 import { ApiBearerAuth, ApiHeader, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { CrepenLoggerService } from "../common/logger/logger.service";
 import { CrepenExplorerFileService } from "./file.explorer.service";
@@ -14,6 +14,7 @@ import { FolderNotFoundError } from "@crepen-nest/lib/error/api/explorer/not_fou
 import { ObjectUtil } from "@crepen-nest/lib/util";
 import { TokenTypeEnum } from "../auth/enum/token-type.auth.request";
 import { UserEntity } from "../user/entity/user.default.entity";
+import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
 
 @ApiTags('[EXPLORER] 탐색기 - 파일')
 @ApiHeader({
@@ -26,7 +27,8 @@ export class CrepenExplorerFileController {
     constructor(
         private readonly fileService: CrepenExplorerFileService,
         private readonly folderService: CrepenExplorerFolderService,
-        private readonly logService: CrepenLoggerService
+        private readonly logService: CrepenLoggerService,
+        private readonly databaseService: DatabaseService,
     ) { }
 
 
@@ -53,11 +55,69 @@ export class CrepenExplorerFileController {
 
         return BaseResponse.ok(
             {
-                parentFolderUid : uid,
-                fileSize : file.size
+                parentFolderUid: uid,
+                fileSize: file.size
             },
             HttpStatus.OK,
             i18n.t('common.SUCCESS')
         )
+    }
+
+
+    @Get(':uid/info')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(AuthJwtGuard.whitelist(TokenTypeEnum.ACCESS_TOKEN))
+    async getFileInfo(
+        @Req() req: Request,
+        @I18n() i18n: I18nContext,
+        @AuthUser() user: UserEntity,
+        @Param('uid') uid: string,
+    ) {
+        return (await this.databaseService.getDefault()).transaction(async (manager) => {
+            return BaseResponse.ok(
+                undefined,
+                HttpStatus.OK,
+                i18n.t('common.SUCCESS')
+            )
+        })
+    }
+
+
+    @Put(':uid/publish')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(AuthJwtGuard.whitelist(TokenTypeEnum.ACCESS_TOKEN))
+    async updateFilePublish(
+        @Req() req: Request,
+        @I18n() i18n: I18nContext,
+        @AuthUser() user: UserEntity,
+        @Param('uid') uid: string,
+    ) {
+        return (await this.databaseService.getDefault()).transaction(async (manager) => {
+            return BaseResponse.ok(
+                undefined,
+                HttpStatus.OK,
+                i18n.t('common.SUCCESS')
+            )
+        })
+    }
+
+
+
+    @Get('download/:filename')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(AuthJwtGuard.whitelist(TokenTypeEnum.ACCESS_TOKEN))
+    async downloadFile(
+        @Req() req: Request,
+        @I18n() i18n: I18nContext,
+        @AuthUser() user: UserEntity,
+        @Param('filename') fileName: string,
+    ) {
+        return (await this.databaseService.getDefault()).transaction(async (manager) => {
+            return BaseResponse.ok(
+                undefined,
+                HttpStatus.OK,
+                i18n.t('common.SUCCESS')
+            )
+        })
     }
 }

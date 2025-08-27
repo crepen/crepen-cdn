@@ -17,6 +17,9 @@ export class ExplorerFileEntity {
     @Column({name : 'file_name' , type : 'varchar' , length : 100 , nullable : false})
     fileName : string;
 
+    @Column({name : 'store_file_name' , type : 'varchar' , length : 100 , nullable : false})
+    storeFileName : string;
+
     @Column({name : 'file_ext' , type : 'varchar' , length : 20 , nullable : true})
     fileExtension?  : string;
 

@@ -11,9 +11,14 @@ const MainProfileAccountPage = () => {
             className="cp-profile-account-page"
 
         >
-            <Suspense>
-                <ProfileEditAccountWidget />
-            </Suspense>
+            <CommonPage.Wrapper
+                noPadding
+            >
+                <Suspense>
+                    <ProfileEditAccountWidget />
+                </Suspense>
+            </CommonPage.Wrapper>
+
         </CommonPage>
     )
 }

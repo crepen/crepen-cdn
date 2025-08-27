@@ -11,13 +11,16 @@ const MainProfileDashboardPage = () => {
             className="cp-profile-dashboard-page"
 
         >
-            <Suspense>
-                <ProfileDashboardStoreWidget />
-            </Suspense>
-            <Suspense>
-                <ProfileTrafficChartWidget />
-            </Suspense>
-
+            <CommonPage.Wrapper
+                noPadding
+            >
+                <Suspense>
+                    <ProfileDashboardStoreWidget />
+                </Suspense>
+                <Suspense>
+                    <ProfileTrafficChartWidget />
+                </Suspense>
+            </CommonPage.Wrapper>
         </CommonPage>
     )
 }

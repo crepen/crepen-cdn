@@ -102,7 +102,7 @@ const MainExplorerListPage = async (prop: MainExplorerDefaultPageProp) => {
             uid: 'root'
         })
 
-        if ( uid === 'root') {
+        if (uid === 'root') {
             folderData.dir = {
                 title: 'Root',
                 uid: 'root',
@@ -177,81 +177,88 @@ const MainExplorerListPage = async (prop: MainExplorerDefaultPageProp) => {
             className='cp-explorer-page'
             fixed
         >
-            <ExplorerListValidateProvider
-                defaultFilterData={defaultFilterData}
-                treeData={treeData}
-            />
-            <CommonPage.Header>
-                <div className='cp-top-header'>
-                    <div className='cp-flex-left'>
-                        <HistoryBackButton className='cp-back-bt'
-                            moveFolderUid={folderData.path.sort((x, y) => x.depth - y.depth).map(x => x.uid)[0]}
-                        />
-                        <ExplorerFolderNav>
-                            {
-                                folderData.path.sort((x, y) => y.depth - x.depth).map((item, idx, arr) => {
-                                    return (
-                                        <Fragment key={idx}>
+            <CommonPage.Wrapper
+                noPadding
+                template
+            >
 
-                                            <ExplorerFolderNav.Item
-                                                title={item.title}
-                                                link={`/explorer/${item.uid}`}
-                                                disabled={idx === arr.length - 1}
-                                            />
-                                            {
-                                                (idx !== arr.length - 1) &&
-                                                <ExplorerFolderNav.Spliter />
-                                            }
-                                        </Fragment>
-                                    )
-                                })
+
+                <ExplorerListValidateProvider
+                    defaultFilterData={defaultFilterData}
+                    treeData={treeData}
+                />
+                <CommonPage.Header>
+                    <div className='cp-top-header'>
+                        <div className='cp-flex-left'>
+                            <HistoryBackButton className='cp-back-bt'
+                                moveFolderUid={folderData.path.sort((x, y) => x.depth - y.depth).map(x => x.uid)[0]}
+                            />
+                            <ExplorerFolderNav>
+                                {
+                                    folderData.path.sort((x, y) => y.depth - x.depth).map((item, idx, arr) => {
+                                        return (
+                                            <Fragment key={idx}>
+
+                                                <ExplorerFolderNav.Item
+                                                    title={item.title}
+                                                    link={`/explorer/${item.uid}`}
+                                                    disabled={idx === arr.length - 1}
+                                                />
+                                                {
+                                                    (idx !== arr.length - 1) &&
+                                                    <ExplorerFolderNav.Spliter />
+                                                }
+                                            </Fragment>
+                                        )
+                                    })
+                                }
+
+                            </ExplorerFolderNav>
+                        </div>
+                        <div className='cp-flex-right'>
+                            <ExplorerNewFolderButton
+                                folderUid={uid}
+                            />
+                            <ExplorerFileUploadButton
+                                folderUid={uid}
+                            />
+                        </div>
+
+                    </div>
+                    <ExplorerToolbar
+                        defaultFilter={defaultFilterData}
+                    />
+                </CommonPage.Header>
+                <CommonPage.Content>
+                    <GroupBox className='cp-file-list-box'>
+                        <Suspense fallback={<ExplorerListLoading />}>
+                            {
+                                isError
+                                    ? <div className='cp-load-error'>
+                                        <div className='cp-error-icon'>
+                                            <FcHighPriority size={50} />
+                                        </div>
+                                        <div className='cp-error-message'>
+                                            {errorMessage}
+                                        </div>
+                                        <div className='cp-refresh'>
+                                            <Link href={'/explorer'} className='cp-refresh-bt' >
+                                                {localeProv.translate('page.main.explorer.error.reload')}
+                                            </Link>
+                                        </div>
+                                    </div>
+                                    : <ExplorerListTable
+                                        uid={uid ?? 'ROOT'}
+                                        treeData={treeData}
+                                        defaultFilterData={defaultFilterData}
+                                        searchParam={searchParamStr}
+                                    />
                             }
 
-                        </ExplorerFolderNav>
-                    </div>
-                    <div className='cp-flex-right'>
-                        <ExplorerNewFolderButton
-                            folderUid={uid}
-                        />
-                        <ExplorerFileUploadButton
-                            folderUid={uid}
-                        />
-                    </div>
-
-                </div>
-                <ExplorerToolbar
-                    defaultFilter={defaultFilterData}
-                />
-            </CommonPage.Header>
-            <CommonPage.Content>
-                <GroupBox className='cp-file-list-box'>
-                    <Suspense fallback={<ExplorerListLoading />}>
-                        {
-                            isError
-                                ? <div className='cp-load-error'>
-                                    <div className='cp-error-icon'>
-                                        <FcHighPriority size={50} />
-                                    </div>
-                                    <div className='cp-error-message'>
-                                        {errorMessage}
-                                    </div>
-                                    <div className='cp-refresh'>
-                                        <Link href={'/explorer'} className='cp-refresh-bt' >
-                                            {localeProv.translate('page.main.explorer.error.reload')}
-                                        </Link>
-                                    </div>
-                                </div>
-                                : <ExplorerListTable
-                                    uid={uid ?? 'ROOT'}
-                                    treeData={treeData}
-                                    defaultFilterData={defaultFilterData}
-                                    searchParam={searchParamStr}
-                                />
-                        }
-
-                    </Suspense>
-                </GroupBox>
-            </CommonPage.Content>
+                        </Suspense>
+                    </GroupBox>
+                </CommonPage.Content>
+            </CommonPage.Wrapper>
         </CommonPage>
     )
 }
