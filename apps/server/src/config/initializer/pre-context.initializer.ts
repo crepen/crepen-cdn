@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import { DataSource } from "typeorm";
 import { SQLiteDataSourceProvider } from "../provider/database/sqlite.database.provider";
 import * as os from 'os';
+import * as path from "path";
 
 
 export class PreContextInitializer {
@@ -54,15 +55,15 @@ export class PreContextInitializer {
         Logger.log('Check Enviroment variable', 'PRE_INIT')
         Logger.log(` - CREPEN_CDN_DATA_DIR : ${process.env.CREPEN_CDN_DATA_DIR}`, 'PRE_INIT')
         if (StringUtil.isEmpty(process.env.CREPEN_CDN_DATA_DIR)) {
-            Logger.warn(` - CREPEN_CDN_DATA_DIR variable does not exist. It will be replaced with './run-obj/data'.`, 'PRE_INIT')
+            Logger.warn(` - CREPEN_CDN_DATA_DIR variable does not exist. It will be replaced with '${path.join(os.userInfo().homedir , '/crepen/cdn/data')}'.`, 'PRE_INIT')
         }
         Logger.log(` - CREPEN_CDN_LOG_DIR : ${process.env.CREPEN_CDN_LOG_DIR}`, 'PRE_INIT')
         if (StringUtil.isEmpty(process.env.CREPEN_CDN_LOG_DIR)) {
-            Logger.warn(` - CREPEN_CDN_LOG_DIR variable does not exist. It will be replaced with './run-obj/log'.`, 'PRE_INIT')
+            Logger.warn(` - CREPEN_CDN_LOG_DIR variable does not exist. It will be replaced with '${path.join(os.userInfo().homedir , '/crepen/cdn/log')}'.`, 'PRE_INIT')
         }
         Logger.log(` - CREPEN_CDN_CONFIG_DIR : ${process.env.CREPEN_CDN_CONFIG_DIR}`, 'PRE_INIT')
         if (StringUtil.isEmpty(process.env.CREPEN_CDN_CONFIG_DIR)) {
-            Logger.warn(` - CREPEN_CDN_CONFIG_DIR variable does not exist. It will be replaced with './run-obj/config'.`, 'PRE_INIT')
+            Logger.warn(` - CREPEN_CDN_CONFIG_DIR variable does not exist. It will be replaced with '${path.join(os.userInfo().homedir , '/crepen/cdn/config')}'.`, 'PRE_INIT')
         }
         Logger.log(` - CREPEN_CDN_PORT : ${process.env.CREPEN_CDN_PORT}`, 'PRE_INIT')
         if (isNaN(Number(process.env.CREPEN_CDN_PORT))) {
@@ -84,7 +85,7 @@ export class PreContextInitializer {
             let dataDir = process.env.CREPEN_CDN_DATA_DIR;
 
             if (StringUtil.isEmpty(dataDir)) {
-                dataDir = './run-obj/data';
+                dataDir = path.join(os.userInfo().homedir , '/crepen/cdn/data')
             }
 
             if (!fs.existsSync(dataDir)) {
@@ -105,7 +106,7 @@ export class PreContextInitializer {
             let logDir = process.env.CREPEN_CDN_DATA_DIR;
 
             if (StringUtil.isEmpty(logDir)) {
-                logDir = './run-obj/log';
+                logDir = path.join(os.userInfo().homedir , '/crepen/cdn/log');
             }
 
             if (!fs.existsSync(logDir)) {
@@ -126,7 +127,7 @@ export class PreContextInitializer {
             let configDir = process.env.CREPEN_CDN_DATA_DIR;
 
             if (StringUtil.isEmpty(configDir)) {
-                configDir = './run-obj/config';
+                configDir = path.join(os.userInfo().homedir , '/crepen/cdn/config')
             }
 
             if (!fs.existsSync(configDir)) {
@@ -229,7 +230,8 @@ class InternalDisabledLogger extends ConsoleLogger {
 
     log(_: any, context?: string): void {
         if (!InternalDisabledLogger.contextsToIgnore.includes(context)) {
-            super.log.apply(this, arguments)
+            // eslint-disable-next-line prefer-rest-params
+            super.log.apply(this , arguments)
         }
     }
 
