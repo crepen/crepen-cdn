@@ -3,8 +3,6 @@ import { DataSourceProviderInterface } from "./interface.database.provider";
 
 import * as path from "path";
 import * as os from 'os';
-import { GlobalDataPath } from "@crepen-nest/lib/types/enum/global-path.enum";
-import { Logger } from "@nestjs/common";
 import { StringUtil } from "@crepen-nest/lib/util";
 
 export class SQLiteDataSourceProvider implements DataSourceProviderInterface {

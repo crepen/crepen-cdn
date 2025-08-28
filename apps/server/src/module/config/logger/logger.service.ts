@@ -4,8 +4,6 @@ import * as Winston from 'winston';
 import * as path from "path";
 import { ConfigService } from "@nestjs/config";
 import 'winston-daily-rotate-file';
-import * as os from 'os';
-import { GlobalLogPath } from "@crepen-nest/lib/types/enum/global-path.enum";
 
 @Injectable()
 export class LoggerConfigService {
@@ -24,20 +22,9 @@ export class LoggerConfigService {
 
         const chalk = await import('chalk').then(mod => mod.default);
 
-        let logPath : string = GlobalLogPath.LOG_DIR_PATH_LINUX
+        const logPath : string = this.configService.get('path.log');
 
-        if (process.env.CREPEN_CDN_LOG_DIR){
-            logPath = process.env.CREPEN_CDN_LOG_DIR;
-        }
-        else if (os.type() === 'Linux') {
-            logPath = GlobalLogPath.LOG_DIR_PATH_LINUX;
-        }
-        else if (os.type() === 'Windows_NT') {
-            logPath = GlobalLogPath.LOG_DIR_PATH_WIN;
-        }
-        else if (os.type() === 'Darwin') {
-            logPath = GlobalLogPath.LOG_DIR_PATH_MAC;
-        }
+
 
         return {
             level: 'info',
