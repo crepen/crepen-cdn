@@ -19,6 +19,8 @@ RUN mkdir /var/opt/crepen/cdn -p
 RUN chown -R 1001:1001 /var/opt/crepen/cdn
 RUN mkdir /var/log/crepen/cdn -p
 RUN chown -R 1001:1001 /var/log/crepen/cdn
+RUN mkdir /etc/crepen/cdn -p
+RUN chown -R 1001:1001 /var/log/crepen/cdn
 
 
 RUN addgroup --system --gid 1001 nodejs
@@ -41,6 +43,7 @@ ENV CREPEN_CDN_NEST_PORT=test
 
 ENV CREPEN_CDN_DATA_DIR=/var/opt/crepen/cdn
 ENV CREPEN_CDN_LOG_DIR=/var/log/crepen/cdn
+ENV CREPEN_CDN_CONFIG_DIR=/etc/crepen/cdn
 ENV CREPEN_CDN_PORT=13332
 
 

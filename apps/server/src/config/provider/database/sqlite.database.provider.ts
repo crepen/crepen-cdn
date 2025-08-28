@@ -20,7 +20,7 @@ export class SQLiteDataSourceProvider implements DataSourceProviderInterface {
 
         this.dataSource = new DataSource({
             type: 'sqlite',
-            database: path.join(databasePath, 'crepen_cdn_config.sqlite'),
+            database: path.join(databasePath, 'crepen_cdn_config.cpd'),
             entities: [entityDir, moduleEntityDir],
             synchronize: true
         })
