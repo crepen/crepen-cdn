@@ -84,7 +84,6 @@ export class CrepenFileRouteController {
     //     @I18n() i18n: I18nContext,
     //     @Body() bodyData: RelationFileDto,
     // ) {
-    //     console.log(bodyData);
 
     //     const relationFile = this.fileService.relationFile(bodyData.fileUid, bodyData.fileTitle, bodyData.folderUid, req.user.entity.uid);
 

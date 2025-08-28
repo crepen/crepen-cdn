@@ -98,7 +98,6 @@ export class CrepenAuthService {
             tokenData = await this.jwtService.verifyAsync<TokenData>(token);
         }
         catch (e) {
-            console.log('🛑 EXPIRE' , token)
             throw new AuthUserTokenExpiredError();
         }
 
@@ -107,7 +106,6 @@ export class CrepenAuthService {
 
 
         if (!matchUser) {
-            console.log('🛑 NOT MATCH')
             throw new UserNotFoundError();
         }
 

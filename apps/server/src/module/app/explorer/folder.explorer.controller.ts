@@ -129,7 +129,7 @@ export class CrepenExplorerFolderController {
                 req.pipe(cipher)
                     .on('data', (chunk) => { fileSize += chunk.length; })
                     .pipe(fs.createWriteStream(saveTempStreamFilePath))
-                    .on('finish', () => { console.log('FIN'); resolve(); })
+                    .on('finish', () => {  resolve(); })
                     .on('error', (err) => reject(err));
 
                 req.on('error', (err) => reject(err));
@@ -207,8 +207,6 @@ export class CrepenExplorerFolderController {
     ) {
         if (parentFolderUid !== 'root') {
             const parentFolderData = await this.folderService.getFolderDataByUid(parentFolderUid);
-
-            console.log("PARENT ", parentFolderData);
 
             if (!parentFolderData) {
                 throw new FolderNotFoundError();

@@ -13,7 +13,7 @@ import { PassportModule } from "@nestjs/passport";
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => {
                 return {
-                    secret : configService.get('secret.jwt')
+                    secret : configService.get('jwt.secret')
                 }
             },
         })

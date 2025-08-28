@@ -25,19 +25,13 @@ export class CheckConnDBInterceptor implements NestInterceptor {
 
     intercept = async (context: ExecutionContext, next: CallHandler<any>): Promise<Observable<any>> => {
 
-        // console.log(`CLASS : ${this.getDecorator(context , 'class') ? 'true' : 'false'} / METHOD : ${this.getDecorator(context , 'method') ? 'true' : 'false'}`)
-        // console.log("ED" , (await this.databaseService.getDefault()).isInitialized);
 
         if(this.getDecorator(context , 'class') || this.getDecorator(context , 'method')) {
-            // console.log("PASS");
             return next.handle();
         }
 
         try{
-         
-            // const dataSource = await DefaultDataSourceProvider.getDataSource(this.configService).initialize();
             const dataSource = (await this.databaseService.getDefault());
-            // await dataSource.initialize();
 
             if(!dataSource.isInitialized){
                 throw new DatabaseConnectError();
@@ -50,7 +44,7 @@ export class CheckConnDBInterceptor implements NestInterceptor {
                 
         }
         catch(e){
-            console.log(e);
+            Logger.error(e , 'MAIN > CHK_CONN_DB_ERR')
             if(e instanceof DatabaseConnectError){
                 throw e;
             }

@@ -9,7 +9,7 @@ import * as path from 'path';
             useFactory: () => {
 
                 const filePath  =path.join(__dirname, '../../../public/i18n');
-                Logger.log(`Load I18n File : ${filePath}`,'APP_INIT')
+                Logger.log(`Load I18n File : ${filePath}`,'COMMON_INIT')
 
                 return {
                     fallbackLanguage: 'en',

@@ -15,14 +15,15 @@ export class SQLiteDataSourceProvider implements DataSourceProviderInterface {
             databasePath = path.join(os.userInfo().homedir , '/crepen/cdn/config')
         }
 
-        const entityDir = path.join(__dirname, '../../../module/**/*.local.entity{.ts,.js}')
-        const moduleEntityDir = path.join(__dirname, '../../../lib/types/entity/**/*.local.entity{.ts,.js}')
+        // const entityDir = path.join(__dirname, '../../../module/**/*.local.entity{.ts,.js}')
+        // const moduleEntityDir = path.join(__dirname, '../../../lib/types/entity/**/*.local.entity{.ts,.js}')
 
         this.dataSource = new DataSource({
             type: 'sqlite',
             database: path.join(databasePath, 'crepen_cdn_config.cpd'),
-            entities: [entityDir, moduleEntityDir],
-            synchronize: true
+            // entities: [entityDir, moduleEntityDir],
+            synchronize: false,
+            // logging : true
         })
     }
 

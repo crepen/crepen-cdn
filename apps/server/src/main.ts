@@ -5,63 +5,41 @@ import { CommonExceptionFilter } from "./lib/extensions/filter/common.exception.
 import { CheckConnDBInterceptor } from "./lib/extensions/interceptor/chk-conn-db.interceptor";
 import { PlatformI18nValidationPipe } from "./module/config/i18n/i18n.validate.pipe";
 import { PlayformI18nValidationExceptionFilter } from "./module/config/i18n/i18n.validate.filter";
-import { PreInitializer } from "./config/initializer/pres.initializer";
 import { CommonInitializer } from "./config/initializer/common.initializer";
 import { PreContextInitializer } from "./config/initializer/pre-context.initializer";
 
 
 const bootstrap = async () => {
 
-    console.log("=====================================================================")
-    console.log("PORT : ", process.env.CREPEN_CDN_PORT);
-    console.log("DIR PATH : ", process.env.CREPEN_CDN_DATA_DIR);
-    console.log("LOG PATH : ", process.env.CREPEN_CDN_LOG_DIR);
-    console.log("=====================================================================")
+    const preInit = await PreContextInitializer.setContext();
+    await preInit.apply();
 
-    // throw new Error(process.env.CREPEN_CDN_NEST_PORT);
-
-    const preInit = await PreContextInitializer.apply();
-
-    preInit.checkEnv()
-    preInit.configurePath();
-    await preInit.loadLocalDB();
-    await preInit.applyJwtConfig();
-
-
-
+    const configData = await preInit.getConfigData();
     const isPreInitState = preInit.getStatus();
 
+    await preInit.dispose();
+
+
+
     if (!isPreInitState) {
-        await preInit.destroy();
+        await preInit.dispose();
         Logger.error('Exit Server.', 'PRE_INIT');
         process.exit(1);
     }
     else {
+        Logger.log('', 'PRE_INIT')
         Logger.log('Pre init complete', 'PRE_INIT');
-        await preInit.destroy();
+        await preInit.dispose();
+        Logger.log('', 'PRE_INIT')
         Logger.log('Start common context process', 'PRE_INIT -> COMMON_INIT');
-        process.exit(1);
     }
 
-
-
-
-
-    const preInitAppContext = (await (await PreInitializer.current()).active());
-
-    const preConfigData = preInitAppContext.getPreConfig();
-
-    await preInitAppContext.destroy();
-
-
-    console.log("=====================================================================")
-
-    const appContext = await CommonInitializer.current(preConfigData);
+    const appContext = await CommonInitializer.current(configData);
 
     appContext
         .usePipe((refl, conf) => [
             new PlatformI18nValidationPipe()
-        ])
+        ]) 
         .useFilter((refl, conf) => [
             new PlayformI18nValidationExceptionFilter(),
             new CommonExceptionFilter()

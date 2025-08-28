@@ -3,21 +3,18 @@ import { DataSource } from "typeorm";
 import { join } from "path";
 import { Logger } from "@nestjs/common";
 import { DataSourceProviderInterface } from "./interface.database.provider";
+import { StringUtil } from "@crepen-nest/lib/util";
 
 export class DefaultDataSourceProvider implements DataSourceProviderInterface {
     constructor(config: ConfigService<unknown, boolean>) {
 
         const entityDir = join(__dirname , '/../../../module/**/entity/*.default.entity{.ts,.js}') 
 
-        Logger.log(`Load Default Database Entity : ${entityDir}`);
+        Logger.log(`Load Default Database Entity : ${entityDir}` , 'MAIN');
 
         this.dataSource = new DataSource({
             type: 'mariadb',
-            host: config.get<string>('database.default.host'),
-            port: config.get<number>('database.default.port'),
-            database: config.get<string>('database.default.database'),
-            username: config.get<string>('database.default.username'),
-            password: config.get<string>('database.default.password'),
+            url : StringUtil.isEmpty(config.get('db.conn_str')) ? 'mariadb://' : config.get('db.conn_str'),
             entities: [entityDir],
             synchronize: true,
             // logging: configService.get<boolean>('db.logging'),

@@ -20,7 +20,7 @@ export class CrepenAuthJwtStrategy extends PassportStrategy(Strategy) {
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
             passReqToCallback: true,
-            secretOrKey: configService.get<string>('secret.jwt')
+            secretOrKey: configService.get<string>('jwt.secret')
         })
     }
 
@@ -29,8 +29,6 @@ export class CrepenAuthJwtStrategy extends PassportStrategy(Strategy) {
 
     async validate(req: Request, payload: Record<string, any>, done: VerifiedCallback): Promise<CrepenTokenData | void> {
         const token: string | undefined = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
-
-        // console.log(token);
 
         let validateUser: UserEntity | undefined = undefined;
 

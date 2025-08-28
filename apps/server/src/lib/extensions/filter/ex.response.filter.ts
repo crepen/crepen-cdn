@@ -89,7 +89,8 @@ export class ExceptionResponseFilter implements ExceptionFilter {
                 )
         }
         else if (exception instanceof HttpException) {
-            console.log('INTERNAL HTTP ERROR', exception)
+            Logger.error('INTERNAL HTTP ERROR' , 'MAIN');
+            Logger.error(exception , 'MAIN');
 
             response
                 .status(500)
@@ -104,9 +105,7 @@ export class ExceptionResponseFilter implements ExceptionFilter {
         }
         else {
             
-            Logger.error((exception as Error).stack , 'INTERNAL ERROR');
-
-            console.log((exception as TypeORMError).name)
+            Logger.error((exception as Error).stack , 'MAIN > EX_REPONSE_FILTER > INTERNAL ERROR');
 
             response
                 .status(500)

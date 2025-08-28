@@ -965,7 +965,6 @@ export class CrepenUserService {
                 }
 
                 const info = await transporter.sendMail(mailOptions);
-                console.log(info.response)
             }
             catch (e) {
                 throw new SendResetPasswordMailFailed();

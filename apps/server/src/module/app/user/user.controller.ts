@@ -76,8 +76,6 @@ export class CrepenUserController {
     ) {
         return (await this.databaseService.getDefault()).transaction(async (manager) => {
 
-            console.log(reqBody);
-
             const addUser = await this.userService.addUser(
                 reqBody.id,
                 reqBody.password,
@@ -147,8 +145,6 @@ export class CrepenUserController {
     ) {
         return (await this.databaseService.getDefault()).transaction(async (manager) => {
 
-            console.log(reqBody , editCategory);
-            
             void await this.userService.editUserData(
                 editCategory,
                 user.uid,

@@ -49,8 +49,8 @@ export class CommonInitializer {
             this.initSwagger();
             this.initNextExpressConfig();
 
-            await this.context.listen(this.configService.get("server.port") || 13332);
-            Logger.log(`Run Server : ${this.configService.get("server.port") || 13332}`, 'MAIN');
+            await this.context.listen(this.configService.get("port") || 13332);
+            Logger.log(`Run Server : ${this.configService.get("port") || 13332}`, 'MAIN');
 
             return this;
         }

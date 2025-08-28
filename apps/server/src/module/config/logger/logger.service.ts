@@ -73,11 +73,10 @@ export class LoggerConfigService {
                         // Winston.format.colorize({all : true}),
                         Winston.format.errors({ stack: false }),
                         // NestWinston.utilities.format.nestLike('Crepen-CDN', {
-                        //     prettyPrint: true,
+                        //     prettyPrint: true, 
                         //     appName: false,
                         // })
                         Winston.format.printf((info) => {
-                            // console.log("131" , info)  
                             let levelColor = chalk.bold(info.level.toUpperCase().padStart(6).padEnd(7));
                             switch (info.level.toUpperCase()) {
                                 case 'INFO': levelColor = chalk.green(levelColor); break;
