@@ -16,13 +16,13 @@ nexus-login:
     - echo "$NEXUS_PASSWORD" | docker login $NEXUS_REGISTRY --username "$NEXUS_USERNAME" --password-stdin
 
 
-# build-cloud:      
-#   stage: build
-#   needs:
-#     - nexus-login
-#   script:
-#     - docker build --build-arg BASE_PATH=/cloud --no-cache -f dockerfile-cloud -t $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA .
-#     - docker tag $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
+build-cloud:      
+  stage: build
+  needs:
+    - nexus-login
+  script:
+    - docker build --build-arg BASE_PATH=/cloud --no-cache -f dockerfile-cloud -t $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA .
+    - docker tag $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
 
 
 
@@ -34,13 +34,13 @@ build-server:
     - docker build --build-arg --no-cache -f dockerfile-server -t $NEXUS_IMAGE_REPO/crepen-cdn-server:$CI_COMMIT_SHA .
     - docker tag $NEXUS_IMAGE_REPO/crepen-cdn-server:$CI_COMMIT_SHA $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
 
-# publish-cloud:
-#   stage: publish
-#   needs:
-#     - build-cloud
-#   script: 
-#     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA
-#     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
+publish-cloud:
+  stage: publish
+  needs:
+    - build-cloud
+  script: 
+    - docker push $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA
+    - docker push $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
 
 
 publish-server:
@@ -57,7 +57,7 @@ publish-server:
 clear-image:
   stage: clear
   needs:
-    # - publish-cloud
+    - publish-cloud
     - publish-server
   script:
     - docker image prune -a -f
@@ -92,17 +92,17 @@ check-crepen-cdn-network:
       fi
 
 
-# run-cloud : 
-#   stage: runner
-#   needs:
-#     - publish-cloud
-#     - check-nginx-network
-#     - check-crepen-cdn-network
-#   script : 
-#     - docker rm -f crepen-cdn-cloud
-#     - docker run -d --name crepen-cdn-cloud -e API_URL=http://crepen-cdn-server:13332 --hostname crepen-cdn-cloud  $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
-#     - docker network connect nginx-network crepen-cdn-cloud
-#     - docker network connect crepen-cdn-network crepen-cdn-cloud
+run-cloud : 
+  stage: runner
+  needs:
+    - publish-cloud
+    - check-nginx-network
+    - check-crepen-cdn-network
+  script : 
+    - docker rm -f crepen-cdn-cloud
+    - docker run -d --name crepen-cdn-cloud -e API_URL=http://crepen-cdn-server:13332 --hostname crepen-cdn-cloud  $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
+    - docker network connect nginx-network crepen-cdn-cloud
+    - docker network connect crepen-cdn-network crepen-cdn-cloud
 
 
 run-server : 
@@ -123,7 +123,7 @@ nexus-logout:
   stage: logout
   needs:
     - run-server
-    # - run-cloud
+    - run-cloud
   script:
     - docker logout $NEXUS_REGISTRY
 

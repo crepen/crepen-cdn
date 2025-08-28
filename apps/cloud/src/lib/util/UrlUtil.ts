@@ -1,11 +1,12 @@
 import { URLPattern } from "next/server";
 import urlJoin from "url-join";
+import { StringUtil } from "./StringUtil";
 
 export class UrlUtil {
 
     static isMatchPattern = (targetUrl: string, pattern: string, options?: { basePath?: string }) => {
 
-        let fullPattern = urlJoin(options?.basePath ?? '' , pattern);
+        const fullPattern = urlJoin(StringUtil.isEmpty(options?.basePath) ? '/' : options!.basePath! , pattern);
 
         const matchUrlPatterns : URLPattern[] = [];
 
