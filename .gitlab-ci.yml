@@ -1,11 +1,11 @@
 stages:
   - login     
-  - build
-  - publish
-  - clear
-  - check-network
-  - runner
-  - logout
+  # - build
+  # - publish
+  # - clear
+  # - check-network
+  # - runner
+  # - logout
 
 
 
