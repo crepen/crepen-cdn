@@ -7,6 +7,7 @@ import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy, ExtractJwt, VerifiedCallback } from "passport-jwt";
 import { CrepenTokenData, CrepenTokenType } from "src/interface/jwt";
+import { DynamicConfigService } from "../../dynamic-config/dynamic-config.service";
 
 
 @Injectable()

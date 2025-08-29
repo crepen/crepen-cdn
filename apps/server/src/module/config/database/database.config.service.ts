@@ -1,8 +1,9 @@
 import { DefaultDataSourceProvider } from "@crepen-nest/config/provider/database/default.database.provider";
 import { SQLiteDataSourceProvider } from "@crepen-nest/config/provider/database/sqlite.database.provider";
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger, Scope } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { DataSource } from "typeorm";
+import { DynamicConfigService } from "../dynamic-config/dynamic-config.service";
 
 
 @Injectable()
@@ -11,7 +12,8 @@ export class DatabaseService {
     private activeLocal: DataSource = undefined;
 
     constructor(
-        private configService: ConfigService
+        private configService: ConfigService,
+        private readonly dynamicConfig : DynamicConfigService
     ) {
         void this.getLocal();
     }
@@ -22,7 +24,7 @@ export class DatabaseService {
 
 
         if (!this.activeDefault?.isInitialized) {
-            this.activeDefault = await DefaultDataSourceProvider.getDataSource(this.configService).initialize();
+            this.activeDefault = await DefaultDataSourceProvider.getDataSource(this.dynamicConfig).initialize();
 
             const checkFullTextSetting = await this.activeDefault.query<{Variable_name : string , Value : string}[]>(`SHOW VARIABLES LIKE 'ft_min_word_len'`);
             const data = checkFullTextSetting.find(x=>x.Variable_name === 'ft_min_word_len');

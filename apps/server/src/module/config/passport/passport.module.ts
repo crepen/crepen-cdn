@@ -3,6 +3,7 @@ import { forwardRef, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
+import { DynamicConfigService } from "../dynamic-config/dynamic-config.service";
 
 @Module({
     imports: [
@@ -11,9 +12,9 @@ import { PassportModule } from "@nestjs/passport";
         JwtModule.registerAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
-            useFactory: async (configService: ConfigService) => {
+            useFactory: async (dynamicService: DynamicConfigService) => {
                 return {
-                    secret : configService.get('jwt.secret')
+                    secret : dynamicService.get('jwt.secret')
                 }
             },
         })

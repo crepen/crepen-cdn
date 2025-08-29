@@ -4,6 +4,7 @@ import * as Winston from 'winston';
 import * as path from "path";
 import { ConfigService } from "@nestjs/config";
 import 'winston-daily-rotate-file';
+import { DynamicConfigService } from "../dynamic-config/dynamic-config.service";
 
 @Injectable()
 export class LoggerConfigService {
@@ -12,6 +13,7 @@ export class LoggerConfigService {
 
     constructor(
         private readonly configService: ConfigService,
+        private readonly dynamicConfig : DynamicConfigService
         // private readonly envConfig: CrepenSystemService
     ) { }
 
@@ -22,7 +24,7 @@ export class LoggerConfigService {
 
         const chalk = await import('chalk').then(mod => mod.default);
 
-        const logPath : string = this.configService.get('path.log');
+        const logPath : string = this.dynamicConfig.get('path.log');
 
 
 

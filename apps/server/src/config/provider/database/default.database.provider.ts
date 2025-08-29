@@ -4,9 +4,10 @@ import { join } from "path";
 import { Logger } from "@nestjs/common";
 import { DataSourceProviderInterface } from "./interface.database.provider";
 import { StringUtil } from "@crepen-nest/lib/util";
+import { DynamicConfigService } from "@crepen-nest/module/config/dynamic-config/dynamic-config.service";
 
 export class DefaultDataSourceProvider implements DataSourceProviderInterface {
-    constructor(config: ConfigService<unknown, boolean>) {
+    constructor(config: DynamicConfigService) {
 
         const entityDir = join(__dirname , '/../../../module/**/entity/*.default.entity{.ts,.js}') 
 
@@ -25,7 +26,7 @@ export class DefaultDataSourceProvider implements DataSourceProviderInterface {
 
     private dataSource: DataSource;
 
-    static getDataSource = (config: ConfigService<unknown, boolean>) => {
+    static getDataSource = (config: DynamicConfigService) => {
         const instance = new DefaultDataSourceProvider(config);
         return instance.dataSource;
     }

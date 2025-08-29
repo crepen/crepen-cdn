@@ -25,6 +25,7 @@ import { TokenTypeEnum } from "../auth/enum/token-type.auth.request";
 import { UserEntity } from "../user/entity/user.default.entity";
 import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
 import { CrepenExplorerDefaultService } from "./explorer.service";
+import { DynamicConfigService } from "@crepen-nest/module/config/dynamic-config/dynamic-config.service";
 
 @ApiTags('[EXPLORER] 탐색기 - 폴더')
 @ApiHeader({
@@ -40,7 +41,8 @@ export class CrepenExplorerFolderController {
         private readonly explorerService: CrepenExplorerDefaultService,
         private readonly configService: ConfigService,
         private readonly databaseService: DatabaseService,
-        private readonly logService: CrepenLoggerService
+        private readonly logService: CrepenLoggerService,
+        private readonly dynamicConfig : DynamicConfigService
     ) { }
 
     @Get(':uid')
@@ -110,7 +112,7 @@ export class CrepenExplorerFolderController {
             const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
 
             const saveTempStreamDir = path.join(
-                this.configService.get('path.file'),
+                this.dynamicConfig.get('path.file'),
                 'temp'
             )
 

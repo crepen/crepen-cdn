@@ -2,7 +2,7 @@ import { SQLiteDataSourceProvider } from "@crepen-nest/config/provider/database/
 import { CrepenCommonHttpLocaleError } from "@crepen-nest/lib/error-bak/http/common.http.error";
 import { CrepenServerSystemHttpError } from "@crepen-nest/lib/error-bak/http/system.server.http.error";
 import { LocalStateEntity } from "@crepen-nest/lib/types/entity/local/state.local.entity";
-import { CallHandler, ExecutionContext, NestInterceptor } from "@nestjs/common";
+import { CallHandler, ExecutionContext, Logger, NestInterceptor } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Observable } from "rxjs";
 import { DataSource } from "typeorm";
@@ -59,6 +59,7 @@ export class CheckInitSystemInterceptor implements NestInterceptor {
                 throw e;
             }
             else {
+                Logger.error(e , 'TSD_001')
                 throw CrepenServerSystemHttpError.SYSTEM_LOCAL_DB_CONNECT_FAILED;
             }
         }

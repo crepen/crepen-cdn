@@ -6,14 +6,15 @@ import { DisableValidDBDeco, DisableValidDBDecoMode } from "../../../lib/extensi
 import { DatabaseConnectError } from "@crepen-nest/lib/error/api/common/conn.db.error";
 import { DefaultDataSourceProvider } from "@crepen-nest/config/provider/database/default.database.provider";
 import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
+import { DynamicConfigService } from "@crepen-nest/module/config/dynamic-config/dynamic-config.service";
 
 
 @Injectable()
 export class CheckConnDBInterceptor implements NestInterceptor {
     constructor(
         private reflector: Reflector,
-        private configService : ConfigService,
-        private databaseService : DatabaseService
+        private databaseService : DatabaseService,
+        private readonly dynamicConfig : DynamicConfigService
     ) { }
 
     getDecorator = (context : ExecutionContext , mode : DisableValidDBDecoMode) => {
@@ -24,7 +25,6 @@ export class CheckConnDBInterceptor implements NestInterceptor {
     }
 
     intercept = async (context: ExecutionContext, next: CallHandler<any>): Promise<Observable<any>> => {
-
 
         if(this.getDecorator(context , 'class') || this.getDecorator(context , 'method')) {
             return next.handle();

@@ -1,4 +1,5 @@
 import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
+import { DynamicConfigService } from "@crepen-nest/module/config/dynamic-config/dynamic-config.service";
 import { ExceptionFilter, INestApplication, Logger, NestInterceptor, PipeTransform } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { NestFactory, Reflector } from "@nestjs/core";
@@ -13,6 +14,7 @@ export class CommonInitializer {
     ) {
         this.configService = context.get(ConfigService);
         this.databaseService = context.get(DatabaseService);
+        this.dynamicConfigService = context.get(DynamicConfigService);
     }
 
     configService: ConfigService;
@@ -20,6 +22,7 @@ export class CommonInitializer {
     filterList: ExceptionFilter[] = [];
     pipeList: PipeTransform<any>[] = [];
     interceptorList: NestInterceptor[] = [];
+    dynamicConfigService : DynamicConfigService;
 
 
 
@@ -74,8 +77,8 @@ export class CommonInitializer {
         return this;
     }
 
-    useInterceptor = (func: (reflector: Reflector, configService: ConfigService, databaseService : DatabaseService) => NestInterceptor[]) => {
-        const list = func(this.getReflector(), this.configService, this.databaseService);
+    useInterceptor = (func: (reflector: Reflector, configService: ConfigService, databaseService : DatabaseService , dynamicConfigService : DynamicConfigService) => NestInterceptor[]) => {
+        const list = func(this.getReflector(), this.configService, this.databaseService , this.dynamicConfigService);
         for (const item of list) {
             this.interceptorList.push(item);
         }

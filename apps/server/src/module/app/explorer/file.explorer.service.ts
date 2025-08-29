@@ -1,10 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { I18nService } from "nestjs-i18n";
 import { CrepenExplorerRepository } from "./explorer.repository";
-import { Multer } from "multer";
 import { FileNotUploadedError } from "@crepen-nest/lib/error/api/explorer/file_not_uploaded.file.error";
-import { CryptoUtil } from "@crepen-nest/lib/util";
-import { randomUUID } from "crypto";
 import * as path from "path";
 import * as fs from 'fs';
 import { ExplorerFileEntity } from "./entity/file.explorer.default.entity";
@@ -16,13 +13,15 @@ import { ConfigService } from "@nestjs/config";
 import { CrepenExplorerDefaultService } from "./explorer.service";
 import { ExplorerFileStateEnum } from "./enum/file-state.explorer.enum";
 import { UserEntity } from "../user/entity/user.default.entity";
+import { DynamicConfigService } from "@crepen-nest/module/config/dynamic-config/dynamic-config.service";
 
 @Injectable()
 export class CrepenExplorerFileService {
     constructor(
         private readonly explorerRepo: CrepenExplorerRepository,
         private readonly databaseService: DatabaseService,
-        private readonly configService: ConfigService,
+        // private readonly configService: ConfigService,
+        private readonly dynamicConfig : DynamicConfigService,
         private readonly explorerService: CrepenExplorerDefaultService,
         private readonly i18n: I18nService
     ) { }
@@ -34,7 +33,7 @@ export class CrepenExplorerFileService {
         return (await this.databaseService.getDefault()).transaction(async (manager) => {
 
             const saveTempStreamDir = path.join(
-                this.configService.get('path.file'),
+                this.dynamicConfig.get('path.file'),
                 'temp'
             )
 
@@ -79,7 +78,7 @@ export class CrepenExplorerFileService {
 
 
             const saveDirPath = path.join(
-                this.configService.get('path.file'),
+                this.dynamicConfig.get('path.file'),
                 catalog,
                 user.uid
             );

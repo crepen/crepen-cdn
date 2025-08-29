@@ -39,16 +39,16 @@ const bootstrap = async () => {
     appContext
         .usePipe((refl, conf) => [
             new PlatformI18nValidationPipe()
-        ]) 
+        ])
         .useFilter((refl, conf) => [
             new PlayformI18nValidationExceptionFilter(),
             new CommonExceptionFilter()
         ])
-        .useInterceptor((refl, conf, db) => [
+        .useInterceptor((refl, conf, db, dynamicConfig) => [
             new ResponseSnakeCaseConvertInterceptor(),
-            new CheckConnDBInterceptor(refl, conf, db),
+            new CheckConnDBInterceptor(refl, db, dynamicConfig),
             new ClassSerializerInterceptor(refl),
-            new CheckInitSystemInterceptor(conf)
+            // new CheckInitSystemInterceptor(conf)
         ])
 
     await appContext.active();

@@ -27,6 +27,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/cloud/public ./apps/cloud/pu
 
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
+ENV API_URL=http://crepen-cdn-server:13332
 
 CMD ["node", "apps/cloud/server.js"]
 

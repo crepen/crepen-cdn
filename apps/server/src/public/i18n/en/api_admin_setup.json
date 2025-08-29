@@ -1,0 +1,4 @@
+{
+    "CHK_DB.FAILED" : "Unable to connect to database.",
+    "CHK_DB.NOT_EMPTY" : "Target database not empty."
+}

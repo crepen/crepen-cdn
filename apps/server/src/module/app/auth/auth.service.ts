@@ -13,13 +13,14 @@ import { TokenData, TokenGroup } from "./types/token.type";
 import { AuthUserTokenExpiredError } from "@crepen-nest/lib/error/api/auth/expire_token.auth.error";
 import { CryptoUtil, StringUtil } from "@crepen-nest/lib/util";
 import { AuthUserTokenUndefinedError } from "@crepen-nest/lib/error/api/auth/undefined_token.auth.error copy";
+import { DynamicConfigService } from "@crepen-nest/module/config/dynamic-config/dynamic-config.service";
 
 @Injectable()
 export class CrepenAuthService {
 
     constructor(
         private readonly userService: CrepenUserService,
-        private readonly configService: ConfigService,
+        private readonly dynamicConfig: DynamicConfigService,
         private readonly jwtService: JwtService,
     ) { }
 
@@ -38,8 +39,8 @@ export class CrepenAuthService {
 
     getUserToken = async (user: UserEntity): Promise<TokenGroup> => {
 
-        const expireAct = this.configService.get<string>('jwt.expireAct');
-        const expireRft = this.configService.get<string>('jwt.expireRft');
+        const expireAct = this.dynamicConfig.get<string | undefined>('jwt.expireAct');
+        const expireRft = this.dynamicConfig.get<string | undefined>('jwt.expireRft');
 
         const accessToken = this.jwtService.sign(
             {
@@ -47,7 +48,7 @@ export class CrepenAuthService {
                 uid: user.uid
             } as TokenData,
             {
-                expiresIn: expireAct,
+                expiresIn: expireAct ?? '5m',
             }
         )
 
@@ -57,7 +58,7 @@ export class CrepenAuthService {
                 uid: user.uid
             } as TokenData,
             {
-                expiresIn: expireRft
+                expiresIn: expireRft ?? '1h'
             }
         )
 
