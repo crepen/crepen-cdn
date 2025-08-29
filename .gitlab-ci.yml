@@ -23,11 +23,25 @@ build-cloud:
   stage: build
   needs:
     - nexus-login
+  rules:
+    - changes: 
+      - apps/cloud/**/*
   script:
     - docker build --build-arg BASE_PATH=/cloud --no-cache -f dockerfile-cloud -t $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA .
     - docker tag $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
 
     
+build-server:
+  stage : build
+  needs:
+    - nexus-login
+  rules:
+    - changes: 
+      - apps/server/**/*
+  script : 
+    - docker build --build-arg --no-cache -f dockerfile-server -t $NEXUS_IMAGE_REPO/crepen-cdn-server:$CI_COMMIT_SHA .
+    - docker tag $NEXUS_IMAGE_REPO/crepen-cdn-server:$CI_COMMIT_SHA $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
+
 
 build-mariadb:
   stage: build
@@ -36,20 +50,18 @@ build-mariadb:
   script:
     - docker build --no-cache -f dockerfile-mariadb -t $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:$CI_COMMIT_SHA .
     - docker tag $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:$CI_COMMIT_SHA $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:latest
+  rules:
+    - when: manual
 
 
-build-server:
-  stage : build
-  needs:
-    - nexus-login
-  script : 
-    - docker build --build-arg --no-cache -f dockerfile-server -t $NEXUS_IMAGE_REPO/crepen-cdn-server:$CI_COMMIT_SHA .
-    - docker tag $NEXUS_IMAGE_REPO/crepen-cdn-server:$CI_COMMIT_SHA $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
 
 publish-cloud:
   stage: publish
   needs:
     - build-cloud
+  rules:
+    - changes: 
+      - apps/cloud/**/*
   script: 
     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA
     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
@@ -59,9 +71,13 @@ publish-server:
   stage: publish
   needs:
     - build-server
+  rules:
+    - changes: 
+      - apps/server/**/*
   script: 
     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-server:$CI_COMMIT_SHA
     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
+
 
 publish-mariadb:
   stage: publish
@@ -70,7 +86,8 @@ publish-mariadb:
   script: 
     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:$CI_COMMIT_SHA
     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:latest
-
+  rules:
+    - when: manual
 
 clear-image:
   stage: clear
@@ -112,6 +129,9 @@ check-crepen-cdn-network:
 
 run-cloud : 
   stage: runner
+  rules:
+    - changes: 
+      - apps/cloud/**/*
   needs:
     - publish-cloud
     - check-nginx-network
@@ -129,6 +149,9 @@ run-server :
     - publish-server
     - check-nginx-network
     - check-crepen-cdn-network
+  rules:
+    - changes: 
+      - apps/server/**/*    
   script : 
     - docker rm -f crepen-cdn-server
     - docker run -d -p 13337:13332 -v /var/opt/docker-volume/crepen.cdn/server/log:/var/opt/crepen/log -v /var/opt/docker-volume/crepen.cdn/server/config:/etc/crepen/cdn -v /var/opt/docker-volume/crepen.cdn/server/data:/var/opt/crepen/cdn --name crepen-cdn-server --hostname crepen-cdn-server $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
@@ -145,7 +168,8 @@ run-mariadb :
     - docker rm -f crepen-cdn-mariadb
     - docker run -d  -p 13338:3306 -e MARIADB_ROOT_PASSWORD=qwer1234 -v /var/opt/docker-volume/crepen.cdn/mariadb/data:/var/lib/mysql --name crepen-cdn-mariadb --hostname crepen-cdn-mariadb $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:latest
     - docker network connect crepen-cdn-network crepen-cdn-mariadb
-
+  rules:
+    - when: manual
 
 
 nexus-logout:
