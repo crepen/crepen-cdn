@@ -58,7 +58,7 @@ publish-server:
     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-server:$CI_COMMIT_SHA
     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
 
-publish-server:
+publish-mariadb:
   stage: publish
   needs:
     - build-mariadb
