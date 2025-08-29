@@ -8,6 +8,13 @@ stages:
   - logout
 
 
+
+# COMMON
+
+
+# COMMON_START
+
+## Login Docker (Crepen Nexus)
 nexus-login:
   stage: login
   script : 
@@ -15,9 +22,63 @@ nexus-login:
     - echo $NEXUS_REGISTRY
     - echo "$NEXUS_PASSWORD" | docker login $NEXUS_REGISTRY --username "$NEXUS_USERNAME" --password-stdin
 
-    
+## Init Docker network (Nginx Network)
+check-nginx-network:
+  stage: check-network
+  script:
+    - echo "Docker 네트워크 존재 여부 확인..."
+    - |
+      if ! docker network ls --format '{{.Name}}' | grep -q '^nginx-network$'; then
+        echo "네트워크가 존재하지 않습니다. 생성 중..."
+        docker network create nginx-network
+      else
+        echo "네트워크가 이미 존재합니다."
+      fi
+
+## Init Docker network (Crepen CDN Network)
+check-crepen-cdn-network:
+  stage: check-network
+  script:
+    - echo "Docker 네트워크 존재 여부 확인..."
+    - |
+      if ! docker network ls --format '{{.Name}}' | grep -q '^crepen-cdn-network$'; then
+        echo "네트워크가 존재하지 않습니다. 생성 중..."
+        docker network create crepen-cdn-network
+      else
+        echo "네트워크가 이미 존재합니다."
+      fi
+
+## Logout Docker (Crepen Nexus)
+nexus-logout:
+  stage: logout
+  needs:
+    - job: run-server
+      optional: true
+    - job: run-cloud
+      optional: true
+    - job: run-mariadb
+      optional: true
+      
+  script:
+    - docker logout $NEXUS_REGISTRY
+
+## Clear Docker Images
+clear-image:
+  stage: clear
+  needs:
+    - job: publish-cloud
+      optional: true
+    - job: publish-server
+      optional: true
+  script:
+    - docker image prune -a -f
 
 
+
+
+
+
+#CLOUD_START
 
 build-cloud:      
   stage: build
@@ -29,6 +90,35 @@ build-cloud:
   script:
     - docker build --build-arg BASE_PATH=/cloud --no-cache -f dockerfile-cloud -t $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA .
     - docker tag $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
+
+publish-cloud:
+  stage: publish
+  needs:
+    - build-cloud
+  rules:
+    - changes: 
+      - apps/cloud/**/*
+  script: 
+    - docker push $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA
+    - docker push $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
+
+run-cloud : 
+  stage: runner
+  rules:
+    - changes: 
+      - apps/cloud/**/*
+  needs:
+    - publish-cloud
+    - check-nginx-network
+    - check-crepen-cdn-network
+  script : 
+    - docker rm -f crepen-cdn-cloud
+    - docker run -d -p 13336:3000 --name crepen-cdn-cloud -e API_URL=http://crepen-cdn-server:13332 --hostname crepen-cdn-cloud  $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
+    - docker network connect nginx-network crepen-cdn-cloud
+    - docker network connect crepen-cdn-network crepen-cdn-cloud
+
+
+
 
     
 build-server:
@@ -55,18 +145,6 @@ build-mariadb:
 
 
 
-publish-cloud:
-  stage: publish
-  needs:
-    - build-cloud
-  rules:
-    - changes: 
-      - apps/cloud/**/*
-  script: 
-    - docker push $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA
-    - docker push $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
-
-
 publish-server:
   stage: publish
   needs:
@@ -89,58 +167,8 @@ publish-mariadb:
   rules:
     - when: manual
 
-clear-image:
-  stage: clear
-  needs:
-    - publish-cloud
-    - publish-server
-  script:
-    - docker image prune -a -f
 
 
-check-nginx-network:
-  stage: check-network
-  needs:
-    - clear-image
-  script:
-    - echo "Docker 네트워크 존재 여부 확인..."
-    - |
-      if ! docker network ls --format '{{.Name}}' | grep -q '^nginx-network$'; then
-        echo "네트워크가 존재하지 않습니다. 생성 중..."
-        docker network create nginx-network
-      else
-        echo "네트워크가 이미 존재합니다."
-      fi
-
-check-crepen-cdn-network:
-  stage: check-network
-  needs:
-    - clear-image
-  script:
-    - echo "Docker 네트워크 존재 여부 확인..."
-    - |
-      if ! docker network ls --format '{{.Name}}' | grep -q '^crepen-cdn-network$'; then
-        echo "네트워크가 존재하지 않습니다. 생성 중..."
-        docker network create crepen-cdn-network
-      else
-        echo "네트워크가 이미 존재합니다."
-      fi
-
-
-run-cloud : 
-  stage: runner
-  rules:
-    - changes: 
-      - apps/cloud/**/*
-  needs:
-    - publish-cloud
-    - check-nginx-network
-    - check-crepen-cdn-network
-  script : 
-    - docker rm -f crepen-cdn-cloud
-    - docker run -d -p 13336:3000 --name crepen-cdn-cloud -e API_URL=http://crepen-cdn-server:13332 --hostname crepen-cdn-cloud  $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
-    - docker network connect nginx-network crepen-cdn-cloud
-    - docker network connect crepen-cdn-network crepen-cdn-cloud
 
 
 run-server : 
@@ -171,14 +199,3 @@ run-mariadb :
   rules:
     - when: manual
 
-
-nexus-logout:
-  stage: logout
-  needs:
-    - run-server
-    - run-cloud
-    - run-mariadb
-  script:
-    - docker logout $NEXUS_REGISTRY
-
-    
