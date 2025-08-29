@@ -10,6 +10,10 @@ stages:
 
 nexus-login:
   stage: login
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never   # push/merge 시 실행 안함
+    - when: manual   # 수동 실행만
   script : 
     - docker logout
     - echo $NEXUS_REGISTRY
