@@ -1,21 +1,9 @@
 stages:
-  - login     
-  # - build
-  # - publish
-  # - clear
-  # - check-network
-  # - runner
-  # - logout
+  - login
 
 
 
-# COMMON
-
-
-# COMMON_START
-
-## Login Docker (Crepen Nexus)
-nexus-login:
+login-nexus:
   stage: login
   when: always
   script : 
@@ -23,176 +11,204 @@ nexus-login:
     - echo $NEXUS_REGISTRY
     - echo "$NEXUS_PASSWORD" | docker login $NEXUS_REGISTRY --username "$NEXUS_USERNAME" --password-stdin
 
-## Init Docker network (Nginx Network)
-check-nginx-network:
-  stage: check-network
-  script:
-    - echo "Docker 네트워크 존재 여부 확인..."
-    - |
-      if ! docker network ls --format '{{.Name}}' | grep -q '^nginx-network$'; then
-        echo "네트워크가 존재하지 않습니다. 생성 중..."
-        docker network create nginx-network
-      else
-        echo "네트워크가 이미 존재합니다."
-      fi
-
-## Init Docker network (Crepen CDN Network)
-check-crepen-cdn-network:
-  stage: check-network
-  script:
-    - echo "Docker 네트워크 존재 여부 확인..."
-    - |
-      if ! docker network ls --format '{{.Name}}' | grep -q '^crepen-cdn-network$'; then
-        echo "네트워크가 존재하지 않습니다. 생성 중..."
-        docker network create crepen-cdn-network
-      else
-        echo "네트워크가 이미 존재합니다."
-      fi
-
-## Logout Docker (Crepen Nexus)
-nexus-logout:
-  stage: logout
-  when: always
-  script:
-    - docker logout $NEXUS_REGISTRY
-
-## Clear Docker Images
-clear-image:
-  stage: clear
-  needs:
-    - job: publish-cloud
-      optional: true
-    - job: publish-server
-      optional: true
-  script:
-    - docker image prune -a -f
 
 
 
+# stages:
+#   - login     
+#   - build
+#   - publish
+#   - clear
+#   - check-network
+#   - runner
+#   - logout
 
 
 
-#CLOUD_START
+# # COMMON
 
-build-cloud:      
-  stage: build
-  needs:
-    - nexus-login
-  rules:
-    - if: $CI_COMMIT_BRANCH
-      changes: 
-      - apps/cloud/**/*
-  script:
-    - docker build --build-arg BASE_PATH=/cloud --no-cache -f dockerfile-cloud -t $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA .
-    - docker tag $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
 
-publish-cloud:
-  stage: publish
-  needs:
-    - job: build-cloud
-      artifacts: false
-  rules:
-    - if: $CI_COMMIT_BRANCH
-      changes: 
-      - apps/cloud/**/*      
-  script: 
-    - docker push $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA
-    - docker push $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
+# # COMMON_START
 
-run-cloud : 
-  stage: runner
-  needs:
-    - job: publish-cloud
-      artifacts: false
-  rules:
-    - if: $CI_COMMIT_BRANCH
-      changes: 
-      - apps/cloud/**/*      
-  script : 
-    - docker rm -f crepen-cdn-cloud
-    - docker run -d -p 13336:3000 --name crepen-cdn-cloud -e API_URL=http://crepen-cdn-server:13332 --hostname crepen-cdn-cloud  $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
-    - docker network connect nginx-network crepen-cdn-cloud
-    - docker network connect crepen-cdn-network crepen-cdn-cloud
+# ## Login Docker (Crepen Nexus)
+# nexus-login:
+#   stage: login
+#   when: always
+#   script : 
+#     - docker logout
+#     - echo $NEXUS_REGISTRY
+#     - echo "$NEXUS_PASSWORD" | docker login $NEXUS_REGISTRY --username "$NEXUS_USERNAME" --password-stdin
+
+# ## Init Docker network (Nginx Network)
+# check-nginx-network:
+#   stage: check-network
+#   script:
+#     - echo "Docker 네트워크 존재 여부 확인..."
+#     - |
+#       if ! docker network ls --format '{{.Name}}' | grep -q '^nginx-network$'; then
+#         echo "네트워크가 존재하지 않습니다. 생성 중..."
+#         docker network create nginx-network
+#       else
+#         echo "네트워크가 이미 존재합니다."
+#       fi
+
+# ## Init Docker network (Crepen CDN Network)
+# check-crepen-cdn-network:
+#   stage: check-network
+#   script:
+#     - echo "Docker 네트워크 존재 여부 확인..."
+#     - |
+#       if ! docker network ls --format '{{.Name}}' | grep -q '^crepen-cdn-network$'; then
+#         echo "네트워크가 존재하지 않습니다. 생성 중..."
+#         docker network create crepen-cdn-network
+#       else
+#         echo "네트워크가 이미 존재합니다."
+#       fi
+
+# ## Logout Docker (Crepen Nexus)
+# nexus-logout:
+#   stage: logout
+#   when: always
+#   script:
+#     - docker logout $NEXUS_REGISTRY
+
+# ## Clear Docker Images
+# clear-image:
+#   stage: clear
+#   needs:
+#     - job: publish-cloud
+#       optional: true
+#     - job: publish-server
+#       optional: true
+#   script:
+#     - docker image prune -a -f
+
+
+
+
+
+
+# #CLOUD_START
+
+# build-cloud:      
+#   stage: build
+#   needs:
+#     - nexus-login
+#   rules:
+#     - if: $CI_COMMIT_BRANCH
+#       changes: 
+#       - apps/cloud/**/*
+#   script:
+#     - docker build --build-arg BASE_PATH=/cloud --no-cache -f dockerfile-cloud -t $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA .
+#     - docker tag $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
+
+# publish-cloud:
+#   stage: publish
+#   needs:
+#     - job: build-cloud
+#       artifacts: false
+#   rules:
+#     - if: $CI_COMMIT_BRANCH
+#       changes: 
+#       - apps/cloud/**/*      
+#   script: 
+#     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA
+#     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
+
+# run-cloud : 
+#   stage: runner
+#   needs:
+#     - job: publish-cloud
+#       artifacts: false
+#   rules:
+#     - if: $CI_COMMIT_BRANCH
+#       changes: 
+#       - apps/cloud/**/*      
+#   script : 
+#     - docker rm -f crepen-cdn-cloud
+#     - docker run -d -p 13336:3000 --name crepen-cdn-cloud -e API_URL=http://crepen-cdn-server:13332 --hostname crepen-cdn-cloud  $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
+#     - docker network connect nginx-network crepen-cdn-cloud
+#     - docker network connect crepen-cdn-network crepen-cdn-cloud
 
 
 
 
     
-build-server:
-  stage : build
-  needs:
-    - nexus-login
-  rules:
-    - changes: 
-      - apps/server/**/*
-  script : 
-    - docker build --build-arg --no-cache -f dockerfile-server -t $NEXUS_IMAGE_REPO/crepen-cdn-server:$CI_COMMIT_SHA .
-    - docker tag $NEXUS_IMAGE_REPO/crepen-cdn-server:$CI_COMMIT_SHA $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
+# build-server:
+#   stage : build
+#   needs:
+#     - nexus-login
+#   rules:
+#     - changes: 
+#       - apps/server/**/*
+#   script : 
+#     - docker build --build-arg --no-cache -f dockerfile-server -t $NEXUS_IMAGE_REPO/crepen-cdn-server:$CI_COMMIT_SHA .
+#     - docker tag $NEXUS_IMAGE_REPO/crepen-cdn-server:$CI_COMMIT_SHA $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
 
 
-build-mariadb:
-  stage: build
-  needs:
-    - nexus-login
-  script:
-    - docker build --no-cache -f dockerfile-mariadb -t $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:$CI_COMMIT_SHA .
-    - docker tag $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:$CI_COMMIT_SHA $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:latest
-  rules:
-    - when: manual
-
-
-
-publish-server:
-  stage: publish
-  needs:
-    - build-server
-  rules:
-    - changes: 
-      - apps/server/**/*
-  script: 
-    - docker push $NEXUS_IMAGE_REPO/crepen-cdn-server:$CI_COMMIT_SHA
-    - docker push $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
-
-
-publish-mariadb:
-  stage: publish
-  needs:
-    - build-mariadb
-  script: 
-    - docker push $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:$CI_COMMIT_SHA
-    - docker push $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:latest
-  rules:
-    - when: manual
+# build-mariadb:
+#   stage: build
+#   needs:
+#     - nexus-login
+#   script:
+#     - docker build --no-cache -f dockerfile-mariadb -t $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:$CI_COMMIT_SHA .
+#     - docker tag $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:$CI_COMMIT_SHA $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:latest
+#   rules:
+#     - when: manual
 
 
 
+# publish-server:
+#   stage: publish
+#   needs:
+#     - build-server
+#   rules:
+#     - changes: 
+#       - apps/server/**/*
+#   script: 
+#     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-server:$CI_COMMIT_SHA
+#     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
 
 
-run-server : 
-  stage: runner
-  needs:
-    - publish-server
-    - check-nginx-network
-    - check-crepen-cdn-network
-  rules:
-    - changes: 
-      - apps/server/**/*    
-  script : 
-    - docker rm -f crepen-cdn-server
-    - docker run -d -p 13337:13332 -v /var/opt/docker-volume/crepen.cdn/server/log:/var/opt/crepen/log -v /var/opt/docker-volume/crepen.cdn/server/config:/etc/crepen/cdn -v /var/opt/docker-volume/crepen.cdn/server/data:/var/opt/crepen/cdn --name crepen-cdn-server --hostname crepen-cdn-server $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
-    - docker network connect crepen-cdn-network crepen-cdn-server
+# publish-mariadb:
+#   stage: publish
+#   needs:
+#     - build-mariadb
+#   script: 
+#     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:$CI_COMMIT_SHA
+#     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:latest
+#   rules:
+#     - when: manual
 
 
-run-mariadb : 
-  stage: runner
-  needs:
-    - publish-mariadb
-    - check-nginx-network
-    - check-crepen-cdn-network
-  script : 
-    - docker rm -f crepen-cdn-mariadb
-    - docker run -d  -p 13338:3306 -e MARIADB_ROOT_PASSWORD=qwer1234 -v /var/opt/docker-volume/crepen.cdn/mariadb/data:/var/lib/mysql --name crepen-cdn-mariadb --hostname crepen-cdn-mariadb $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:latest
-    - docker network connect crepen-cdn-network crepen-cdn-mariadb
-  rules:
-    - when: manual
+
+
+
+# run-server : 
+#   stage: runner
+#   needs:
+#     - publish-server
+#     - check-nginx-network
+#     - check-crepen-cdn-network
+#   rules:
+#     - changes: 
+#       - apps/server/**/*    
+#   script : 
+#     - docker rm -f crepen-cdn-server
+#     - docker run -d -p 13337:13332 -v /var/opt/docker-volume/crepen.cdn/server/log:/var/opt/crepen/log -v /var/opt/docker-volume/crepen.cdn/server/config:/etc/crepen/cdn -v /var/opt/docker-volume/crepen.cdn/server/data:/var/opt/crepen/cdn --name crepen-cdn-server --hostname crepen-cdn-server $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
+#     - docker network connect crepen-cdn-network crepen-cdn-server
+
+
+# run-mariadb : 
+#   stage: runner
+#   needs:
+#     - publish-mariadb
+#     - check-nginx-network
+#     - check-crepen-cdn-network
+#   script : 
+#     - docker rm -f crepen-cdn-mariadb
+#     - docker run -d  -p 13338:3306 -e MARIADB_ROOT_PASSWORD=qwer1234 -v /var/opt/docker-volume/crepen.cdn/mariadb/data:/var/lib/mysql --name crepen-cdn-mariadb --hostname crepen-cdn-mariadb $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:latest
+#     - docker network connect crepen-cdn-network crepen-cdn-mariadb
+#   rules:
+#     - when: manual
 
