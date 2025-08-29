@@ -1,7 +1,9 @@
 'use client'
 
-import { createContext, PropsWithChildren, useContext, useState } from "react";
+import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
 import { UploadFileMonitorModal } from "../upload-file-modal/UploadFileMonitorModal";
+import { usePathname } from "next/navigation";
+
 
 interface MainUploadFileModalContextProp {
     isOpen: boolean,
@@ -18,14 +20,17 @@ export const useUploadFileModal = () => {
 }
 
 
-interface MainUploadFileModalProviderProp extends PropsWithChildren {
-
-}
+type MainUploadFileModalProviderProp = PropsWithChildren
 
 export const MainUploadFileModalProvider = (prop: MainUploadFileModalProviderProp) => {
 
     const [isOpen, setOpenState] = useState<boolean>(false);
 
+    const pathHook = usePathname();
+
+    useEffect(() => {
+        setOpenState(false);
+    },[pathHook])
 
     return (
         <MainUploadFileModalContext.Provider value={{

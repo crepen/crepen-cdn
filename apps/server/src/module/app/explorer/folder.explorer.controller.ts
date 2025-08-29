@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+ 
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
+ 
 import { Body, Controller, Get, Headers, HttpCode, HttpStatus, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiHeader, ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
 import { CrepenLoggerService } from "../common/logger/logger.service";
@@ -111,9 +111,11 @@ export class CrepenExplorerFolderController {
             const key = uuidKey.length < 32 ? uuidKey.padEnd(32, '-') : uuidKey.slice(0, 32);
             const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
 
+            console.log(this.dynamicConfig.getAll());
+
             const saveTempStreamDir = path.join(
-                this.dynamicConfig.get('path.file'),
-                'temp'
+                this.dynamicConfig.get('path.data'),
+                'file/temp'
             )
 
             if (!fs.existsSync(saveTempStreamDir)) {

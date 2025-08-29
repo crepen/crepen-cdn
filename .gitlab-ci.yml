@@ -138,7 +138,7 @@ run-mariadb :
     - check-crepen-cdn-network
   script : 
     - docker rm -f crepen-cdn-mariadb
-    - docker run -d  -p 13338:3306 -v /var/opt/docker-volume/crepen.cdn/mariadb/data:/var/lib/mysql --name crepen-cdn-mariadb --hostname crepen-cdn-mariadb $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:latest
+    - docker run -d  -p 13338:3306 -e MARIADB_ROOT_PASSWORD=qwer1234 -v /var/opt/docker-volume/crepen.cdn/mariadb/data:/var/lib/mysql --name crepen-cdn-mariadb --hostname crepen-cdn-mariadb $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:latest
     - docker network connect crepen-cdn-network crepen-cdn-mariadb
 
 

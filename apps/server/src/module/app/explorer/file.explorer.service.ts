@@ -33,8 +33,8 @@ export class CrepenExplorerFileService {
         return (await this.databaseService.getDefault()).transaction(async (manager) => {
 
             const saveTempStreamDir = path.join(
-                this.dynamicConfig.get('path.file'),
-                'temp'
+                this.dynamicConfig.get('path.data'),
+                'file/temp'
             )
 
             if(!fs.existsSync(path.join(saveTempStreamDir , uuid + '.CPCDN'))){   
@@ -78,7 +78,8 @@ export class CrepenExplorerFileService {
 
 
             const saveDirPath = path.join(
-                this.dynamicConfig.get('path.file'),
+                this.dynamicConfig.get('path.data'),
+                'file',
                 catalog,
                 user.uid
             );

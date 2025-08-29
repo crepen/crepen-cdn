@@ -38,9 +38,7 @@ export interface UploadFileProgress {
 
 
 
-interface MainUploadFileProviderProp extends PropsWithChildren {
-
-}
+type MainUploadFileProviderProp = PropsWithChildren
 
 const queryClient = new QueryClient();
 
