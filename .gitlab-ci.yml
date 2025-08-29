@@ -24,6 +24,13 @@ build-cloud:
     - docker build --build-arg BASE_PATH=/cloud --no-cache -f dockerfile-cloud -t $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA .
     - docker tag $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
 
+build-mariadb:
+  stage: build
+  needs:
+    - nexus-login
+  script:
+    - docker build --no-cache -f dockerfile-mariadb -t $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:$CI_COMMIT_SHA .
+    - docker tag $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:$CI_COMMIT_SHA $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:latest
 
 
 build-server:
@@ -51,7 +58,13 @@ publish-server:
     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-server:$CI_COMMIT_SHA
     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
 
-
+publish-server:
+  stage: publish
+  needs:
+    - build-mariadb
+  script: 
+    - docker push $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:$CI_COMMIT_SHA
+    - docker push $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:latest
 
 
 clear-image:
@@ -113,9 +126,20 @@ run-server :
     - check-crepen-cdn-network
   script : 
     - docker rm -f crepen-cdn-server
-    - docker run -d --name crepen-cdn-server --hostname crepen-cdn-server $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
+    - docker run -d -v /var/opt/docker-volume/crepen.cdn/server/log:/var/opt/crepen/log -v /var/opt/docker-volume/crepen.cdn/server/config:/etc/crepen/cdn -v /var/opt/docker-volume/crepen.cdn/server/data:/var/opt/crepen/cdn --name crepen-cdn-server --hostname crepen-cdn-server $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
     - docker network connect crepen-cdn-network crepen-cdn-server
 
+
+run-mariadb : 
+  stage: runner
+  needs:
+    - publish-mariadb
+    - check-nginx-network
+    - check-crepen-cdn-network
+  script : 
+    - docker rm -f crepen-cdn-mariadb
+    - docker run -d -v /var/opt/docker-volume/crepen.cdn/mariadb/data:/var/lib/mysql --name crepen-cdn-mariadb --hostname crepen-cdn-mariadb $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:latest
+    - docker network connect crepen-cdn-network crepen-cdn-mariadb
 
 
 
@@ -124,6 +148,7 @@ nexus-logout:
   needs:
     - run-server
     - run-cloud
+    - run-mariadb
   script:
     - docker logout $NEXUS_REGISTRY
 

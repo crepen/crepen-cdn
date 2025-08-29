@@ -1,0 +1,13 @@
+FROM mariadb:11.8
+
+# OS 타임존 환경 변수
+ENV TZ=UTC
+
+ENV MARIADB_ROOT_PASSWORD=qwer1234
+
+# custom.cnf 직접 생성
+RUN echo "[mysqld]\n\
+ft_min_word_len=2\n\
+default-time-zone='UTC'\n" \
+> /etc/mysql/conf.d/custom.cnf \
+&& chmod 644 /etc/mysql/conf.d/custom.cnf
