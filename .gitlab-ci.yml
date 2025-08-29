@@ -85,7 +85,8 @@ build-cloud:
   needs:
     - nexus-login
   rules:
-    - changes: 
+    - if: $CI_COMMIT_BRANCH
+      changes: 
       - apps/cloud/**/*
   script:
     - docker build --build-arg BASE_PATH=/cloud --no-cache -f dockerfile-cloud -t $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA .
@@ -94,10 +95,8 @@ build-cloud:
 publish-cloud:
   stage: publish
   needs:
-    - build-cloud
-  rules:
-    - changes: 
-      - apps/cloud/**/*
+    - job: build-cloud
+      artifacts: false
   script: 
     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-cloud:$CI_COMMIT_SHA
     - docker push $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
@@ -108,9 +107,8 @@ run-cloud :
     - changes: 
       - apps/cloud/**/*
   needs:
-    - publish-cloud
-    - check-nginx-network
-    - check-crepen-cdn-network
+    - job: publish-cloud
+      artifacts: false
   script : 
     - docker rm -f crepen-cdn-cloud
     - docker run -d -p 13336:3000 --name crepen-cdn-cloud -e API_URL=http://crepen-cdn-server:13332 --hostname crepen-cdn-cloud  $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
