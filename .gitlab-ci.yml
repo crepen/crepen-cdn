@@ -113,7 +113,7 @@ run-cloud :
     - check-crepen-cdn-network
   script : 
     - docker rm -f crepen-cdn-cloud
-    - docker run -d --name crepen-cdn-cloud -e API_URL=http://crepen-cdn-server:13332 --hostname crepen-cdn-cloud  $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
+    - docker run -d -p 13336:3000 --name crepen-cdn-cloud -e API_URL=http://crepen-cdn-server:13332 --hostname crepen-cdn-cloud  $NEXUS_IMAGE_REPO/crepen-cdn-cloud:latest
     - docker network connect nginx-network crepen-cdn-cloud
     - docker network connect crepen-cdn-network crepen-cdn-cloud
 
@@ -126,7 +126,7 @@ run-server :
     - check-crepen-cdn-network
   script : 
     - docker rm -f crepen-cdn-server
-    - docker run -d -v /var/opt/docker-volume/crepen.cdn/server/log:/var/opt/crepen/log -v /var/opt/docker-volume/crepen.cdn/server/config:/etc/crepen/cdn -v /var/opt/docker-volume/crepen.cdn/server/data:/var/opt/crepen/cdn --name crepen-cdn-server --hostname crepen-cdn-server $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
+    - docker run -d -p 13337:13332 -v /var/opt/docker-volume/crepen.cdn/server/log:/var/opt/crepen/log -v /var/opt/docker-volume/crepen.cdn/server/config:/etc/crepen/cdn -v /var/opt/docker-volume/crepen.cdn/server/data:/var/opt/crepen/cdn --name crepen-cdn-server --hostname crepen-cdn-server $NEXUS_IMAGE_REPO/crepen-cdn-server:latest
     - docker network connect crepen-cdn-network crepen-cdn-server
 
 
@@ -138,7 +138,7 @@ run-mariadb :
     - check-crepen-cdn-network
   script : 
     - docker rm -f crepen-cdn-mariadb
-    - docker run -d -v /var/opt/docker-volume/crepen.cdn/mariadb/data:/var/lib/mysql --name crepen-cdn-mariadb --hostname crepen-cdn-mariadb $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:latest
+    - docker run -d  -p 13338:3306 -v /var/opt/docker-volume/crepen.cdn/mariadb/data:/var/lib/mysql --name crepen-cdn-mariadb --hostname crepen-cdn-mariadb $NEXUS_IMAGE_REPO/crepen-cdn-mariadb:latest
     - docker network connect crepen-cdn-network crepen-cdn-mariadb
 
 
