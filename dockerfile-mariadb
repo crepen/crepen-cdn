@@ -3,11 +3,19 @@ FROM mariadb:11.8
 # OS 타임존 환경 변수
 ENV TZ=UTC
 
+# 루트 비밀번호
 ENV MARIADB_ROOT_PASSWORD=qwer1234
 
-# custom.cnf 직접 생성
+# 커스텀 설정 직접 생성
 RUN echo "[mysqld]\n\
 ft_min_word_len=2\n\
 default-time-zone='UTC'\n" \
 > /etc/mysql/conf.d/custom.cnf \
 && chmod 644 /etc/mysql/conf.d/custom.cnf
+
+# 초기화 SQL 스크립트 작성
+RUN echo "CREATE DATABASE IF NOT EXISTS crepencdn;\n\
+CREATE USER IF NOT EXISTS 'crepen'@'%' IDENTIFIED BY 'qwer1234';\n\
+GRANT ALL PRIVILEGES ON crepencdn.* TO 'crepen'@'%';\n\
+FLUSH PRIVILEGES;" \
+> /docker-entrypoint-initdb.d/init.sql
