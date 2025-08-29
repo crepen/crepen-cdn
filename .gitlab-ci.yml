@@ -17,6 +17,7 @@ stages:
 ## Login Docker (Crepen Nexus)
 nexus-login:
   stage: login
+  when: always
   script : 
     - docker logout
     - echo $NEXUS_REGISTRY
@@ -51,14 +52,7 @@ check-crepen-cdn-network:
 ## Logout Docker (Crepen Nexus)
 nexus-logout:
   stage: logout
-  needs:
-    - job: run-server
-      optional: true
-    - job: run-cloud
-      optional: true
-    - job: run-mariadb
-      optional: true
-      
+  when: always
   script:
     - docker logout $NEXUS_REGISTRY
 
