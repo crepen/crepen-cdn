@@ -5,7 +5,6 @@ stages:
 
 login-nexus:
   stage: login
-  when: always
   script : 
     - docker logout
     - echo $NEXUS_REGISTRY
