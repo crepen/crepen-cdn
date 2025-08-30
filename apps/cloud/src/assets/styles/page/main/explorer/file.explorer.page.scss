@@ -1,19 +1,56 @@
 .cp-explorer-file-page {
 
+    background: #f8fafc;
+
     .cp-page-wrapper {
 
         .cp-page-content {
 
             display: grid;
             grid-template-areas:
-                'preview info'
-                'preview action'
-                'preview monitor'
+                'preview preview'
+                'info action'
+                'monitor monitor'
             ;
-            grid-template-rows: 1fr min-content min-content;
-            grid-template-columns: 1fr 350px;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: min-content 1fr 1fr;
+
 
             gap: 24px;
+
+
+            &.cp-active-preview {
+                grid-template-areas:
+                    'preview info'
+                    'preview action'
+                    'preview monitor'
+                ;
+                grid-template-rows: 1fr min-content min-content;
+                grid-template-columns: 1fr 350px;
+
+                .cp-file-preview {
+
+                    .cp-preview-header {}
+                    .cp-preview-content {
+                        .cp-preview-image{
+                            width: 100%;
+                            height: auto;
+                        }
+                    }
+                }
+            }
+
+            &:not(.cp-active-preview) {
+                .cp-file-preview {
+                    .cp-preview-header {
+                        border-bottom: none;
+                    }
+
+                    .cp-preview-content {
+                        display: none;
+                    }
+                }
+            }
 
 
             .cp-group-box {
@@ -96,13 +133,23 @@
                     }
 
                     .cp-group-content {
+
+
+
+
+
                         .cp-info-list {
 
                             .cp-info-item {
 
-                                display: flex;
-                                justify-content: space-between;
+                                display: grid;
+                                grid-template-areas: 'item-key item-value';
+                                grid-template-columns: 100px 1fr;
                                 align-items: center;
+
+                                // display: flex;
+                                // justify-content: space-between;
+                                // align-items: center;
                                 padding: 8px 0;
                                 border-bottom: 1px solid #f8fafc;
                                 font-size: 14px;
@@ -112,11 +159,13 @@
                                 }
 
                                 .cp-info-title {
+                                    grid-area: item-key;
                                     color: #64748b;
                                     font-weight: 500;
                                 }
 
                                 .cp-info-value {
+                                    grid-area: item-value;
                                     color: #1a202c;
                                     font-weight: 500;
                                     text-align: right;

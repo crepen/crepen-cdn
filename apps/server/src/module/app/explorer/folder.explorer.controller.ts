@@ -1,6 +1,6 @@
- 
+
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
- 
+
 import { Body, Controller, Get, Headers, HttpCode, HttpStatus, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiHeader, ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
 import { CrepenLoggerService } from "../common/logger/logger.service";
@@ -26,6 +26,7 @@ import { UserEntity } from "../user/entity/user.default.entity";
 import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
 import { CrepenExplorerDefaultService } from "./explorer.service";
 import { DynamicConfigService } from "@crepen-nest/module/config/dynamic-config/dynamic-config.service";
+import * as Busboy from 'busboy'
 
 @ApiTags('[EXPLORER] 탐색기 - 폴더')
 @ApiHeader({
@@ -42,7 +43,7 @@ export class CrepenExplorerFolderController {
         private readonly configService: ConfigService,
         private readonly databaseService: DatabaseService,
         private readonly logService: CrepenLoggerService,
-        private readonly dynamicConfig : DynamicConfigService
+        private readonly dynamicConfig: DynamicConfigService
     ) { }
 
     @Get(':uid')
@@ -106,12 +107,12 @@ export class CrepenExplorerFolderController {
             }
 
             const iv = crypto.randomBytes(16);
-            const uuid = crypto.randomUUID();
-            const uuidKey = uuid.slice(2, uuid.length);
-            const key = uuidKey.length < 32 ? uuidKey.padEnd(32, '-') : uuidKey.slice(0, 32);
+            const globalSecret = this.dynamicConfig.get<string>('secret');
+            const key = globalSecret.length < 32 ? globalSecret.padEnd(32, '-') : globalSecret.slice(0, 32);
             const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+            const fileUid = crypto.randomUUID();
 
-            console.log(this.dynamicConfig.getAll());
+            console.log('ENCRYPT CIPHER' , 'aes-256-cbc' , key , iv);
 
             const saveTempStreamDir = path.join(
                 this.dynamicConfig.get('path.data'),
@@ -124,55 +125,125 @@ export class CrepenExplorerFolderController {
 
             const saveTempStreamFilePath = path.join(
                 saveTempStreamDir,
-                uuid + '.CPCDN'
+                fileUid + '.CPCDN'
             )
 
             let fileSize = 0;
 
-            const streamUploadPromise = new Promise<void>((resolve, reject) => {
-                req.pipe(cipher)
-                    .on('data', (chunk) => { fileSize += chunk.length; })
-                    .pipe(fs.createWriteStream(saveTempStreamFilePath))
-                    .on('finish', () => {  resolve(); })
-                    .on('error', (err) => reject(err));
 
-                req.on('error', (err) => reject(err));
+
+            const busboy = Busboy({ headers: req.headers });
+
+            busboy.on('file', (fieldName, fileStream) => {
+
+                fileStream
+                    .on('data', (chunk) => { fileSize += chunk.length; })
+
+                fileStream
+                    .pipe(cipher)
+                    .pipe(fs.createWriteStream(saveTempStreamFilePath))
+                    .on('error', (e) => {
+                        let error: CommonError = undefined;
+                        if (e instanceof CommonError) {
+                            error = e;
+                        }
+                        else {
+                            error = new FileUploadFailedError();
+                        }
+
+                        ExceptionResultFactory.current(res, i18n, error)
+                            .getResponse();
+
+
+                    })
+                    .on('finish', () => {
+                        const addFileEntity = this.fileService.addFile(
+                            decodeURIComponent(fileName),
+                            fileUid,
+                            iv,
+                            fileType,
+                            fileSize,
+                            uid,
+                            user
+                        )
+                            .then(result => {
+                                res.status(HttpStatus.OK).send(
+                                    BaseResponse.ok(
+                                        {
+                                            uuid: result.uid
+                                        },
+                                        HttpStatus.OK,
+                                        i18n.t('common.SUCCESS'),
+                                    )
+                                )
+                            })
+                            .catch(e => {
+                                let error: CommonError = undefined;
+                                if (e instanceof CommonError) {
+                                    error = e;
+                                }
+                                else {
+                                    error = new FileUploadFailedError();
+                                }
+
+                                ExceptionResultFactory.current(res, i18n, error)
+                                    .getResponse();
+                            })
+
+
+                    })
+                   
+
             })
 
-            streamUploadPromise
-                .then(async rp => {
-                    const addFileEntity = await this.fileService.addFile(
-                        decodeURIComponent(fileName),
-                        uuid,
-                        iv.toString(),
-                        fileType,
-                        fileSize,
-                        uid,
-                        user
-                    )
+            req.pipe(busboy);
 
-                    res.status(HttpStatus.OK).send(
-                        BaseResponse.ok(
-                            {
-                                uuid: addFileEntity.uid
-                            },
-                            HttpStatus.OK,
-                            i18n.t('common.SUCCESS'),
-                        )
-                    )
-                })
-                .catch(e => {
-                    let error: CommonError = undefined;
-                    if (e instanceof CommonError) {
-                        error = e;
-                    }
-                    else {
-                        error = new FileUploadFailedError();
-                    }
 
-                    ExceptionResultFactory.current(res, i18n, error)
-                        .getResponse();
-                })
+            // const streamUploadPromise = new Promise<void>((resolve, reject) => {
+            //     req
+            //         // .pipe(cipher)
+            //         .on('data', (chunk) => { fileSize += chunk.length; })
+            //         .pipe(fs.createWriteStream(saveTempStreamFilePath))
+            //         .on('finish', () => { resolve(); })
+            //         .on('error', (err) => reject(err));
+
+            //     req.on('error', (err) => reject(err));
+            // })
+
+            // streamUploadPromise
+            //     .then(async rp => {
+            //         const addFileEntity = await this.fileService.addFile(
+            //             decodeURIComponent(fileName),
+            //             fileUid,
+            //             iv,
+            //             fileType,
+            //             fileSize,
+            //             uid,
+            //             user
+            //         )
+
+            //         res.status(HttpStatus.OK).send(
+            //             BaseResponse.ok(
+            //                 {
+            //                     uuid: addFileEntity.uid
+            //                 },
+            //                 HttpStatus.OK,
+            //                 i18n.t('common.SUCCESS'),
+            //             )
+            //         )
+            //     })
+            //     .catch(e => {
+            //         let error: CommonError = undefined;
+            //         if (e instanceof CommonError) {
+            //             error = e;
+            //         }
+            //         else {
+            //             error = new FileUploadFailedError();
+            //         }
+
+            //         ExceptionResultFactory.current(res, i18n, error)
+            //             .getResponse();
+            //     })
 
 
 

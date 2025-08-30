@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { CrepenUserService } from "../user/user.service";
-import { FileNotFoundError } from "@crepen-nest/lib/error/api/file/not_found_file.error";
 import { UserNotFoundError } from "@crepen-nest/lib/error/api/user/not_found.user.error";
 import { UserStateEnum } from "../user/enum/user-state.enum";
 import { UserUnapprovalError } from "@crepen-nest/lib/error/api/user/unapproval.user.error";

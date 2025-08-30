@@ -14,6 +14,8 @@ export interface ExplorerFolderDataResult {
     path: { uid: string, title: string, depth: number }[]
 }
 
+
+
 export interface ExplorerFolderData {
     uid: string,
     title: string,
@@ -43,3 +45,22 @@ export interface ExplorerFileUploadResult {
 export interface ExplorerAddFolderResult {
     folderUid: string
 }
+
+
+// #region FILE
+
+
+export interface ExplorerFileInfoResult {
+    uid: string;
+    title: string;
+    fileSize: string;
+    fileName: string;
+    fileExtension: string;
+    fileMimeType: string;
+    fileState: string;
+    createDate: string;
+    updateDate: string;
+}
+
+
+//#endregion FILE

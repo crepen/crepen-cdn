@@ -12,6 +12,7 @@ export class DefaultDataSourceProvider implements DataSourceProviderInterface {
         const entityDir = join(__dirname , '/../../../module/**/entity/*.default.entity{.ts,.js}') 
 
         Logger.log(`Load Default Database Entity : ${entityDir}` , 'MAIN');
+        Logger.log(config.get('db.conn_str') , 'MAIN');
 
         this.dataSource = new DataSource({
             type: 'mariadb',

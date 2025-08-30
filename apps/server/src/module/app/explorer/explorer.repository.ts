@@ -280,6 +280,25 @@ export class CrepenExplorerRepository extends CrepenBaseRepository {
         });
     }
 
+    getFileData = async (fileUid : string , options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(ExplorerFileEntity) ?? await this.getRepository('default', ExplorerFileEntity);
+
+        return dataSource.findOne({
+            where : {
+                uid : (fileUid ?? 'NFD').trim()
+            }
+        })
+    }
+
+    getFileDataByFileName = async (fileName : string , options? : RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(ExplorerFileEntity) ?? await this.getRepository('default', ExplorerFileEntity);
+
+        return dataSource.findOne({
+            where :{
+                fileName : (fileName ?? 'NFD').trim()
+            }
+        })
+    }
 
     //#endregion FILE
 

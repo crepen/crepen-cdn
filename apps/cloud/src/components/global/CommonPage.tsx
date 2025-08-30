@@ -53,9 +53,13 @@ const CommonPageHeader = (prop: PropsWithChildren) => {
     )
 }
 
-const CommonPageContent = (prop: PropsWithChildren) => {
+interface CommonPageContentProp {
+    className?: string
+}
+
+const CommonPageContent = (prop: PropsWithChildren<CommonPageContentProp>) => {
     return (
-        <div className="cp-page-content">
+        <div className={StringUtil.joinClassName("cp-page-content" , prop.className)}>
             {prop.children}
         </div>
     )

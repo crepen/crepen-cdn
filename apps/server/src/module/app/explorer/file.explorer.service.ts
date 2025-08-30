@@ -14,21 +14,23 @@ import { CrepenExplorerDefaultService } from "./explorer.service";
 import { ExplorerFileStateEnum } from "./enum/file-state.explorer.enum";
 import { UserEntity } from "../user/entity/user.default.entity";
 import { DynamicConfigService } from "@crepen-nest/module/config/dynamic-config/dynamic-config.service";
+import { RepositoryOptions } from "@crepen-nest/interface/repo";
+import { FileNotFoundError } from "@crepen-nest/lib/error/api/explorer/not_found_file.error";
+import * as crypto from "crypto";
 
 @Injectable()
 export class CrepenExplorerFileService {
     constructor(
         private readonly explorerRepo: CrepenExplorerRepository,
         private readonly databaseService: DatabaseService,
-        // private readonly configService: ConfigService,
-        private readonly dynamicConfig : DynamicConfigService,
+        private readonly dynamicConfig: DynamicConfigService,
         private readonly explorerService: CrepenExplorerDefaultService,
         private readonly i18n: I18nService
     ) { }
 
 
 
-    addFile = async (originFileName: string, uuid: string, iv: string, mimeType : string , fileSize : number , parentFolderUid: string, user: UserEntity): Promise<ExplorerFileEntity> => {
+    addFile = async (originFileName: string, uuid: string, iv: Buffer, mimeType: string, fileSize: number, parentFolderUid: string, user: UserEntity): Promise<ExplorerFileEntity> => {
 
         return (await this.databaseService.getDefault()).transaction(async (manager) => {
 
@@ -37,7 +39,7 @@ export class CrepenExplorerFileService {
                 'file/temp'
             )
 
-            if(!fs.existsSync(path.join(saveTempStreamDir , uuid + '.CPCDN'))){   
+            if (!fs.existsSync(path.join(saveTempStreamDir, uuid + '.CPCDN'))) {
                 throw new FileNotUploadedError();
             }
 
@@ -57,6 +59,11 @@ export class CrepenExplorerFileService {
 
             // const encryptFile = await CryptoUtil.File.encrypt(file.buffer);
 
+            const saveFileDir = path.join(
+                catalog,
+                user.uid
+            )
+
             const fileObj = new ExplorerFileEntity();
             fileObj.uid = uuid;
             fileObj.title = originFileName;
@@ -71,17 +78,18 @@ export class CrepenExplorerFileService {
             fileObj.fileEncIv = iv;
             fileObj.fileState = ExplorerFileStateEnum.STABLE;
             fileObj.fileName = path.format({
-                name : uuid,
-                ext : fileExt
+                name: uuid,
+                ext: fileExt
             })
+            fileObj.filePath = saveFileDir;
+
 
 
 
             const saveDirPath = path.join(
                 this.dynamicConfig.get('path.data'),
                 'file',
-                catalog,
-                user.uid
+                saveFileDir
             );
 
 
@@ -99,13 +107,13 @@ export class CrepenExplorerFileService {
 
             try {
                 fs.renameSync(
-                    path.join(saveTempStreamDir , path.format({
-                        ext : 'CPCDN',
-                        name : uuid
+                    path.join(saveTempStreamDir, path.format({
+                        ext: 'CPCDN',
+                        name: uuid
                     })),
                     saveFilePath
                 )
-                
+
             }
             catch (e) {
                 try {
@@ -159,5 +167,39 @@ export class CrepenExplorerFileService {
 
     }
 
-    
+
+    getFileData = async (fileUid: string, userUid?: string, options?: RepositoryOptions): Promise<ExplorerFileEntity | undefined> => {
+
+        const fileInfo = await this.explorerRepo.getFileData(fileUid, options);
+
+        return fileInfo;
+    }
+
+    getFileDataByFileName = async (fileName?: string, options?: RepositoryOptions) => {
+        const fileInfo = await this.explorerRepo.getFileDataByFileName(fileName, options);
+        return fileInfo;
+    }
+
+
+    getFileStream = async (saveFilePath: string | undefined, iv: string, options?: RepositoryOptions) => {
+
+        if (!fs.existsSync(saveFilePath)) {
+            throw new FileNotFoundError();
+        }
+
+        console.log(saveFilePath);
+
+        const readFileStream = fs.createReadStream(saveFilePath);
+
+        console.log(readFileStream);
+
+        const globalSecret = this.dynamicConfig.get<string>('secret');
+        const key = globalSecret.length < 32 ? globalSecret.padEnd(32, '-') : globalSecret.slice(0, 32);
+        const decipher = crypto.createDecipheriv('aes-256-cbc', key, Buffer.from(iv));
+
+        readFileStream.pipe(decipher)
+
+        return readFileStream;
+    }
+
 }
