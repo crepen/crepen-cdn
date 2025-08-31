@@ -4,7 +4,6 @@
 import { Body, Controller, Get, Headers, HttpCode, HttpStatus, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiHeader, ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
 import { CrepenLoggerService } from "../common/logger/logger.service";
-import { CrepenExplorerFileService } from "./file.explorer.service";
 import { CrepenExplorerFolderService } from "./folder.explorer.service";
 import { BaseResponse } from "@crepen-nest/lib/common/base.response";
 import { AuthUser } from "@crepen-nest/lib/extensions/decorator/param/auth-user.param.decorator";
@@ -24,9 +23,10 @@ import { ExplorerAddFolderRequest } from "./dto/add-folder.explorer.request";
 import { TokenTypeEnum } from "../auth/enum/token-type.auth.request";
 import { UserEntity } from "../user/entity/user.default.entity";
 import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
-import { CrepenExplorerDefaultService } from "./explorer.service";
+import { CrepenExplorerDefaultService } from "./services/explorer.service";
 import { DynamicConfigService } from "@crepen-nest/module/config/dynamic-config/dynamic-config.service";
 import * as Busboy from 'busboy'
+import { CrepenExplorerFileService } from "./services/file.explorer.service";
 
 @ApiTags('[EXPLORER] 탐색기 - 폴더')
 @ApiHeader({
@@ -106,13 +106,8 @@ export class CrepenExplorerFolderController {
                 if (match) fileName = match[1];
             }
 
-            const iv = crypto.randomBytes(16);
-            const globalSecret = this.dynamicConfig.get<string>('secret');
-            const key = globalSecret.length < 32 ? globalSecret.padEnd(32, '-') : globalSecret.slice(0, 32);
-            const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
             const fileUid = crypto.randomUUID();
 
-            console.log('ENCRYPT CIPHER' , 'aes-256-cbc' , key , iv);
 
             const saveTempStreamDir = path.join(
                 this.dynamicConfig.get('path.data'),
@@ -140,7 +135,7 @@ export class CrepenExplorerFolderController {
                     .on('data', (chunk) => { fileSize += chunk.length; })
 
                 fileStream
-                    .pipe(cipher)
+                    // .pipe(cipher)
                     .pipe(fs.createWriteStream(saveTempStreamFilePath))
                     .on('error', (e) => {
                         let error: CommonError = undefined;
@@ -152,7 +147,7 @@ export class CrepenExplorerFolderController {
                         }
 
                         ExceptionResultFactory.current(res, i18n, error)
-                            .getResponse();
+                            .sendResponse();
 
 
                     })
@@ -160,7 +155,6 @@ export class CrepenExplorerFolderController {
                         const addFileEntity = this.fileService.addFile(
                             decodeURIComponent(fileName),
                             fileUid,
-                            iv,
                             fileType,
                             fileSize,
                             uid,
@@ -187,7 +181,7 @@ export class CrepenExplorerFolderController {
                                 }
 
                                 ExceptionResultFactory.current(res, i18n, error)
-                                    .getResponse();
+                                    .sendResponse();
                             })
 
 
@@ -261,7 +255,7 @@ export class CrepenExplorerFolderController {
             }
 
             ExceptionResultFactory.current(res, i18n, error)
-                .getResponse();
+                .sendResponse();
         }
     }
 

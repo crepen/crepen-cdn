@@ -1,7 +1,6 @@
 {
   "name": "@crepen-cdn/server",
   "private": true,
-  "version": "1.0.0-0001",
   "description": "Nest TypeScript starter repository",
   "license": "MIT",
   "scripts": {

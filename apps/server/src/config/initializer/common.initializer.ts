@@ -1,6 +1,6 @@
 import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
 import { DynamicConfigService } from "@crepen-nest/module/config/dynamic-config/dynamic-config.service";
-import { ExceptionFilter, INestApplication, Logger, NestInterceptor, PipeTransform } from "@nestjs/common";
+import { ConsoleLogger, ExceptionFilter, INestApplication, Logger, NestInterceptor, PipeTransform } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { NestFactory, Reflector } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
@@ -145,3 +145,5 @@ export class CommonInitializer {
         return this.context;
     }
 }
+
+

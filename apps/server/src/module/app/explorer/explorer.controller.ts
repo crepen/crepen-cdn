@@ -1,10 +1,8 @@
 import { Controller, Get, HttpCode, HttpStatus, Logger, Param, Query, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiHeader, ApiOperation, ApiTags } from "@nestjs/swagger";
-import { CrepenExplorerFileService } from "./file.explorer.service";
 import { CrepenExplorerFolderService } from "./folder.explorer.service";
 import { CrepenLoggerService } from "../common/logger/logger.service";
 import { BaseResponse } from "@crepen-nest/lib/common/base.response";
-import { CrepenExplorerDefaultService } from "./explorer.service";
 import { I18n, I18nContext } from "nestjs-i18n";
 import { AuthJwtGuard } from "@crepen-nest/module/config/passport/jwt/jwt.guard";
 import { AuthUser } from "@crepen-nest/lib/extensions/decorator/param/auth-user.param.decorator";
@@ -16,6 +14,8 @@ import { ExplorerSearchFilterData } from "./interface/explorer.object";
 import { FolderNotFoundError } from "@crepen-nest/lib/error/api/explorer/not_found.folder.error";
 import { TokenTypeEnum } from "../auth/enum/token-type.auth.request";
 import { UserEntity } from "../user/entity/user.default.entity";
+import { CrepenExplorerDefaultService } from "./services/explorer.service";
+import { CrepenExplorerFileService } from "./services/file.explorer.service";
 
 @ApiTags('[EXPLORER] 탐색기 - 공통')
 @ApiHeader({

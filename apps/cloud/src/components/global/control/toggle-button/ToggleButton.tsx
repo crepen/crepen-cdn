@@ -48,7 +48,7 @@ export const ToggleButton = (prop: ToggleButtonProp) => {
                     if (prop.onChange) {
                         setLoading(true);
                         let isSuccess = true;
-                        const res = prop.onChange(isActive);
+                        const res = prop.onChange(!isActive);
 
                         if (res instanceof Promise) {
                             if (typeof (await res) === 'boolean') {

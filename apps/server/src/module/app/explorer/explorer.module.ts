@@ -1,17 +1,23 @@
+import { CrepenAuthJwtStrategy } from "@crepen-nest/module/config/passport/jwt/jwt.strategy";
+import { PassportConfigModule } from "@crepen-nest/module/config/passport/passport.module";
 import { forwardRef, Module } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { CrepenLoggerModule } from "../common/logger/logger.module";
+import { CrepenLoggerService } from "../common/logger/logger.service";
+import { CrepenUserModule } from "../user/user.module";
 import { CrepenExplorerDefaultController } from "./explorer.controller";
 import { CrepenExplorerFileController } from "./file.explorer.controller";
 import { CrepenExplorerFolderController } from "./folder.explorer.controller";
-import { CrepenExplorerFileService } from "./file.explorer.service";
 import { CrepenExplorerFolderService } from "./folder.explorer.service";
-import { CrepenExplorerRepository } from "./explorer.repository";
-import { CrepenLoggerModule } from "../common/logger/logger.module";
-import { CrepenLoggerService } from "../common/logger/logger.service";
-import { CrepenExplorerDefaultService } from "./explorer.service";
-import { PassportConfigModule } from "@crepen-nest/module/config/passport/passport.module";
-import { JwtService } from "@nestjs/jwt";
-import { CrepenAuthJwtStrategy } from "@crepen-nest/module/config/passport/jwt/jwt.strategy";
-import { CrepenUserModule } from "../user/user.module";
+import { CrepenExplorerEncryptFileRepository } from "./repository/encrypt-file.explorer.repository";
+import { CrepenExplorerRepository } from "./repository/explorer.repository";
+import { CrepenExplorerFileEncryptQueueRepository } from "./repository/file-queue.explorer.repository";
+import { CrepenExplorerFileRepository } from "./repository/file.explorer.repository";
+import { CrepenExplorerEncryptFileService } from "./services/encrypt-file.explorer.service";
+import { CrepenExplorerDefaultService } from "./services/explorer.service";
+import { CrepenExplorerFileEncryptQueueService } from "./services/file-queue.service";
+import { CrepenExplorerFileService } from "./services/file.explorer.service";
+
 
 @Module({
     imports : [
@@ -30,12 +36,25 @@ import { CrepenUserModule } from "../user/user.module";
         CrepenExplorerFileService,
         CrepenExplorerFolderService,
         CrepenExplorerRepository,
+        CrepenExplorerFileRepository,
+
+        CrepenExplorerFileEncryptQueueService,
+        CrepenExplorerFileEncryptQueueRepository,
+
+
+        CrepenExplorerEncryptFileService,
+        CrepenExplorerEncryptFileRepository,
         
 
         // Import Modules
         CrepenLoggerService,
         JwtService,
         CrepenAuthJwtStrategy,
+    ],
+    exports : [
+        CrepenExplorerFileService,
+        CrepenExplorerFileEncryptQueueService,
+        CrepenExplorerEncryptFileService
     ]
 })
 export class CrepenExplorerModule {}

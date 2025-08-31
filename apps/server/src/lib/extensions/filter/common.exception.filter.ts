@@ -25,7 +25,7 @@ export class CommonExceptionFilter implements ExceptionFilter {
 
         ExceptionResultFactory
             .current(response, this.i18n, this.exception)
-            .getResponse();
+            .sendResponse();
 
 
     }
@@ -51,7 +51,7 @@ export class ExceptionResultFactory {
 
 
 
-    getResponse = () => {
+    sendResponse = () => {
         if (this.exception instanceof I18nValidationException) {
             this.getI18nErrorResponse();
         }

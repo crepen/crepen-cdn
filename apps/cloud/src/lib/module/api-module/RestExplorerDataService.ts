@@ -129,17 +129,33 @@ export class RestExplorerDataService {
     }
 
 
-    setFilePublished = async (fileUid : string , isPublish : boolean) => {
-        
+    updateFilePublishedState = async (fileUid?: string, isPublish?: boolean) => {
+
+        const booleanToStr = isPublish === true ? 'true' : isPublish === false ? 'false' : undefined;
+
+        const result = await FetchApi
+            .instance(process.env.API_URL)
+            .setMethod('POST')
+            .setUrl(`/explorer/file/${fileUid ?? 'NFD'}/publish?state=${booleanToStr}`)
+            .setOptions({
+                language: this.language,
+                token: this.token?.accessToken
+            })
+            .getResponse();
+
+        const resultData: BaseApiResultEntity
+            = humps.camelizeKeys(Object.assign(result.jsonData ?? {})) as BaseApiResultEntity;
+
+        return resultData
     }
 
 
 
     //#region FILE
 
-    getFileInfo = async (fileUid : string) => {
+    getFileInfo = async (fileUid: string) => {
 
-          const result = await FetchApi
+        const result = await FetchApi
             .instance(process.env.API_URL)
             .setMethod('GET')
             .setUrl(`/explorer/file/${fileUid ?? 'NFD'}/info`)

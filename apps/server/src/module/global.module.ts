@@ -17,7 +17,7 @@ export class GlobalModule implements OnModuleInit {
         private readonly configService: ConfigService,
         private readonly dynamicConfig: DynamicConfigService
     ) {}
-
+   
     onModuleInit() {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         const allConfig = (this.configService as any).internalConfig;

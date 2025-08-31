@@ -57,9 +57,11 @@ export interface ExplorerFileInfoResult {
     fileName: string;
     fileExtension: string;
     fileMimeType: string;
-    fileState: string;
     createDate: string;
     updateDate: string;
+    isFileEncrypt: boolean;
+    fileState : 'stable' | 'encrypting';
+    isPublished : boolean;
 }
 
 

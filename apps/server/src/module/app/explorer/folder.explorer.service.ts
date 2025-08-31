@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { I18nService } from "nestjs-i18n";
-import { CrepenExplorerRepository } from "./explorer.repository";
+import { CrepenExplorerRepository } from "./repository/explorer.repository";
 import { ExplorerFolderEntity } from "./entity/folder.explorer.default.entity";
 import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
-import { CrepenExplorerDefaultService } from "./explorer.service";
+import { CrepenExplorerDefaultService } from "./services/explorer.service";
 import { DuplicateFolderError } from "@crepen-nest/lib/error/api/explorer/folder_duplicate.folder.error";
 import { RepositoryOptions } from "@crepen-nest/interface/repo";
 import { UserEntity } from "../user/entity/user.default.entity";

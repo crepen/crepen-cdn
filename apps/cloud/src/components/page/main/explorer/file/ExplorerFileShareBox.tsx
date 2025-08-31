@@ -1,29 +1,39 @@
 'use client'
 
-import { ToggleButton, ToggleButtonRef } from "@web/component/global/control/toggle-button/ToggleButton"
-import { CommonUtil } from "@web/lib/util/CommonUtil"
+import { ToggleButton } from "@web/component/global/control/toggle-button/ToggleButton"
+import { UpdateFilePublishStateAction } from "@web/lib/actions/FileActions"
+import { useClientBasePath } from "@web/lib/module/basepath/ClientBasePathProvider"
 import { StringUtil } from "@web/lib/util/StringUtil"
-import { useRef, useState } from "react"
-import { AiOutlineLoading, AiOutlineLoading3Quarters } from "react-icons/ai"
-import { FaShareAlt, FaTruckLoading } from "react-icons/fa"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { FaShareAlt } from "react-icons/fa"
 import { LuLoaderCircle } from "react-icons/lu"
+import urlJoin from "url-join"
 
 interface ExplorerFileShareBoxProp {
     fileUid: string,
     defaultPublishedState: boolean,
-    defaultPublishedLink: string
+    defaultPublishedLink: string,
+    fileName: string
 }
 
 export const ExplorerFileShareBox = (prop: ExplorerFileShareBoxProp) => {
 
     const [isActiveShare, setActiveShare] = useState<boolean>(prop.defaultPublishedState);
-    const [isLoading ,setLoading] = useState<boolean>(false);
+    const [isLoading, setLoading] = useState<boolean>(false);
+    const basePathHook = useClientBasePath();
+    const route = useRouter();
 
-    const requestFileActiveShare = async () : Promise<boolean> => {
-        // await CommonUtil.delay(4000)
 
-        return false;
+    const requestFileActiveShare = async (changeState: boolean): Promise<boolean> => {
+        const updateReq = await UpdateFilePublishStateAction(prop.fileUid, changeState);
+
+        if (updateReq.success !== true) {
+            alert(updateReq.message);
+        }
+        return updateReq.success;
     }
+
 
 
     return (
@@ -34,7 +44,7 @@ export const ExplorerFileShareBox = (prop: ExplorerFileShareBoxProp) => {
                     <span>Publish File</span>
                 </div>
                 <div className='cp-action'>
-                    <LuLoaderCircle  
+                    <LuLoaderCircle
                         className="cp-action-loading-icon"
                         fontWeight='bold'
                         size={18}
@@ -45,13 +55,10 @@ export const ExplorerFileShareBox = (prop: ExplorerFileShareBoxProp) => {
                         defaultActiveState={prop.defaultPublishedState}
                         onChange={async (state) => {
                             setLoading(true);
-                            
-                            const isSuccess = await requestFileActiveShare();
-
-                            if(isSuccess === true){
+                            const isSuccess = await requestFileActiveShare(state);
+                            if (isSuccess === true) {
                                 setActiveShare(state);
                             }
-
                             setLoading(false);
                             return isSuccess;
                         }}
@@ -61,9 +68,19 @@ export const ExplorerFileShareBox = (prop: ExplorerFileShareBoxProp) => {
             </div>
             <div
                 className={StringUtil.joinClassName('cp-section-content', isActiveShare ? '' : 'cp-hidden')}
-
             >
-                <input type="text" className="cp-share-link-input" readOnly defaultValue={prop.defaultPublishedLink} />
+                <input
+                    type="text"
+                    className="cp-share-link-input"
+                    readOnly
+                    defaultValue={
+                        urlJoin(
+                            location.origin,
+                            basePathHook.getBasePath() === '/' ? '' : basePathHook.getBasePath(),
+                            `/api/explorer/file/download/publish/${prop.fileName}`
+                        )
+                    }
+                />
                 <button className="cp-link-copy-button">COPY</button>
             </div>
 

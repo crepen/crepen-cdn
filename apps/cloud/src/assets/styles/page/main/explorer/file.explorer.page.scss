@@ -27,17 +27,6 @@
                 ;
                 grid-template-rows: 1fr min-content min-content;
                 grid-template-columns: 1fr 350px;
-
-                .cp-file-preview {
-
-                    .cp-preview-header {}
-                    .cp-preview-content {
-                        .cp-preview-image{
-                            width: 100%;
-                            height: auto;
-                        }
-                    }
-                }
             }
 
             &:not(.cp-active-preview) {
@@ -114,6 +103,41 @@
 
                             color: #64748b;
                             font-size: 14px;
+                        }
+                    }
+
+                    .cp-preview-content {
+                        .cp-preview-obj {
+                            width: 100%;
+                            height: auto;
+                        }
+
+                        .cp-preview-encrypt-warning {
+                            padding: 18px 18px;
+                            background-color: #fff2d0;
+                            border-radius: 10px;
+
+                            display: flex;
+                            align-items: center;
+                            justify-content: flex-start;
+
+                            gap: 12px;
+
+                            margin-bottom: 24px;
+                        }
+
+                        .cp-preview-deny {
+                            padding: 18px 18px;
+                            background-color: #fff2d0;
+                            border-radius: 10px;
+
+                            display: flex;
+                            align-items: center;
+                            justify-content: flex-start;
+
+                            gap: 12px;
+
+                            margin-bottom: 24px;
                         }
                     }
                 }

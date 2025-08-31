@@ -1,6 +1,7 @@
 import { Column, Entity, Index, PrimaryColumn } from "typeorm";
 import { ExplorerFileStateEnum } from "../enum/file-state.explorer.enum";
 import { Exclude } from "class-transformer";
+import { ExplorerFileEncryptState } from "../enum/file-encrypt-state.enum";
 
 @Entity('explorer-file')
 @Index('idx_explorer_file_fulltext', ['title'], { fulltext: true })
@@ -39,6 +40,15 @@ export class ExplorerFileEntity {
     @Column({name : 'file_state' , type : 'enum' , enum : ExplorerFileStateEnum , nullable : false })
     fileState : ExplorerFileStateEnum;
 
+    @Column({name : 'file_encrypt' , type : 'boolean' , default : () => false , nullable : false})
+    isFileEncrypt : boolean;
+
+    @Column({name : 'encrypt_status' , type : 'enum' , enum : ExplorerFileEncryptState , nullable : false , default : ExplorerFileEncryptState.STABLE})
+    encryptState : ExplorerFileEncryptState
+
+
+    @Column({name : 'publish-state' , type : 'boolean' , nullable : false , default : false})
+    isPublished : boolean;
 
     @Exclude()
     @Column({name : 'file_path' , type : 'varchar' , nullable : false})

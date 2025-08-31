@@ -1,13 +1,19 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { ScheduleModule } from '@nestjs/schedule';
-import { FileSchedulerService } from "./file.scheduler.service";
+import { FileScheduler } from "./scheduler/file.scheduler";
+import { CrepenUserModule } from "../../user/user.module";
+import { CrepenExplorerModule } from "../../explorer/explorer.module";
+import { CryptFileSchedulerService } from "./services/crypt-file.scheduler.service";
 
 @Module({
     imports: [
+        forwardRef(() => CrepenUserModule),
+        forwardRef(() => CrepenExplorerModule),
         ScheduleModule.forRoot()
     ],
     providers: [
-        FileSchedulerService
+        FileScheduler,
+        CryptFileSchedulerService
     ]
 })
 export class SchedulerModule { }

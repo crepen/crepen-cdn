@@ -1,22 +1,27 @@
 import { Injectable } from "@nestjs/common";
 import { I18nService } from "nestjs-i18n";
-import { CrepenExplorerRepository } from "./explorer.repository";
+import { CrepenExplorerRepository } from "../repository/explorer.repository";
 import { FileNotUploadedError } from "@crepen-nest/lib/error/api/explorer/file_not_uploaded.file.error";
 import * as path from "path";
 import * as fs from 'fs';
-import { ExplorerFileEntity } from "./entity/file.explorer.default.entity";
+import { ExplorerFileEntity } from "../entity/file.explorer.default.entity";
 import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
-import { ExplorerLogEntity } from "./entity/log.explorer.default.entity";
-import { ExplorerLogTypeEnum } from "./enum/log-type.explorer.enum";
-import { ExplorerItemType } from "./enum/item-type.explorer.enum";
+import { ExplorerLogEntity } from "../entity/log.explorer.default.entity";
+import { ExplorerLogTypeEnum } from "../enum/log-type.explorer.enum";
+import { ExplorerItemType } from "../enum/item-type.explorer.enum";
 import { ConfigService } from "@nestjs/config";
-import { CrepenExplorerDefaultService } from "./explorer.service";
-import { ExplorerFileStateEnum } from "./enum/file-state.explorer.enum";
-import { UserEntity } from "../user/entity/user.default.entity";
+import { ExplorerFileStateEnum } from "../enum/file-state.explorer.enum";
+import { UserEntity } from "../../user/entity/user.default.entity";
 import { DynamicConfigService } from "@crepen-nest/module/config/dynamic-config/dynamic-config.service";
 import { RepositoryOptions } from "@crepen-nest/interface/repo";
 import { FileNotFoundError } from "@crepen-nest/lib/error/api/explorer/not_found_file.error";
 import * as crypto from "crypto";
+import * as express from 'express';
+import { CrepenExplorerFileEncryptQueueService } from "./file-queue.service";
+import { ExplorerFileQueueType } from "../enum/file-queue-type.enum";
+import { CrepenExplorerFileRepository } from "../repository/file.explorer.repository";
+import { CrepenExplorerDefaultService } from "./explorer.service";
+import { ExplorerFileEncryptState } from "../enum/file-encrypt-state.enum";
 
 @Injectable()
 export class CrepenExplorerFileService {
@@ -25,12 +30,14 @@ export class CrepenExplorerFileService {
         private readonly databaseService: DatabaseService,
         private readonly dynamicConfig: DynamicConfigService,
         private readonly explorerService: CrepenExplorerDefaultService,
-        private readonly i18n: I18nService
+        private readonly i18n: I18nService,
+        private readonly encryptFileQueueService: CrepenExplorerFileEncryptQueueService,
+        private readonly fileRepo : CrepenExplorerFileRepository
     ) { }
 
 
 
-    addFile = async (originFileName: string, uuid: string, iv: Buffer, mimeType: string, fileSize: number, parentFolderUid: string, user: UserEntity): Promise<ExplorerFileEntity> => {
+    addFile = async (originFileName: string, uuid: string,mimeType: string, fileSize: number, parentFolderUid: string, user: UserEntity): Promise<ExplorerFileEntity> => {
 
         return (await this.databaseService.getDefault()).transaction(async (manager) => {
 
@@ -75,13 +82,13 @@ export class CrepenExplorerFileService {
             fileObj.fileMimeType = mimeType;
             fileObj.fileSize = fileSize;
             fileObj.fileOwnerUid = user.uid;
-            fileObj.fileEncIv = iv;
             fileObj.fileState = ExplorerFileStateEnum.STABLE;
             fileObj.fileName = path.format({
                 name: uuid,
                 ext: fileExt
             })
             fileObj.filePath = saveFileDir;
+            fileObj.isFileEncrypt = false;
 
 
 
@@ -158,6 +165,12 @@ export class CrepenExplorerFileService {
             // Add File Log
             void await this.explorerRepo.addLog(logObj, { manager: manager });
 
+            void await this.encryptFileQueueService.addQueue(
+                fileObj.uid,
+                ExplorerFileQueueType.ENCRYPT,
+                user.uid,
+                { manager: manager }
+            )
 
 
 
@@ -181,25 +194,30 @@ export class CrepenExplorerFileService {
     }
 
 
-    getFileStream = async (saveFilePath: string | undefined, iv: string, options?: RepositoryOptions) => {
 
-        if (!fs.existsSync(saveFilePath)) {
-            throw new FileNotFoundError();
-        }
 
-        console.log(saveFilePath);
+    updateFileEncryptData = async (fileUid : string , iv: Buffer | undefined , state : boolean , options?: RepositoryOptions) => {
+        const entity = await this.getFileData(fileUid , undefined , options);
+        entity.isFileEncrypt = state;
+        entity.fileEncIv = iv;
 
-        const readFileStream = fs.createReadStream(saveFilePath);
+        return this.fileRepo.updateFileEntity(entity , options);
+    }
+ 
+    updateFileEncryptState = async (fileUid : string , state : ExplorerFileEncryptState , options?: RepositoryOptions) => {
+        const entity = await this.getFileData(fileUid , undefined , options);
+        entity.encryptState = state;
 
-        console.log(readFileStream);
-
-        const globalSecret = this.dynamicConfig.get<string>('secret');
-        const key = globalSecret.length < 32 ? globalSecret.padEnd(32, '-') : globalSecret.slice(0, 32);
-        const decipher = crypto.createDecipheriv('aes-256-cbc', key, Buffer.from(iv));
-
-        readFileStream.pipe(decipher)
-
-        return readFileStream;
+        return this.fileRepo.updateFileEntity(entity , options);
     }
 
+    updateFilePublished = async (fileUid : string , state : boolean , options? : RepositoryOptions) => {
+        const entity = await this.getFileData(fileUid , undefined , options);
+        return this.updateFileEntityPublished(entity , state , options);
+    }
+
+    updateFileEntityPublished = async (fileEntity : ExplorerFileEntity , state : boolean , options?: RepositoryOptions) => {
+        fileEntity.isPublished = state;
+        return this.fileRepo.updateFileEntity(fileEntity , options);
+    }
 }

@@ -10,7 +10,7 @@ import { ServerLocaleInitializer } from '@web/lib/module/locale/ServerLocaleInit
 import { StringUtil } from '@web/lib/util/StringUtil';
 import { cookies } from 'next/headers';
 import { Fragment } from 'react';
-import { FcDownload, FcFile, FcFullTrash } from 'react-icons/fc';
+import { FcDownload, FcFile, FcFullTrash, FcHighPriority, FcLock, FcUnlock } from 'react-icons/fc';
 
 interface MainExplorerFilePageProp {
     params: Promise<{
@@ -40,7 +40,8 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
         }
 
         const previewMimeList = [
-            '^image\/.*$'
+            '^image\/.*$',
+            '^video\/.*$'
         ]
 
         for (const regex of previewMimeList) {
@@ -98,15 +99,47 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
                             className='cp-preview-content'
                         >
                             {
-                                /^image\/.*$/.test(fileData.data?.fileMimeType ?? '')
-                                    // eslint-disable-next-line @next/next/no-img-element
-                                    ? <img
-                                        className='cp-preview-image'
-                                        src={`http://localhost:13332/explorer/file/download/publish/${fileData.data?.fileName}`}
-                                        crossOrigin="anonymous"
-                                        alt="Example Image"
-                                    />
-                                    : <Fragment />
+                                fileData.data?.isFileEncrypt === true &&
+                                <div className='cp-preview-encrypt-warning'>
+                                    <FcHighPriority size={30} />
+                                    <span>
+                                        If your file is encrypted, loading speed will be significantly reduced. If you plan to distribute the file, please decrypt it.
+                                    </span>
+                                </div>
+                            }
+                            {
+                                (
+                                    isNaN(Number(fileData.data?.fileSize))
+                                        ? 0
+                                        : Number(fileData.data?.fileSize)
+                                ) > 1024 * 1024 * 1024 * 1 *1000000000
+                                    ? <div className='cp-preview-deny'>
+                                        <FcHighPriority size={30} />
+                                        <span>
+                                            We cannot show you a preview because the file size exceeds 1GB.
+                                        </span>
+                                    </div>
+                                    : /^image\/.*$/.test(fileData.data?.fileMimeType ?? '')
+                                        // eslint-disable-next-line @next/next/no-img-element
+                                        ? <img
+                                            className='cp-preview-obj'
+                                            src={`http://localhost:13332/explorer/file/download/publish/${fileData.data?.fileName}`}
+                                            crossOrigin="anonymous"
+                                            alt="Preview Image"
+                                        />
+                                        : /^video\/.*$/.test(fileData.data?.fileMimeType ?? '')
+                                            ? <video controls
+                                                className='cp-preview-obj'
+                                                crossOrigin='anonymous'
+                                                playsInline
+                                            >
+                                                <source
+                                                    src={`http://localhost:13332/explorer/file/download/publish/${fileData.data?.fileName}`}
+                                                    type={fileData.data?.fileMimeType}
+                                                />
+                                            </video>
+                                            : <Fragment />
+
                             }
                         </GroupBox.Content>
                     </GroupBox>
@@ -159,7 +192,7 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
                                 </li>
                                 <li className='cp-info-item'>
                                     <div className='cp-info-title'>
-                                        Upload date
+                                        Create date
                                     </div>
                                     <div className='cp-info-value'>
                                         {fileData.data?.createDate}
@@ -171,6 +204,32 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
                                     </div>
                                     <div className='cp-info-value'>
                                         {fileData.data?.updateDate}
+                                    </div>
+                                </li>
+                                <li className='cp-info-item'>
+                                    <div className='cp-info-title'>
+                                        File Encrypt State
+                                    </div>
+                                    <div className='cp-info-value'>
+                                        {
+                                            fileData.data?.fileState === 'encrypting'
+                                            ? 'ENCRYPTING FILE'
+                                            : fileData.data?.isFileEncrypt === true
+                                                ? 'ENCRYPT'
+                                                : 'DECRYPT'
+                                        }
+                                    </div>
+                                </li>
+                                  <li className='cp-info-item'>
+                                    <div className='cp-info-title'>
+                                        Published
+                                    </div>
+                                    <div className='cp-info-value'>
+                                        {
+                                            fileData.data?.isPublished === true
+                                            ? 'Published'
+                                            : 'Not published'
+                                        }
                                     </div>
                                 </li>
                             </ul>
@@ -211,10 +270,18 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
                                     className='cp-action-button'
                                 >
                                     <div className='cp-button-icon'>
-                                        <FcDownload fontSize={20} />
+                                        {
+                                            fileData.data?.isFileEncrypt === true
+                                                ? <FcUnlock fontSize={20} />
+                                                : <FcLock fontSize={20} />
+                                        }
                                     </div>
                                     <div className='cp-button-text'>
-                                        Download
+                                        {
+                                            fileData.data?.isFileEncrypt === true
+                                                ? 'Decrypt File'
+                                                : 'Encrypt File'
+                                        }
                                     </div>
                                 </button>
                                 <button
@@ -231,7 +298,8 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
                             <ExplorerFileShareBox
                                 fileUid={fileUid ?? 'NFD'}
                                 defaultPublishedLink='1'
-                                defaultPublishedState={true}
+                                defaultPublishedState={fileData.data?.isPublished ?? false}
+                                fileName={fileData.data?.fileName ?? 'NFD'}
                             />
                         </GroupBox.Content>
                     </GroupBox>

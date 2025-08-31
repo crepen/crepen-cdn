@@ -1,0 +1,55 @@
+import { RepositoryOptions } from "@crepen-nest/interface/repo";
+import { CrepenBaseRepository } from "@crepen-nest/lib/common/base.repository";
+import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
+import { Injectable } from "@nestjs/common";
+import { randomUUID } from "crypto";
+import { ExplorerFileEncryptQueueEntity } from "../entity/encrypt-queue.file.explorer.default.entity";
+import { ExplorerFileQueueState } from "../enum/file-queue-state.enum";
+import { ExplorerFileQueueType } from "../enum/file-queue-type.enum";
+
+@Injectable()
+export class CrepenExplorerFileEncryptQueueRepository extends CrepenBaseRepository {
+   constructor(
+          private readonly databaseService: DatabaseService
+      ) { super(databaseService) }
+
+
+
+    addQueue = async (fileUid :string , type : ExplorerFileQueueType, userUid : string , options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(ExplorerFileEncryptQueueEntity) ?? await this.getRepository('default', ExplorerFileEncryptQueueEntity);
+
+        const entity = new ExplorerFileEncryptQueueEntity();
+        entity.uid = randomUUID();
+        entity.fileUid = fileUid;
+        entity.queueState = ExplorerFileQueueState.WAIT;
+        entity.queueType = type;
+        entity.createDate = new Date();
+        entity.userUid = userUid;
+
+
+        return dataSource.save(entity , {data : false});
+    }
+
+    getQueueList = async (state? : ExplorerFileQueueState, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(ExplorerFileEncryptQueueEntity) ?? await this.getRepository('default', ExplorerFileEncryptQueueEntity);
+        
+        return dataSource.find({
+            where : {
+                queueState : state
+            },
+            order : {
+                createDate : 'ASC'
+            }
+        })
+    }
+
+    upateQueueState = async (uidList : string[] , state : ExplorerFileQueueState , options? : RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(ExplorerFileEncryptQueueEntity) ?? await this.getRepository('default', ExplorerFileEncryptQueueEntity);
+
+        return dataSource.createQueryBuilder()
+            .update(ExplorerFileEncryptQueueEntity)
+            .set({queueState : state})
+            .where('uid in (:...uid)' , {uid : uidList})
+            .execute();
+    }
+}

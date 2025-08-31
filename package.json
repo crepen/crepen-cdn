@@ -1,5 +1,6 @@
 {
-  "name": "v2",
+  "name": "@crepen-cdn/repo",
+  "version": "0.1.0-pre20250901-0034",
   "private": true,
   "scripts": {
     "build": "turbo run build",

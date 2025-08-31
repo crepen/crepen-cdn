@@ -31,6 +31,7 @@ export class CheckConnDBInterceptor implements NestInterceptor {
         }
 
         try{
+            // console.log(this.dynamicConfig.get('db.conn_str'))
             const dataSource = (await this.databaseService.getDefault());
 
             if(!dataSource.isInitialized){

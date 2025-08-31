@@ -8,7 +8,7 @@ import { RestExplorerDataService } from "../module/api-module/RestExplorerDataSe
 import { CustomActionError } from "../error/CustomActionError";
 import { ServerLocaleProvider } from "../module/locale/ServerLocaleProvider";
 
-export const UploadFileAction = async (uploadFile: File, parentFolderUid: string) : Promise<{success : boolean , message? : string}> => {
+export const UploadFileAction = async (uploadFile: File, parentFolderUid: string): Promise<{ success: boolean, message?: string }> => {
 
     const localeProv = await ServerLocaleProvider.current(LocaleConfig);
 
@@ -38,18 +38,66 @@ export const UploadFileAction = async (uploadFile: File, parentFolderUid: string
         throw new CustomActionError(uploadFileRes.message);
     }
     catch (e) {
-        if(e instanceof CustomActionError){
+        if (e instanceof CustomActionError) {
             return {
-                success : false,
-                message : e.message
+                success: false,
+                message: e.message
             }
         }
         else {
             return {
-                success : false,
-                message : await localeProv.translate('common.system.unknown_error')
+                success: false,
+                message: await localeProv.translate('common.system.unknown_error')
             }
         }
     }
+
+}
+
+
+export const UpdateFilePublishStateAction = async (fileUid: string, state: boolean) => {
+
+    const localeProv = await ServerLocaleProvider.current(LocaleConfig);
+
+    try {
+        const locale = await (await ServerLocaleInitializer.current(LocaleConfig)).get({
+            readCookie: await cookies()
+        });
+
+        const session = await AuthProvider.current().getSession({
+            readCookie: await cookies()
+        });
+
+        const uploadFileRes = await RestExplorerDataService
+            .current(session?.token, locale ?? LocaleConfig.defaultLocale)
+            .updateFilePublishedState(fileUid, state);
+
+
+        if (uploadFileRes.success) {
+            return {
+                success: true
+            }
+        }
+
+        throw new CustomActionError(uploadFileRes.message);
+
+    }
+    catch (e) {
+        console.log(e);
+
+        if (e instanceof CustomActionError) {
+            return {
+                success: false,
+                message: e.message
+            }
+        }
+        else {
+            return {
+                success: false,
+                message: await localeProv.translate('common.system.unknown_error')
+            }
+        }
+    }
+
 
 }
