@@ -32,7 +32,8 @@ interface SignInputBoxProp {
     onChange?: (event: ChangeEvent<HTMLInputElement>) => void,
     inputId?: string,
     onKeyDown?: (evt: KeyboardEvent<HTMLInputElement>) => void,
-    errorMessage?: string
+    errorMessage?: string,
+    defaultValue?: string
 }
 
 const SignInputBox = (prop: SignInputBoxProp) => {
@@ -48,6 +49,7 @@ const SignInputBox = (prop: SignInputBoxProp) => {
                     ref={prop.inputRef}
                     onChange={prop.onChange}
                     id={prop.inputId}
+                    defaultValue={prop.defaultValue}
                     onKeyDown={(e) => {
                         if(e.key.toLowerCase() === 'enter'){
                             e.preventDefault();

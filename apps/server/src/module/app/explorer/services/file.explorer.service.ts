@@ -22,6 +22,7 @@ import { ExplorerFileQueueType } from "../enum/file-queue-type.enum";
 import { CrepenExplorerFileRepository } from "../repository/file.explorer.repository";
 import { CrepenExplorerDefaultService } from "./explorer.service";
 import { ExplorerFileEncryptState } from "../enum/file-encrypt-state.enum";
+import { Readable } from "stream";
 
 @Injectable()
 export class CrepenExplorerFileService {
@@ -32,12 +33,12 @@ export class CrepenExplorerFileService {
         private readonly explorerService: CrepenExplorerDefaultService,
         private readonly i18n: I18nService,
         private readonly encryptFileQueueService: CrepenExplorerFileEncryptQueueService,
-        private readonly fileRepo : CrepenExplorerFileRepository
+        private readonly fileRepo: CrepenExplorerFileRepository,
     ) { }
 
 
 
-    addFile = async (originFileName: string, uuid: string,mimeType: string, fileSize: number, parentFolderUid: string, user: UserEntity): Promise<ExplorerFileEntity> => {
+    addFile = async (originFileName: string, uuid: string, mimeType: string, fileSize: number, parentFolderUid: string, user: UserEntity): Promise<ExplorerFileEntity> => {
 
         return (await this.databaseService.getDefault()).transaction(async (manager) => {
 
@@ -88,7 +89,6 @@ export class CrepenExplorerFileService {
                 ext: fileExt
             })
             fileObj.filePath = saveFileDir;
-            fileObj.isFileEncrypt = false;
 
 
 
@@ -185,10 +185,12 @@ export class CrepenExplorerFileService {
 
         const fileInfo = await this.explorerRepo.getFileData(fileUid, options);
 
+
+
         return fileInfo;
     }
 
-    getFileDataByFileName = async (fileName?: string, options?: RepositoryOptions) => {
+    getFileDataFromFileName = async (fileName?: string, options?: RepositoryOptions) => {
         const fileInfo = await this.explorerRepo.getFileDataByFileName(fileName, options);
         return fileInfo;
     }
@@ -196,28 +198,75 @@ export class CrepenExplorerFileService {
 
 
 
-    updateFileEncryptData = async (fileUid : string , iv: Buffer | undefined , state : boolean , options?: RepositoryOptions) => {
-        const entity = await this.getFileData(fileUid , undefined , options);
-        entity.isFileEncrypt = state;
-        entity.fileEncIv = iv;
+    // updateFileEncryptData = async (fileUid: string, iv: Buffer | undefined, state: boolean, options?: RepositoryOptions) => {
+    //     const entity = await this.getFileData(fileUid, undefined, options);
+    //     entity.isFileEncrypt = state;
+    //     entity.fileEncIv = iv;
 
-        return this.fileRepo.updateFileEntity(entity , options);
+    //     return this.fileRepo.updateFileEntity(entity, options);
+    // }
+
+    // updateFileEncryptState = async (fileUid: string, state: ExplorerFileEncryptState, options?: RepositoryOptions) => {
+    //     const entity = await this.getFileData(fileUid, undefined, options);
+    //     entity.encryptState = state;
+
+    //     return this.fileRepo.updateFileEntity(entity, options);
+    // }
+
+    updateFilePublished = async (fileUid: string, state: boolean, options?: RepositoryOptions) => {
+        const entity = await this.getFileData(fileUid, undefined, options);
+        return this.updateFileEntityPublished(entity, state, options);
     }
- 
-    updateFileEncryptState = async (fileUid : string , state : ExplorerFileEncryptState , options?: RepositoryOptions) => {
-        const entity = await this.getFileData(fileUid , undefined , options);
-        entity.encryptState = state;
 
-        return this.fileRepo.updateFileEntity(entity , options);
-    }
-
-    updateFilePublished = async (fileUid : string , state : boolean , options? : RepositoryOptions) => {
-        const entity = await this.getFileData(fileUid , undefined , options);
-        return this.updateFileEntityPublished(entity , state , options);
-    }
-
-    updateFileEntityPublished = async (fileEntity : ExplorerFileEntity , state : boolean , options?: RepositoryOptions) => {
+    updateFileEntityPublished = async (fileEntity: ExplorerFileEntity, state: boolean, options?: RepositoryOptions) => {
         fileEntity.isPublished = state;
-        return this.fileRepo.updateFileEntity(fileEntity , options);
+        return this.fileRepo.updateFileEntity(fileEntity, options);
+    }
+
+
+
+
+    getFileDataByUid = async (fileUid : string, options?: RepositoryOptions) => {
+        return this.fileRepo.getFileData({
+            uid : fileUid
+        } , options);
+    }
+
+    getFileDataByFileName = async (fileName : string , options?: RepositoryOptions) => {
+        return this.fileRepo.getFileData({
+            fileName : fileName
+        } , options)
+    }
+
+
+
+
+
+
+
+    getDecryptFileStream = async (originFilePath: string, secret: string) => {
+        const key = crypto.createHash('sha256').update(secret).digest();
+
+        const fileData = fs.readFileSync(originFilePath);
+
+        const nonce = fileData.subarray(0, 12); // 0~11
+        const tag = fileData.subarray(12, 28); // 12~27
+        const cipherText = fileData.subarray(28); // 나머지
+
+        const decipher = crypto.createDecipheriv('aes-256-gcm', key, nonce, {
+            authTagLength: 16,
+        });
+        decipher.setAuthTag(tag);
+
+        const decryptedBuffer = Buffer.concat([
+            decipher.update(cipherText),
+            decipher.final(),
+        ]);
+
+        const stream = new Readable();
+        stream.push(decryptedBuffer);
+        stream.push(null); // 스트림 종료
+
+        return stream;
     }
 }

@@ -35,5 +35,18 @@ export class CrepenExplorerEncryptFileService {
     removeItem = async (uid : string , options? : RepositoryOptions) => {
         return this.repo.removeItem(uid , options);
     }
+
+
+    getFileIncludeEncryptData =async (fileUid : string , options? : RepositoryOptions) => {
+        return this.repo.getFileDataIncludeEncryptData({
+            uid : fileUid
+        } , options)
+    }
+
+    getFileIncludeEncryptDataByFileName = async (fileName: string , options? : RepositoryOptions) => {
+        return this.repo.getFileDataIncludeEncryptData({
+            fileName : fileName
+        } , options)
+    }
     
 }

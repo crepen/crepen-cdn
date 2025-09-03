@@ -2,15 +2,20 @@
 import '@web/assets/styles/page/main/explorer/file.explorer.page.scss'
 import { CommonPage } from "@web/component/global/CommonPage"
 import { GroupBox } from "@web/component/global/control/group-box/GroupBox";
+import { ExplorerFileCryptButton } from '@web/component/page/main/explorer/file/ExplorerFileCryptButton';
+import { ExplorerFileDownloadButton } from '@web/component/page/main/explorer/file/ExplorerFileDownloadButton';
+import { ExplorerFileReloadButton } from '@web/component/page/main/explorer/file/ExplorerFileReloadButton';
 import { ExplorerFileShareBox } from '@web/component/page/main/explorer/file/ExplorerFileShareBox';
 import { LocaleConfig } from '@web/lib/config/LocaleConfig';
 import { RestExplorerDataService } from '@web/lib/module/api-module/RestExplorerDataService';
 import { AuthProvider } from '@web/lib/module/auth/AuthProvider';
+import { BasePathInitializer } from '@web/lib/module/basepath/BasePathInitializer';
 import { ServerLocaleInitializer } from '@web/lib/module/locale/ServerLocaleInitializer';
 import { StringUtil } from '@web/lib/util/StringUtil';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { Fragment } from 'react';
-import { FcDownload, FcFile, FcFullTrash, FcHighPriority, FcLock, FcUnlock } from 'react-icons/fc';
+import { FcDownload, FcFile, FcFullTrash, FcHighPriority, FcLock, FcRefresh, FcUnlock } from 'react-icons/fc';
+import urlJoin from 'url-join';
 
 interface MainExplorerFilePageProp {
     params: Promise<{
@@ -25,6 +30,10 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
 
     const session = await AuthProvider.current().getSession();
     const locale = await ServerLocaleInitializer.current(LocaleConfig).get({ readCookie: await cookies() });
+
+    const basePath = await BasePathInitializer.get({
+        readHeader: await headers()
+    })
 
     const fileData = await RestExplorerDataService
         .current(session?.token, locale ?? LocaleConfig.defaultLocale)
@@ -70,7 +79,7 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
                 <CommonPage.Content
                     className={
                         StringUtil.joinClassName(
-                            isPreviewMime(fileData.data?.fileMimeType)
+                            (isPreviewMime(fileData.data?.fileMimeType) && !fileData.data?.cryptQueueList.find(x=>x.queueState === 'running' || x.queueState === 'wait'))
                                 ? 'cp-active-preview'
                                 : ''
                         )
@@ -99,7 +108,7 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
                             className='cp-preview-content'
                         >
                             {
-                                fileData.data?.isFileEncrypt === true &&
+                                (fileData.data?.encryptedFiles ?? []).length > 0 &&
                                 <div className='cp-preview-encrypt-warning'>
                                     <FcHighPriority size={30} />
                                     <span>
@@ -112,7 +121,7 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
                                     isNaN(Number(fileData.data?.fileSize))
                                         ? 0
                                         : Number(fileData.data?.fileSize)
-                                ) > 1024 * 1024 * 1024 * 1 *1000000000
+                                ) > 1024 * 1024 * 1024 * 1 * 1000000000
                                     ? <div className='cp-preview-deny'>
                                         <FcHighPriority size={30} />
                                         <span>
@@ -123,7 +132,7 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
                                         // eslint-disable-next-line @next/next/no-img-element
                                         ? <img
                                             className='cp-preview-obj'
-                                            src={`http://localhost:13332/explorer/file/download/publish/${fileData.data?.fileName}`}
+                                            src={urlJoin(basePath ?? '/', '/api/file/download', `${fileData.data?.fileName ?? 'NFD'}`)}
                                             crossOrigin="anonymous"
                                             alt="Preview Image"
                                         />
@@ -134,7 +143,7 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
                                                 playsInline
                                             >
                                                 <source
-                                                    src={`http://localhost:13332/explorer/file/download/publish/${fileData.data?.fileName}`}
+                                                    src={urlJoin(basePath ?? '/', '/api/file/download', `${fileData.data?.fileName ?? 'NFD'}`)}
                                                     type={fileData.data?.fileMimeType}
                                                 />
                                             </video>
@@ -212,23 +221,23 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
                                     </div>
                                     <div className='cp-info-value'>
                                         {
-                                            fileData.data?.fileState === 'encrypting'
-                                            ? 'ENCRYPTING FILE'
-                                            : fileData.data?.isFileEncrypt === true
-                                                ? 'ENCRYPT'
-                                                : 'DECRYPT'
+                                            (fileData.data?.cryptQueueList ?? []).find(x=>x.queueState === 'running' || x.queueState === 'wait')
+                                                ? 'Running Crypting'
+                                                : (fileData.data?.encryptedFiles ?? []).length > 0
+                                                    ? 'ENCRYPT'
+                                                    : 'DECRYPT'
                                         }
                                     </div>
                                 </li>
-                                  <li className='cp-info-item'>
+                                <li className='cp-info-item'>
                                     <div className='cp-info-title'>
                                         Published
                                     </div>
                                     <div className='cp-info-value'>
                                         {
                                             fileData.data?.isPublished === true
-                                            ? 'Published'
-                                            : 'Not published'
+                                                ? 'Published'
+                                                : 'Not published'
                                         }
                                     </div>
                                 </li>
@@ -245,56 +254,39 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
                             </div>
                         </GroupBox.Header>
                         <GroupBox.Content>
-                            <div className='cp-group-action'>
-                                <button
-                                    className='cp-action-button'
-                                >
-                                    <div className='cp-button-icon'>
-                                        <FcDownload fontSize={20} />
-                                    </div>
-                                    <div className='cp-button-text'>
-                                        Download
-                                    </div>
-                                </button>
-                                <button
-                                    className='cp-action-button'
-                                >
-                                    <div className='cp-button-icon'>
-                                        <FcFullTrash fontSize={20} />
-                                    </div>
-                                    <div className='cp-button-text'>
-                                        Remove
-                                    </div>
-                                </button>
-                                <button
-                                    className='cp-action-button'
-                                >
-                                    <div className='cp-button-icon'>
-                                        {
-                                            fileData.data?.isFileEncrypt === true
-                                                ? <FcUnlock fontSize={20} />
-                                                : <FcLock fontSize={20} />
+                                <div className='cp-group-action'>
+                                    <ExplorerFileDownloadButton
+                                        downloadLink={
+                                            urlJoin(
+                                                basePath ?? '/',
+                                                '/api/file/download',
+                                                `${fileData.data?.fileName ?? 'NFD'}`
+                                            )
                                         }
-                                    </div>
-                                    <div className='cp-button-text'>
-                                        {
-                                            fileData.data?.isFileEncrypt === true
-                                                ? 'Decrypt File'
-                                                : 'Encrypt File'
-                                        }
-                                    </div>
-                                </button>
-                                <button
-                                    className='cp-action-button'
-                                >
-                                    <div className='cp-button-icon'>
-                                        <FcDownload fontSize={20} />
-                                    </div>
-                                    <div className='cp-button-text'>
-                                        Download
-                                    </div>
-                                </button>
-                            </div>
+                                        isRunningCrypt={!!(fileData.data?.cryptQueueList ?? []).find(x=>x.queueState === 'running' || x.queueState === 'wait')}
+                                    />
+                                    <button
+                                        className='cp-action-button'
+                                    >
+                                        <div className='cp-button-icon'>
+                                            <FcFullTrash fontSize={20} />
+                                        </div>
+                                        <div className='cp-button-text'>
+                                            Remove
+                                        </div>
+                                    </button>
+                                    {
+                                        fileData.data &&
+                                        <ExplorerFileCryptButton
+                                            isFileEncrypt={(fileData.data?.encryptedFiles ?? []).length > 0}
+                                            fileUid={fileData.data.uid}
+                                            isRunningCrypt={!!fileData.data.cryptQueueList.find(x=>x.queueState === 'running' || x.queueState === 'wait')}
+                                        />
+                                    }
+
+                                    <ExplorerFileReloadButton />
+                                </div>
+
                             <ExplorerFileShareBox
                                 fileUid={fileUid ?? 'NFD'}
                                 defaultPublishedLink='1'
@@ -303,7 +295,7 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
                             />
                         </GroupBox.Content>
                     </GroupBox>
-                    <GroupBox
+                    {/* <GroupBox
                         className='cp-file-monitor'
                         templete
                     >
@@ -313,7 +305,7 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
                         <GroupBox.Content>
 
                         </GroupBox.Content>
-                    </GroupBox>
+                    </GroupBox> */}
                 </CommonPage.Content>
             </CommonPage.Wrapper>
 

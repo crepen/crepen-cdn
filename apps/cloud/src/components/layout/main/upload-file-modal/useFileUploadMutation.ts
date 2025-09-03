@@ -25,6 +25,10 @@ const uploadFile = async (
     )
 
     try {
+        if(fileItem.file.size > 1.8 * 1024 * 1024 * 1024){
+            throw new Error('Limit Over (Max 1.8GB)')
+        }
+
         updateProgress({
             progress : 0,
             total : 0,
@@ -47,7 +51,7 @@ const uploadFile = async (
                 }
             },
             httpAgent : new http.Agent({keepAlive : true}),
-            httpsAgent : new https.Agent({keepAlive : true})
+            httpsAgent : new https.Agent({keepAlive : true}),
         });
 
         console.log(response.data);
@@ -58,10 +62,13 @@ const uploadFile = async (
         if (e instanceof CanceledError){
             throw e;
         }
-        if(e instanceof AxiosError){
+        else if(e instanceof AxiosError){
             console.log('🛑 ERR' , e , e.response?.data.message);
             throw new Error (e.response?.data.message)
             
+        }
+        else if (e instanceof Error){
+            throw e;
         }
         
     }

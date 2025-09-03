@@ -6,13 +6,47 @@
 
 ### ✒️ ADDED
 
+#### CLOUD (NextJS)
+ - 파일 다운로드 API 구현
+   - 내부 다운로드 (Session)
+   - 배포 다운로드 (Non-Session)
+
+#### SERVER (NestJS)
+ - 
+
+#### CRYPT-SERVER (ASP.NET)
+ - 신규 구현
+ - Encrypt/Decrypt Scheduler 구현
+
+
+
 ### ✒️ CHANGED
+
+#### SERVER (NestJS)
+ - File Info Encrypt 관련 속성 제거 및 Encrypt 관련 Data Join으로 변경
+ - 암호화 GCM으로 변경
+
+
+
 
 ### ✒️ DEPRECATED
 
+
+
+
 ### ✒️ REMOVED
 
+#### SERVER (NestJS)
+ - Encrypt/Decrypt Scheduler 제거 (별도 Crypt Server로 이관)
+ - File Info Encrypt 관련 속성 제거
+
+
+
 ### ✒️ FIXED
+ - File Download 시 Chrome에서 미리보기가 불가능한 현상 수정 (Content-Disposition : attechment 제거)
+
+
+
 
 ### ✒️ SECURITY
 

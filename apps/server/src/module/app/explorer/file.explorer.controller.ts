@@ -30,6 +30,10 @@ import { CommonError } from "@crepen-nest/lib/error/common.error";
 import Stream, { Readable } from "stream";
 import { IgnorePrematureCloseFilter } from "@crepen-nest/lib/extensions/filter/ignore-premature-clouse.exception.filter";
 import { FileUpdatePublishedStateUndefinedError } from "@crepen-nest/lib/error/api/explorer/published_state_undefined.error";
+import { CrepenExplorerFileEncryptQueueService } from "./services/file-queue.service";
+import { ExplorerFileQueueType } from "./enum/file-queue-type.enum";
+import { ExplorerFileQueueState } from "./enum/file-queue-state.enum";
+import { FileCryptingAlreadyRunningError } from "@crepen-nest/lib/error/api/explorer/file_already_crypt.file.error";
 
 @ApiTags('[EXPLORER] 탐색기 - 파일')
 @ApiHeader({
@@ -45,7 +49,8 @@ export class CrepenExplorerFileController {
         private readonly logService: CrepenLoggerService,
         private readonly databaseService: DatabaseService,
         private readonly dynamicConfig: DynamicConfigService,
-        private readonly encryptFileService: CrepenExplorerEncryptFileService
+        private readonly encryptFileService: CrepenExplorerEncryptFileService,
+        private readonly fileQueueService: CrepenExplorerFileEncryptQueueService,
     ) { }
 
 
@@ -92,10 +97,19 @@ export class CrepenExplorerFileController {
     ) {
         return (await this.databaseService.getDefault()).transaction(async (manager) => {
 
+            console.log(this.dynamicConfig.getAll());
 
-            const fileInfo: ExplorerFileEntity = await this.fileService.getFileData(uid);
+            const fileInfo: ExplorerFileEntity = await this.fileService.getFileDataByUid(uid);
 
+            // const queueState = await this.fileQueueService.getFileQueueState(uid);
 
+            // let result = { ...fileInfo }
+            // if (queueState) {
+            //     result = {
+            //         ...result,
+            //         ...{ cryptState: queueState.queueState }
+            //     }
+            // }
 
 
             return BaseResponse.ok(
@@ -126,10 +140,53 @@ export class CrepenExplorerFileController {
             void await this.fileService.updateFilePublished(uid, updatePublishState);
 
             return BaseResponse.ok(
-                {
-                    uid: uid,
-                    query: updatePublishState ?? false
-                },
+                undefined,
+                HttpStatus.OK,
+                i18n.t('common.SUCCESS')
+            )
+        })
+    }
+
+
+
+
+    @Post(':uid/crypt')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(AuthJwtGuard.whitelist(TokenTypeEnum.ACCESS_TOKEN))
+    async updateFileCrypt(
+        @Req() req: Request,
+        @I18n() i18n: I18nContext,
+        @AuthUser() user: UserEntity,
+        @Param('uid') uid: string,
+        @Query('state') updateCryptState: boolean
+    ) {
+        return (await this.databaseService.getDefault()).transaction(async (manager) => {
+
+
+
+            const fileInfo = await this.fileService.getFileDataByUid(uid,  { manager: manager });
+            const queueList = await this.fileQueueService.getQueueList([ExplorerFileQueueState.WAIT, ExplorerFileQueueState.RUNNING], { manager: manager });
+
+            const isEncrypt = (fileInfo.encryptedFiles ?? []).length > 0;
+            const isRunning = queueList.find(x => x.fileUid === uid) !== undefined;
+
+            if (isRunning) {
+                throw new FileCryptingAlreadyRunningError();
+            }
+            else if (updateCryptState === isEncrypt || updateCryptState === undefined) {/** EMPTY */ }
+            else {
+                const changeType =
+                    updateCryptState === true
+                        ? ExplorerFileQueueType.ENCRYPT
+                        : updateCryptState === false
+                            ? ExplorerFileQueueType.DECRYPT
+                            : undefined
+
+                void await this.fileQueueService.addQueue(uid, changeType, user.uid, { manager: manager })
+            }
+
+            return BaseResponse.ok(
+                undefined,
                 HttpStatus.OK,
                 i18n.t('common.SUCCESS')
             )
@@ -152,24 +209,33 @@ export class CrepenExplorerFileController {
     ) {
         try {
             return (await this.databaseService.getDefault()).transaction(async (manager) => {
-                const fileInfo = await this.fileService.getFileDataByFileName(fileName, { manager: manager });
+                // const fileInfo = await this.fileService.getFileDataByFileName(fileName, { manager: manager });
 
-                if (!fileInfo) {
+                // if (!fileInfo) {
+                //     throw new FileNotFoundError();
+                // }
+
+                const fileIncludeEncryptData = await this.encryptFileService.getFileIncludeEncryptDataByFileName(fileName.trim());
+
+                 console.log(fileIncludeEncryptData);
+
+                 if (!fileIncludeEncryptData) {
                     throw new FileNotFoundError();
                 }
+
+               
 
 
                 let filePath: string | undefined = undefined;
 
-                if (fileInfo.isFileEncrypt === true) {
+                if (fileIncludeEncryptData.encryptedFiles.length > 0) {
 
-                    const encryptFileInfo = await this.encryptFileService.getEncryptFileDataByLinkFileUid(fileInfo.uid, { manager: manager });
 
                     filePath = path.join(
                         this.dynamicConfig.get('path.data'),
                         'file',
-                        fileInfo.filePath,
-                        encryptFileInfo.fileName
+                        fileIncludeEncryptData.filePath,
+                        fileIncludeEncryptData.encryptedFiles[0].fileName
                     );
 
                 }
@@ -177,8 +243,8 @@ export class CrepenExplorerFileController {
                     filePath = path.join(
                         this.dynamicConfig.get('path.data'),
                         'file',
-                        fileInfo.filePath,
-                        fileInfo.storeFileName
+                        fileIncludeEncryptData.filePath,
+                        fileIncludeEncryptData.storeFileName
                     );
                 }
 
@@ -186,20 +252,20 @@ export class CrepenExplorerFileController {
                     throw new FileNotFoundError();
                 }
 
-                const globalSecret = this.dynamicConfig.get<string>('secret');
-                const key = globalSecret.length < 32 ? globalSecret.padEnd(32, '-') : globalSecret.slice(0, 32);
-                const decipher = crypto.createDecipheriv('aes-256-cbc', key, fileInfo.fileEncIv);
+                
+                // const key = globalSecret.length < 32 ? globalSecret.padEnd(32, '-') : globalSecret.slice(0, 32);
+                // const decipher = crypto.createDecipheriv('aes-256-cbc', key, fileInfo.fileEncIv);
 
                 // Range 헤더 확인
                 const range = res.req.headers.range;
-                const fileSize = fileInfo?.fileSize;
+                const fileSize = fileIncludeEncryptData?.fileSize;
 
-                res.setHeader('Content-Type', fileInfo.fileMimeType || 'application/octet-stream');
-                res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(fileInfo.fileName)}"`);
+                res.setHeader('Content-Type', fileIncludeEncryptData.fileMimeType || 'application/octet-stream');
+                res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(fileIncludeEncryptData.fileName)}"`);
 
                 let streamFile: Readable;
 
-                if (range && fileInfo.isFileEncrypt !== true) {
+                if (range && fileIncludeEncryptData.encryptedFiles.length === 0) {
                     const CHUNK_SIZE_LIMIT = 1024 * 1024 * 10;
 
                     const parts = range.replace(/bytes=/, '').split('-');
@@ -222,16 +288,17 @@ export class CrepenExplorerFileController {
                 }
                 else {
                     res.status(HttpStatus.OK);
-                    res.setHeader('Content-Length', fileInfo.fileSize);
+                    res.setHeader('Content-Length', fileIncludeEncryptData.fileSize);
                     res.setHeader('Accept-Ranges', 'none');
 
-                    const readFileStream = fs.createReadStream(filePath);
+                 
 
-                    if (fileInfo.isFileEncrypt) {
-                        streamFile = readFileStream.pipe(decipher);
+                    if (fileIncludeEncryptData.encryptedFiles.length > 0) {
+                        const globalSecret = this.dynamicConfig.get<string>('secret');
+                        streamFile = await this.fileService.getDecryptFileStream(filePath , globalSecret);
                     }
                     else {
-
+                        const readFileStream = fs.createReadStream(filePath);
                         streamFile = readFileStream;
                     }
 
@@ -276,7 +343,7 @@ export class CrepenExplorerFileController {
                 res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
                 res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Range');
 
-                const fileInfo = await this.fileService.getFileDataByFileName(fileName, { manager: manager });
+                const fileInfo = await this.fileService.getFileDataByFileName(fileName.trim() , {manager : manager});
 
                 if (!fileInfo) {
                     throw new FileNotFoundError();
@@ -288,15 +355,13 @@ export class CrepenExplorerFileController {
 
                 let filePath: string | undefined = undefined;
 
-                if (fileInfo.isFileEncrypt === true) {
-
-                    const encryptFileInfo = await this.encryptFileService.getEncryptFileDataByLinkFileUid(fileInfo.uid, { manager: manager });
+                if (fileInfo.encryptedFiles.length > 0) {
 
                     filePath = path.join(
                         this.dynamicConfig.get('path.data'),
                         'file',
                         fileInfo.filePath,
-                        encryptFileInfo.fileName
+                        fileInfo.encryptedFiles[0].fileName
                     );
 
                 }
@@ -313,20 +378,16 @@ export class CrepenExplorerFileController {
                     throw new FileNotFoundError();
                 }
 
-                const globalSecret = this.dynamicConfig.get<string>('secret');
-                const key = globalSecret.length < 32 ? globalSecret.padEnd(32, '-') : globalSecret.slice(0, 32);
-                const decipher = crypto.createDecipheriv('aes-256-cbc', key, fileInfo.fileEncIv);
-
                 // Range 헤더 확인
                 const range = res.req.headers.range;
                 const fileSize = fileInfo?.fileSize;
 
                 res.setHeader('Content-Type', fileInfo.fileMimeType || 'application/octet-stream');
-                res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(fileInfo.fileName)}"`);
+                res.setHeader('Content-Disposition', `filename="${encodeURIComponent(fileInfo.fileName)}"`);
 
                 let streamFile: Readable;
 
-                if (range && fileInfo.isFileEncrypt !== true) {
+                if (range && (fileInfo.encryptedFiles ?? []).length === 0) {
                     const CHUNK_SIZE_LIMIT = 1024 * 1024 * 10;
 
                     const parts = range.replace(/bytes=/, '').split('-');
@@ -352,13 +413,14 @@ export class CrepenExplorerFileController {
                     res.setHeader('Content-Length', fileInfo.fileSize);
                     res.setHeader('Accept-Ranges', 'none');
 
-                    const readFileStream = fs.createReadStream(filePath);
+                    
 
-                    if (fileInfo.isFileEncrypt) {
-                        streamFile = readFileStream.pipe(decipher);
+                    if (fileInfo.encryptedFiles.length > 0) {
+                        const globalSecret = this.dynamicConfig.get<string>('secret');
+                        streamFile = await this.fileService.getDecryptFileStream(filePath , globalSecret);
                     }
                     else {
-
+                        const readFileStream = fs.createReadStream(filePath);
                         streamFile = readFileStream;
                     }
 

@@ -101,3 +101,46 @@ export const UpdateFilePublishStateAction = async (fileUid: string, state: boole
 
 
 }
+
+
+export const UpdateFileCryptAction = async (fileUid: string, updateState: boolean) => {
+    const localeProv = await ServerLocaleProvider.current(LocaleConfig);
+
+    try {
+        const locale = await (await ServerLocaleInitializer.current(LocaleConfig)).get({
+            readCookie: await cookies()
+        });
+
+        const session = await AuthProvider.current().getSession({
+            readCookie: await cookies()
+        });
+
+         const updateCrypt = await RestExplorerDataService
+            .current(session?.token, locale ?? LocaleConfig.defaultLocale)
+            .cryptFile(fileUid , updateState)
+
+        if (updateCrypt.success) {
+            return {
+                success: true
+            }
+        }
+
+        throw new CustomActionError(updateCrypt.message);
+    }
+    catch (e) {
+        console.log(e);
+
+        if (e instanceof CustomActionError) {
+            return {
+                success: false,
+                message: e.message
+            }
+        }
+        else {
+            return {
+                success: false,
+                message: await localeProv.translate('common.system.unknown_error')
+            }
+        }
+    }
+}

@@ -37,6 +37,9 @@
           },
           "complete-list": {
             "header-title": "Complete List"
+          },
+          "header" : {
+            "title" : "File Upload"
           }
         }
       }

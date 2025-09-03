@@ -15,6 +15,7 @@ import { ExplorerItemType } from "../enum/item-type.explorer.enum";
 import { ExplorerLogEntity } from "../entity/log.explorer.default.entity";
 import { ExplorerCatalogEntity } from "../entity/catalog.explorer.default.entity";
 import { randomUUID } from "crypto";
+import { CrepenExplorerFileEncryptQueueService } from "../services/file-queue.service";
 
 export interface FolderHierarchy {
     uid: string;
@@ -25,7 +26,8 @@ export interface FolderHierarchy {
 @Injectable()
 export class CrepenExplorerRepository extends CrepenBaseRepository {
     constructor(
-        private readonly databaseService: DatabaseService
+        private readonly databaseService: DatabaseService,
+        private readonly fileQueueService: CrepenExplorerFileEncryptQueueService
     ) { super(databaseService) }
 
 
@@ -280,22 +282,26 @@ export class CrepenExplorerRepository extends CrepenBaseRepository {
         });
     }
 
-    getFileData = async (fileUid : string , options?: RepositoryOptions) => {
+    getFileData = async (fileUid: string, options?: RepositoryOptions) => {
         const dataSource = options?.manager?.getRepository(ExplorerFileEntity) ?? await this.getRepository('default', ExplorerFileEntity);
 
-        return dataSource.findOne({
-            where : {
-                uid : (fileUid ?? 'NFD').trim()
+        const fileInfo = await dataSource.findOne({
+            where: {
+                uid: (fileUid ?? 'NFD').trim()
             }
         })
+
+        
+
+        return fileInfo;
     }
 
-    getFileDataByFileName = async (fileName : string , options? : RepositoryOptions) => {
+    getFileDataByFileName = async (fileName: string, options?: RepositoryOptions) => {
         const dataSource = options?.manager?.getRepository(ExplorerFileEntity) ?? await this.getRepository('default', ExplorerFileEntity);
 
         return dataSource.findOne({
-            where :{
-                fileName : (fileName ?? 'NFD').trim()
+            where: {
+                fileName: (fileName ?? 'NFD').trim()
             }
         })
     }

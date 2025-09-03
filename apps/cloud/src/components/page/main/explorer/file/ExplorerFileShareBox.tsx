@@ -77,11 +77,29 @@ export const ExplorerFileShareBox = (prop: ExplorerFileShareBoxProp) => {
                         urlJoin(
                             location.origin,
                             basePathHook.getBasePath() === '/' ? '' : basePathHook.getBasePath(),
-                            `/api/explorer/file/download/publish/${prop.fileName}`
+                            `/api/file/download/publish/${prop.fileName}`
                         )
                     }
                 />
-                <button className="cp-link-copy-button">COPY</button>
+                <button
+                    className="cp-link-copy-button"
+                    onClick={() => {
+                        window.navigator.clipboard.writeText(
+                            urlJoin(
+                                location.origin,
+                                basePathHook.getBasePath() === '/' ? '' : basePathHook.getBasePath(),
+                                `/api/file/download/publish/${prop.fileName}`
+                            )
+                        ).then(res => {
+                            alert('Copy Link');
+                        })
+                        .catch(e => {
+                            alert('Failed copy link');
+                        })
+                    }}
+                >
+                    COPY
+                </button>
             </div>
 
         </div>

@@ -23,12 +23,6 @@ export class AuthMiddleware implements BaseMiddleware {
 
         const callbackUrl = req.nextUrl.searchParams.get('callback');
 
-        console.log(req.url);
-        console.log(UrlUtil.isMatchPatterns(req.url, [...this.ignoreAuthUrl, ...this.unAuthPages], { basePath: req.nextUrl.basePath }))
-        console.log(req.nextUrl.basePath);
-        console.log(req.nextUrl.pathname)
-        console.log(new URL(urlJoin(req.nextUrl.basePath, '/signin', `?callback=${req.nextUrl.pathname}`), req.url).toString())
-
         const basePath = StringUtil.isEmpty(req.nextUrl.basePath) ? '/' : req.nextUrl.basePath;
 
         try {

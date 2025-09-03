@@ -17,6 +17,7 @@ import { CrepenExplorerEncryptFileService } from "./services/encrypt-file.explor
 import { CrepenExplorerDefaultService } from "./services/explorer.service";
 import { CrepenExplorerFileEncryptQueueService } from "./services/file-queue.service";
 import { CrepenExplorerFileService } from "./services/file.explorer.service";
+import { CrepenExplorerSocketGateway } from "./explorer.socket";
 
 
 @Module({
@@ -37,6 +38,8 @@ import { CrepenExplorerFileService } from "./services/file.explorer.service";
         CrepenExplorerFolderService,
         CrepenExplorerRepository,
         CrepenExplorerFileRepository,
+
+        // CrepenExplorerSocketGateway,
 
         CrepenExplorerFileEncryptQueueService,
         CrepenExplorerFileEncryptQueueRepository,

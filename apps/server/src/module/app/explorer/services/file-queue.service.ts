@@ -15,12 +15,23 @@ export class CrepenExplorerFileEncryptQueueService {
         return await this.repo.addQueue(fileUid , type, userUid , options);
     }
 
+    getQueueList = async (state : ExplorerFileQueueState[] , options?: RepositoryOptions) => {
+        return await this.repo.getQueueList(state , options);
+    }
+
     getWaitQueueList = async (options?: RepositoryOptions) => {
-        const queueList = await this.repo.getQueueList(ExplorerFileQueueState.WAIT, options);
-        return queueList;
+        return this.getQueueList([ExplorerFileQueueState.WAIT] , options);
+    }
+
+    getStableQueueList = async (options? : RepositoryOptions) => {
+        return this.getQueueList([ExplorerFileQueueState.WAIT , ExplorerFileQueueState.RUNNING] , options);
     }
 
     updateQueueState = async (queueUid : string[] , state : ExplorerFileQueueState , options? :RepositoryOptions) => {
         return this.repo.upateQueueState(queueUid , state , options);
+    }
+
+    getFileQueueState = async (fileUid : string, options? :RepositoryOptions) => {
+        return this.repo.getFileQueue(fileUid , options);
     }
 }

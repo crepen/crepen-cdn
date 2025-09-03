@@ -10,10 +10,10 @@
             grid-template-areas:
                 'preview preview'
                 'info action'
-                'monitor monitor'
+                // 'monitor monitor'
             ;
             grid-template-columns: 1fr 1fr;
-            grid-template-rows: min-content 1fr 1fr;
+            grid-template-rows: min-content min-content min-content;
 
 
             gap: 24px;
@@ -23,7 +23,7 @@
                 grid-template-areas:
                     'preview info'
                     'preview action'
-                    'preview monitor'
+                    // 'preview monitor'
                 ;
                 grid-template-rows: 1fr min-content min-content;
                 grid-template-columns: 1fr 350px;
@@ -239,27 +239,34 @@
                                 font-weight: 500;
                                 color: #64748b;
 
+                                text-decoration: none;
+
                                 display: flex;
                                 justify-content: center;
                                 align-items: center;
                                 flex-direction: column;
                                 gap: 4px;
 
-                                text-transform: uppercase;
+                                // text-transform: uppercase;
 
 
 
-                                &:hover {
-                                    border-color: #667eea;
-                                    color: #667eea;
-                                    background: #f8fafc;
+                                &:not(.cp-disable) {
+                                    &:hover {
+                                        border-color: #667eea;
+                                        color: #667eea;
+                                        background: #f8fafc;
 
-                                    .cp-button-icon {
-                                        svg {
-                                            transform: scale(1.2);
+                                        .cp-button-icon {
+                                            svg {
+                                                transform: scale(1.2);
+                                            }
                                         }
                                     }
                                 }
+
+
+
 
                                 .cp-button-icon {
                                     svg {
@@ -268,6 +275,49 @@
                                 }
 
                                 .cp-button-text {}
+
+
+                                .cp-loading-box {
+                                    display: none;
+                                }
+
+
+
+                                &.cp-loading {
+                                    .cp-loading-box {
+                                        display: block;
+
+                                        .cp-spinner {
+                                            color: #0c4a6e;
+                                            animation: Loop-Spin infinite 0.5s linear;
+
+
+                                            @keyframes Loop-Spin {
+                                                0% {
+                                                    transform: rotate(0deg);
+                                                }
+
+                                                100% {
+                                                    transform: rotate(360deg);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    .cp-button-icon,
+                                    .cp-button-text {
+                                        display: none;
+                                    }
+                                }
+
+                                &.cp-disable {
+                                    user-select: none;
+                                    cursor: default;
+
+                                    filter: grayscale(0.5);
+
+                                    background-color: rgba(0, 0, 0, 0.1);
+                                }
                             }
                         }
 

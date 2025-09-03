@@ -6,7 +6,7 @@ import { CrepenLoggerModule } from "./logger/logger.module";
 @Module({
     imports : [
         // CrepenCryptoModule,
-        SchedulerModule,
+        // SchedulerModule,
         // CrepenLoggerModule
     ]
 })

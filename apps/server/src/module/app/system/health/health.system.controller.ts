@@ -3,6 +3,7 @@ import { SystemHealthService } from "./health.system.service";
 import { ApiHeader, ApiTags } from "@nestjs/swagger";
 import { DisableValidDBDeco } from "@crepen-nest/lib/extensions/decorator/chk-conn-db.decorator";
 import { BaseResponse } from "@crepen-nest/lib/common/base.response";
+import { DynamicConfigService } from "@crepen-nest/module/config/dynamic-config/dynamic-config.service";
 
 @ApiTags('[SYSTEM] 서버 Health 컨트롤러')
 @ApiHeader({
@@ -13,7 +14,8 @@ import { BaseResponse } from "@crepen-nest/lib/common/base.response";
 export class SystemHealthController {
 
     constructor(
-        private readonly healthService: SystemHealthService
+        private readonly healthService: SystemHealthService,
+        private readonly dynamicConfig : DynamicConfigService
     ) { }
 
     @Get()
@@ -23,6 +25,8 @@ export class SystemHealthController {
         const initState = await this.healthService.isPlatformInstalled();
         const defaultDBState = await this.healthService.isDefaultDatabaseConnect();
         const localDBState = await this.healthService.isLocalDatabaseConnect();
+
+        console.log(this.dynamicConfig.get("secret"));
 
         return BaseResponse.ok({
             api: true,

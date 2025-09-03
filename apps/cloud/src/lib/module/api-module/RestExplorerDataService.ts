@@ -172,5 +172,22 @@ export class RestExplorerDataService {
 
     }
 
+    cryptFile = async (fileUid : string , updateState : boolean) => {
+        const result = await FetchApi
+            .instance(process.env.API_URL)
+            .setMethod('POST')
+            .setUrl(urlJoin(`/explorer/file/${fileUid ?? 'NFD'}/crypt` , `?state=${updateState === true ? 'true' : 'false'}`))
+            .setOptions({
+                language: this.language,
+                token: this.token?.accessToken
+            })
+            .getResponse();
+
+        const resultData: BaseApiResultEntity
+            = humps.camelizeKeys(Object.assign(result.jsonData ?? {})) as BaseApiResultEntity;
+
+        return resultData;
+    }
+
     //#endregion FILE
 }

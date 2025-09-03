@@ -67,9 +67,6 @@ export class CrepenExplorerDefaultController {
         @Query('keyword') keyword?: string
     ) {
 
-        Logger.log(`type : ${sortType} / category : ${sortCategory}` , '/explorer/[uid]')
-        Logger.log(`page : ${page} / pageSize : ${pageSize}` , '/explorer/[uid]')
-        Logger.log(`keyword : ${keyword}` , '/explorer/[uid]')
 
         const folderData = await this.folderService.getFolderDataByUid(uid);
 
@@ -102,3 +99,5 @@ export class CrepenExplorerDefaultController {
    
 
 }
+
+

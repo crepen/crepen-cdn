@@ -2,5 +2,7 @@
     "FILE_NOT_UPLOADED" : "Upload file not found.",
     "FILE_UPLOAD_FAILED" : "Upload Failed",
     "DOWNLOAD.FAILED.UNKNOWN" : "Download Failed (Unknown Error)",
-    "UPDATE.PUBLISHED.STATE_UNDEFINED" : "Update publish state is undefined."
+    "UPDATE.PUBLISHED.STATE_UNDEFINED" : "Update publish state is undefined.",
+    "UPDATE.ENCRYPT.QUEUE_ALERADY_RUNNING" : "Encryption/decryption is already in progress.",
+    "UPLOAD.LIMIT.OVERFLOW" : "File uploads are limited to 1.8GB."
 }

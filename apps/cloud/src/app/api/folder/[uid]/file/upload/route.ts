@@ -11,18 +11,12 @@ const NESTJS_API_URL = process.env.API_URL || 'http://localhost:13332';
 
 export const PUT = async (req: NextRequest, { params }: { params: Promise<{ uid: string }> }) => {
 
-    const ss = NextResponse.json({});
+    
 
     const localeProv = ServerLocaleProvider.current(LocaleConfig);
-
+    const abortControl = new AbortController();
 
     try {
-        // const upload = multer({storage : multer.memoryStorage()});
-
-        // upload.single('file')(req , {} , () => {})
-
-        // const formData = await req.formData();
-
         const session = await AuthProvider.current().refreshSession({
             writeCookie: req.cookies,
             readCookie: req.cookies
@@ -42,16 +36,19 @@ export const PUT = async (req: NextRequest, { params }: { params: Promise<{ uid:
         const response = await fetch(apiUrl, {
             method: 'PUT',
             body: req.body, // 요청 스트림을 직접 전달
-            headers: headers,
-            duplex: 'half'
-        } as object);
+            headers : headers,
+            duplex: 'half',
+            signal : abortControl.signal  
+        } as RequestInit);
+
+            // abortControl.abort();
 
         if (!response.ok) {
             let message: string | undefined = undefined;
             try {
                 message = (await response.json()).message;
             }
-            catch (e) { }
+            catch (_) {/** @EMPTY */ }
             throw new CustomRouteError(message, response.status);
         }
 
@@ -69,6 +66,7 @@ export const PUT = async (req: NextRequest, { params }: { params: Promise<{ uid:
 
     } catch (error) {
 
+        abortControl.abort();
         console.log("🛑 ROUTE GLOBAL ERROR", error);
 
         let message = undefined;

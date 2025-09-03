@@ -27,6 +27,7 @@ import { CrepenExplorerDefaultService } from "./services/explorer.service";
 import { DynamicConfigService } from "@crepen-nest/module/config/dynamic-config/dynamic-config.service";
 import * as Busboy from 'busboy'
 import { CrepenExplorerFileService } from "./services/file.explorer.service";
+import { ExplorerFileSizeLimitOverflowError } from "@crepen-nest/lib/error/api/explorer/overflow_limit_size.file.error";
 
 @ApiTags('[EXPLORER] 탐색기 - 폴더')
 @ApiHeader({
@@ -93,10 +94,20 @@ export class CrepenExplorerFolderController {
         @Headers('content-disposition') contentDisposition: string,
         @Headers('content-file-type') fileType: string
     ) {
+        console.log(contentLength, Number(contentLength) > 1024 * 1024 * 1024 * 1.8, 1024 * 1024 * 1024 * 1.8)
 
         try {
             if (isNaN(Number(contentLength)) || Number(contentLength) === 0) {
-                throw new FileNotUploadedError();
+                ExceptionResultFactory.current(res, i18n, new FileNotUploadedError())
+                .sendResponse();
+
+                return;
+            }
+            else if (Number(contentLength) > 1024 * 1024 * 1024 * 1.8) {
+                ExceptionResultFactory.current(res, i18n, new ExplorerFileSizeLimitOverflowError())
+                .sendResponse();
+                console.log('1');
+                return;
             }
 
 
@@ -186,58 +197,13 @@ export class CrepenExplorerFolderController {
 
 
                     })
-                   
+
 
             })
 
             req.pipe(busboy);
 
 
-            // const streamUploadPromise = new Promise<void>((resolve, reject) => {
-            //     req
-            //         // .pipe(cipher)
-            //         .on('data', (chunk) => { fileSize += chunk.length; })
-            //         .pipe(fs.createWriteStream(saveTempStreamFilePath))
-            //         .on('finish', () => { resolve(); })
-            //         .on('error', (err) => reject(err));
-
-            //     req.on('error', (err) => reject(err));
-            // })
-
-            // streamUploadPromise
-            //     .then(async rp => {
-            //         const addFileEntity = await this.fileService.addFile(
-            //             decodeURIComponent(fileName),
-            //             fileUid,
-            //             iv,
-            //             fileType,
-            //             fileSize,
-            //             uid,
-            //             user
-            //         )
-
-            //         res.status(HttpStatus.OK).send(
-            //             BaseResponse.ok(
-            //                 {
-            //                     uuid: addFileEntity.uid
-            //                 },
-            //                 HttpStatus.OK,
-            //                 i18n.t('common.SUCCESS'),
-            //             )
-            //         )
-            //     })
-            //     .catch(e => {
-            //         let error: CommonError = undefined;
-            //         if (e instanceof CommonError) {
-            //             error = e;
-            //         }
-            //         else {
-            //             error = new FileUploadFailedError();
-            //         }
-
-            //         ExceptionResultFactory.current(res, i18n, error)
-            //             .getResponse();
-            //     })
 
 
 
@@ -256,6 +222,13 @@ export class CrepenExplorerFolderController {
 
             ExceptionResultFactory.current(res, i18n, error)
                 .sendResponse();
+
+            req.unpipe();
+            req.resume();
+            res.end();
+
+
+            return;
         }
     }
 

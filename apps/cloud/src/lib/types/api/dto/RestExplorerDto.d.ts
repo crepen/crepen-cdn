@@ -59,10 +59,23 @@ export interface ExplorerFileInfoResult {
     fileMimeType: string;
     createDate: string;
     updateDate: string;
-    isFileEncrypt: boolean;
     fileState : 'stable' | 'encrypting';
     isPublished : boolean;
+    encryptedFiles : ExplorerEncryptFileInfo[],
+    cryptQueueList : ExplorerEncryptQueueInfo[]
 }
 
+
+export interface ExplorerEncryptFileInfo {
+    uid : string,
+    originFileUid : string,
+    fileName: string,
+    createDate :string
+}
+
+export interface ExplorerEncryptQueueInfo {
+    queueState : 'complete' | 'running' | 'wait' | 'error',
+    type : 'encrypt' | 'decrypt'
+}
 
 //#endregion FILE

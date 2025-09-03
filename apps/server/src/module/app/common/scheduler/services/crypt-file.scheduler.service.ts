@@ -23,139 +23,135 @@ export class CryptFileSchedulerService {
     ) { }
 
 
-    encryptFile = async (queue: ExplorerFileEncryptQueueEntity, key: string, options?: RepositoryOptions) => {
+    // encryptFile = async (queue: ExplorerFileEncryptQueueEntity, key: string, options?: RepositoryOptions) => {
 
 
 
-        try {
+    //     try {
 
-            const encryptFileUid = crypto.randomUUID();
-            const iv = crypto.randomBytes(16);
-            const cipher = crypto.createCipheriv('aes-256-cbc', key, iv)
+    //         const encryptFileUid = crypto.randomUUID();
+    //         const iv = crypto.randomBytes(16);
+    //         const cipher = crypto.createCipheriv('aes-256-cbc', key, iv)
 
-            //  Get File Info
-            const fileInfo = await this.fileService.getFileData(queue.fileUid, undefined);
-
-
-            //#region DIR_DEFINE
-            const fileDirPath = path.join(
-                this.dynamicConfig.get('path.data'),
-                'file',
-                fileInfo.filePath
-            )
-
-            const storeDecryptFilePath = path.join(
-                fileDirPath,
-                fileInfo.storeFileName
-            );
-
-            const saveEncryptFilePath = path.join(
-                fileDirPath,
-                path.format({
-                    name: encryptFileUid,
-                    ext: 'CPCDNENC'
-                })
-            )
-            //#endregion DIR_DEFINE
+    //         //  Get File Info
+    //         const fileInfo = await this.fileService.getFileData(queue.fileUid, undefined);
 
 
-            if (fs.existsSync(storeDecryptFilePath)) {
-                const originFileStream = fs.createReadStream(storeDecryptFilePath);
+    //         //#region DIR_DEFINE
+    //         const fileDirPath = path.join(
+    //             this.dynamicConfig.get('path.data'),
+    //             'file',
+    //             fileInfo.filePath
+    //         )
 
-                const encryptStream = () => new Promise<void>((resolve, reject) => {
-                    originFileStream
-                        .on('error', reject)
-                        .pipe(cipher)
-                        .pipe(fs.createWriteStream(saveEncryptFilePath))
-                        .on('error', reject)
-                        .on('finish', resolve)
-                        .on('end', resolve)
-                })
+    //         const storeDecryptFilePath = path.join(
+    //             fileDirPath,
+    //             fileInfo.storeFileName
+    //         );
 
-
-                await encryptStream();
-
-                await (options?.manager ?? (await this.databaseService.getDefault())).transaction(async manager => {
-                    await this.encryptFileService.addItem(encryptFileUid, fileInfo.uid, options);
-                    await this.fileService.updateFileEncryptData(fileInfo.uid, iv, true, options);
-
-                    await this.cryptFileQueueService.updateQueueState([queue.uid], ExplorerFileQueueState.COMPLETE, { manager: manager })
-                    fs.rmSync(storeDecryptFilePath);
-                })
-            }
-            else {
-                throw new Error(`File not found : ${fileInfo.uid}`);
-            }
+    //         const saveEncryptFilePath = path.join(
+    //             fileDirPath,
+    //             path.format({
+    //                 name: encryptFileUid,
+    //                 ext: 'CPCDNENC'
+    //             })
+    //         )
+    //         //#endregion DIR_DEFINE
 
 
-        }
-        catch (e) {
-            Logger.error(`File Encrypt Error : ${queue.uid}`, e, 'FILE_CRYPT_SCHD - ENCRYPT')
-            throw e;
-        }
-    }
+    //         if (fs.existsSync(storeDecryptFilePath)) {
+    //             const originFileStream = fs.createReadStream(storeDecryptFilePath);
+
+    //             const encryptStream = () => new Promise<void>((resolve, reject) => {
+    //                 originFileStream
+    //                     .on('error', reject)
+    //                     .pipe(cipher)
+    //                     .pipe(fs.createWriteStream(saveEncryptFilePath))
+    //                     .on('error', reject)
+    //                     .on('finish', resolve)
+    //                     .on('end', resolve)
+    //             })
 
 
-    decryptFile = async (queue: ExplorerFileEncryptQueueEntity, encryptKey: string, options?: RepositoryOptions) => {
-        try {
-            await (options?.manager ?? (await this.databaseService.getDefault())).transaction(async manager => {
+    //             await encryptStream();
+
+    //             await (options?.manager ?? (await this.databaseService.getDefault())).transaction(async manager => {
+    //                 await this.encryptFileService.addItem(encryptFileUid, fileInfo.uid, options);
+    //                 await this.fileService.updateFileEncryptData(fileInfo.uid, iv, true, options);
+    //                 await this.cryptFileQueueService.updateQueueState([queue.uid], ExplorerFileQueueState.COMPLETE, { manager: manager })
+    //             })
+
+    //             fs.rmSync(storeDecryptFilePath);
+    //         }
+    //         else {
+    //             throw new Error(`File not found : ${fileInfo.uid}`);
+    //         }
 
 
+    //     }
+    //     catch (e) {
+    //         Logger.error(`File Encrypt Error : ${queue.uid}`, e, 'FILE_CRYPT_SCHD - ENCRYPT')
+    //         throw e;
+    //     }
+    // }
 
-                const fileInfo = await this.fileService.getFileData(queue.fileUid, undefined, { manager: manager });
-                const encryptFileInfo = await this.encryptFileService.getEncryptFileDataByLinkFileUid(fileInfo.uid);
 
-                const decipher = crypto.createDecipheriv('aes-256-cbc', encryptKey, fileInfo.fileEncIv);
+    // decryptFile = async (queue: ExplorerFileEncryptQueueEntity, encryptKey: string, options?: RepositoryOptions) => {
+    //     try {
+    //         const fileInfo = await this.fileService.getFileData(queue.fileUid, undefined, options);
+    //         const encryptFileInfo = await this.encryptFileService.getEncryptFileDataByLinkFileUid(fileInfo.uid);
 
-                //#region DIR_DEFINE
-                const fileDirPath = path.join(
-                    this.dynamicConfig.get('path.data'),
-                    'file',
-                    fileInfo.filePath
-                )
+    //         const decipher = crypto.createDecipheriv('aes-256-cbc', encryptKey, fileInfo.fileEncIv);
 
-                const storeEncryptFilePath = path.join(
-                    fileDirPath,
-                    encryptFileInfo.fileName
-                )
+    //         //#region DIR_DEFINE
+    //         const fileDirPath = path.join(
+    //             this.dynamicConfig.get('path.data'),
+    //             'file',
+    //             fileInfo.filePath
+    //         )
 
-                const saveDecryptFilePath = path.join(
-                    fileDirPath,
-                    fileInfo.storeFileName
-                );
-                //#endregion DIR_DEFINE
+    //         const storeEncryptFilePath = path.join(
+    //             fileDirPath,
+    //             encryptFileInfo.fileName
+    //         )
 
-                if (fs.existsSync(storeEncryptFilePath)) {
-                    const originFileStream = fs.createReadStream(storeEncryptFilePath);
+    //         const saveDecryptFilePath = path.join(
+    //             fileDirPath,
+    //             fileInfo.storeFileName
+    //         );
+    //         //#endregion DIR_DEFINE
 
-                    const decryptStream = () => new Promise<void>((resolve, reject) => {
-                        originFileStream
-                            .on('error', reject)
-                            .pipe(decipher)
-                            .pipe(fs.createWriteStream(saveDecryptFilePath))
-                            .on('error', reject)
-                            .on('finish', resolve)
-                            .on('end', resolve)
-                    })
+    //         if (fs.existsSync(storeEncryptFilePath)) {
+    //             const originFileStream = fs.createReadStream(storeEncryptFilePath);
 
-                    await decryptStream();
+    //             const decryptStream = () => new Promise<void>((resolve, reject) => {
+    //                 originFileStream
+    //                     .on('error', reject)
+    //                     .pipe(decipher)
+    //                     .pipe(fs.createWriteStream(saveDecryptFilePath))
+    //                     .on('error', reject)
+    //                     .on('finish', resolve)
+    //                     .on('end', resolve)
+    //             })
 
-                    await this.encryptFileService.removeItem(encryptFileInfo.uid, options);
-                    await this.fileService.updateFileEncryptData(fileInfo.uid, undefined, false, options);
+    //             await decryptStream();
 
-                    await this.cryptFileQueueService.updateQueueState([queue.uid], ExplorerFileQueueState.COMPLETE, { manager: manager })
+    //             await (options?.manager ?? (await this.databaseService.getDefault())).transaction(async manager => {
+    //                 await this.encryptFileService.removeItem(encryptFileInfo.uid, options);
+    //                 await this.fileService.updateFileEncryptData(fileInfo.uid, undefined, false, options);
+    //                 await this.cryptFileQueueService.updateQueueState([queue.uid], ExplorerFileQueueState.COMPLETE, { manager: manager })
+    //             })
 
-                    fs.rmSync(storeEncryptFilePath);
-                }
-                else {
-                    throw new Error(`File not found. : ${fileInfo.uid}`);
-                }
 
-            })
-        }
-        catch (e) {
-            Logger.error(`File Decrypt Error : ${queue.uid}`, e, 'FILE_CRYPT_SCHD - DECRYPT');
-            throw e;
-        }
-    }
+    //             fs.rmSync(storeEncryptFilePath);
+    //         }
+    //         else {
+    //             throw new Error(`File not found. : ${fileInfo.uid}`);
+    //         }
+    //     }
+    //     catch (e) {
+    //         Logger.error(`File Decrypt Error : ${queue.uid}`, e, 'FILE_CRYPT_SCHD - DECRYPT');
+    //         throw e;
+    //     }
+    // }
 }

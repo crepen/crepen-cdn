@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
 import { ExplorerFileQueueType } from "../enum/file-queue-type.enum";
 import { ExplorerFileQueueState } from "../enum/file-queue-state.enum";
+import { ExplorerFileEntity } from "./file.explorer.default.entity";
 
 @Entity('queue-file-crypt')
 export class ExplorerFileEncryptQueueEntity {
@@ -22,4 +23,7 @@ export class ExplorerFileEncryptQueueEntity {
 
     @Column({name : 'user_uid' , type : 'varchar' , nullable : false})
     userUid: string;
+
+    @ManyToOne(() => ExplorerFileEntity , file => file.cryptQueueList)
+    originFile : ExplorerFileEntity
 }

@@ -4,6 +4,7 @@ import { Injectable } from "@nestjs/common";
 import { ExplorerEncryptFileEntity } from "../entity/encrypt-file.explorer.default.entity";
 import { RepositoryOptions } from "@crepen-nest/interface/repo";
 import { FindOptionsWhere } from "typeorm";
+import { ExplorerFileEntity } from "../entity/file.explorer.default.entity";
 
 @Injectable()
 export class CrepenExplorerEncryptFileRepository extends CrepenBaseRepository {
@@ -32,5 +33,16 @@ export class CrepenExplorerEncryptFileRepository extends CrepenBaseRepository {
             .from(ExplorerEncryptFileEntity)
             .where('uid = :uid', { uid: uid })
             .execute();
+    }
+
+
+
+    getFileDataIncludeEncryptData = async (where : FindOptionsWhere<ExplorerFileEntity> | FindOptionsWhere<ExplorerFileEntity>[] , options? :RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(ExplorerFileEntity) ?? await this.getRepository('default', ExplorerFileEntity);
+
+        return dataSource.findOne({
+            where : where,
+            relations : ['encryptedFiles']
+        })
     }
 }

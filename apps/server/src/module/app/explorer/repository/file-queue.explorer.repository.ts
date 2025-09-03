@@ -6,16 +6,17 @@ import { randomUUID } from "crypto";
 import { ExplorerFileEncryptQueueEntity } from "../entity/encrypt-queue.file.explorer.default.entity";
 import { ExplorerFileQueueState } from "../enum/file-queue-state.enum";
 import { ExplorerFileQueueType } from "../enum/file-queue-type.enum";
+import { isArray } from "class-validator";
 
 @Injectable()
 export class CrepenExplorerFileEncryptQueueRepository extends CrepenBaseRepository {
-   constructor(
-          private readonly databaseService: DatabaseService
-      ) { super(databaseService) }
+    constructor(
+        private readonly databaseService: DatabaseService
+    ) { super(databaseService) }
 
 
 
-    addQueue = async (fileUid :string , type : ExplorerFileQueueType, userUid : string , options?: RepositoryOptions) => {
+    addQueue = async (fileUid: string, type: ExplorerFileQueueType, userUid: string, options?: RepositoryOptions) => {
         const dataSource = options?.manager?.getRepository(ExplorerFileEncryptQueueEntity) ?? await this.getRepository('default', ExplorerFileEncryptQueueEntity);
 
         const entity = new ExplorerFileEncryptQueueEntity();
@@ -27,29 +28,51 @@ export class CrepenExplorerFileEncryptQueueRepository extends CrepenBaseReposito
         entity.userUid = userUid;
 
 
-        return dataSource.save(entity , {data : false});
+        return dataSource.save(entity, { data: false });
     }
 
-    getQueueList = async (state? : ExplorerFileQueueState, options?: RepositoryOptions) => {
+    getQueueList = async (state?: ExplorerFileQueueState | ExplorerFileQueueState[], options?: RepositoryOptions) => {
         const dataSource = options?.manager?.getRepository(ExplorerFileEncryptQueueEntity) ?? await this.getRepository('default', ExplorerFileEncryptQueueEntity);
-        
+
+        const stateList: ExplorerFileQueueState[] = [];
+
+        if (isArray(state)) {
+            stateList.push(...state);
+        }
+        else {
+            stateList.push(state)
+        }
+
+        if (state === undefined || (isArray(state) ? state.length === 0 : false)) {
+            return [];
+        }
+
         return dataSource.find({
-            where : {
-                queueState : state
-            },
-            order : {
-                createDate : 'ASC'
+            where: stateList.map(x => ({ queueState: x })),
+            order: {
+                createDate: 'ASC'
             }
         })
     }
 
-    upateQueueState = async (uidList : string[] , state : ExplorerFileQueueState , options? : RepositoryOptions) => {
+    getFileQueue = async (fileUid: string, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(ExplorerFileEncryptQueueEntity) ?? await this.getRepository('default', ExplorerFileEncryptQueueEntity);
+
+
+        return dataSource.findOne({
+            where: {
+                fileUid: fileUid
+            }
+        })
+    }
+
+    upateQueueState = async (uidList: string[], state: ExplorerFileQueueState, options?: RepositoryOptions) => {
         const dataSource = options?.manager?.getRepository(ExplorerFileEncryptQueueEntity) ?? await this.getRepository('default', ExplorerFileEncryptQueueEntity);
 
         return dataSource.createQueryBuilder()
             .update(ExplorerFileEncryptQueueEntity)
-            .set({queueState : state})
-            .where('uid in (:...uid)' , {uid : uidList})
+            .set({ queueState: state })
+            .where('uid in (:...uid)', { uid: uidList })
             .execute();
     }
 }
