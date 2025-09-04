@@ -4,6 +4,12 @@
 ## Demo Site
 https://cdn.crepen.cloud
 
+### Demo Site Account
+| key | value |
+|-|-|
+| ID | democdn |
+|Password | qwerqwer1234 |
+
 ## 설명
 Crepen CDN은 소규모 기업에서 이미지 등을 배포하거나 , 폐쇄망 내에서 CDN 서비스를 이용하기 위해 만들어진 플랫폼입니다.
 RestAPI로 서버에 접근하여 데이터를 가져올 수 있으며, 파일 암호화/복호화 기능이 있어 특정 파일을 암호화하여 서버에 저장할 수 있습니다.
