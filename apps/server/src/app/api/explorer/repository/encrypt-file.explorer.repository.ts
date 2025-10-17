@@ -1,0 +1,48 @@
+import { CrepenBaseRepository } from "@crepen-nest/lib/common/base.repository";
+import { Injectable } from "@nestjs/common";
+import { ExplorerEncryptFileEntity } from "../entity/encrypt-file.explorer.default.entity";
+import { RepositoryOptions } from "@crepen-nest/interface/repo";
+import { FindOptionsWhere } from "typeorm";
+import { ExplorerFileEntity } from "../entity/file.explorer.default.entity";
+import { DatabaseService } from "@crepen-nest/app/config/database/database.config.service";
+
+@Injectable()
+export class CrepenExplorerEncryptFileRepository extends CrepenBaseRepository {
+    constructor(
+        private readonly databaseService: DatabaseService
+    ) { super(databaseService) }
+
+
+    addItem = async (entity: ExplorerEncryptFileEntity, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(ExplorerEncryptFileEntity) ?? await this.getRepository('default', ExplorerEncryptFileEntity);
+
+        return dataSource.save(entity);
+    }
+
+    getItem = async (whereObj: FindOptionsWhere<ExplorerEncryptFileEntity> | FindOptionsWhere<ExplorerEncryptFileEntity>[], options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(ExplorerEncryptFileEntity) ?? await this.getRepository('default', ExplorerEncryptFileEntity);
+        return dataSource.findOne({
+            where: whereObj
+        })
+    }
+
+    removeItem = async (uid: string, options?: RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(ExplorerEncryptFileEntity) ?? await this.getRepository('default', ExplorerEncryptFileEntity);
+        return dataSource.createQueryBuilder()
+            .delete()
+            .from(ExplorerEncryptFileEntity)
+            .where('uid = :uid', { uid: uid })
+            .execute();
+    }
+
+
+
+    getFileDataIncludeEncryptData = async (where : FindOptionsWhere<ExplorerFileEntity> | FindOptionsWhere<ExplorerFileEntity>[] , options? :RepositoryOptions) => {
+        const dataSource = options?.manager?.getRepository(ExplorerFileEntity) ?? await this.getRepository('default', ExplorerFileEntity);
+
+        return dataSource.findOne({
+            where : where,
+            relations : ['encryptedFiles']
+        })
+    }
+}

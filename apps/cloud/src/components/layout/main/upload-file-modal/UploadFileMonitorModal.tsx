@@ -9,6 +9,7 @@ import { useUploadFileModal } from "../provider/MainUploadFileModalProvider";
 import { FaStop } from "react-icons/fa6";
 import { UploadMonitorIconButton } from "./control/UploadMonitorIconButton";
 import { UploadMonitorItemList } from "./control/UploadMonitorItemList";
+import { useRouter } from "next/navigation";
 
 interface UploadFileMonitorModalProp {
 
@@ -25,6 +26,7 @@ export const UploadFileMonitorModal = (prop: UploadFileMonitorModalProp) => {
     const { mutate } = useFileUploadMutation();
     const [isUploading, setUploadState] = useState<boolean>(false);
     const progressBarRef = useRef<HTMLDivElement>(null);
+    const route = useRouter();
 
     useMemo(() => {
         progressBarRef?.current?.style.setProperty('--progress-value', uploadFileHook.progress.data.progress.toString())
@@ -45,6 +47,7 @@ export const UploadFileMonitorModal = (prop: UploadFileMonitorModalProp) => {
                     // 업로드 성공/실패와 관계없이 다음 파일을 위해 isUploading 상태를 false로 설정
                     setUploadState(false);
                     abortControllers.delete(nextFileToUpload.uuid);
+                    route.refresh();
                 }
             });
         }

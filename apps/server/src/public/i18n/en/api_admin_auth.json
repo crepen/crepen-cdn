@@ -1,3 +1,4 @@
 {
-    "PASSWORD.EXPIRE" : "Password expired."   
+    "PASSWORD.EXPIRE" : "Password expired."   ,
+    "INIT_ACCOUNT.ALREADY_INIT_PASSWORD" : "Init Account password is already initialzed"
 }

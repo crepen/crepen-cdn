@@ -4,19 +4,19 @@ import { join } from "path";
 import { Logger } from "@nestjs/common";
 import { DataSourceProviderInterface } from "./interface.database.provider";
 import { StringUtil } from "@crepen-nest/lib/util";
-import { DynamicConfigService } from "@crepen-nest/module/config/dynamic-config/dynamic-config.service";
+import { DynamicConfigService } from "@crepen-nest/app/config/dynamic-config/dynamic-config.service";
 
 export class DefaultDataSourceProvider implements DataSourceProviderInterface {
     constructor(config: DynamicConfigService) {
 
-        const entityDir = join(__dirname , '/../../../module/**/entity/*.default.entity{.ts,.js}') 
+        const entityDir = join(__dirname , '/../../../app/**/entity/*.default.entity{.ts,.js}') 
 
         Logger.log(`Load Default Database Entity : ${entityDir}` , 'MAIN');
         Logger.log(config.get('db.conn_str') , 'MAIN');
 
         this.dataSource = new DataSource({
             type: 'mariadb',
-            url : StringUtil.isEmpty(config.get('db.conn_str')) ? 'mariadb://' : config.get('db.conn_str'),
+            ...config.getConfig().db,
             entities: [entityDir],
             synchronize: true,
             // logging: configService.get<boolean>('db.logging'),

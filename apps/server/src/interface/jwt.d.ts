@@ -1,15 +1,20 @@
-import { UserEntity } from "@crepen-nest/app/common-user/user/entity/user.default.entity"
+import { AdminAuthMode } from "@crepen-nest/module/app/admin/auth/dto/auth.admin.response"
+import { UserEntity } from "@crepen-nest/module/app/user/entity/user.default.entity"
+import { UserRoleEnum } from "@crepen-nest/module/app/user/enum/user-role.enum"
 import { Request as ExpressRequest } from "express"
 
 ////// V1
 export type CrepenTokenType = 'access_token' | 'refresh_token'
 
+/** @deprecated */
 export interface CrepenUserPayload {
     uid: string,
     type: CrepenTokenType,
-    role : string
+    role : UserRoleEnum[],
+    mode : AdminAuthMode
 }
 
+/** @deprecated */
 export interface CrepenTokenData {
     payload?: CrepenUserPayload,
     entity?: UserEntity,
@@ -40,6 +45,7 @@ export interface CrepenToken {
     expireTime? : number
 }
 
+/** @deprecated */
 export interface CrepenTokenGroup {
     accessToken? : CrepenToken,
     refreshToken? : CrepenToken

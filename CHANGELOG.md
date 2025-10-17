@@ -1,5 +1,22 @@
 # CREPEN CDN PACKAGE CHANGE LOG
 
+## ℹ️ [0.1.2]
+
+### ✒️ ADDED
+
+####
+
+#### ADMIN (NextJS)
+ - 신규 생성
+
+
+
+### ✒️ FIXED
+
+#### CRYPT-SERVER (ASP.NET)
+ - 동시에 여러 항목 암호화/복호화 시 Database Connect Error 현상 수정
+    - Task마다 Scope 생성
+
 
 
 ## ℹ️ [0.1.1] -

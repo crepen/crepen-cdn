@@ -1,6 +1,6 @@
+import { DatabaseService } from "@crepen-nest/app/config/database/database.config.service";
 import { Injectable } from "@nestjs/common";
 import { DataSource, EntityTarget, ObjectLiteral, Repository } from "typeorm";
-import { DatabaseService } from "../../module/config/database/database.config.service";
 
 @Injectable()
 export class CrepenBaseRepository {

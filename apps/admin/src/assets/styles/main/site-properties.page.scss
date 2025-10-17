@@ -1,0 +1,148 @@
+.cp-page.cp-site-properties-page {
+    padding: 24px;
+
+    .cp-page-content {
+
+        .cp-group-section {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+
+            .cp-group-header {
+                padding: 20px 24px 16px 24px;
+                border-bottom: 1px solid #f1f5f9;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .cp-group-content {
+                padding: 20px 24px;
+            }
+
+            &.cp-display-mode {
+                .cp-group-content {
+                    .cp-database-card {
+                        padding: 16px 20px;
+                        border: 1px solid #e2e8f0;
+                        border-radius: 12px;
+                        background-color: #e2e8f0;
+
+                        display: grid;
+                        grid-template-areas:
+                            'icon desc button'
+                        ;
+                        grid-template-columns: min-content 1fr min-content;
+                        grid-template-rows: 1fr;
+                        gap: 10px;
+                        column-gap: 20px;
+
+                        .cp-database-state-icon {
+                            grid-area: icon;
+                            aspect-ratio: 1;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                        }
+
+
+                        .cp-database-desc {
+                            grid-area: desc;
+
+                            padding: 4px;
+
+                            ul {
+                                // display: flex;
+                                // justify-content: flex-start;
+                                // align-items: center;
+                                // flex-wrap: wrap;
+
+
+                                li {
+                                    display: grid;
+                                    grid-template-columns: 1fr 1fr;
+                                    align-items: center;
+                                    column-gap: 10px;
+
+                                    font-size: 14px;
+
+                                    color: #64748b;
+                                }
+                            }
+                        }
+
+                        .cp-database-button {
+                            grid-area: button;
+
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            flex-direction: column;
+                            row-gap: 6px;
+
+
+                            button {
+                                width: 100%;
+                                padding: 6px 10px;
+
+                                .cp-button-content {
+                                    display: grid;
+                                    grid-template-columns: min-content 1fr;
+                                    align-items: center;
+                                    gap: 8px;
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+
+            &.cp-edit-mode {
+
+                .cp-group-content {
+
+                    display: grid;
+                    align-items: flex-start;
+                    grid-template-columns: 1fr 1fr;
+                    flex-wrap: wrap;
+                    column-gap: 18px;
+
+
+
+                    .cp-input-group {
+                        margin-bottom: 10px;
+                        width: 100%;
+
+
+                        &.cp-full {
+                            grid-column: 1 / -1;
+                        }
+
+                        &.cp-half {}
+                    }
+                }
+
+
+            }
+
+
+            .cp-group-footer {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                padding: 20px 24px;
+                padding-top: 0px;
+
+                column-gap: 8px;
+            }
+
+
+            &:not(:nth-last-of-type(1)) {
+                margin-bottom: 16px;
+            }
+        }
+    }
+}

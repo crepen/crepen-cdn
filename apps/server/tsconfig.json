@@ -14,11 +14,12 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "paths": {
-      "@crepen-nest/module/*" : ["./src/module/*"],
+      "@crepen-nest/modules/*" : ["./src/modules/*"],
       "@crepen-nest/config/*" : ["./src/config/*"],
       "@crepen-nest/public/*" : ["./src/public/*"],
       "@crepen-nest/lib/*" : ["./src/lib/*"],
-      "@crepen-nest/interface/*" : ["./src/interface/*"]
+      "@crepen-nest/interface/*" : ["./src/interface/*"],
+      "@crepen-nest/app/*" : ["./src/app/*"]
     }
   }
 }

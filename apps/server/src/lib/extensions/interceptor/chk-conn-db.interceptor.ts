@@ -5,8 +5,8 @@ import { ConfigService } from "@nestjs/config";
 import { DisableValidDBDeco, DisableValidDBDecoMode } from "../../../lib/extensions/decorator/chk-conn-db.decorator";
 import { DatabaseConnectError } from "@crepen-nest/lib/error/api/common/conn.db.error";
 import { DefaultDataSourceProvider } from "@crepen-nest/config/provider/database/default.database.provider";
-import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
-import { DynamicConfigService } from "@crepen-nest/module/config/dynamic-config/dynamic-config.service";
+import { DatabaseService } from "@crepen-nest/app/config/database/database.config.service";
+import { DynamicConfigService } from "@crepen-nest/app/config/dynamic-config/dynamic-config.service";
 
 
 @Injectable()
@@ -31,18 +31,11 @@ export class CheckConnDBInterceptor implements NestInterceptor {
         }
 
         try{
-            // console.log(this.dynamicConfig.get('db.conn_str'))
             const dataSource = (await this.databaseService.getDefault());
 
             if(!dataSource.isInitialized){
                 throw new DatabaseConnectError();
             }
-
-            
-                
-
-            // await dataSource.destroy();
-                
         }
         catch(e){
             Logger.error(e , 'MAIN > CHK_CONN_DB_ERR')

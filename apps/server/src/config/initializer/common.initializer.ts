@@ -1,11 +1,11 @@
-import { DatabaseService } from "@crepen-nest/module/config/database/database.config.service";
-import { DynamicConfigService } from "@crepen-nest/module/config/dynamic-config/dynamic-config.service";
+import { DatabaseService } from "@crepen-nest/app/config/database/database.config.service";
+import { DynamicConfigService } from "@crepen-nest/app/config/dynamic-config/dynamic-config.service";
+import { GlobalModule } from "@crepen-nest/app/global.module";
 import { ConsoleLogger, ExceptionFilter, INestApplication, Logger, NestInterceptor, PipeTransform } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { NestFactory, Reflector } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import { GlobalModule } from "src/module/global.module";
 
 export class CommonInitializer {
 
@@ -52,8 +52,8 @@ export class CommonInitializer {
             this.initSwagger();
             this.initNextExpressConfig();
 
-            await this.context.listen(this.configService.get("port") || 13332);
-            Logger.log(`Run Server : ${this.configService.get("port") || 13332}`, 'MAIN');
+            await this.context.listen(this.configService.get("server.port") || 13332);
+            Logger.log(`Run Server : ${this.configService.get("server.port") || 13332}`, 'MAIN');
 
             return this;
         }

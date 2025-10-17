@@ -25,13 +25,18 @@ export class AuthMiddleware implements BaseMiddleware {
 
         const basePath = StringUtil.isEmpty(req.nextUrl.basePath) ? '/' : req.nextUrl.basePath;
 
+        if (req.method !== 'GET') {
+            return {
+                response: res,
+                type: 'next'
+            }
+        }
+
         try {
-            const isRefresh = await AuthProvider.current().refreshSession({ readCookie : req.cookies , writeCookie : res.cookies});
+            const isRefresh = await AuthProvider.current().refreshSession({ readCookie: req.cookies, writeCookie: res.cookies });
 
             if (!UrlUtil.isMatchPatterns(req.url, [...this.ignoreAuthUrl, ...this.unAuthPages], { basePath: basePath })) {
                 if (!isRefresh.state) {
-                    console.log("?")
-                    console.log('ds',urlJoin(basePath , '/signin'))
                     return {
                         type: 'end',
                         response: NextResponse.redirect(new URL(urlJoin(basePath, '/signin', `?callback=${req.nextUrl.pathname}`), req.url))
@@ -48,7 +53,7 @@ export class AuthMiddleware implements BaseMiddleware {
             }
         }
         catch (e) {
-            console.log('AUTH_MIDDLEWARE_ERR',e);
+            console.log('AUTH_MIDDLEWARE_ERR', e);
         }
 
 

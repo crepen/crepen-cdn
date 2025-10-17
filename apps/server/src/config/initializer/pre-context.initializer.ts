@@ -1,13 +1,13 @@
-import { CryptoUtil, StringUtil } from "@crepen-nest/lib/util";
-import { CommonUtil } from "@crepen-nest/lib/util/common.util";
-import { ConsoleLogger, INestApplicationContext, Injectable, Logger, Module, OnModuleInit } from "@nestjs/common";
+import { StringUtil } from "@crepen-nest/lib/util";
+import { ConsoleLogger, INestApplicationContext, Logger, Module, OnModuleInit } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import * as fs from 'fs';
-import { DataSource } from "typeorm";
-import { SQLiteDataSourceProvider } from "../provider/database/sqlite.database.provider";
-import * as os from 'os';
 import * as path from "path";
+import { CrepenConfig } from "@crepen-nest/interface/config";
+import { StoreConfigExtension } from "@crepen-nest/lib/extensions/module/config-encrypt/store.config.extension";
+
+
 
 
 export class PreContextInitializer {
@@ -19,15 +19,10 @@ export class PreContextInitializer {
 
     private configService: ConfigService;
     private isError: boolean = false;
-    private dataSource: DataSource | undefined = undefined;
-    private secretKey: string | undefined = undefined;
 
-    private pathData = {
-        data: '',
-        log: '',
-        config: ''
-    }
-
+    private _config: CrepenConfig = {
+        init: false
+    };
 
     static setContext = async () => {
 
@@ -40,7 +35,12 @@ export class PreContextInitializer {
                 module: PreAppModule,
                 imports: [
                     ConfigModule.forRoot({
-                        envFilePath: ['.env', '.env.development']
+                        envFilePath: [
+                            '.env',
+                            process.env.NODE_ENV === 'dev'
+                                ? '.env.development'
+                                : 'env.prod'
+                        ]
                     })
                 ]
             }, {
@@ -58,308 +58,234 @@ export class PreContextInitializer {
     }
 
     apply = async () => {
-        // Set Config Path
-        this.applyEnvData()
-            .setConfigPath()
-            // Set Secret Key
-            .loadSecretKey();
-
-        // Load Config From SQLite
-        await this.loadLocalDatabaseConfig();
+        this.Init.loadConfig();
+        this.Init.applyEnvPort();
+        this.Init.checkEnvDir();
+        this.Init.initSecret();
+        this.Init.initJwt();
+        this.Init.initAdminPassword();
+        this.Init.saveConfig();
     }
 
-    private applyEnvData = () => {
-        try {
-            Logger.log('', 'PRE_INIT')
-            Logger.log('┌ Apply environment vairable', 'PRE_INIT')
 
-            Logger.log(`│ - Load server port (CREPEN_CDN_PORT)`, 'PRE_INIT')
-            if (isNaN(Number(process.env.CREPEN_CDN_PORT))) {
-                Logger.warn('│   - The server port is not set or is not formatted correctly. It will be automatically set to 13332.', 'PRE_INIT')
-                this.configService.set('root.port', 13332);
-            }
-            else {
-                Logger.log(`│   - Apply server port : ${process.env.CREPEN_CDN_PORT}`, 'PRE_INIT')
-                this.configService.set('root.port', process.env.CREPEN_CDN_PORT);
-            }
+    private Init = {
+        loadConfig: () => {
+            try {
+                const configPath = path.join(process.env.CREPEN_CDN_CONFIG_DIR, 'crepen_cdn.conf.enc');
 
-            Logger.log('└ Complete', 'PRE_INIT')
-        }
-        catch (e) {
-            Logger.error('└ - Failed apply environment variable.', 'PRE_INIT')
-            Logger.error(e, 'PRE_INIT');
-            this.isError = true;
-        }
-
-        return this;
-    }
-
-    private setConfigPath = () => {
-        try {
-            Logger.log('', 'PRE_INIT')
-            Logger.log('┌ Initializer config directory', 'PRE_INIT')
-
-            let configPath = process.env.CREPEN_CDN_CONFIG_DIR;
-            Logger.log(`│ - Config directory enviroment variable : ${process.env.CREPEN_CDN_CONFIG_DIR}`, 'PRE_INIT')
-
-            if (StringUtil.isEmpty(configPath)) {
-                configPath = path.join(os.userInfo().homedir, '/crepen/cdn/config');
-                Logger.warn(`│ - Config directory env is undefined or empty. replace new directory path : ${configPath}`, 'PRE_INIT')
-            }
-            else {
-                Logger.log(`│ - Config dir path : ${configPath}`, 'PRE_INIT')
-            }
-
-            if (!fs.existsSync(configPath)) {
-                fs.mkdirSync(configPath, { recursive: true })
-            }
-
-            this.pathData.config = configPath;
-            this.configService.set('root.path.config', configPath);
-
-            Logger.log('└ Complete', 'PRE_INIT')
-
-            return this;
-        }
-        catch (e) {
-            Logger.error('└ - Failed initializer config directory.', 'PRE_INIT')
-            Logger.error(e, 'PRE_INIT');
-            this.isError = true;
-        }
-    }
-
-    private loadSecretKey = () => {
-        try {
-            Logger.log('', 'PRE_INIT')
-            Logger.log('┌ Load global secret key', 'PRE_INIT')
-
-
-            const filePath = path.join(this.pathData.config, 'PR.CRP');
-
-            if (!fs.existsSync(filePath)) {
-                Logger.warn('│ - Secret key could not be found. Key will be generated automatically.', 'PRE_INIT')
-                const encryptKey = StringUtil.randomString(16);
-                const configSecretKey = StringUtil.randomString(16);
-                const key = encryptKey + CryptoUtil.Symmentic.encrypt(configSecretKey, encryptKey);
-
-                fs.writeFileSync(filePath, key, { encoding: 'utf-8' });
-
-                this.secretKey = configSecretKey;
-                this.configService.set('root.secret', configSecretKey);
-            }
-            else {
-                const storeKey = fs.readFileSync(filePath, { encoding: 'utf-8' });
-
-                const key = CryptoUtil.Symmentic.decrypt(
-                    storeKey.slice(16, storeKey.length),
-                    storeKey.slice(0, 16)
-                )
-
-                this.secretKey = key;
-                this.configService.set('root.secret', key);
-            }
-
-
-
-
-            Logger.log('└ Complete', 'PRE_INIT')
-
-            return this;
-        }
-        catch (e) {
-            Logger.error('└ - Failed load secret key.', 'PRE_INIT')
-            Logger.error(e, 'PRE_INIT');
-            this.isError = true;
-        }
-    }
-
-    private loadLocalDatabaseConfig = async () => {
-
-        try {
-            Logger.log('', 'PRE_INIT')
-            Logger.log('┌ Load config from local database', 'PRE_INIT')
-
-
-            Logger.log('│ - Connect local database', 'PRE_INIT')
-            this.dataSource = await SQLiteDataSourceProvider
-                .getDataSource()
-                .initialize();
-
-            await this.dataSource.transaction(async (manager) => {
-                Logger.log('│ - Check table', 'PRE_INIT')
-                const findConfigTable = await manager.query<{ name: string }[]>('SELECT name FROM sqlite_master WHERE name=?', ['config']);
-
-                if (findConfigTable.length === 0) {
-                    Logger.log('│ - Config table not defined. Create config table.', 'PRE_INIT')
-                    void await manager.query<unknown[]>(`
-                        CREATE TABLE "config" 
-                        (
-                            "key" varchar PRIMARY KEY NOT NULL,
-                            "value" varchar NOT NULL
-                        )
-                    `);
+                if (fs.existsSync(configPath)) {
+                    const readBuffer = fs.readFileSync(configPath);
+                    this._config = StoreConfigExtension.decrypt(readBuffer);
                 }
 
-                Logger.log('│ - Check system initialized.', 'PRE_INIT')
-                const isInit = await manager.query<{ key: string, value: string }[]>(
-                    `SELECT * FROM config WHERE key=? AND value=?`
-                    , ['INIT', 'COMPLETE']
-                )
-
-                if (isInit.length === 0) {
-                    // INIT CONFIG
-                    Logger.warn('│   - System is not initialized. Starting initialize.', 'PRE_INIT')
-
-
-                    // Check Data Dir
-                    let dataDir = process.env.CREPEN_CDN_DATA_DIR;
-                    Logger.log(`│     - Data directory enviroment variable : ${dataDir}`, 'PRE_INIT')
-                    if (StringUtil.isEmpty(dataDir)) {
-                        dataDir = path.join(os.userInfo().homedir, '/crepen/cdn/data');
-                        Logger.warn(`│     - Data directory env is undefined or empty. replace new directory path : ${dataDir}`, 'PRE_INIT')
-                    }
-                    this.pathData.data = dataDir;
-
-                    // Check Log Dir
-                    let logDir = process.env.CREPEN_CDN_LOG_DIR;
-                    Logger.log(`│     - Log directory enviroment variable : ${logDir}`, 'PRE_INIT')
-                    if (StringUtil.isEmpty(logDir)) {
-                        logDir = path.join(os.userInfo().homedir, '/crepen/cdn/log');
-                        Logger.warn(`│     - Log directory env is undefined or empty. replace new directory path : ${logDir}`, 'PRE_INIT')
-                    }
-                    this.pathData.log = logDir;
-
-                    Logger.log('│     - Init config data.', 'PRE_INIT')
-                    void await manager.createQueryBuilder()
-                        .insert()
-                        .into<{ key: string, value: string }>('config')
-                        .values([
-                            { key: 'DATA_DIR', value: this.pathData.data },
-                            { key: 'LOG_DIR', value: this.pathData.log },
-                            { key: 'DB_CS', value: CryptoUtil.Symmentic.encrypt('', this.secretKey) },
-                            { key: 'TK_SK', value: CryptoUtil.Symmentic.encrypt(StringUtil.randomString(16), this.secretKey) },
-                            { key: 'INIT', value: 'COMPLETE' }
-                        ])
-                        .execute();
+                Logger.log('', 'PRE_INIT')
+                Logger.log('┌ Load Config', 'PRE_INIT')
+                Logger.log(`│ - CONFIG_FILE_PATH : ${configPath}`, 'PRE_INIT')
+                Logger.log(`└`, 'PRE_INIT')
+            }
+            catch (e) {
+                Logger.error('', 'PRE_INIT')
+                Logger.error('┌ Failed Load Config', 'PRE_INIT')
+                Logger.error(`└`, 'PRE_INIT')
+                if (process.env.NODE_ENV === 'dev') {
+                    Logger.error(e, 'PRE_INIT')
                 }
+                this.isError = true;
+            }
 
-                Logger.log('│ - Load config data.', 'PRE_INIT')
-                const pathData = await manager.createQueryBuilder()
-                    .select('*')
-                    .from('config', 'cfg')
-                    .getRawMany<{ key: string, value?: string }>();
-
-                // #region INIT_DATA_DIR
-                const storeDataDir = pathData.find(x => x.key === 'DATA_DIR')?.value;
-                Logger.log(`│   - Data directory path : ${storeDataDir}`, 'PRE_INIT')
-
-                if (!fs.existsSync(storeDataDir)) {
-                    Logger.warn(`│     - Data directory not found. It will be created automatically.`, 'PRE_INIT')
-                    fs.mkdirSync(storeDataDir, { recursive: true });
-                }
-                this.configService.set('root.path.data', storeDataDir);
-                // #endregion INIT_DATA_DIR
-
-                // #region INIT_LOG_DIR
-                const storeLogDir = pathData.find(x => x.key === 'LOG_DIR')?.value;
-                Logger.log(`│   - Log directory path : ${storeLogDir}`, 'PRE_INIT')
-
-                if (!fs.existsSync(storeLogDir)) {
-                    Logger.warn(`│     - Log directory not found. It will be created automatically.`, 'PRE_INIT')
-                    fs.mkdirSync(storeLogDir, { recursive: true });
-                }
-                this.configService.set('root.path.log', storeLogDir);
-                // #endregion INIT_LOG_DIR
-
-                // #region INIT_DB_CONNECTION_STRING
-                Logger.log(`│ - Load Common Database connect info`, 'PRE_INIT')
-                const dbConnStr = pathData.find(x => x.key === 'DB_CS')?.value;
-
-                if (!StringUtil.isEmpty(dbConnStr) && !StringUtil.isEmpty(CryptoUtil.Symmentic.decrypt(dbConnStr, this.secretKey))) {
-                    const decryptConnString = CryptoUtil.Symmentic.decrypt(dbConnStr, this.secretKey)
-                    try {
-
-
-                        const dataSource: DataSource = new DataSource({
-                            type: 'mariadb',
-                            url: decryptConnString,
-                            synchronize: false
-                        })
-
-                        await dataSource.initialize();
-                        await dataSource.destroy();
-
-                        this.configService.set('root.db.conn_str', decryptConnString);
-                    }
-                    catch (e) {
-                        Logger.warn(`│   - An attempt was made to connect based on the database connection information, but the connection failed.`, 'PRE_INIT')
-                    }
-                }
-                else {
-                    Logger.warn(`│   - There is no database connection information. Please configure it manually.`, 'PRE_INIT')
-                }
-                // #endregion INIT_DB_CONNECTION_STRING
-
-                // #region INIT_TOKEN_SECRET_KEY
-                Logger.log(`│ - Load JWT Secret key`, 'PRE_INIT')
-                const jwtSecretKey = pathData.find(x => x.key === 'TK_SK')?.value;
-
-                if (!StringUtil.isEmpty(jwtSecretKey)) {
-                    const decrpytString = CryptoUtil.Symmentic.decrypt(jwtSecretKey, this.secretKey);
-                    if (!StringUtil.isEmpty(decrpytString)) {
-                        this.configService.set('root.jwt.secret', decrpytString);
-                    }
-                }
-                else {
-                    Logger.warn(`│   - JWT Secret key not found. It will be created automatically.`, 'PRE_INIT')
-                    const newJwtSecretKey = StringUtil.randomString(16);
-                    const newJwtSecretEncryptKey = CryptoUtil.Symmentic.encrypt(newJwtSecretKey, this.secretKey);
-
-                    if (pathData.find(x => x.key === 'TK_SK')) {
-                        void await manager.createQueryBuilder()
-                            .update('config')
-                            .set({ value: newJwtSecretEncryptKey })
-                            .where('key = :key', { key: 'TK_SK' })
-                            .execute();
+        },
+        applyEnvPort: () => {
+            try {
+                if (!process.env.CREPEN_CDN_PORT) {
+                    if (!isNaN(Number(process.env.CREPEN_CDN_PORT))) {
+                        this._config.server = {
+                            port: Number(process.env.CREPEN_CDN_PORT)
+                        }
+                        Logger.log('', 'PRE_INIT')
+                        Logger.log('┌ Load Port Env', 'PRE_INIT')
+                        Logger.log(`│ - CREPEN_CDN_PORT : ${Number(process.env.CREPEN_CDN_PORT)}`, 'PRE_INIT')
+                        Logger.log(`└`, 'PRE_INIT')
                     }
                     else {
-                        void await manager.createQueryBuilder()
-                            .insert()
-                            .into<{ key: string, value: string }>('config')
-                            .values([
-                                { key: 'TK_SK', value: newJwtSecretEncryptKey }
-                            ])
-                            .execute();
+                        this._config.server = {
+                            port: 13332
+                        }
+
+                        Logger.log('', 'PRE_INIT')
+                        Logger.log('┌ Load Port Env', 'PRE_INIT')
+                        Logger.warn(`│ - Port env is not number`, 'PRE_INIT')
+                        Logger.warn(`│ - CREPEN_CDN_PORT : ${Number(process.env.CREPEN_CDN_PORT)}`, 'PRE_INIT')
+                        Logger.warn(`│ - Default port apply : 13332`, 'PRE_INIT')
+                        Logger.log(`└`, 'PRE_INIT')
                     }
-
-                    this.configService.set('root.jwt.secret', newJwtSecretEncryptKey);
-
-                }
-                // #endregion INIT_TOKEN_SECRET_KEY
-            })
-
-            Logger.log(`└ Complete`, 'PRE_INIT')
-        }
-        catch (e) {
-            Logger.error('└ Failed load config.', 'PRE_INIT')
-            Logger.error(e, 'PRE_INIT');
-            this.isError = true;
-        }
-        finally {
-            try {
-                if (this.dataSource.isInitialized) {
-                    await this.dataSource.destroy();
                 }
             }
-            catch (e) { }
+            catch (e) {
+                Logger.error('', 'PRE_INIT')
+                Logger.error('┌ Failed Load Port Env', 'PRE_INIT')
+                Logger.error(`└`, 'PRE_INIT')
+                if (process.env.NODE_ENV === 'dev') {
+                    Logger.error(e, 'PRE_INIT')
+                }
+                this.isError = true;
+            }
+        },
+        checkEnvDir: () => {
+            if (this.isError === true) {
+                return;
+            }
+
+            const serverDataPath = process.env.CREPEN_CDN_DATA_DIR;
+            const serverLogPath = process.env.CREPEN_CDN_LOG_DIR;
+            const serverConfigPath = process.env.CREPEN_CDN_CONFIG_DIR;
+
+            try {
+                if (!fs.existsSync(serverConfigPath)) {
+                    // Config Path
+                    fs.mkdirSync(serverConfigPath, {
+                        mode: 644,
+                        recursive: true
+                    })
+                }
+
+                if (!fs.existsSync(serverDataPath)) {
+                    // Data Path
+                    fs.mkdirSync(serverDataPath, {
+                        mode: 644,
+                        recursive: true
+                    })
+                }
+
+                if (!fs.existsSync(serverLogPath)) {
+                    // Log Path
+                    fs.mkdirSync(serverLogPath, {
+                        mode: 644,
+                        recursive: true
+                    })
+                }
+
+                fs.accessSync(serverConfigPath, fs.constants.R_OK | fs.constants.W_OK | fs.constants.F_OK);
+                fs.accessSync(serverDataPath, fs.constants.R_OK | fs.constants.W_OK);
+                fs.accessSync(serverLogPath, fs.constants.R_OK | fs.constants.W_OK);
+
+                this._config.path = {
+                    data: serverDataPath,
+                    config: serverConfigPath,
+                    log: serverLogPath
+                }
+
+                Logger.log('', 'PRE_INIT')
+                Logger.log('┌ ENV DIR PATH', 'PRE_INIT')
+                Logger.log(`│ - CREPEN_CDN_DATA_DIR : ${serverDataPath}`, 'PRE_INIT')
+                Logger.log(`│ - CREPEN_CDN_CONFIG_DIR : ${serverConfigPath}`, 'PRE_INIT')
+                Logger.log(`│ - CREPEN_CDN_LOG_DIR : ${serverLogPath}`, 'PRE_INIT')
+                Logger.log(`└`, 'PRE_INIT')
+            }
+            catch (e) {
+                Logger.error('', 'PRE_INIT')
+                Logger.error('┌ Failed Initialize Directory', 'PRE_INIT')
+                Logger.error(`│ - CREPEN_CDN_DATA_DIR : ${serverDataPath}`, 'PRE_INIT')
+                Logger.error(`│ - CREPEN_CDN_CONFIG_DIR : ${serverConfigPath}`, 'PRE_INIT')
+                Logger.error(`│ - CREPEN_CDN_LOG_DIR : ${serverLogPath}`, 'PRE_INIT')
+                Logger.error(`└`, 'PRE_INIT')
+                if (process.env.NODE_ENV === 'dev') {
+                    Logger.error(e, 'PRE_INIT')
+                }
+                this.isError = true;
+            }
+
+        },
+        initSecret: () => {
+            try {
+                if (StringUtil.isEmpty(this._config.secret)) {
+                    this._config.secret = StringUtil.randomString(12);
+                }
+
+            }
+            catch (e) {
+                Logger.error('', 'PRE_INIT')
+                Logger.error('┌ Failed Init Secret key', 'PRE_INIT')
+                Logger.error(`└`, 'PRE_INIT')
+                if (process.env.NODE_ENV === 'dev') {
+                    Logger.error(e, 'PRE_INIT')
+                }
+                this.isError = true;
+            }
+        },
+        initJwt: () => {
+            try {
+                if (StringUtil.isEmpty(this._config.jwt?.secret)) {
+                    this._config.jwt = {
+                        secret: StringUtil.randomString(16),
+                        expireAct : '5m',
+                        expireRef : '1h'
+                    }
+                }
+            }
+            catch (e) {
+                Logger.error('', 'PRE_INIT')
+                Logger.error('┌ Failed Init Jwt Secret key', 'PRE_INIT')
+                Logger.error(`└`, 'PRE_INIT')
+                if (process.env.NODE_ENV === 'dev') {
+                    Logger.error(e, 'PRE_INIT')
+                }
+                this.isError = true;
+            }
+        },
+        initAdminPassword: () => {
+            try {
+                if (
+                    StringUtil.isEmpty(this._config.initAccount?.password)
+                    || StringUtil.isEmpty(this._config.initAccount?.id)
+                ) {
+                    this._config.initAccount = {
+                        id: StringUtil.randomString(20),
+                        password: StringUtil.randomString(30),
+                    }
+                }
+
+                Logger.log(`┌ Administrator account for initial setup`, 'PRE_INIT')
+                Logger.log(`│ ID : ${this._config.initAccount.id}`, 'PRE_INIT')
+                Logger.log(`│ Password : ${this._config.initAccount.password}`, 'PRE_INIT')
+                Logger.log(`└`, 'PRE_INIT')
+
+            }
+            catch (e) {
+                Logger.error('', 'PRE_INIT')
+                Logger.error('┌ Failed Init Admin Password', 'PRE_INIT')
+                Logger.error(`└`, 'PRE_INIT')
+                if (process.env.NODE_ENV === 'dev') {
+                    Logger.error(e, 'PRE_INIT')
+                }
+                this.isError = true;
+            }
+        },
+        saveConfig: () => {
+            try {
+                this._config.init = true;
+
+                const configPath = path.join(process.env.CREPEN_CDN_CONFIG_DIR, 'crepen_cdn.conf.enc');
+
+                const saveBuffer = StoreConfigExtension.encrypt(this._config);
+
+                fs.writeFileSync(configPath, saveBuffer, {
+                    encoding: 'utf8',
+                    mode: 644
+                })
+
+                this.configService.set('root', this._config);
+            }
+            catch (e) {
+                Logger.error('', 'PRE_INIT')
+                Logger.error('┌ Failed Save Config', 'PRE_INIT')
+                Logger.error(`└`, 'PRE_INIT')
+                if (process.env.NODE_ENV === 'dev') {
+                    Logger.error(e, 'PRE_INIT')
+                }
+                this.isError = true;
+            }
         }
     }
-
-
-
-
-
-
 
 
     getConfigData = async () => {
@@ -376,10 +302,8 @@ export class PreContextInitializer {
         }
         finally {
             this.configService = undefined;
-            this.secretKey = undefined;
             this.isError = undefined;
-            this.dataSource = undefined;
-            this.pathData = undefined;
+            this._config = undefined;
         }
 
 

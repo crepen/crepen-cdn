@@ -79,7 +79,7 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
                 <CommonPage.Content
                     className={
                         StringUtil.joinClassName(
-                            (isPreviewMime(fileData.data?.fileMimeType) && !fileData.data?.cryptQueueList.find(x=>x.queueState === 'running' || x.queueState === 'wait'))
+                            (isPreviewMime(fileData.data?.fileMimeType) && !fileData.data?.cryptQueueList.find(x => x.queueState === 'running' || x.queueState === 'wait'))
                                 ? 'cp-active-preview'
                                 : ''
                         )
@@ -152,108 +152,109 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
                             }
                         </GroupBox.Content>
                     </GroupBox>
-                    <GroupBox
-                        className='cp-file-info'
-                        templete
-                    >
-                        <GroupBox.Header>
-                            <div className='cp-box-title'>
-                                File Info
-                            </div>
-                        </GroupBox.Header>
-                        <GroupBox.Content>
-                            <ul className='cp-info-list'>
-                                <li className='cp-info-item'>
-                                    <div className='cp-info-title'>
-                                        Title
-                                    </div>
-                                    <div className='cp-info-value'>
-                                        {fileData.data?.title}
-                                    </div>
-                                </li>
-                                <li className='cp-info-item'>
-                                    <div className='cp-info-title'>
-                                        File Name
-                                    </div>
-                                    <div className='cp-info-value'>
-                                        {fileData.data?.fileName}
-                                    </div>
-                                </li>
-                                <li className='cp-info-item'>
-                                    <div className='cp-info-title'>
-                                        Type
-                                    </div>
-                                    <div className='cp-info-value'>
-                                        {fileData.data?.fileMimeType}
-                                    </div>
-                                </li>
-                                <li className='cp-info-item'>
-                                    <div className='cp-info-title'>
-                                        Size
-                                    </div>
-                                    <div className='cp-info-value'>
-                                        {StringUtil.convertFormatByte(
-                                            isNaN(Number(fileData.data?.fileSize))
-                                                ? 0
-                                                : Number(fileData.data?.fileSize)
-                                        )}
-                                    </div>
-                                </li>
-                                <li className='cp-info-item'>
-                                    <div className='cp-info-title'>
-                                        Create date
-                                    </div>
-                                    <div className='cp-info-value'>
-                                        {fileData.data?.createDate}
-                                    </div>
-                                </li>
-                                <li className='cp-info-item'>
-                                    <div className='cp-info-title'>
-                                        Update date
-                                    </div>
-                                    <div className='cp-info-value'>
-                                        {fileData.data?.updateDate}
-                                    </div>
-                                </li>
-                                <li className='cp-info-item'>
-                                    <div className='cp-info-title'>
-                                        File Encrypt State
-                                    </div>
-                                    <div className='cp-info-value'>
-                                        {
-                                            (fileData.data?.cryptQueueList ?? []).find(x=>x.queueState === 'running' || x.queueState === 'wait')
-                                                ? 'Running Crypting'
-                                                : (fileData.data?.encryptedFiles ?? []).length > 0
-                                                    ? 'ENCRYPT'
-                                                    : 'DECRYPT'
-                                        }
-                                    </div>
-                                </li>
-                                <li className='cp-info-item'>
-                                    <div className='cp-info-title'>
-                                        Published
-                                    </div>
-                                    <div className='cp-info-value'>
-                                        {
-                                            fileData.data?.isPublished === true
-                                                ? 'Published'
-                                                : 'Not published'
-                                        }
-                                    </div>
-                                </li>
-                            </ul>
-                        </GroupBox.Content>
-                    </GroupBox>
-                    <GroupBox
-                        className='cp-file-action'
-                        templete
-                    >
-                        <GroupBox.Header>
-                            <div className='cp-box-title'>
-                                Action
-                            </div>
-                        </GroupBox.Header>
-                        <GroupBox.Content>
+                    <div className='cp-file-side'>
+                        <GroupBox
+                            className='cp-file-info'
+                            templete
+                        >
+                            <GroupBox.Header>
+                                <div className='cp-box-title'>
+                                    File Info
+                                </div>
+                            </GroupBox.Header>
+                            <GroupBox.Content>
+                                <ul className='cp-info-list'>
+                                    <li className='cp-info-item'>
+                                        <div className='cp-info-title'>
+                                            Title
+                                        </div>
+                                        <div className='cp-info-value'>
+                                            {fileData.data?.title}
+                                        </div>
+                                    </li>
+                                    <li className='cp-info-item'>
+                                        <div className='cp-info-title'>
+                                            File Name
+                                        </div>
+                                        <div className='cp-info-value'>
+                                            {fileData.data?.fileName}
+                                        </div>
+                                    </li>
+                                    <li className='cp-info-item'>
+                                        <div className='cp-info-title'>
+                                            Type
+                                        </div>
+                                        <div className='cp-info-value'>
+                                            {fileData.data?.fileMimeType}
+                                        </div>
+                                    </li>
+                                    <li className='cp-info-item'>
+                                        <div className='cp-info-title'>
+                                            Size
+                                        </div>
+                                        <div className='cp-info-value'>
+                                            {StringUtil.convertFormatByte(
+                                                isNaN(Number(fileData.data?.fileSize))
+                                                    ? 0
+                                                    : Number(fileData.data?.fileSize)
+                                            )}
+                                        </div>
+                                    </li>
+                                    <li className='cp-info-item'>
+                                        <div className='cp-info-title'>
+                                            Create date
+                                        </div>
+                                        <div className='cp-info-value'>
+                                            {fileData.data?.createDate}
+                                        </div>
+                                    </li>
+                                    <li className='cp-info-item'>
+                                        <div className='cp-info-title'>
+                                            Update date
+                                        </div>
+                                        <div className='cp-info-value'>
+                                            {fileData.data?.updateDate}
+                                        </div>
+                                    </li>
+                                    <li className='cp-info-item'>
+                                        <div className='cp-info-title'>
+                                            File Encrypt State
+                                        </div>
+                                        <div className='cp-info-value'>
+                                            {
+                                                (fileData.data?.cryptQueueList ?? []).find(x => x.queueState === 'running' || x.queueState === 'wait')
+                                                    ? 'Running Crypting'
+                                                    : (fileData.data?.encryptedFiles ?? []).length > 0
+                                                        ? 'ENCRYPT'
+                                                        : 'DECRYPT'
+                                            }
+                                        </div>
+                                    </li>
+                                    <li className='cp-info-item'>
+                                        <div className='cp-info-title'>
+                                            Published
+                                        </div>
+                                        <div className='cp-info-value'>
+                                            {
+                                                fileData.data?.isPublished === true
+                                                    ? 'Published'
+                                                    : 'Not published'
+                                            }
+                                        </div>
+                                    </li>
+                                </ul>
+                            </GroupBox.Content>
+                        </GroupBox>
+                        <GroupBox
+                            className='cp-file-action'
+                            templete
+                        >
+                            <GroupBox.Header>
+                                <div className='cp-box-title'>
+                                    Action
+                                </div>
+                            </GroupBox.Header>
+                            <GroupBox.Content>
                                 <div className='cp-group-action'>
                                     <ExplorerFileDownloadButton
                                         downloadLink={
@@ -263,7 +264,7 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
                                                 `${fileData.data?.fileName ?? 'NFD'}`
                                             )
                                         }
-                                        isRunningCrypt={!!(fileData.data?.cryptQueueList ?? []).find(x=>x.queueState === 'running' || x.queueState === 'wait')}
+                                        isRunningCrypt={!!(fileData.data?.cryptQueueList ?? []).find(x => x.queueState === 'running' || x.queueState === 'wait')}
                                     />
                                     <button
                                         className='cp-action-button'
@@ -280,21 +281,23 @@ const MainExplorerFilePage = async (prop: MainExplorerFilePageProp) => {
                                         <ExplorerFileCryptButton
                                             isFileEncrypt={(fileData.data?.encryptedFiles ?? []).length > 0}
                                             fileUid={fileData.data.uid}
-                                            isRunningCrypt={!!fileData.data.cryptQueueList.find(x=>x.queueState === 'running' || x.queueState === 'wait')}
+                                            isRunningCrypt={!!fileData.data.cryptQueueList.find(x => x.queueState === 'running' || x.queueState === 'wait')}
                                         />
                                     }
 
                                     <ExplorerFileReloadButton />
                                 </div>
 
-                            <ExplorerFileShareBox
-                                fileUid={fileUid ?? 'NFD'}
-                                defaultPublishedLink='1'
-                                defaultPublishedState={fileData.data?.isPublished ?? false}
-                                fileName={fileData.data?.fileName ?? 'NFD'}
-                            />
-                        </GroupBox.Content>
-                    </GroupBox>
+                                <ExplorerFileShareBox
+                                    fileUid={fileUid ?? 'NFD'}
+                                    defaultPublishedLink='1'
+                                    defaultPublishedState={fileData.data?.isPublished ?? false}
+                                    fileName={fileData.data?.fileName ?? 'NFD'}
+                                />
+                            </GroupBox.Content>
+                        </GroupBox>
+                    </div>
+
                     {/* <GroupBox
                         className='cp-file-monitor'
                         templete

@@ -3,7 +3,7 @@ import path from 'path';
 
 const PUBLISH_SUBPATH = process.env.BASE_PATH ?? '/';
 
-
+console.log("ENV BASEPATH : "  , PUBLISH_SUBPATH);
 
 const nextConfig: NextConfig = {
   output: "standalone",

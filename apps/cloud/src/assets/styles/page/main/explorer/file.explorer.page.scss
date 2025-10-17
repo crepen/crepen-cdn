@@ -6,26 +6,26 @@
 
         .cp-page-content {
 
-            display: grid;
-            grid-template-areas:
-                'preview preview'
-                'info action'
-                // 'monitor monitor'
-            ;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: min-content min-content min-content;
+            
+            // grid-template-areas:
+            //     'preview preview'
+            //     'info action'
+            //     // 'monitor monitor'
+            // ;
+            // grid-template-columns: 1fr 1fr;
+            // grid-template-rows: min-content min-content min-content;
 
 
-            gap: 24px;
-
+          
 
             &.cp-active-preview {
+                display: grid;
                 grid-template-areas:
-                    'preview info'
-                    'preview action'
-                    // 'preview monitor'
+                    'preview side'
                 ;
-                grid-template-rows: 1fr min-content min-content;
+                  gap: 24px;
+
+                grid-template-rows: min-content min-content min-content;
                 grid-template-columns: 1fr 350px;
             }
 
@@ -38,6 +38,10 @@
                     .cp-preview-content {
                         display: none;
                     }
+                }
+
+                .cp-file-side {
+                    margin-top: 20px;
                 }
             }
 
@@ -414,6 +418,14 @@
                     }
                 }
 
+            }
+
+            .cp-file-side {
+                grid-area: side;
+
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
             }
         }
     }

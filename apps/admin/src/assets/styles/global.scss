@@ -1,0 +1,288 @@
+:root {
+    font-family: 'Pretendard Variable', 'Noto Sans KR';
+    --vh: 1vh;
+    --global-font-family: 'Pretendard Variable', 'Noto Sans KR';
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+html {}
+
+
+body {
+    position: relative;
+
+    input,
+    button,
+    * {
+        font-family: var(--global-font-family);
+    }
+}
+
+
+
+
+
+
+// CONTROL
+
+.cp-modal {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 999;
+    display: none;
+    background: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+
+    &.cp-open {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+
+    .cp-modal-box {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        max-width: 90vw;
+        max-height: 90vh;
+        overflow: hidden;
+        transform: scale(0.9) translateY(20px);
+        transition: all 0.3s ease;
+
+        display: grid;
+        grid-template-areas:
+            'header'
+            'content'
+            'footer'
+        ;
+        grid-template-columns: 1fr;
+        grid-template-rows: min-content 1fr min-content;
+
+        .cp-modal-header {
+            grid-area: header;
+
+            padding: 24px 24px 16px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+
+
+        }
+
+        .cp-modal-content {
+            grid-area: content;
+
+            padding: 24px;
+            overflow-y: auto;
+
+            color: #374151;
+            font-size: 16px;
+        }
+
+        .cp-modal-footer {
+            grid-area: footer;
+
+            padding: 16px 24px 24px 24px;
+            // border-top: 1px solid #f1f5f9;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .cp-modal-control {
+            &.cp-modal-close-bt {
+                width: 32px;
+                height: 32px;
+                border: none;
+                background: #f1f5f9;
+                border-radius: 8px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 16px;
+                color: #64748b;
+                transition: all 0.3s ease;
+            }
+
+
+            &.cp-modal-button {
+
+                padding: 10px 16px;
+
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.3s ease;
+
+                &.cp-secondary {
+                    background: white;
+                    color: #64748b;
+                    border: 1px solid #d1d5db;
+                }
+
+                &.cp-danger {
+                    background: #ef4444;
+                    color: white;
+                    border: none;
+                }
+
+                &.cp-submit {
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    color: white;
+                    border: none;
+                }
+
+                &.cp-loading {
+                    &>*:not(.cp-loading-spinner) {
+                        display: none;
+                    }
+
+                    .cp-loading-spinner {
+                        animation: loop-rotate 0.5s infinite linear;
+
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        @keyframes loop-rotate {
+                            0% {
+                                transform: rotate(0deg);
+                            }
+
+                            100% {
+                                transform: rotate(360deg);
+                            }
+                        }
+                    }
+                }
+
+                &:not(.cp-loading) {
+                    .cp-loading-spinner {
+                        display: none;
+
+
+                    }
+                }
+            }
+        }
+
+
+    }
+
+}
+
+
+
+.cp-control.cp-input-group {
+    &>label {
+        color: #374151;
+        margin-bottom: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        display: block;
+
+        
+    }
+
+    &>input {
+        background: #fff;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        outline: none;
+        width: 100%;
+        padding: 12px 14px;
+        font-size: 14px;
+        transition: all .3s;
+
+        &:disabled {
+            background: #37415113 !important;
+        }
+    }
+}
+
+
+
+
+
+
+.cp-control.cp-button {
+
+    padding: 10px 16px;
+
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    .cp-button-content {
+        width: 100%;
+        height: 100%;
+    }
+
+    &.cp-secondary {
+        background: white;
+        color: #64748b;
+        border: 1px solid #d1d5db;
+    }
+
+    &.cp-danger {
+        background: #ef4444;
+        color: white;
+        border: none;
+    }
+
+    &.cp-submit {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+    }
+
+    &.cp-loading {
+        &>*:not(.cp-loading-spinner) {
+            display: none;
+        }
+
+        .cp-loading-spinner {
+            animation: loop-rotate 0.5s infinite linear;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            @keyframes loop-rotate {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+        }
+    }
+
+    &:not(.cp-loading) {
+        .cp-loading-spinner {
+            display: none;
+
+
+        }
+    }
+
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(gray, 0.3);
+    }
+}

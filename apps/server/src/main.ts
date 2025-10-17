@@ -1,12 +1,11 @@
 import { ClassSerializerInterceptor, Logger } from "@nestjs/common";
-import { CheckInitSystemInterceptor } from "./lib/extensions/interceptor/chk-system-init.interceptor";
 import { ResponseSnakeCaseConvertInterceptor } from "./lib/extensions/interceptor/snake_case.interceptor";
 import { CommonExceptionFilter } from "./lib/extensions/filter/common.exception.filter";
 import { CheckConnDBInterceptor } from "./lib/extensions/interceptor/chk-conn-db.interceptor";
-import { PlatformI18nValidationPipe } from "./module/config/i18n/i18n.validate.pipe";
-import { PlayformI18nValidationExceptionFilter } from "./module/config/i18n/i18n.validate.filter";
 import { CommonInitializer } from "./config/initializer/common.initializer";
 import { PreContextInitializer } from "./config/initializer/pre-context.initializer";
+import { PlatformI18nValidationPipe } from "./app/config/i18n/i18n.validate.pipe";
+import { PlayformI18nValidationExceptionFilter } from "./app/config/i18n/i18n.validate.filter";
 
 
 const bootstrap = async () => {
@@ -18,7 +17,6 @@ const bootstrap = async () => {
     const isPreInitState = preInit.getStatus();
 
     await preInit.dispose();
-
 
 
     if (!isPreInitState) {
@@ -46,7 +44,7 @@ const bootstrap = async () => {
         ])
         .useInterceptor((refl, conf, db, dynamicConfig) => [
             new ResponseSnakeCaseConvertInterceptor(),
-            new CheckConnDBInterceptor(refl, db, dynamicConfig),
+            // new CheckConnDBInterceptor(refl, db, dynamicConfig),
             new ClassSerializerInterceptor(refl),
             // new CheckInitSystemInterceptor(conf)
         ])

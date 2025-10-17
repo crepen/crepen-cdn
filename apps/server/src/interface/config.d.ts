@@ -1,4 +1,5 @@
 export interface CrepenConfig {
+    init: boolean,
     server? : {
         port? : number
     },
@@ -9,12 +10,20 @@ export interface CrepenConfig {
         username? : string,
         password? : string
     },
-    secret? : {
-        auth? : string,
-        jwt? : string
+    path?: {
+        data? : string,
+        log?: string,
+        config?: string
     },
+    secret? : string,
     jwt? : {
         secret? : string,
-        expireTime? : string
+        expireAct? : string,
+        expireRef? : string
+    },
+    initAccount? : {
+        id? :string,
+        password? : string,
+        userPassword? : string
     }
 }

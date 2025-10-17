@@ -1,0 +1,22 @@
+{
+  "####_________COMMON_GROUP_________####": "",
+
+  "_________COMMON_MESSAGE_________": "",
+  "COMMON.UNKNOWN_ERROR": "Unknown error.",
+  "COMMON.SUCCESS": "Success",
+
+  "####_________SIGNIN_GROUP_________####": "",
+
+  "_________SIGNIN_MESSAGE_________": "",
+  "ADMIN.SIGNIN.COMMON.ID_OR_PASSWORD_UNDEFINED": "User id or password is not defined.",
+  "ADMIN.SIGNIN.INIT_ACCOUNT.CHANGE_PASSWORD_UNDEFINED": "Change password is not defined.",
+
+  "####_________MAIN_GROUP_________####": "",
+
+  "_________MAIN_MENU_________": "",
+  "ADMIN.MAIN.COMMON.NAV.MENU.DASHBOARD": "Dashboard",
+  "ADMIN.MAIN.COMMON.NAV.MENU.SITE_PROPERTIES": "Properties",
+  "ADMIN.MAIN.COMMON.NOT_FOUND_PAGE": "Not found page"
+
+  
+}

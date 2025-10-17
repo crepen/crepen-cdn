@@ -6,7 +6,7 @@ export class StringUtil {
         if (text === undefined || text === null) {
             return rewriteText ?? undefined;
         }
-        else if(typeof text === 'string' && text.trim() === ''){
+        else if (typeof text === 'string' && text.trim() === '') {
             return rewriteText ?? undefined;
         }
 
@@ -49,8 +49,18 @@ export class StringUtil {
         return result;
     }
 
+    static randomCharString = (length: number) => {
+        const alphanumericChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            result += alphanumericChars.charAt(Math.floor(Math.random() * alphanumericChars.length));
+        }
+        return result;
+    }
+
     static getByteLength = (str: string) => {
-        const charByteSize = (charValue : string) => {
+        const charByteSize = (charValue: string) => {
             if (charValue == null || charValue.length == 0) {
                 return 0
             }

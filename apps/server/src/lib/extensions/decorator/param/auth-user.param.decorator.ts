@@ -1,4 +1,4 @@
-import { UserEntity } from "@crepen-nest/module/app/user/entity/user.default.entity";
+import { UserEntity } from "@crepen-nest/app/api/user/entity/user.default.entity";
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 import { CustomParamFactory } from "@nestjs/common/interfaces";
 import { JwtUserRequest } from "src/interface/jwt";

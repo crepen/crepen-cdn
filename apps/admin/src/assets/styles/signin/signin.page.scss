@@ -1,0 +1,150 @@
+.cp-page.cp-signin-page {
+    padding: 16px;
+
+    @media (max-width : 480px) {
+        width: 100%;
+    }
+
+    .cp-signin-container {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        // width: 100%;
+        width: 420px;
+        overflow: hidden;
+
+        display: grid;
+        grid-template-rows: min-content min-content min-content;
+
+        @media (max-width : 480px) {
+            width: 100%;
+        }
+
+        .cp-container-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding-block: 24px;
+
+            .cp-container-title {
+                font-size: 24px;
+                font-weight: 600;
+                margin-bottom: 4px;
+            }
+
+            .cp-container-subtitle {
+                font-size: 14px;
+                opacity: 0.9;
+                font-weight: 400;
+            }
+        }
+
+        .cp-container-content {
+            padding: 32px;
+
+            .cp-signin-form {
+
+
+                .cp-form-input-group {
+                    &>label {
+                        display: block;
+                        margin-bottom: 6px;
+                        font-weight: 500;
+                        color: #374151;
+                        font-size: 14px;
+                    }
+
+                    &>input {
+                        width: 100%;
+                        padding: 14px 16px;
+                        border: 1px solid #d1d5db;
+                        border-radius: 8px;
+                        font-size: 14px;
+                        transition: all 0.3s ease;
+                        background: white;
+                        outline: none;
+                    }
+
+                    &:not(:nth-last-of-type(1)) {
+                        margin-bottom: 20px;
+                    }
+                }
+
+
+                .cp-signin-button {
+                    width: 100%;
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    color: white;
+                    padding: 14px 20px;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 16px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    position: relative;
+                    overflow: hidden;
+                    margin-top: 30px;
+
+                    &>span {
+                        text-transform: uppercase;
+                        letter-spacing: 2px;
+                        transition: all 0.3s ease;
+                    }
+
+                    &:not(.cp-loading) {
+                        &:hover {
+                            transform: translateY(-1px);
+                            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+
+                            &>span {
+                                letter-spacing: 4px;
+                            }
+                        }
+                    }
+
+
+
+                    .cp-loading-spinner {
+                        display: none;
+
+                        justify-content: center;
+                        align-items: center;
+                    }
+
+                    &.cp-loading {
+
+                        cursor: progress;
+                        user-select: none;
+
+
+                        &>span {
+                            display: none;
+                        }
+
+                        .cp-loading-spinner {
+                            display: flex;
+
+                            animation: loop-spinner infinite 0.5s linear;
+
+                            @keyframes loop-spinner {
+                                0% {
+                                    transform: rotate(0deg);
+                                }
+
+                                100% {
+                                    transform: rotate(360deg);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

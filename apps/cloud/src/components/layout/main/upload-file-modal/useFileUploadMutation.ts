@@ -25,9 +25,9 @@ const uploadFile = async (
     )
 
     try {
-        if(fileItem.file.size > 1.8 * 1024 * 1024 * 1024){
-            throw new Error('Limit Over (Max 1.8GB)')
-        }
+        // if(fileItem.file.size > 1.8 * 1024 * 1024 * 1024){
+        //     throw new Error('Limit Over (Max 1.8GB)')
+        // }
 
         updateProgress({
             progress : 0,
@@ -55,6 +55,7 @@ const uploadFile = async (
         });
 
         console.log(response.data);
+
 
         return response.data;
     }

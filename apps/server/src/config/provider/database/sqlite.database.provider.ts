@@ -22,6 +22,7 @@ export class SQLiteDataSourceProvider implements DataSourceProviderInterface {
             // entities: [entityDir, moduleEntityDir],
             synchronize: false,
             // logging : true
+            
         })
     }
 
